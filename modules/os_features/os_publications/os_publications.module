@@ -360,7 +360,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ctools_include('ajax');
   ctools_include('modal');
   $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
-  //$form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . l('Change Note Settings', 'cp/build/features/os_publications');
+
+  //Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
+  $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
+  $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
 
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
@@ -386,12 +389,53 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * @param unknown_type $entry
  */
 function os_publications_biblio_entry_alter(&$entry, $node) {
-  unset($entry['export_links']);
 
-  $entry = node_view($node, 'teaser');
-  $entry['teaser']['#weight'] = 1;
+  unset($entry['export_links']);
+  if (!empty($node->field_biblio_image[LANGUAGE_NONE][0])) {
+    $content = field_attach_view('node', $node, 'teaser');
+    $image = render($content['field_biblio_image']);
+  }
+  else {
+    $image = '';
+  }
+  $entry['entry']['#markup'] = _os_publications_biblio_entry_alter($entry['entry']['#markup'], $node);
+  _os_publications_attach_abstract($entry, $node);
+  $entry['entry']['#markup'] = $image . $entry['entry']['#markup'];
+
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
-  unset($entry['links']['node'], $entry['links']['biblio_google_scholar']);
+}
+
+/**
+ * Helper function for altering the bibilio entry theme.
+ *
+ *  @param $markup
+ *    The HTML output of the node to display.
+ *  @param $node
+ *    The node object.
+ *
+ *  @return
+ *    The HTML output to display.
+ */
+function _os_publications_biblio_entry_alter($markup, $node) {
+  $html = $markup;
+  $insert = strrpos($html, '</div>');
+
+  // Since the biblio_url is wiped out in the CSL file, get the url back from
+  // the node.
+  if (!empty($node->biblio_url)) {
+    $biblio_url = $node->biblio_url;
+    $biblio_check_url = l($biblio_url,$biblio_url);
+    $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
+    $new_biblio_url = l($biblio_url_title,$biblio_url);
+    if ($insert === FALSE) {
+      $html .= ' ' . $new_biblio_url;
+    }
+    else {
+      $html = substr_replace($html, ' ' . $new_biblio_url, $insert, 0);
+    }
+  }
+
+  return $html;
 }
 
 /**
@@ -408,7 +452,7 @@ function _os_publications_attach_notes(&$entry, $node) {
         ),
       ),
       'notes' => array(
-        '#markup' => check_markup($node->biblio_notes, filter_default_format()),
+        '#markup' => filter_xss($node->biblio_notes),
       ),
     );
   }
@@ -417,8 +461,7 @@ function _os_publications_attach_notes(&$entry, $node) {
 function _os_publications_attach_abstract(&$entry, $node) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
-    $html   = &$entry['teaser']['#markup'];
-    $insert = strrpos($html, '</div>');
+    $html   = &$entry['entry']['#markup'];
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
     $entry['abstract_slider'] = array(
       '#type' => 'container',
@@ -430,9 +473,10 @@ function _os_publications_attach_abstract(&$entry, $node) {
         ),
       ),
       'abstract' => array(
-        '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
+        '#markup' => filter_xss($node->biblio_abst_e),
       ),
     );
+    $insert = strrpos($html, '</div>');
     if ($insert === FALSE) {
       $html .= $extra;
     }
@@ -475,24 +519,9 @@ function os_publications_node_view_alter(&$build, $type) {
     if ($build['#view_mode'] == 'teaser') {
       // Alter the teaser to remove the external URL as the URL title and
       // replace it with either the biblio_url_title or "website".
-      if(isset($build['teaser']['#markup'])) {
-      	$html = $build['teaser']['#markup'];
-    	$insert = strrpos($html, '</div>');
-    	// Since the biblio_url is wiped out in the CSL file, get the url back from the node.
+      if (isset($build['teaser']['#markup'])) {
         $node = node_load($build['#node']->nid);
-      	if(!empty($node->biblio_url)) {
-          $biblio_url = $node->biblio_url;
-          $biblio_check_url = l($biblio_url,$biblio_url);
-          $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
-          $new_biblio_url = l($biblio_url_title,$biblio_url);
-          if ($insert === FALSE) {
-            $html .= ' ' . $new_biblio_url;
-    	  }
-    	  else {
-            $html = substr_replace($html, ' ' . $new_biblio_url, $insert, 0);
-    	  }
-          $build['teaser']['#markup'] = $html;
-      	}
+        $build['teaser']['#markup'] = _os_publications_biblio_entry_alter($entry, $node);
       }
 
       // Add the abstract slider.
