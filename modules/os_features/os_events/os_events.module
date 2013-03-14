@@ -130,7 +130,7 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $next_url = &$variables['next_url'];
   $prev_url = &$variables['prev_url'];
   $granularity = !empty($date_info->calendar_type) ? $date_info->calendar_type : 'month';
-  $format = array('year' => 'Y', 'month' => 'Y-m', 'day' => 'Y-m-d');
+  $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
 
   // Get information about dates.
   $min_date = $date_info->min_date;
@@ -139,13 +139,13 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $prev_date = clone($min_date);
   $next_date = clone($max_date);
   date_modify($prev_date, '-1 ' . $granularity);
-  date_modify($next_date, '+1 ' . $granularity);
+  date_modify($next_date, '+0 ' . $granularity);
   switch ($granularity) {
     case 'week':
       $next_week = date_week(date_format($next_date, 'Y-m-d'));
       $prev_week = date_week(date_format($prev_date, 'Y-m-d'));
-      $next_arg = date_format($next_date, 'Y-\W') . date_pad($next_week);
-      $prev_arg = date_format($prev_date, 'Y-\W') . date_pad($prev_week);
+      $next_arg = date_format($next_date, $format[$granularity]) . date_pad($next_week);
+      $prev_arg = date_format($prev_date, $format[$granularity]) . date_pad($prev_week);
       break;
     default:
       $next_arg = date_format($next_date, $format[$granularity]);
@@ -157,4 +157,35 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => $granularity);
   $next_url = $_GET['q'];
   $prev_url = $_GET['q'];
+}
+
+/**
+ * Implements hook_url_outbound_alter().
+ */
+function os_events_url_outbound_alter(&$path, &$options, $original_path) {
+  $view_modes = array(
+    'calendar/week',
+    'calendar/day',
+    'calendar/year',
+  );
+
+  if (!in_array($original_path, $view_modes)) {
+    return;
+  }
+
+  $path = $data[0];
+  $data = explode('/', $original_path);
+
+  $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
+  $date_format = new DateTime;
+
+  if ($data[1] == 'week') {
+    $date = date_format($date_format, $format[$data[1]]) . date_week(date_format($date_format, 'Y-m-d'));
+  }
+  else {
+    $date = date_format($date_format, $format[$data[1]]);
+  }
+
+  $options['query']['type'] = $data[1];
+  $options['query']['date'] = $date;
 }
