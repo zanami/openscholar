@@ -194,6 +194,9 @@ function media_set_browser_params() {
         $params[$k] = FALSE;
       }
     }
+    
+    // How do we validate these?  I don't know.
+    // I think PDO should protect them, but I'm not 100% certain.
 
     array_walk_recursive($params, 'media_recursive_check_plain');
 
