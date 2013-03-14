@@ -173,8 +173,8 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     return;
   }
 
-  $path = $data[0];
   $data = explode('/', $original_path);
+  $path = $data[0];
 
   $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
   $date_format = new DateTime;
