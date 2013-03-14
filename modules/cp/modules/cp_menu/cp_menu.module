@@ -250,13 +250,14 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
   	// Set the title from the cache title and set the form title to the cache title if it exists.
     if (isset($cache['title'])) {
-	  $title = check_plain($cache['title']);
-	  // Check for the form title
-	  if(isset($form['title'])) {
-  	    $form['title']['#default_value'] = $title;
-	  }
+  	  $title = check_plain($cache['title']);
+  	  // Check for the form title
+  	  if(isset($form['title'])) {
+    	    $form['title']['#default_value'] = $title;
+  	  }
     }
 
+    //use menu from cp_menu wizard or default to primary
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     if (isset($form['os_menu'])) {
 	    $form['os_menu']['enabled']['#default_value'] = 1;
@@ -269,14 +270,20 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
 
+    //use new url provided by menu wizard
+    if (isset($cache['new_node_url'])) {
+      $form['path']['alias']['#default_value'] = $cache['new_node_url'];
+      $form['path']['pathauto']['#default_value'] = FALSE;
+    }
+    
     // Cache shouldn't be deleted on the first pass of adding a new biblio.
-    if(isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
+    if (isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
       // Check for the form state input - biblio type, this will be present if we are past
       // the Publication Type select form.
-      if(isset($form_state['input']['biblio_type'])) {
+      if (isset($form_state['input']['biblio_type'])) {
       	cp_menu_cache_clear('cp_menu');
       }
-    }else {
+    } else {
       cp_menu_cache_clear('cp_menu');
     }
   }

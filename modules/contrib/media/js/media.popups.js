@@ -313,7 +313,10 @@ Drupal.media.popups.getDialogOptions = function () {
       backgroundColor: '#000000',
       opacity: 0.4
     },
-    zIndex: 10000
+    zIndex: 10000,
+    close: function (event, ui) {
+      $(event.target).remove();
+    }
   };
 };
 

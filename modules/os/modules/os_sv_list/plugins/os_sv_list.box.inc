@@ -113,6 +113,7 @@ class os_sv_list_box extends os_boxes_default {
         'display_sidebar_teaser' => t('Sidebar Teaser'),
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
+        'display_links' => t('Link'),
       ),
       // This #states rule limits use to when the $form['query_scope']
       // 'subsites' checkbox is not checked."
@@ -122,7 +123,11 @@ class os_sv_list_box extends os_boxes_default {
         ),
       ),
     );
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
+    //defines which display types are content type specific
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
+      'display_sidebar_teaser' => array('news', 'event', 'person'),
+      'display_links' => array('link'),
+    ))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -210,9 +215,15 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
+    //populate list of content types => paths
     ctools_include('os', 'os');
     $content_map = os_get_app_path();
     $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
+    if (isset($content_types['image'])) {
+      $content_map['image'] = $content_map['media_gallery'];
+    }
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),''); //use blank path for unknown paths.
+
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -437,9 +448,7 @@ class os_sv_list_box extends os_boxes_default {
         $query->propertyOrderBy($sort[0], $sort[1]);
 
       break;
-        
-      
-        
+
       case 'event':
         //Only query the date field if they are sorting by it
         if($options['sort_by'] == 'sort_event'){
@@ -529,8 +538,8 @@ class os_sv_list_box extends os_boxes_default {
     }else if (is_int($page)){
       $query->range(0, $this->options['number_of_items']);
     }
-    
-    
+
+
     //sorting exceptions
     switch ($options['content_type']) {
       case 'person':
@@ -542,7 +551,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Sort the results.
-    if($query instanceof EntityFieldQuery){
+    if ($query instanceof EntityFieldQuery && $options['content_type'] != 'image') {
       $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
       $this->$sort_func($query);
     }
@@ -711,6 +720,24 @@ class os_sv_list_box extends os_boxes_default {
     return theme('item_list', array(
       'items' => $items,
       'type' => 'ul'
+    ));
+  }
+
+  function display_links($nodes) {
+    $links = array();
+    foreach ($nodes as $node) {
+      $field_link = field_get_items('node', $node, 'field_links_link');
+      if(count($field_link) && strlen($field_link[0]['url'])){
+        $links[] = l($node->title, $field_link[0]['url']);
+      }
+    }
+
+    return theme('item_list', array(
+      'items' => $links,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'link-list',
+      ),
     ));
   }
 

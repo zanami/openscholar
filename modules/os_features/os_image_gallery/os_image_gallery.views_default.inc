@@ -59,19 +59,19 @@ function os_image_gallery_views_default_views() {
   $handler->display->display_options['fields']['media_gallery_description']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['media_gallery_description']['hide_empty'] = TRUE;
   /* Field: Content: Gallery media */
-  $handler->display->display_options['fields']['media_gallery_media']['id'] = 'media_gallery_media';
-  $handler->display->display_options['fields']['media_gallery_media']['table'] = 'field_data_media_gallery_media';
-  $handler->display->display_options['fields']['media_gallery_media']['field'] = 'media_gallery_media';
-  $handler->display->display_options['fields']['media_gallery_media']['label'] = '';
-  $handler->display->display_options['fields']['media_gallery_media']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['media_gallery_media']['click_sort_column'] = 'fid';
-  $handler->display->display_options['fields']['media_gallery_media']['type'] = 'os_files_image_list';
-  $handler->display->display_options['fields']['media_gallery_media']['settings'] = array(
+  $handler->display->display_options['fields']['media_gallery_file']['id'] = 'media_gallery_file';
+  $handler->display->display_options['fields']['media_gallery_file']['table'] = 'field_data_media_gallery_file';
+  $handler->display->display_options['fields']['media_gallery_file']['field'] = 'media_gallery_file';
+  $handler->display->display_options['fields']['media_gallery_file']['label'] = '';
+  $handler->display->display_options['fields']['media_gallery_file']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['media_gallery_file']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['media_gallery_file']['type'] = 'os_files_image_list';
+  $handler->display->display_options['fields']['media_gallery_file']['settings'] = array(
     'file_view_mode' => 'os_files_link',
   );
-  $handler->display->display_options['fields']['media_gallery_media']['delta_offset'] = '0';
-  $handler->display->display_options['fields']['media_gallery_media']['multi_type'] = 'ul';
-  $handler->display->display_options['fields']['media_gallery_media']['separator'] = ' ';
+  $handler->display->display_options['fields']['media_gallery_file']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['media_gallery_file']['multi_type'] = 'ul';
+  $handler->display->display_options['fields']['media_gallery_file']['separator'] = ' ';
   /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';

@@ -50,17 +50,25 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   }
 
   $item = menu_get_item();
-  if (count($item['original_map']) == 1) {
-    // We are just looking at classes.
+  $path_elements = count(explode("/", $view->get_path()));
+  if (count($item['original_map']) <= $path_elements) {
+    // We are just looking at view path.
     return;
   }
 
   // Get the term alias, if exists.
-  $path = $item['original_map'];
-  unset($path['0']);
+  $path_parts = array_slice($item['original_map'], $path_elements);
 
-  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
     return;
+  }
+
+  //Check the path prefixed with the purl if we are in a vsite
+  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+    array_unshift($path_parts, vsite_get_purl());
+    if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+      return;
+    }
   }
 
   if (strpos($path, 'taxonomy/term/') !== 0) {
@@ -74,8 +82,9 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
 
   if ($view_title = $view->get_title()) {
+    $term = taxonomy_term_load($tid);
     $params = array(
-      '@term' => entity_label('taxonomy_term', $term),
+      '@term' => taxonomy_term_title($term),
     );
     $view->set_title(t('@term', $params));
   }
@@ -244,7 +253,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
   // If there is more than 0 bundles using this vocabulary.
   os_taxonomy_get_prefix_path($options);
-
   $data = $options['bundles'] = array();
 
    // process all root term.
@@ -338,7 +346,7 @@ function os_taxonomy_get_prefix_path(&$options) {
         $feature = current($map[$bundle]);
       }
     }
-    $options['path_prefix'] = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
+    $options['path_prefix'] = isset($feature) ? variable_get("os_taxonomy_app_path_{$feature}", strval(os_get_app_path($feature))) : 'taxonomy';
     if (strlen($options['path_prefix'])) {
       $options['path_prefix'] = $options['path_prefix'] . "/";
     }
@@ -355,7 +363,21 @@ function os_taxonomy_get_prefix_path(&$options) {
  */
 function os_taxonomy_term_alias(&$item_path, $options) {
   if (!empty($options['path_prefix']) && strlen($options['path_prefix']) && strpos($item_path,'taxonomy/') === 0) {
-    $path_alias = $options['path_prefix'] . drupal_get_path_alias($item_path);
+
+    //If in a vsite remove the purl from the path alias
+    if (module_exists('vsite') && $purl = vsite_get_purl()) {
+      $path_args = explode('/', drupal_get_path_alias($item_path));
+
+      // Remove the value from the front of the query string
+      if (current($path_args) === $purl) {
+        array_shift($path_args);
+      }
+
+      $path_alias = $options['path_prefix'] . implode('/', $path_args);
+    }else{
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item_path);
+    }
+
     // Check that the path alias doesn't exist yet (e.g. a node with the exact
     // same title).
     $path_collision = FALSE;
@@ -370,7 +392,7 @@ function os_taxonomy_term_alias(&$item_path, $options) {
     }
 
     if (!$path_collision) {
-      $item_path = $options['path_prefix'] . drupal_get_path_alias($item_path);
+      $item_path = $path_alias;
     }
     else {
       // Use the non-aliased name.

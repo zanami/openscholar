@@ -15,7 +15,10 @@ function os_events_os_app_info() {
   	  'event',
     ),
     'views tabs' => array(
-      'os_events' => array('page_1'),
+      'os_events' => array(
+        'page_1', //Main Cal
+        'page_4', //Upcoming
+      ),
     ),
   );
 
@@ -111,4 +114,51 @@ function os_events_preprocess_calendar_datebox(&$vars) {
 
   // Change the link.
   $vars['link'] = l($vars['day'], $clean_current_path . $path, $query);
+}
+
+/**
+ * Implements hook_preprocess_date_views_pager().
+ *
+ * Dealing with different context of the calendar view modes.
+ */
+function os_events_preprocess_date_views_pager(&$variables) {
+  if ($variables['plugin']->options['date_id'] == 'mini') {
+    return;
+  }
+
+  // Define some variables.
+  $plugin = $variables['plugin'];
+  $view = $plugin->view;
+  $date_info = $view->date_info;
+  $next_url = &$variables['next_url'];
+  $prev_url = &$variables['prev_url'];
+  $granularity = !empty($date_info->granularity) ? $date_info->granularity : 'month';
+  $format = array('year' => 'Y', 'month' => 'Y-m', 'day' => 'Y-m-d');
+
+  // Get information about dates.
+  $min_date = $date_info->min_date;
+  $max_date = $date_info->max_date;
+
+  $prev_date = clone($min_date);
+  $next_date = clone($max_date);
+  date_modify($prev_date, '-1 ' . $variables['plugin']->options['date_id']);
+  date_modify($next_date, '+1 ' . $variables['plugin']->options['date_id']);
+
+  switch ($granularity) {
+    case 'week':
+      $next_week = date_week(date_format($next_date, 'Y-m-d'));
+      $prev_week = date_week(date_format($prev_date, 'Y-m-d'));
+      $next_arg = date_format($next_date, 'Y-\W') . date_pad($next_week);
+      $prev_arg = date_format($prev_date, 'Y-\W') . date_pad($prev_week);
+      break;
+    default:
+      $next_arg = date_format($next_date, $format[$granularity]);
+      $prev_arg = date_format($prev_date, $format[$granularity]);
+  }
+
+  // Change the link URL and arguments.
+  $variables['next_options']['query'] = array('date' => $next_arg, 'type' => $variables['plugin']->options['date_id']);
+  $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => $variables['plugin']->options['date_id']);
+  $next_url = $_GET['q'];
+  $prev_url = $_GET['q'];
 }

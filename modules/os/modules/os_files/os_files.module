@@ -248,11 +248,28 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
  */
 function os_files_edit_delete_ajax_submit($form, &$form_state) {
   $fid = $form_state['values']['fid'];
-  $form_state['redirect'] = 'file/' . $fid . '/delete/ajax';
+  $form_state['redirect'] = array('file/' . $fid . '/delete/ajax');
   $form_state['no_redirect'] = false;
 
   // Clear the page and block caches.
   cache_clear_all();
+}
+
+function os_files_form_file_entity_delete_form_alter(&$form, &$form_state) {
+  if (strpos($_GET['q'], 'ajax') !== FALSE) {
+    $form['actions']['submit']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    
+    $form['#submit'][] = 'os_files_form_file_delete_submit';
+  }
+}
+
+function os_files_form_file_delete_submit(&$form, &$form_state) {
+  $form_state['no_redirect'] = true;
+  $form['#type'] = 'ajax';
+  ctools_include('ajax');
+  $form['#commands'][] = ctools_ajax_command_reload();
 }
 
 /**
@@ -529,7 +546,7 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
   }
   
   $file = &$element['content']['file'];
-  if ($file['#theme'] == 'image_style') {
+  if (isset($file['#theme']) && $file['#theme'] == 'image_style') {
     $file['#theme'] = 'image';
     $file['#path'] = image_style_url($file['#style_name'], $file['#path']);
   }
@@ -539,6 +556,8 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
  * File Settings.
  */
 function os_files_media_browser_params_alter(&$media_params){
+  $media_params['types'][] = array_intersect($media_params['types'], array('image', 'audio', 'video', 'html'));
+  
   if (!empty($media_params['types'])) {
     $media_params['types'][] = 'default';
   }
@@ -616,8 +635,8 @@ function os_files_media_browser_plugins_alter(&$output){
   $output['media_default--media_browser_1']['#title'] = t('My Library');
   
   // add an area to the views form to put the file edit form
-  dpm($output);
   $html = &$output['media_default--media_browser_1']['#markup'];
+  $html = str_replace(array('Submit', 'File name'), array('Insert', 'Search'), $html);
   $html .= '<div id="file-edit-section"><div id="file-edit-no-selection">Select a file to edit it.</div></div>';
 }
 
