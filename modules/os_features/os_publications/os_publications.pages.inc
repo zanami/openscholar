@@ -213,14 +213,6 @@ function os_publications_settings() {
     '#description' => t('If this is checked and you add a note to a publication then it will show as part of a publications teaser.'),
   );
 
-  $form['left']['biblio_rowsperpage'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Publications per page'),
-    '#size' => 5,
-    '#default_value' => variable_get('biblio_rowsperpage', 20),
-    '#description' => t('Select the number of publication to be displayed on each page.'),
-  );
-
   $form['left']['biblio_sort'] = array(
     '#type' => 'radios',
     '#title' => t('By default, sort publications by which category'),
