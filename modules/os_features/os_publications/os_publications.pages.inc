@@ -217,7 +217,7 @@ function os_publications_settings() {
     '#type' => 'textfield',
     '#title' => t('Publications per page'),
     '#size' => 5,
-    '#default_value' => variable_get('biblio_rowsperpage', 25),
+    '#default_value' => variable_get('biblio_rowsperpage', 20),
     '#description' => t('Select the number of publication to be displayed on each page.'),
   );
 
