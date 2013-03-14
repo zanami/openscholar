@@ -41,7 +41,8 @@
 	padding: 30px 10px;
 }
 
-#file-edit-section .actions input[type=submit] {
+#file-edit-section .actions input[type=submit],
+#file-edit-section .form-actions input[type=submit] {
 	display: inline-block;
 }
 

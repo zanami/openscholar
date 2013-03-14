@@ -25,7 +25,9 @@
       Drupal.ajax.prototype.beforeSubmit = function (values, element, options) {
         if (this.wrapper == '#undefined') {
           var form = $(this.selector).parents('form');
-          this.wrapper = '#'+form[0].id;
+          if (form.length) {
+            this.wrapper = '#'+form[0].id;
+          }
         }
       };
     }
