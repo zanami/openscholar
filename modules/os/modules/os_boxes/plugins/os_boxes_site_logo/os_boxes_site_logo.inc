@@ -74,6 +74,10 @@ class os_boxes_site_logo extends os_boxes_default {
           )
         )
       );
+      
+      if (function_exists('imagefield_crop_upload_validate')) {
+        $form['file']['#upload_validators']['imagefield_crop_upload_validate'] = array(null, $instance);
+      }
 
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $form['file']['#upload_location'] = 'public://'.$space->group->purl.'/files';
