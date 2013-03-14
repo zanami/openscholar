@@ -304,11 +304,24 @@ function cp_menu_url_validate(&$form, &$state) {
     //relative url
     $path = $url;
   }    
-    
-  //check if internal path exists or needs to be created.
+  
   $normal_path = drupal_get_normal_path($path);
-  if (!drupal_valid_path($normal_path)) {    
+  $item = menu_get_item($path);
+  if ($normal_path == $path && !drupal_valid_path($normal_path)) {
+    //prepend site purl if missing.
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $purl = $vsite->group->purl;
     
+      if (strpos($path, $purl.'/') !== 0) {
+        $path = $purl . '/' . $path;
+        $normal_path = drupal_get_normal_path($path);
+        $item = menu_get_item($normal_path);
+      }
+    }
+  }
+  
+  //check if internal path exists or needs to be created.
+  if (!$item && !drupal_valid_path($normal_path)) {        
     if ($state['input']['new_node_type']) {
       //path does not exist but user has opted to create a new node there.
       $values = cp_menu_cache_get($state['object_id']) + $state['input'];
@@ -331,6 +344,11 @@ function cp_menu_url_validate(&$form, &$state) {
       $form['new_node_type']['#suffix'] = '</div>';
       array_unshift($form['new_node_type']['#options'], '-- Select Type --');
     }          
+  } else {
+    //path is valid.  use normal path instead of aliased path
+    $values = cp_menu_cache_get($state['object_id']) + $state['input'];
+    $values['url'] = $normal_path;
+    cp_menu_cache_set($state['object_id'], $values);
   }
 }
 
