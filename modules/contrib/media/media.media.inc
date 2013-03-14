@@ -50,10 +50,8 @@ function media_query_media_browser_alter($query) {
   }
   $alias = $tables['file_managed']['alias'];
 
-  $params = drupal_get_query_parameters();
-  // How do we validate these?  I don't know.
-  // I think PDO should protect them, but I'm not 100% certain.
-  array_walk_recursive($params, 'media_recursive_check_plain');
+  module_load_include('inc', 'media', 'includes/media.browser');
+  $params = media_get_browser_params();
 
   $types = !empty($params['types']) ? $params['types'] : NULL;
   $url_include_patterns = !empty($params['url_include_patterns']) ? $params['url_include_patterns'] : NULL;
@@ -61,28 +59,37 @@ function media_query_media_browser_alter($query) {
   $allowed_schemes = !empty($params['schemes']) ? array_filter($params['schemes']) : array();
   $extensions = !empty($params['file_extensions']) ? array_filter(explode(' ', $params['file_extensions'])) : array();
 
-  $or_condition = db_or();
+  $and_condition = db_and();
 
   if (!empty($allowed_schemes)) {
     // Include local files with the allowed extensions and types.
     $local_wrappers = array_intersect_key(media_get_local_stream_wrappers(), $allowed_schemes);
-    if (!empty($extensions) && !empty($local_wrappers)) {
-      // Extension filtering.
-      $local_condition = db_or();
-      foreach (array_keys($local_wrappers) as $scheme) {
-        foreach ($extensions as $extension) {
-          $local_condition->condition($alias . '.uri', db_like($scheme . '://') . '%' . db_like('.' . $extension), 'LIKE');
+    if (!empty($local_wrappers)) {
+      
+      if (!empty($extensions)) {
+        // Extension filtering.
+        $local_condition = db_or();
+        foreach (array_keys($local_wrappers) as $scheme) {
+          foreach ($extensions as $extension) {
+            $local_condition->condition($alias . '.uri', db_like($scheme . '://') . '%' . db_like('.' . $extension), 'LIKE');
+          }
         }
+        $and_condition->condition($local_condition);
       }
-      $or_condition->condition($local_condition);
+      else {
+        // Any extension
+        $local_condition = db_or();
+        foreach (array_keys($local_wrappers) as $scheme) {
+          $local_condition->condition($alias . '.uri', db_like($scheme . '://') . '%', 'LIKE');
+        }
+        $and_condition->condition($local_condition);
+      }
     }
-    if (!empty($types) && !empty($local_wrappers)) {
+    if (!empty($types)) {
       // Type filtering.
       $local_condition = db_or();
-      foreach (array_keys($local_wrappers) as $scheme) {
-        $local_condition->condition($alias . '.type', $types, 'IN');
-      }
-      $or_condition->condition($local_condition);
+      $local_condition->condition($alias . '.type', $types, 'IN');
+      $and_condition->condition($local_condition);
     }
 
     // Include remote files with the allowed file types.
@@ -97,7 +104,7 @@ function media_query_media_browser_alter($query) {
       }
       $remote_condition->condition($wrapper_condition);
       $remote_condition->condition($alias . '.type', $types, 'IN');
-      $or_condition->condition($remote_condition);
+      $and_condition->condition($remote_condition);
     }
   }
   else {
@@ -105,14 +112,16 @@ function media_query_media_browser_alter($query) {
       $query->condition($alias . '.type', $types, 'IN');
     }
     if (!empty($extensions)) {
+      $local_condition = db_or();
       foreach ($extensions as $extension) {
-        $or_condition->condition($alias . '.uri', db_like('.' . $extension), 'LIKE');
+        $local_condition->condition($alias . '.uri', db_like('.' . $extension), 'LIKE');
       }
+      $and_condition->condition($local_condition);
     }
   }
 
-  if ($or_condition->count()) {
-    $query->condition($or_condition);
+  if ($and_condition->count()) {
+    $query->condition($and_condition);
   }
 
   if ($url_include_patterns) {

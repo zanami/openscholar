@@ -747,7 +747,7 @@ class os_sv_list_box extends os_boxes_default {
 
     foreach ($files as $image) {
       $variables = array(
-        'style_name' => "os_square_100_100",
+        'style_name' => "os_square_50_50",
         'path' => $image->uri,
         'width' => 50,
         'height' => 50,
