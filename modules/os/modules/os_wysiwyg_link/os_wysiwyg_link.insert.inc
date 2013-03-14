@@ -7,7 +7,7 @@ function os_wysiwyg_link_insert() {
   $tabs = array(
     'file' => array(
       'title' => 'Library',
-      'form' => '_os_link_get_view',
+      'page' => '_os_link_get_view',
       'params' => array(),
     ),
     'upload' => array(
@@ -22,10 +22,10 @@ function os_wysiwyg_link_insert() {
       'title' => 'Webpage',
     	'form' => '_os_link_external_form',
     ),
-//    'page' => array(
-//      'title' => 'Page',
-//      'form' => '_os_link_internal_form',
-//    ),
+    'page' => array(
+      'title' => 'Page',
+      'form' => '_os_link_internal_form',
+    ),
     'email' => array(
       'title' => 'E-mail',
       'form' => '_os_link_email_form',
@@ -58,8 +58,13 @@ function os_wysiwyg_link_insert() {
       '#type' => 'fieldset',
       '#title' => $t['title'],
       '#id' => 'edit-'.$k,
-      'form' => drupal_get_form($t['form'], (!empty($t['params'])?$t['params']:array()))
     );
+    if (isset($t['form'])) {
+      $output['tabs'][$k]['form'] = drupal_get_form($t['form'], (!empty($t['params'])?$t['params']:array()));
+    }
+    elseif (isset($t['page'])) {
+      $output['tabs'][$k]['page'] = $t['page']((!empty($t['params'])?$t['params']:array()));
+    }
     if (!empty($t['default'])) {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
@@ -142,7 +147,10 @@ function _os_link_external_form($form, $form_state, $params) {
 function _os_link_internal_form($form, $form_state, $params) {
   $form = array();
   
-  $form['internal'] = array(
+  $form['coming_soon'] = array(
+    '#markup' => t('Coming soon!'),
+  );
+  /*$form['internal'] = array(
     '#type' => 'textfield',
     '#title' => t('Page'),
     '#description' => t('The page of your site to link to.'),
@@ -155,12 +163,12 @@ function _os_link_internal_form($form, $form_state, $params) {
       '#type' => 'submit',
       '#value' => 'Insert',
     ),
-  );
+  );*/
   
   return $form;
 }
 
-function _os_link_get_view($form, $form_state, $params) {
+function _os_link_get_view($params) {
   $name = 'media_default';
   $display = 'media_browser_1';
   if (isset($params['url'])) {
@@ -180,6 +188,9 @@ function _os_link_get_view($form, $form_state, $params) {
       	'library' => $build,
         'actions' => array(
           '#type' => 'actions',
+          '#attributes' => array(
+            'class' => array('form-actions')
+          ),
           'insert' => array(
             '#type' => 'submit',
             '#value' => t('Insert'),
@@ -188,9 +199,15 @@ function _os_link_get_view($form, $form_state, $params) {
         'edit' => array(
           '#type' => 'container',
           '#id' => 'file-edit-section',
+          '#attributes' => array(
+            'id' => 'file-edit-section',
+          ),
           'no_selection' => array(
             '#type' => 'container',
             '#id' => 'file-edit-no-selection',
+            '#attributes' => array(
+              'id' => 'file-edit-no-selection',
+            ),
             'text' => array(
               '#markup' => t('Select a file to edit it.'),
             )
