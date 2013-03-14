@@ -360,7 +360,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ctools_include('ajax');
   ctools_include('modal');
   $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
-  //$form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . l('Change Note Settings', 'cp/build/features/os_publications');
+
+  //Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
+  $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
+  $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
 
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
@@ -449,7 +452,7 @@ function _os_publications_attach_notes(&$entry, $node) {
         ),
       ),
       'notes' => array(
-        '#markup' => check_markup($node->biblio_notes, filter_default_format()),
+        '#markup' => filter_xss($node->biblio_notes),
       ),
     );
   }
