@@ -359,7 +359,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // Change the Notes field's description to include a link to the settings form
   ctools_include('ajax');
   ctools_include('modal');
-  $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
+  $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>.  You can make this change in the publications section of your control panel\'s !link', array(
+    ':privacy' => (variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private'),
+    '!link' => l('App settings.', 'cp/build'),
+  ));
 
   //Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
   $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;

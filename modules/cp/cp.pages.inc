@@ -83,28 +83,6 @@ function cp_app_settings_form($form, $form_state, $app_name) {
   return $form;
 }
 
-/**
- * @function cp_app_settings_form_modal
- * 
- * Delivers cp_app_settings_form for use in a modal frame
- */
-function cp_app_settings_form_modal($ajax, $feature) {
-  $form_id = 'cp_app_settings_form';
-  
-  if ($ajax && $ajax != 'nojs') {
-    ctools_include('modal');
-    ctools_add_js('ajax-responder');
-    $form_state = array('ajax' => TRUE, 'no_render'=>FALSE, 'no_redirect'=>TRUE);
-    $form_state['build_info']['args'] = array($feature);
-    $output = ctools_modal_form_wrapper($form_id, $form_state);
-
-    print ajax_render($output);
-    exit;
-  } else {
-    //not loading in a popup, so just use the cp form
-    drupal_goto('cp/build/features/' . $feature);
-  }
-}
 
 /**
  * @todo Function description

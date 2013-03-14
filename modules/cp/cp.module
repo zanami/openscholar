@@ -125,15 +125,6 @@ function cp_menu() {
       'access callback' => 'spaces_access_admin',
       'file' => 'cp.pages.inc',
     );
-    
-    $items['features/%/' . $name] = array(
-      'title callback' => '_cp_app_settings_page_title',
-      'title arguments' => array(2),
-      'page callback' => 'cp_app_settings_form_modal',
-      'page arguments' => array(1,2),
-      'access callback' => 'spaces_access_admin',
-      'file' => 'cp.pages.inc',
-    );
   }
 
   $items['cp/settings'] = array(
