@@ -35,10 +35,10 @@ Drupal.behaviors.osLinkFile = {
   attach: function (ctx) {
     var params = Drupal.settings.media.browser.params;
     if ('fid' in params) {
-      $('div.media-item[data-fid="'+params.fid+'"]').click();
+      $('div.media-item[data-fid="'+params.fid+'"]', ctx).click();
     }
     
-    $('#-os-link-get-view').submit(function (e) {
+    $('#edit-file .form-actions input', ctx).click(function (e) {
       var selected = Drupal.media.browser.selectedMedia;
       if (selected.length) {
         var fid = selected[0].fid;

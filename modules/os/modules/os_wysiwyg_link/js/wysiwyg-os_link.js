@@ -77,7 +77,7 @@ Drupal.wysiwyg.plugins.os_link = {
     }
     
     $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
-      $('.vertical-tabs form:visible .form-actions input[value="Insert"]', doc).click();
+      $('.vertical-tabs .vertical-tabs-pane:visible .form-actions input[value="Insert"]', doc).click();
       
       var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined' 
             ? window.Drupal.settings.osWysiwygLinkAttributes 

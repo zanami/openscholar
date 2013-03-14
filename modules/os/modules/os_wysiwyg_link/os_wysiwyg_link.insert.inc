@@ -188,7 +188,9 @@ function _os_link_get_view($params) {
       	'library' => $build,
         'actions' => array(
           '#type' => 'actions',
-          '#attributes' => array(),
+          '#attributes' => array(
+            'class' => array('form-actions')
+          ),
           'insert' => array(
             '#type' => 'submit',
             '#value' => t('Insert'),
