@@ -79,15 +79,18 @@ Drupal.wysiwyg.plugins.os_link = {
     $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
       $('.vertical-tabs .vertical-tabs-pane:visible .form-actions input[value="Insert"]', doc).click();
       
-      var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined' 
-            ? window.Drupal.settings.osWysiwygLinkAttributes 
-            : false,
-          text = $('.form-item-link-text input', doc).val() == '[Selected content. Click here to change it.]'
-            ? (selection.content ? selection.content : window.Drupal.settings.osWysiwygLinkResult)
-            : $('.form-item-link-text input', doc).val(); 
-      self.insertLink(editorId, text, window.Drupal.settings.osWysiwygLinkResult, attrs);
-      $(iframe).dialog('destroy');
-      $(iframe).remove();
+      if (window.Drupal.settings.osWysiwygLinkResult) {
+        var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined' 
+              ? window.Drupal.settings.osWysiwygLinkAttributes 
+              : false,
+            text = $('.form-item-link-text input', doc).val() == '[Selected content. Click here to change it.]'
+              ? (selection.content ? selection.content : window.Drupal.settings.osWysiwygLinkResult)
+              : $('.form-item-link-text input', doc).val(); 
+        self.insertLink(editorId, text, window.Drupal.settings.osWysiwygLinkResult, attrs);
+        $(iframe).dialog('destroy');
+        $(iframe).remove();
+        window.Drupal.settings.osWysiwygLinkResult = null;
+      }
     });
     
     $('.insert-buttons input[value="Cancel"]', doc).click(function (e) {
