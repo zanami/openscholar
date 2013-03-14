@@ -150,6 +150,13 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    
+    //no slideshow when media gallery is disabled
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return $block;
+    }
+    
     drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
 
