@@ -235,7 +235,6 @@ function os_slideshow_image_default_styles() {
   );
 
   //make a preset for each aspect ratio using each of the widths available
-
   $widths = _os_slideshow_region_size(NULL, 'content');
   foreach (_os_slideshow_image_aspect_ratios() as $label => $ratio) {
     foreach ($widths as $w) {
@@ -317,9 +316,8 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
  */
 function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   //load javascript, pass it our settings
-  drupal_add_library('os_slideshow', 'flexslider');
-  drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
-  list($animation, $direction) = _os_slideshow_get_animation_direction($vars['effect']);
+  drupal_add_library('os_slideshow', 'responsiveslides');
+  drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_slider.js');
   $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
     array('boxes-box-'.$vars['box_delta'] => array(
       'pager' => TRUE,    //pager
