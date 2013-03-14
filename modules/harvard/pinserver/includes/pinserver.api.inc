@@ -3,10 +3,13 @@
 /**
  * API function - Checks if user has logged in through pinserver.
  *
+ * Timeout in seconds or false for no timeout.
+ * @param $timeout int
+ *
  * @return bool
  */
-function pinserver_check_status() {
-  if (isset($_SESSION['pinserver']['reg_time']) && isset($_SESSION['pinserver']['huid'])) {
+function pinserver_check_status($timeout = false) {
+  if (isset($_SESSION['pinserver']['reg_time']) && isset($_SESSION['pinserver']['huid']) && (!$timeout || time() > ($_SESSION['pinserver']['reg_time'] + $timeout))) {
     return TRUE;
   }
   return FALSE;

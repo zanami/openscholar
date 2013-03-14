@@ -155,7 +155,8 @@ function os_files_private_file_download($uri) {
   if ($use_pinserver) {
     if (function_exists('pinserver_check_status')) {
       // Serves file if user is already authenticated, or just got authenticated.
-      if (pinserver_check_status()) {
+      // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
+      if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
         return file_get_content_headers($file);
       }
       // Otherwise, sends the user to Pinserver to log in.
