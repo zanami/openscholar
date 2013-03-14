@@ -145,6 +145,8 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
 
   // settings there are no UI options for
   $settings['gecko_spellcheck'] = true;
+  $settings['theme_advanced_path'] = false;
+  $settings['theme_advanced_statusbar'] = false;
   drupal_add_css(drupal_get_path('module', 'os_wysiwyg') . '/os_wysiwyg.css');
 
   // reorder buttons

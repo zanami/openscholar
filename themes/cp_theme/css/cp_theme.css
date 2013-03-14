@@ -412,19 +412,3 @@ fieldset#edit-biblio-authors .fieldset-legend {
 	margin-top: 0;
 	text-transform: none;
 }
-
-.text-format-wrapper .defaultSkin .mceStatusbar {
-	display: none;
-}
-
-.text-format-wrapper .defaultSkin .mceIframeContainer {
-	border-bottom: 0;
-}
-
-.text-format-wrapper .mceIframeContainer iframe {
-	border-bottom: 1px solid #CCC;
-}
-
-.text-format-wrapper .defaultSkin table.mceLayout {
-	border-bottom: 1px solid #CCC;
-}
