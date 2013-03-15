@@ -37,6 +37,8 @@
         }
       });
       
+      $('.ctools-auto-submit-full-form').submit(function (e) {e.preventDefault();});
+      
     }
   };
 })(jQuery, undefined);
