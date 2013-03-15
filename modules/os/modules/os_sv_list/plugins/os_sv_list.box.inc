@@ -222,7 +222,7 @@ class os_sv_list_box extends os_boxes_default {
     if (isset($content_types['image'])) {
       $content_map['image'] = $content_map['media_gallery'];
     }
-    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),''); //use blank path for unknown paths.
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' '); //use blank path for unknown paths.
 
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
