@@ -37,7 +37,8 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
   margin-bottom: 0;
 }
 
-.front body.no-sidebars .content-top-slideshow-enabled .region-content-top:after {
+
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
   background: #252525;
   bottom: auto;
   content: "";
@@ -452,6 +453,11 @@ ul.primary {
 .sidebar .block-content {
   padding: 15px;
   border-top: 1px solid #f2f2f2;
+}
+
+.front #content-panels .region-content-top .block-boxes-os_slideshow_box .block-content {
+    border-top: none;
+    padding: 0;
 }
 
 #content-panels .block-inner {
