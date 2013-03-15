@@ -86,7 +86,8 @@ First of all, this was not possible in a single migration class.  Migration clas
 
 On top of that, things that aren't really files get treated as files by Media.  An iframe embedded in content is a file with no filepath, but with some html.  So those pseudo-files will need to be created.
 
-Inline files are migrated in 3 steps.  
+Inline files are migrated in 3 steps. 
+
 1. os_migrate_specialtables.  (note: this code is overly generic.  I wrote it early on and was expecting more special cases like inline files).  This creates a table for handling the special case that is drupal node content becoming files.  It gets all instances of object, embed, and iframe tags in nodes, and makes a row for them.  Those rows will be used later.
 2. Inline file migration.  This class copies files from D6 and creates Media entities from them.  All classes are in os_migrate_inline.inc.  There are four classes for the different types of inline files: files, images, embeds, and HTML.  The latter uses the rows of the special table created above.
 3. During node migration, node bodies are checked for links.  We can use the tables created by migration to see which of our new media files come from which legacy nodes.  To sum up how this works:
@@ -95,6 +96,9 @@ Inline files are migrated in 3 steps.
   3. These update functions load up a dom object from the node's body and loop over the appropriate object.  When one of those dom objects matches one of the media entities we've already created, its html is swapped out for a newly generated media tag.
   4. See the 'inline file processing' section of os_migrate.inc
 
+**Spaces Overrides**
+
+This is the other major player in OpenScholar migration.  
 
 **Minor Migrations**
 
