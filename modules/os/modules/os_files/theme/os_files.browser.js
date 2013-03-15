@@ -30,6 +30,14 @@
           }
         }
       };
+      
+      $('#media-browser-tabset').tabs('option', 'select', function (event, ui) {
+        console.log(arguments);
+        if (ui.tab.hash) {
+          window.location.hash = ui.tab.hash;
+        }
+      });
+      
     }
   };
 })(jQuery, undefined);
