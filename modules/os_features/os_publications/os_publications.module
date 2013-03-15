@@ -402,7 +402,7 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
     $image = '';
   }
   $entry['entry']['#markup'] = _os_publications_biblio_entry_alter($entry['entry']['#markup'], $node);
-  _os_publications_attach_abstract($entry, $node);
+  _os_publications_attach_abstract($entry, $node, 'entry');
   $entry['entry']['#markup'] = $image . $entry['entry']['#markup'];
 
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
@@ -461,10 +461,19 @@ function _os_publications_attach_notes(&$entry, $node) {
   }
 }
 
-function _os_publications_attach_abstract(&$entry, $node) {
+/**
+ *
+ * Render Array.
+ * @param array $entry
+ * The Biblio Node
+ * @param object $node
+ * The item in the render array to append the slider to.
+ * @param string $markup_element
+ */
+function _os_publications_attach_abstract(&$entry, $node, $markup_element) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
-    $html   = &$entry['entry']['#markup'];
+    $html   = &$entry[$markup_element]['#markup'];
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
     $entry['abstract_slider'] = array(
       '#type' => 'container',
@@ -524,12 +533,12 @@ function os_publications_node_view_alter(&$build, $type) {
       // replace it with either the biblio_url_title or "website".
       if (isset($build['teaser']['#markup'])) {
         $node = node_load($build['#node']->nid);
-        $build['teaser']['#markup'] = _os_publications_biblio_entry_alter($entry, $node);
+        $build['teaser']['#markup'] = _os_publications_biblio_entry_alter($build['teaser']['#markup'], $node);
       }
 
       // Add the abstract slider.
-	  _os_publications_attach_abstract($build, $build['#node']);
-	  // Add in notes.
+	    _os_publications_attach_abstract($build, $build['#node'], 'teaser');
+	    // Add in notes.
       if(isset($spaces) && is_object($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
         _os_publications_attach_notes($build, $build['#node']);
       }
