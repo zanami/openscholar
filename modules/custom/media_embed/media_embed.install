@@ -57,3 +57,15 @@ function media_embed_update_7001(&$sandbox) {
 
   ctools_export_crud_delete('file_type', $type['html']);
 }
+
+/**
+ * Ensures that all files with the embed:// protocol are not given the undefined file type
+ */
+function media_embed_update_7002(&$sandbox) {
+  $q = db_update('file_managed')
+       ->fields(array(
+         'type' => 'html',
+       ))
+       ->condition('uri', db_like('embed://').'%', 'LIKE')
+       ->execute();
+}
