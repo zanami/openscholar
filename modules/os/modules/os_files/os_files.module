@@ -181,8 +181,26 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
   
   $form['#step'] = 3;
+
+  $args = $form_state['build_info']['args'];
+  if (isset($args[0]['types'])) {
+    $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
+  }
     
   array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
+}
+
+function os_files_upload_validate_file_type(stdclass $file, $types) {
+  $errors = array();
+
+  if (!in_array(file_get_type($file), $types)) {
+    $errors[] = t('The file of type @file cannot be uploaded here. Only the following may be uploaded at this dialog: @types', array(
+      '@file' => file_get_type($file),
+      '@types' => implode(', ', $types),
+    ));
+  }
+  
+  return $errors;
 }
 
 function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
