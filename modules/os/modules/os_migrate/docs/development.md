@@ -35,4 +35,33 @@ The basic process for adding a new content type migration is to create a class t
 
 AbstractNodeOSMigration provides the following helper functions:
 * `_has_file_field()` Checks a node for field_upload
-* `_prepare_file_field()` 
+* `_prepare_file_field()` Call this during prepareRow to handle a file field
+* `_map_file_field()` See above, but during mapping
+
+os_migrate provides classes for all the stock openscholar content types.  I've made a note of any abnormalities or exceptions that happen in each of the content type migrations below:
+* Announcements
+* Biblio
+  - Two dependent classes for biblio tables.  These tables didn't have properties that could be attached to an entity, but were easily copied.
+  - Biblio doesn't use standard fields, so migrate couldn't map to them.  Instead, this data is attached to the node before it's saved during prepare().
+  - {pre,post}Rollback methods were implemented to manage biblio_duplicates.
+* Bio
+* Blog
+* Book
+  - Depends on book tables and menu links being migrated first.  Both are straightforward and included in os_migrate_node_book.inc
+* Class
+  - Provides class and class_material migration classes.
+* CV
+  - There's more file related exceptions here than I expected.  There were several locations the uploaded PDF could be stored in, so sorting out which was used required some logic.
+* Event
+* Feed
+* Gallery
+  - Lots of changes here because we changed galleries.  In d6 we used a home brewed gallery.  Each image lived in an image node.  Each gallery was full of links to nodes.  In d7 we use the contrib module media_gallery.  Its gallery nodes have attached file fields for images.  
+  - Most of the heavy lifting for conversion is done in prepareRow.  Basically all it does is get the list of image owns on a gallery, saves their files, and gives the list of file ids to the new gallery.
+  - _construct fills in defaults for fields that weren't present in d6.
+* Link
+* Modal images.  
+  - This isn't a normal content type that you were expecting to see.  It was created for the single image widget.  That widget has been deprecated, but its images need to be supported.
+  - Migrating a file is easy enough.  The only part that was tricky was that modal images didn't have a group.  They were part of a box.  But that box was linked to a group, so we have to use that group to make sure the image ends up belonging to the right vsite.
+* Page
+* Person
+     
