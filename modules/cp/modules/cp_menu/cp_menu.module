@@ -131,7 +131,7 @@ function cp_menu_node_update($node) {
     return;
   }
 
-  if (!$node->os_menu['enabled'] || $node->os_menu['delete']) {
+  if (!@$node->os_menu['enabled'] || @$node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       os_menu_link_delete_link($link['menu_name'], $link['mlid']);
