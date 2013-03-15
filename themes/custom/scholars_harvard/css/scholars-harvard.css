@@ -691,13 +691,13 @@ p.copy a:hover {
   
 .front #footer #powered-by {
   position:relative;
-  top: -133px;
+  top: -138px;
   margin-right:-10px;
   }
  
 
  .front.logged-in #footer #powered-by {
-  top: -144px;
+  top: -120px;
   } 
   
 
@@ -1160,7 +1160,7 @@ border-right:1px solid #E8E9EB;
 }
 
 .block-os-stats dl {
-  margin: -112px 0px 12px 18px;
+  margin: 6px 0px 12px 18px;
 }
 
 .logged-in .block-os-stats dl {
