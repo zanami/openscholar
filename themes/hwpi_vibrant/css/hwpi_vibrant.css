@@ -394,7 +394,7 @@ ul.primary {
   margin-top: 30px;
 }
 
-
+.node-type-page .breadcrumb,
 .breadcrumb, .breadcrumb a {
     margin: -40px 0 35px -15px;
     color:#FFF;
