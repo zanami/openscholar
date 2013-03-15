@@ -6,7 +6,7 @@ div.form-item-link-text {
 }
 
 div.vertical-tabs {
-	background-position-x: -120px;
+	background-position: -120px 0;
 }
 
 div.vertical-tabs .vertical-tabs-panes {
