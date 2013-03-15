@@ -636,7 +636,7 @@ th, td {
 }
 
 td img {
-     max-width: 100% !important;
+     max-width: none !important;
 }
 
 /* Hides empty header container from displaying on CP forms. */
