@@ -30,6 +30,13 @@
           }
         }
       };
+      
+      $('#media-browser-tabset').tabs('option', 'select', function (event, ui) {
+        if (ui.tab.hash) {
+          window.location.hash = ui.tab.hash;
+        }
+      });
+      
     }
   };
 })(jQuery, undefined);
