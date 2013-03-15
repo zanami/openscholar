@@ -28,9 +28,9 @@ This is not a migration class, but a set of common functions and settings that I
 Nodes also have an abstract class they inherit from.  AbstractNodeOSMigration sets up the common structure for nodes to migrate.  It implements functions for each of the source, destination, map, and sourcefield properties so that child Migrations can extend them.  Similarly there's also a query method that can be extended, some of the functions mentioned above will use it. 
 
 The basic process for adding a new content type migration is to create a class that extends AbstractNodeOSMigration.  
-* Its __construct() function should call parent::__construct with the content type as its parameter.  
+* Its \_\_construct() function should call parent::__construct with the content type as its parameter.  
 * AbstractNodeOSMigration::query will automatically join the content_type_$type table and select all its fields.  If you would like to make additional joins, override query.
-* Back in the __construct function add field mappings.  
+* Back in the \_\_construct function add field mappings.  
 * Extend the prepareRow function if you need to alter your data before its saved to a field.  You can also use this as a chance to get more data if you have too many tables to join to the query.  
 
 AbstractNodeOSMigration provides the following helper functions:
@@ -74,7 +74,42 @@ os_migrate provides classes for all the stock openscholar content types.  I've m
   - Not a real class.  Just a basic content type class that I copied and pasted to extend.
 - Vsite
   - Different set of requirements than other nodes.  They all depend on vsite.  If a vsite doesn't migrate, none of its child nodes should either.
-  - Includes teh imagefield_crop migration mentioned in person.  (Also note that some images had no coordinates in the DB.  Provided them in a function.  This is cheating but we had no better option.)
+  - Includes the imagefield_crop migration mentioned in person.  (Also note that some images had no coordinates in the DB.  Provided them in a function.  This is cheating but we had no better option.)
   - Converts the featured flag to sticky.  
   - prepare() creates the group.
      
+**Inline Files**
+
+Migrating inline files was the single most complex task in OpenScholar migration.  In short, files uploaded through the inline editor were a mess.  There had been several implementations along the course of D6, each of them adding files to prod.  Those files all had to become Media entities, and their references had to become media tags.
+
+First of all, this was not possible in a single migration class.  Migration classes operate on a 1:1 ratio.  1 node -> 1 node.  You can get away with doing a little more work on the side, during prepareRow and prepare (see Gallery nodes), but it's not what migrate was designed for and gets ugly fast.
+
+On top of that, things that aren't really files get treated as files by Media.  An iframe embedded in content is a file with no filepath, but with some html.  So those pseudo-files will need to be created.
+
+Inline files are migrated in 3 steps.  
+1. os_migrate_specialtables.  (note: this code is overly generic.  I wrote it early on and was expecting more special cases like inline files).  This creates a table for handling the special case that is drupal node content becoming files.  It gets all instances of object, embed, and iframe tags in nodes, and makes a row for them.  Those rows will be used later.
+2. Inline file migration.  This class copies files from D6 and creates Media entities from them.  All classes are in os_migrate_inline.inc.  There are four classes for the different types of inline files: files, images, embeds, and HTML.  The latter uses the rows of the special table created above.
+3. During node migration, node bodies are checked for links.  We can use the tables created by migration to see which of our new media files come from which legacy nodes.  To sum up how this works:
+  1. During prepare row, os_migrate_inline_update runs on each node row.
+  2. If os_migrate_list_inline_files finds any files, file update functions are run.  These are os_migrate_update_body_{image,files,url,body}
+  3. These update functions load up a dom object from the node's body and loop over the appropriate object.  When one of those dom objects matches one of the media entities we've already created, its html is swapped out for a newly generated media tag.
+  4. See the 'inline file processing' section of os_migrate.inc
+
+
+**Minor Migrations**
+
+* Comments
+  - Migration of comments is mostly straightforward.  Comments are pretty simple and we didn't have enough of them for any exceptions to arise.
+  - The one surprise here is that we use DynamicMigration to handle comments.  There were was one minor difference between comments of different content types.  DynamicMigration lets us define a generic migration class and register an instance of that for each content type.  Those instances are registered when each content type is migrated.
+* Flags
+  - Also dymanic.  
+
+
+
+
+
+
+
+
+
+
