@@ -144,6 +144,10 @@ ol.search-results li.search-result:last-child {
   top: -45px; /* Shift into whitespace */
 }
 
+.node-type-page .region-content-top .contextual-links-region:first-child .contextual-links-wrapper {
+  right: 0px;
+}
+
 
 
 /* block-os-powered-by */
