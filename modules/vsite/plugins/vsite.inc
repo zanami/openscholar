@@ -147,7 +147,7 @@ class vsite extends space_og {
             $sid = isset($sids[0]) ? $sids[0] : NULL;
             // Handles both types of requests:
             // "node/123" and "wrongsite/node/123"
-            if ((!$this->active && $sid) || ($sids && !in_array((int) $this->id, $gids))) {
+            if ((!$this->active && $sid) || ($sids && !in_array((int) $this->id, $sids))) {
               // Redirects to the correctly aliased node in its own vsite.
               spaces_load('og', $sid)->activate();
             }
