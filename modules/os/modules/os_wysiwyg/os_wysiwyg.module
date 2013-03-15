@@ -108,7 +108,6 @@ function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings)
   if (empty($settings['wysiwyg'])) {
     unset($element['content']['#prefix'], $element['content']['#suffix']);
   
-    $element['content']['file']['#attributes'] = array();
     if (isset($settings['width'])) {
       $element['content']['file']['#attributes']['width'] = $settings['width'];
     }
