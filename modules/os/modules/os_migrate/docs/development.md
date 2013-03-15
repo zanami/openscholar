@@ -64,4 +64,17 @@ os_migrate provides classes for all the stock openscholar content types.  I've m
   - Migrating a file is easy enough.  The only part that was tricky was that modal images didn't have a group.  They were part of a box.  But that box was linked to a group, so we have to use that group to make sure the image ends up belonging to the right vsite.
 * Page
 * Person
+   - field_person_photo is the first field we've encountered that uses imagefield_crop.  There was no destination class for this, so I had to write that.  
+* Presentation
+  - Lots of fields here.  This was one of the earlier content types so it may not use all of the conventions that were figured out along the way.
+- Software
+  - Projects are straightfoward
+  - Releases had some of their fields merged together.
+- Stub
+  - Not a real class.  Just a basic content type class that I copied and pasted to extend.
+- Vsite
+  - Different set of requirements than other nodes.  They all depend on vsite.  If a vsite doesn't migrate, none of its child nodes should either.
+  - Includes teh imagefield_crop migration mentioned in person.  (Also note that some images had no coordinates in the DB.  Provided them in a function.  This is cheating but we had no better option.)
+  - Converts the featured flag to sticky.  
+  - prepare() creates the group.
      
