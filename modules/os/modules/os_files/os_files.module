@@ -555,20 +555,24 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
 /**
  * File Settings.
  */
-function os_files_media_browser_params_alter(&$media_params){
-  if ($media_params['id'] == 'media_wysiwyg') {
-    $allowed = array('image', 'audio', 'video', 'html');
-    if (is_array($media_params['types'])) {
-      $media_params['types'] = array_intersect($media_params['types'], $allowed);
+function os_files_media_browser_params_alter(&$media_params){if (isset($media_params['id'])) {
+    if ($media_params['id'] == 'media_wysiwyg') {
+      $allowed = array('image', 'audio', 'video', 'html');
+      if (is_array($media_params['types'])) {
+        $media_params['types'] = array_intersect($media_params['types'], $allowed);
+      }
+      else {
+        $media_params['types'] = $allowed;
+      }
     }
-    else {
-      $media_params['types'] = $allowed;
+    elseif ($media_params['id'] == 'os_link_wysiwyg') {
+      $media_params['schemes'] = array('public' => 'public');
     }
   }
-  elseif ($media_params['id'] == 'os_link_wysiwyg') {
-    $media_params['schemes'] = array('public' => 'public');
+  else {
+    $media_params['types'][] = 'document';
   }
-
+  
   // Are we in multi-tenant? get the file path.
   if (module_exists('vsite') && spaces_get_space()) {
     $filepath = OS_FILE_FILEPATH_MULTITENANT;

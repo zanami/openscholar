@@ -61,9 +61,16 @@ function media_query_media_browser_alter($query) {
 
   $and_condition = db_and();
 
+  if (!empty($types)) {
+    // Type filtering.
+    $local_condition = db_or();
+    $local_condition->condition($alias . '.type', $types, 'IN');
+    $and_condition->condition($local_condition);
+  }
   if (!empty($allowed_schemes)) {
     // Include local files with the allowed extensions and types.
     $local_wrappers = array_intersect_key(media_get_local_stream_wrappers(), $allowed_schemes);
+    $scheme_condition = db_or();
     if (!empty($local_wrappers)) {
       
       if (!empty($extensions)) {
@@ -74,7 +81,7 @@ function media_query_media_browser_alter($query) {
             $local_condition->condition($alias . '.uri', db_like($scheme . '://') . '%' . db_like('.' . $extension), 'LIKE');
           }
         }
-        $and_condition->condition($local_condition);
+        $scheme_condition->condition($local_condition);
       }
       else {
         // Any extension
@@ -82,14 +89,8 @@ function media_query_media_browser_alter($query) {
         foreach (array_keys($local_wrappers) as $scheme) {
           $local_condition->condition($alias . '.uri', db_like($scheme . '://') . '%', 'LIKE');
         }
-        $and_condition->condition($local_condition);
+        $scheme_condition->condition($local_condition);
       }
-    }
-    if (!empty($types)) {
-      // Type filtering.
-      $local_condition = db_or();
-      $local_condition->condition($alias . '.type', $types, 'IN');
-      $and_condition->condition($local_condition);
     }
 
     // Include remote files with the allowed file types.
@@ -103,14 +104,11 @@ function media_query_media_browser_alter($query) {
         $wrapper_condition->condition($alias . '.uri', db_like($scheme . '://') . '%', 'LIKE');
       }
       $remote_condition->condition($wrapper_condition);
-      $remote_condition->condition($alias . '.type', $types, 'IN');
-      $and_condition->condition($remote_condition);
+      $scheme_condition->condition($remote_condition);
     }
+    $and_condition->condition($scheme_condition);
   }
   else {
-    if (!empty($types)) {
-      $query->condition($alias . '.type', $types, 'IN');
-    }
     if (!empty($extensions)) {
       $local_condition = db_or();
       foreach ($extensions as $extension) {
