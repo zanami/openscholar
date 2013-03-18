@@ -49,6 +49,6 @@ class cp_content_handler_field_referencing_nodes extends views_handler_field {
   function render($values) {
     // Return the node titles of the referencing
     $fid = $values->fid;
-    return implode(', ', $this->fids_data[$fid]);
+    return !empty($this->fids_data[$fid]) ? implode(', ', $this->fids_data[$fid]) : '';
   }
 }
