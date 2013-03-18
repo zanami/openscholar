@@ -252,3 +252,19 @@ function _vsite_update_7004_tids_by_vid($vids) {
     ->execute()
     ->fetchAllKeyed();
 }
+
+/**
+ * Creates newly exported term reference fields on vsite node types.
+ */
+function vsite_update_7006() {
+  // Reverts the vsite module's newly exported vocabulary.
+  // This garuntees that the "organization" vocabulary exists, and the new
+  // Site URL field definition and instance on that vocabulary's terms.
+  features_revert(array('vsite' => array('taxonomy')));
+  features_revert(array('vsite' => array('field')));
+
+  // Adds the new term reference field to each vsite node type. At the time of
+  // this update, OpenScholar exports three vsite node types: personal, project,
+  // and department.
+  _vsite_initilize_group_fields();
+}
