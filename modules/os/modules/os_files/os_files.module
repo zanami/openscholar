@@ -207,6 +207,14 @@ function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
   $form_state['triggering_element']['#id'] = 'edit-submit';
   $file = file_load($form_state['values']['upload']);
   $form_state['values']['type'] = $file->type;
+
+  // The file is uploaded not via a form, there for the entity reference
+  // pre-populate doesn't take affect.
+  if ($og_context = og_context()) {
+    $wrapper = entity_metadata_wrapper('file', $file);
+    $wrapper->{OG_AUDIENCE_FIELD}->set(array($og_context['gid']));
+    $wrapper->save();
+  }
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
