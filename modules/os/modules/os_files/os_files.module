@@ -704,6 +704,18 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
 }
 
 /**
+ * Implements hook_preprocess_media_thumbnail.
+ * 
+ * Displays the immutable origname as well as the mutable filename.
+ */
+function os_files_preprocess_media_thumbnail(&$vars) {
+  $element = &$vars['element'];
+  if ($element['#file']->filename != $element['#file']->origname) {
+    $element['#name'] = $element['#file']->origname.' ('.$element['#file']->filename.')';
+  }
+}
+
+/**
  * Implements hook_file_download().
  *
  * Serve public files from a vsite directory.
