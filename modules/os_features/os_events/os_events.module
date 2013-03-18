@@ -137,12 +137,13 @@ function os_events_preprocess_date_views_pager(&$variables) {
 
   // Get information about dates.
   $min_date = $date_info->min_date;
-  $max_date = $date_info->max_date;
 
   $prev_date = clone($min_date);
-  $next_date = clone($max_date);
-  date_modify($prev_date, '-1 ' . $granularity);
-  date_modify($next_date, '+0 ' . $granularity);
+  $next_date = clone($min_date);
+
+  $prev_date->modify('-1 ' . $granularity);
+  $next_date->modify('+1 ' . $granularity);
+
   switch ($granularity) {
     case 'week':
       $next_week = date_week(date_format($next_date, 'Y-m-d'));
