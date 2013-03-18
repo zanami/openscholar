@@ -17,6 +17,10 @@
  *
  *  @return
  *    Destined path for the file.
+ *
+ *  Usage:
+ *    $ cd docroot/profiles/openscholar
+ *    $ drush scr modules/os/modules/os_files/scripts/deprivatize.php --fids=12345,12346,12347
  */
 function _os_files_deprivatize_get_dest_path($uri) {
   $exploded_path = explode('/', $uri);
@@ -33,8 +37,11 @@ function _os_files_deprivatize_get_dest_path($uri) {
  *  - Returns TRUE if any modifications were made.
  */
 function _os_files_deprivatize($fid, $uri = NULL) {
-  ddd((int) $fid,'$fid',FALSE);
 
+  // Adds newline for readable terminal output.
+  drush_log(' ', 'warning');
+
+  // Checks for URI if not specified.
   if (!$uri) {
     $result = db_select('file_managed', 'f')
       ->fields('f', array('uri'))
@@ -44,21 +51,22 @@ function _os_files_deprivatize($fid, $uri = NULL) {
     if (isset($result['uri'])) {
       drush_log("Success!!");
       $uri = $result['uri'];
-      drush_log(dt('Found file @fid with URI @uri. Processing...', array('@fid' => $fid, '@uri' => $uri)));
+      drush_log(dt('Found file @fid with URI @uri. Processing...', array('@fid' => $fid, '@uri' => $uri)), 'warning');
     }
     else {
-      drush_log(dt('Skipping @fid. File not found.', array('@fid' => $fid)));
+      drush_log(dt('[?] Skipping @fid. File not found.', array('@fid' => $fid)), 'warning');
       return FALSE;
     }
   }
 
-  ddd($uri, '$uri', FALSE);
-
+  // Only updates file if URI begins with "private://".
   if (strpos($uri, 'private://') !== 0) {
-    drush_log(dt('Skipping @name. Not a private file.', array('@name' => $value['filename'])), 'warning');
+    drush_log(dt('[X] Skipping file @fid. Not a private file.', array('@fid' => $fid)), 'warning');
     return FALSE;
   }
-  drush_log("Attempting to move file at $uri");
+
+  // Attempts to move file.
+  drush_log(dt("Attempting to move file at @uri...", array('@uri' => $uri)), 'notice');
   return _os_files_deprivatize_file($fid);
 }
 
@@ -81,12 +89,21 @@ function _os_files_deprivatize_file($fid) {
   if ($moved_file) {
     drush_log(dt('File @name moved successfully.', array('@name' => $file->filename)), 'success');
   }
+  else {
+    drush_log(dt('Error moving file @name.', array('@name' => $file->filename)), 'error');
+    return FALSE;
+  }
 
   $file->uri = $moved_file->uri;
-  file_save($file);
-
-  drush_log(dt('File @name updated successfully.', array('@name' => $file->filename)), 'success');
-  return TRUE;
+  $file_moved = file_save($file);
+  if (isset($file_moved->fid)) {
+    drush_log(dt('[O] File @name updated successfully.', array('@name' => $file->filename)), 'success');
+    return TRUE;
+  }
+  else {
+    drush_log(dt('[!] Error updating file @name.', array('@name' => $file->filename)), 'error');
+    return FALSE;
+  }
 }
 
 /**
@@ -97,7 +114,7 @@ function _os_files_privatize_main($fids) {
 
   // Loops over all file IDs and tries to modify each.
   $fids = explode(',', $fids);
-  ddd($fids, '$fids', FALSE);
+  drush_log(dt('Checking @count files...', array('@count' => count($fids))), 'warning');
   foreach ($fids as $fid) {
     $modified = _os_files_deprivatize($fid);
     if (!$flush_cache && $modified) {
@@ -105,29 +122,20 @@ function _os_files_privatize_main($fids) {
     }
   }
 
+  // Adds newline for readable terminal output.
+  drush_log(' ', 'warning');
+
   // Flushes caches if any changes were made.
   if ($flush_cache) {
-    drush_log(dt('Flushing the cache for update the files field data.'), 'warning');
+    drush_log(dt('Flushing the cache to update files field data...'), 'success');
     drupal_flush_all_caches();
-  }
-}
-
-/**
- * DEBUG ONLY. REMOVE BEFORE MERGE.
- */
-function ddd($value, $label, $boolean = TRUE) {
-  if ($boolean) {
-    $output = 'FALSE';
-    if ($value) {
-      $output = 'TRUE';
-    }
+    drush_log(dt('Done.'), 'success');
   }
   else {
-    $output = print_r($value, TRUE);
+    drush_log(dt('Skipping cache flush because no changes made.'), 'warning');
+    drush_log(dt('Done.'), 'warning');
   }
-  drush_log($label . ': ' . $output, 'warning');
 }
-
 
 // Runs main function.
 $fids = drush_get_option('fids', 0);
