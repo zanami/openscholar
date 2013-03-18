@@ -33,7 +33,6 @@ function os_wysiwyg_wysiwyg_default_profiles() {
           'numlist' => 1,
           'outdent' => 1,
           'indent' => 1,
-          'link' => 1,
           'unlink' => 1,
           'formatselect' => 1,
           'fontselect' => 1,
@@ -54,6 +53,7 @@ function os_wysiwyg_wysiwyg_default_profiles() {
         'drupal' => array(
           'media' => 1,
           'pdw' => 1,
+          'os_link' => 1,
           'break' => 1,
         ),
       ),

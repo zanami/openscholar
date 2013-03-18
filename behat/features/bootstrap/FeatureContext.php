@@ -141,9 +141,13 @@ class FeatureContext extends DrupalContext {
 
     if (strpos($comapre_string, '{{*}}')) {
       // Attributes that may changed in different environments.
-      foreach (array('sourceUrl', 'id') as $attribute) {
+      foreach (array('sourceUrl', 'id', 'value', 'href') as $attribute) {
         $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
         $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
+
+        // Dealing with JSON.
+        $page_string = preg_replace('/"'. $attribute . '":".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/"'. $attribute . '":".+?"/', '', $comapre_string);
       }
 
       if ($page_string != $comapre_string) {
@@ -639,5 +643,24 @@ class FeatureContext extends DrupalContext {
     curl_close($ch);
 
     return $curlInfo['http_code'];
+  }
+
+  /**
+   * @Then /^I should see the random string$/
+   */
+  public function iShouldSeeTheRandomString() {
+    $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeUnder($text, $id) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
+    if ($element) {
+      throw new Exception("The text {$text} found under #{$id}");
+    }
   }
 }

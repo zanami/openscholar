@@ -120,6 +120,16 @@ section {
   display: block;
 }
 
+
+.lt-ie9 img,
+.lt-ie9 object,
+.lt-ie9 embed,
+.lt-ie9 video {
+  max-width: 100%;
+  border:none;
+}
+
+
 /* Default font sizes for headings, can be overridden in theme settings or set them here */
 
 h1 {
@@ -128,6 +138,12 @@ h1 {
 h1.node-title {
 	font-size:1.15em;
 }
+
+.sub_title {
+	display:block;
+	font-size:.75em;
+}
+
 
 h2 {
 	font-size:1.3em;
@@ -516,6 +532,16 @@ table embed,
 table object,
 table video {
   max-width: none;
+}
+
+.lt-ie9 img,
+.lt-ie9 object,
+.lt-ie9 embed,
+.lt-ie9 video {
+  max-width: 100%;
+  border:none;
+  width:auto;
+  height:auto;
 }
 
 /* Override max-width 100% for map displays, as much as possible anyway... */

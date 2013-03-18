@@ -202,6 +202,13 @@ function vsite_update_7004() {
 }
 
 /**
+ * Revert vsite logo fields
+ */
+function vsite_update_7005() {
+  features_revert(array('vsite' => array('field')));
+}
+
+/**
  * Returns a comma-separated quote-encapsed list of term paths in a given vsite.
  */
 function _vsite_update_7004_term_paths_by_sid($sid) {

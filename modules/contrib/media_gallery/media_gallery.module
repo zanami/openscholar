@@ -27,7 +27,7 @@ function media_gallery_file_view_modes() {
     'media_gallery_lightbox' => t('Gallery lightbox'),
     'media_gallery_detail' => t('Gallery detail'),
     'media_gallery_block_thumbnail' => t('Gallery block thumbnail'),
-    'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
+    //'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
   );
 }
 

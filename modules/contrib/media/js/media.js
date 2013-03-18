@@ -23,6 +23,7 @@ Drupal.behaviors.mediaElement = {
       //options = Drupal.settings.media.fields[this.id];
       var fidField = $('.fid', this);
       var previewField = $('.preview', this);
+      var launcherButton = $('a.launcher', this);
       var editButton = $('.edit', this);
       var removeButton = $('.remove', this);
 

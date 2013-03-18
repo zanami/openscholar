@@ -60,7 +60,7 @@ ul.nice-menu ul {
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none;
     padding-right: 0;
-    font-size:16px;
+    font-size:15px;
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
@@ -82,7 +82,7 @@ ul.nice-menu ul {
 }
 
 .region-header-third ul.nice-menu li {
-    margin-left: 20px;
+    margin-left: 13px;
     float:right;
 }
 
@@ -102,7 +102,11 @@ ul.nice-menu ul {
 
 #branding_footer a,
 #branding_header a {
-	color:#FFF;
+	color:#BAC5C6;
+}
+
+#branding_header a:hover {
+	color:#8996A0;
 }
 
 #branding_footer a {
@@ -120,7 +124,7 @@ ul.nice-menu ul {
 	float:left;
 	display:inline;
 	clear: none;
-	margin-right:95px;
+	margin-right:80px;
   font-size:12px;
   text-transform: uppercase;
 }
@@ -140,88 +144,6 @@ ul.nice-menu ul {
   font-size:12px;
   text-transform: uppercase;
 }
-
-
-/* Section Nav */
-#boxes-box-os_pages_section_nav {
-	border: 1px solid #ebe3df;
-	border-bottom: none;
-}
-
-.section-nav li.expanded, 
-.section-nav li.collapsed, 
-.section-nav li.leaf {
-  padding: 0;
-}
-
-.section-nav ul.menu {
-  margin-bottom: 0;
-}
-
-.section-nav ul.menu li {
-	list-style: none;
-	background-color: #fff;
-	text-align: left;
-}
-
-.section-nav ul.menu li a {
-	display: block;
-	text-decoration: none;
-	padding: 8px 15px;
-	border-bottom: 1px solid #ebe3df;
-}
-
-
-.section-nav a:link,
-.section-nav a:visited {
-	color: #4384C4;
-}
-
-.section-nav a:hover {
-	background-color: #bfc2c4 !important;
-}
-
-.section-nav a.active {
-	color: #1e1e1e;
-}
-
-/* Section Nav - Section Heading */
-.section-nav .menu-depth-1 > a {
-	background: none !important;
-	background-color: #293352 !important;
-	color: #fff;
-	text-transform: uppercase;
-}
-
-.section-nav .collapsed > a {
-	background: url('../../os_basetheme/images/arrow-right.png') no-repeat left center;
-	
-}
-
-.section-nav .expanded > a {
-	background: url('../../os_basetheme/images/arrow-down.png') no-repeat left center;
-	
-}
-.section-nav .expanded.menu-depth-2 > a {
-	background-color: #3a72ab;
-	color: #fff;
-}
-
-.section-nav .expanded.menu-depth-2 .menu-depth-3 > a,
-.section-nav .expanded.menu-depth-2 .menu-depth-4 > a,
-.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
-	background-color: #f3f3f1;
-	padding-left: 25px;
-}
-
-.section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
-	padding-left: 35px;
-}
-
-.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
-	padding-left: 45px;
-}
-
 
 
 /* Local tasks */

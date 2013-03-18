@@ -18,10 +18,15 @@ function theme_google_feedapi_formatter_google_feedapi($info){
     $info['show_content']
   ));
 
+  $url_options = array('external' => true);
+  if(isset($info['element']['query'])){
+    $url_options['query'] = $info['element']['query'];
+  }
+
   drupal_add_js(array(
     'googleFeedAPI' => array(
       $feed_div_id => array(
-        'url' => $info['element']['url'],
+        'url' => url($info['element']['url'],$url_options),
         'num_feeds' => $info['num_to_show'],
         'content_summary' => $info['content_summary'],
         'show_content' => $info['show_content']

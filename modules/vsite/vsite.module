@@ -658,6 +658,81 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
+  // Ensures that "field_organization" field is created.
+  if (!field_info_field('field_organization')) {
+    $field = array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_organization',
+      'foreign keys' => array(
+        'tid' => array(
+          'columns' => array(
+            'tid' => 'tid',
+          ),
+          'table' => 'taxonomy_term_data',
+        ),
+      ),
+      'indexes' => array(
+        'tid' => array(
+          0 => 'tid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'taxonomy',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => array(
+            'vocabulary' => 'organization',
+            'parent' => '0',
+          ),
+        ),
+      ),
+      'translatable' => '0',
+      'type' => 'taxonomy_term_reference',
+    );
+    $field = field_create_field($field);
+  }
+  // Ensures that "field_organization" field instance is created.
+  if (!field_info_instance('node', 'field_organization', $bundle)) {
+    $instance = array(
+      'bundle' => $bundle,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'taxonomy',
+          'settings' => array(),
+          'type' => 'taxonomy_term_reference_link',
+          'weight' => 3,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_organization',
+      'label' => 'Organization',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '-1',
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
@@ -1606,7 +1681,7 @@ function vsite_user_autocomplete($string = '') {
     );
     $query->fields('u', array('name'));
     // CONCAT the display, if there is no last name entered, show the username/email only, if there is a last name, show first/last/email.
-    $query->addExpression("IF(ln.field_last_name_value IS NULL, CONCAT(u.name, ' (', u.mail , ') '), CONCAT(fn.field_first_name_value, ' ', ln.field_last_name_value, ' (',u.name,', ', u.mail , ') '))", 'myname');
+    $query->addExpression("IF(ln.field_last_name_value = '' OR ln.field_last_name_value IS NULL, CONCAT(u.name, ' (', u.mail , ') '), CONCAT(IFNULL(fn.field_first_name_value,''), ' ', IFNULL(ln.field_last_name_value,''), ' (',u.name,', ', u.mail , ') '))", 'myname');
     $query->range(0, 10);
     $query->addTag('user_autocomplete');
 

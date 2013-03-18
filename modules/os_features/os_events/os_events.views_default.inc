@@ -32,7 +32,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'date_views_pager';
   $handler->display->display_options['pager']['options']['date_id'] = 'month';
-  $handler->display->display_options['style_plugin'] = 'calendar_style';
+  $handler->display->display_options['style_plugin'] = 'os_calendar_style';
   $handler->display->display_options['style_options']['name_size'] = '3';
   $handler->display->display_options['style_options']['with_weekno'] = '0';
   $handler->display->display_options['style_options']['multiday_theme'] = '1';
@@ -117,7 +117,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['pager']['options']['date_id'] = 'month';
   $handler->display->display_options['pager']['options']['link_format'] = 'clean';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'calendar_style';
+  $handler->display->display_options['style_plugin'] = 'os_calendar_style';
   $handler->display->display_options['style_options']['name_size'] = '3';
   $handler->display->display_options['style_options']['mini'] = '0';
   $handler->display->display_options['style_options']['with_weekno'] = '0';

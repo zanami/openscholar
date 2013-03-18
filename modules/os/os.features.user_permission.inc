@@ -364,6 +364,18 @@ function os_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: create files.
+  $permissions['create files'] = array(
+    'name' => 'create files',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'file_entity',
+  );
+
   // Exported permission: create url aliases.
   $permissions['create url aliases'] = array(
     'name' => 'create url aliases',
@@ -376,6 +388,18 @@ function os_user_default_permissions() {
     'module' => 'path',
   );
 
+  // Exported permission: delete any files.
+  $permissions['delete any files'] = array(
+    'name' => 'delete any files',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'file_entity',
+  );
+
   // Exported permission: delete revisions.
   $permissions['delete revisions'] = array(
     'name' => 'delete revisions',
@@ -385,6 +409,16 @@ function os_user_default_permissions() {
       2 => 'vsite admin',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: download any files.
+  $permissions['download any files'] = array(
+    'name' => 'download any files',
+    'roles' => array(
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+    ),
+    'module' => 'file_entity',
   );
 
   // Exported permission: edit any files.

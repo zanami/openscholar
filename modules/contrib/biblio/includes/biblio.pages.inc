@@ -241,7 +241,7 @@ function biblio_entry($node) {
 
   );
 */
-  $prefix = '<div class="biblio-entry">';
+  $prefix = '<div class="biblio-entry node node-biblio node-teaser contextual-links-region article clearfix">';
   $suffix = '</div>';
   if (!$node->status) {
     $prefix .= '<div id="node-' . $node->nid . '" class="node node-unpublished">';

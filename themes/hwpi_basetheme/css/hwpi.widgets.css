@@ -1,8 +1,8 @@
 
 /* Site Info */
 #boxes-box-site_info {
-  min-height: 120px;
-  position: relative;
+  min-height: 80px;
+  padding-top:38px;
 }
 
 #boxes-box-site_info,
@@ -13,22 +13,14 @@
 #boxes-box-site_info p,
 #boxes-box-site_info h1,
 #boxes-box-site_info h2 {
-  position: absolute;
   font-weight: normal;
   margin: 0;
 }
 
-#boxes-box-site_info h1 {
-  top: 42px
-}
-
-#boxes-box-site_info h2 {
-  top: 20px
-}
 
 #boxes-box-site_info p {
   line-height: 1.4;
-  top: 90px;
+
 }
 
 #boxes-box-site_info p a {
@@ -37,11 +29,16 @@
 
 #boxes-box-site_info h1 {
   font-size: 30px;
+
 }
 
 #boxes-box-site_info h2 {
   font-size: 24px;
   font-style: italic;
+}
+
+#boxes-box-site_info h1 + h2 {
+margin-bottom:10px;
 }
 
 
@@ -59,7 +56,7 @@
 #search-block-form #edit-submit,
 #search-form #edit-submit {
   background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -59px transparent;
-  height: 32px;
+  height: 33px;
   width: 44px;
 }
 
@@ -99,7 +96,8 @@ input[type="search"] {
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-  margin: 0 -100% 0 -43px !important;
+  margin: -1px 0 0 -44px !important;
+  vertical-align: top;
 }
 
 #search-block-form .form-item label {
