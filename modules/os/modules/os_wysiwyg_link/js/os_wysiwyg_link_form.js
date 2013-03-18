@@ -45,7 +45,7 @@ Drupal.behaviors.osLinkFile = {
     }
     
     $('#edit-file .form-actions input', ctx).click(function (e) {
-      if ($(this).filter(':visible').length > 0) {
+      if ($(this).parents('#edit-file').filter(':visible').length > 0) {
         var selected = Drupal.media.browser.selectedMedia;
         if (selected.length) {
           var fid = selected[0].fid;
