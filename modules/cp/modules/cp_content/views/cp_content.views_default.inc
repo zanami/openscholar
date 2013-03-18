@@ -754,6 +754,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['filemime']['table'] = 'file_managed';
   $handler->display->display_options['fields']['filemime']['field'] = 'origname';
   $handler->display->display_options['fields']['filemime']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['filemime']['file_size_display'] = 'bytes';
   /* Field: File: Size */
   $handler->display->display_options['fields']['filesize']['id'] = 'filesize';
   $handler->display->display_options['fields']['filesize']['table'] = 'file_managed';
@@ -815,10 +816,8 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
-  $handler->display->display_options['filters']['current']['relationship'] = 'file_to_node';
-  $handler->display->display_options['filters']['current']['relationship'] = 'file_to_node';
   $handler->display->display_options['filters']['current']['group'] = 1;
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: File: Schema type */
   $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
