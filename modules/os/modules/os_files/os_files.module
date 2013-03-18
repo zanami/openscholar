@@ -581,7 +581,8 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
 /**
  * File Settings.
  */
-function os_files_media_browser_params_alter(&$media_params){if (isset($media_params['id'])) {
+function os_files_media_browser_params_alter(&$media_params){
+  if (isset($media_params['id'])) {
     if ($media_params['id'] == 'media_wysiwyg') {
       $allowed = array('image', 'audio', 'video', 'html');
       if (is_array($media_params['types'])) {
@@ -692,8 +693,6 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
         $temp['os_files_large'] = $view_modes['os_files_large'];
         $temp['os_files_med'] = $view_modes['os_files_med'];
         $temp['os_files_small'] = $view_modes['os_files_small'];
-        $temp['os_files_link_icon'] = $view_modes['os_files_link_icon'];
-        $temp['os_files_link'] = $view_modes['os_files_link'];
       }
       else { // until there is support for the audio or video tags, this is the best we can do for that kind of file.
         $temp['os_files_link'] = $view_modes['os_files_link'];
