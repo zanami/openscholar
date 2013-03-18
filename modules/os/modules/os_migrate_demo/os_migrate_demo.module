@@ -276,6 +276,8 @@ function os_migrate_demo_assign_node_to_term($title, $name, $type = 'class') {
     ->propertyCondition('name', $names, is_array($names) ? 'IN' : '=')
     ->execute();
 
+  $tid = reset($result['taxonomy_term']);
+
   $wrapper = entity_metadata_wrapper('node', $nid);
   $wrapper->{OG_VOCAB_FIELD}[] = $tid;
   $wrapper->save();
