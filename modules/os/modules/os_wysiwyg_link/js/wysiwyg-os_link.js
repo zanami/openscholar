@@ -114,8 +114,8 @@ Drupal.wysiwyg.plugins.os_link = {
       ret.url = a.getAttribute('data-fid');
       ret.type = 'file';
     }
-    else if (a.origin == 'mailto://') {
-      ret.url = a.pathname;
+    else if (a.origin == 'mailto://' || a.protocol == 'mailto:') {
+      ret.url = a.pathname || a.href.replace('mailto:', '');
       ret.type = 'email';
     }
     else {
