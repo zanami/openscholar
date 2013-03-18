@@ -575,6 +575,10 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
   if (isset($file['#theme']) && $file['#theme'] == 'image_style') {
     $file['#theme'] = 'image';
     $file['#path'] = image_style_url($file['#style_name'], $file['#path']);
+    $class = 'file-'.drupal_html_class($tag_info['view_mode']);
+    if (!isset($file['#attributes']['class']) || !in_array($class, $file['#attributes']['class'])) {
+      $file['#attributes']['class'][] = $class;
+    } 
   }
 }
 
