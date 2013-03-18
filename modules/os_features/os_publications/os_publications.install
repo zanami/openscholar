@@ -246,7 +246,8 @@ function os_publications_update_7005() {
   //people used to be able to override this.  those who have won't have the new options.  clear them out, that funcitonality is no longer supported.
   db_delete('spaces_overrides')
     ->condition('object_id', 'biblio_years_text')
+    ->condition('object_type', 'variable')
     ->execute();
-    
+        
   return t('Updated biblio years.');
 }
