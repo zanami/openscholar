@@ -754,6 +754,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['filemime']['table'] = 'file_managed';
   $handler->display->display_options['fields']['filemime']['field'] = 'origname';
   $handler->display->display_options['fields']['filemime']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['filemime']['file_size_display'] = 'bytes';
   /* Field: File: Size */
   $handler->display->display_options['fields']['filesize']['id'] = 'filesize';
   $handler->display->display_options['fields']['filesize']['table'] = 'file_managed';
