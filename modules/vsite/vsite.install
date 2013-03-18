@@ -182,7 +182,7 @@ function vsite_update_7003() {
 function vsite_update_7004() {
   // Selects all vsite nids and purls.
   $query = db_select('node', 'n');
-  $query->join('purl', 'p', 'p.id = n.nid AND p.provider LIKE "spaces_og" ');
+  $query->join('purl', 'p', 'p.id = n.nid AND p.provider LIKE \'spaces_og\' ');
   $query->condition('type', array('personal', 'project', 'department'), 'IN');
   $query->fields('n', array('nid'));
   $query->fields('p', array('value'));
