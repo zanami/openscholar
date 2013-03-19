@@ -180,11 +180,19 @@ function _os_publications_filter_by_term(QueryAlterableInterface $query) {
   }
 
   // Get the term alias, if exists.
-  $path = $item['original_map'];
-  unset($path['0']);
+  $path_parts = $item['original_map'];
+  unset($path_parts['0']);
 
-  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
     return;
+  }
+
+  //Check the path prefixed with the purl if we are in a vsite
+  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+    array_unshift($path_parts, vsite_get_purl());
+    if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+      return;
+    }
   }
 
   if (strpos($path, 'taxonomy/term/') !== 0) {
