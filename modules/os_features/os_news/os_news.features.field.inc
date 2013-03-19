@@ -263,16 +263,6 @@ function os_news_field_default_fields() {
           'type' => 'image',
           'weight' => '0',
         ),
-        'teaser' => array(
-          'label' => 'hidden',
-          'module' => 'image',
-          'settings' => array(
-            'image_link' => 'content',
-            'image_style' => 'os_news_full_140_x_180',
-          ),
-          'type' => 'image',
-          'weight' => '0',
-        ),
       ),
       'entity_type' => 'node',
       'field_name' => 'field_photo',

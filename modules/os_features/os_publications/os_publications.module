@@ -717,7 +717,7 @@ function os_publications_preprocess_page(&$variables) {
       drupal_set_title($new_page_title);
       break;
     case "year":
-      $new_page_title = $current_page_title . t(" by Year: ") . ucwords($menu['map'][2]);
+      $new_page_title = $current_page_title . t(" by Year: ") . _biblio_text_year(ucwords($menu['map'][2]));
       // Set the new page title.
       drupal_set_title($new_page_title);
       break;
