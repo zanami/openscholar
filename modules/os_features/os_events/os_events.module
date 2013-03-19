@@ -239,7 +239,7 @@ function os_events_preprocess_menu_local_task(&$variables) {
  * the correct link.
  */
 function os_events_preprocess_link(&$variables) {
-  if ($_GET['q'] == 'calendar') {
+  if ($_GET['q'] != 'calendar') {
     return;
   }
 
