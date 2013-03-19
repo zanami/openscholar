@@ -84,12 +84,6 @@ function os_image_gallery_node_view($node, $view_mode) {
   // node type.
   media_gallery_view($node, $view_mode);
 
-  //Update link title so users know they can upload more than just images
-  if (isset($node->content['add_media_link']['select']) && $node->content['add_media_link']['select']['#title'] == t('Add New Image')) {
-    $node->content['add_media_link']['select']['#title'] = t('Add New Media');
-  }
-
-
   // Attaches custom CSS to this node view page.
   $node->content['os_image_gallery'] = array(
     '#attached' => array(
