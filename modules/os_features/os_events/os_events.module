@@ -11,8 +11,8 @@ function os_events_os_app_info() {
 
   $apps['os_events'] = array(
     'path' => 'calendar',
-  	'nodetypes' => array(
-  	  'event',
+    'nodetypes' => array(
+      'event',
     ),
     'views tabs' => array(
       'os_events' => array(
@@ -75,7 +75,7 @@ function os_events_vsite_og_node_type_info() {
  */
 function os_events_process_node(&$variables) {
   if($variables['type'] != 'event') {
-  	return;
+    return;
   }
 
   // Move the terms to the top of the node display.
@@ -108,12 +108,10 @@ function os_events_preprocess_calendar_datebox(&$vars) {
   unset($path['0']);
 
   // Get the term path, the clean page path and the build the query string.
-  $path = implode('/', $path);
-  $clean_current_path = str_replace($path, '', $_GET['q']);
-  $query = array('query' => array('day' => $vars['date']));
+  $query = array('query' => array('date' => $vars['date'], 'type' => 'day'));
 
   // Change the link.
-  $vars['link'] = l($vars['day'], $clean_current_path . $path, $query);
+  $vars['link'] = l($vars['day'], 'calendar', $query);
 }
 
 /**
@@ -165,6 +163,8 @@ function os_events_preprocess_date_views_pager(&$variables) {
 
 /**
  * Implements hook_url_outbound_alter().
+ *
+ * Change the url of the prev and next links.
  */
 function os_events_url_outbound_alter(&$path, &$options, $original_path) {
   $view_modes = array(
@@ -183,6 +183,17 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
   $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
   $date_format = new DateTime;
 
+  if (isset($_GET['date'])) {
+    if ($_GET['type'] == 'year') {
+      // The user watch in a year, return him to the first day of the year.
+      $time = mktime(12, 0, 0, 1, 1, $_GET['date']);
+    }
+    else {
+      $time = strtotime($_GET['date']);
+    }
+    $date_format->setTimestamp($time);
+  }
+
   if ($data[1] == 'week') {
     $date = date_format($date_format, $format[$data[1]]) . date_week(date_format($date_format, 'Y-m-d'));
   }
@@ -192,4 +203,71 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
 
   $options['query']['type'] = $data[1];
   $options['query']['date'] = $date;
+}
+
+/**
+ * Implements hook_preprocess_menu_local_task().
+ *
+ * Remove the active from any tab in the calendar page and add active to the
+ * correct tab.
+ */
+function os_events_preprocess_menu_local_task(&$variables) {
+  if ($_GET['q'] != 'calendar' || !isset($_GET['type'])) {
+    return;
+  }
+  $element = &$variables['element'];
+  $element['#active'] = FALSE;
+
+  $cases = array(
+    'day' => 'calendar/day',
+    'week' => 'calendar/week',
+    'year' => 'calendar/year',
+    'month' => 'calendar/month',
+  );
+
+  if (isset($cases[$_GET['type']]) && $cases[$_GET['type']] == $element['#link']['path']) {
+    $element['#active'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_preprocess_link().
+ *
+ * Remove the active from any link in the calendar page and add active class to
+ * the correct link.
+ */
+function os_events_preprocess_link(&$variables) {
+  if ($_GET['q'] != 'calendar') {
+    return;
+  }
+
+  if ($variables['path'] == 'calendar' && $variables['text'] == t('Month')) {
+    // The user watch different view modes of the calendar, remove the active
+    // from the the month link.
+    if (!empty($_GET['date']) && !empty($_GET['type'])) {
+      $key = array_search('active', $variables['options']['attributes']['class']);
+      unset($variables['options']['attributes']['class'][$key]);
+    }
+  }
+
+  $view_modes = array(
+    'calendar/week',
+    'calendar/day',
+    'calendar/year',
+  );
+
+  if (empty($_GET['type']) || !in_array($variables['path'], $view_modes)) {
+    return;
+  }
+
+  $cases = array(
+    'day' => 'calendar/day',
+    'week' => 'calendar/week',
+    'year' => 'calendar/year',
+    'month' => 'calendar/month',
+  );
+
+  if (isset($cases[$_GET['type']]) && $cases[$_GET['type']] == $variables['path']) {
+    $variables['options']['attributes']['class'][] = 'active';
+  }
 }
