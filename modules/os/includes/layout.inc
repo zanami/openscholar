@@ -311,13 +311,16 @@ function os_layout_load_block($bid, $load_meta = TRUE, $block = array()) {
   list($module, $delta) = explode('-', $bid, 2);
 
   if ($load_meta) {
+    $block_info = drupal_static(__FUNCTION__,array());
+
     // Add standard information gleaned from the block_info hook
     $info_hook = "{$module}_block_info";
-    if (function_exists($info_hook)) {
-      $block_info = $info_hook();
-      if (isset($block_info[$delta])) {
-        $block = array_merge($block_info[$delta], $block);
-      }
+    if (!isset($block_info[$module]) && function_exists($info_hook)) {
+      $block_info[$module] = $info_hook();
+    }
+
+    if (isset($block_info[$module][$delta])) {
+      $block = array_merge($block_info[$module][$delta], $block);
     }
 
     // Load block install file.
