@@ -311,7 +311,7 @@ function os_layout_load_block($bid, $load_meta = TRUE, $block = array()) {
   list($module, $delta) = explode('-', $bid, 2);
 
   if ($load_meta) {
-    $block_info = drupal_static(__FUNCTION__,array());
+    $block_info = &drupal_static(__FUNCTION__,array());
 
     // Add standard information gleaned from the block_info hook
     $info_hook = "{$module}_block_info";
