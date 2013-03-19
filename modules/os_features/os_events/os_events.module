@@ -108,12 +108,10 @@ function os_events_preprocess_calendar_datebox(&$vars) {
   unset($path['0']);
 
   // Get the term path, the clean page path and the build the query string.
-  $path = implode('/', $path);
-  $clean_current_path = str_replace($path, '', $_GET['q']);
-  $query = array('query' => array('day' => $vars['date']));
+  $query = array('query' => array('date' => $vars['date'], 'type' => 'day'));
 
   // Change the link.
-  $vars['link'] = l($vars['day'], $clean_current_path . $path, $query);
+  $vars['link'] = l($vars['day'], 'calendar', $query);
 }
 
 /**
@@ -243,11 +241,12 @@ function os_events_preprocess_link(&$variables) {
     return;
   }
 
-  if ($variables['path'] == 'calendar' && $variables['path'] == 'calendar' && $variables['text'] == t('Month')) {
+  if ($variables['path'] == 'calendar' && $variables['text'] == t('Month')) {
     // The user watch different view modes of the calendar, remove the active
     // from the the month link.
     if (!empty($_GET['date']) && !empty($_GET['type'])) {
-      unset($variables['options']['attributes']['class'][0]);
+      $key = array_search('active', $variables['options']['attributes']['class']);
+      unset($variables['options']['attributes']['class'][$key]);
     }
   }
 
