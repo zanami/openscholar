@@ -16,7 +16,7 @@ projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.2
 
 projects[apachesolr_og][subdir] = "contrib"
-projects[apachesolr_og][version] = 1.0
+projects[apachesolr_og][version] = 1.x-dev
 
 ; @todo: Biblio patches need to be applied
 ; projects[biblio][subdir] = "contrib"
@@ -32,7 +32,7 @@ projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 
 projects[colorbox][subdir] = "contrib"
-projects[colorbox][version] = 1.4
+projects[colorbox][version] = 1.3
 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
@@ -49,7 +49,11 @@ projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
 
 projects[ctools][subdir] = "contrib"
-projects[ctools][version] = 1.2
+;projects[ctools][version] = 1.2+7-dev
+projects[ctools][download][type] = git
+projects[ctools][download][branch] = 7.x-1.x
+projects[ctools][download][revision] = be2607142ce97d093acce9417833640680330efe
+;projects[ctools][download][url] = "http://drupalcode.org/project/ctools.git"
 projects[ctools][patch][] = "http://drupal.org/files/1707810-ctools-fields-mock-field-7.patch"
 projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-1623044-1.patch"
 
@@ -65,7 +69,7 @@ projects[deploy][version] = 2.x-dev
 projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
 
 projects[diff][subdir] = "contrib"
-projects[diff][version] = 3.0-alpha1
+projects[diff][version] = 2.0
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
@@ -76,48 +80,48 @@ projects[dyntextfield][download][type] = git
 projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.git"
 
 projects[entity][subdir] = "contrib"
-projects[entity][version] = 1.0-rc3
+projects[entity][version] = 1.0
 
 projects[entityreference][subdir] = "contrib"
-projects[entityreference][version] = 1.0
+projects[entityreference][version] = 1.0-rc5+11-dev
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.1
+projects[entityreference_prepopulate][version] = 1.1+2-dev
 
 projects[entity_dependency][subdir] = "contrib"
 projects[entity_dependency][version] = 1.x-dev
 projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
 projects[eva][subdir] = "contrib"
-projects[eva][version] = 1.x-dev
+projects[eva][version] = 1.2
 projects[eva][revision] = "6d92c27"
 
 projects[facetapi][subdir] = "contrib"
-projects[facetapi][version] = 1.2
+projects[facetapi][version] = 1.0+21-dev
 
 projects[fb_social][subdir] = "contrib"
-projects[fb_social][version] = 2.0-beta4
+projects[fb_social][version] = 2.0-beta4+1-dev
 
 projects[features][subdir] = "contrib"
-projects[features][version] = 2.x-dev
-projects[features][revision] = "c0b054d"
+projects[features][version] = 7.x-1.0
+; projects[features][revision] = "c0b054d"
 
 projects[feeds][subdir] = "contrib"
-projects[feeds][version] = 2.0-alpha5
+projects[feeds][version] = 2.0-alpha7
 
 projects[feeds_xpathparser][subdir] = "contrib"
-projects[feeds_xpathparser][version] = 1.0-beta3
+projects[feeds_xpathparser][version] = 1.0-beta3+7-dev
 
 projects[field_group][subdir] = "contrib"
 projects[field_group][version] = 1.1
 
 projects[file_entity][subdir] = "contrib"
-projects[file_entity][version] = 2.x-dev
-projects[file_entity][revision] = "11894c1"
+projects[file_entity][version] = 2.0-unstable7+35-dev
+; projects[file_entity][revision] = "11894c1"
 
 projects[filefield_paths][subdir] = "contrib"
-projects[filefield_paths][version] = 1.0-beta3
+projects[filefield_paths][version] = 1.0-beta3+2-dev
 
 projects[flag][subdir] = "contrib"
 projects[flag][version] = 2.0
@@ -149,7 +153,7 @@ projects[media][revision] = "c49692b"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 
 projects[media_gallery][subdir] = "contrib"
-projects[media_gallery][version] = 1.x-dev
+projects[media_gallery][version] = 2.x-dev
 projects[media_gallery][revision] = "2fcf98e"
 ; Unable to apply patch 1333674, not sure it;s still required.
 ;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
@@ -162,7 +166,7 @@ projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
 
 projects[migrate][subdir] = "contrib"
-projects[migrate][version] = 2.4
+projects[migrate][version] = 2.5
 
 projects[migrate_extras][patch][] = "http://drupal.org/files/1788440-2-duplicate_MigrateDestinationOGMembership.patch"
 projects[migrate_extras][subdir] = "contrib"
@@ -186,7 +190,7 @@ projects[oembed][version] = 0.x-dev
 projects[oembed][revision] = "baefb69"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.0-beta3
+projects[og][version] = 2.0-rc2+6-dev
 
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
@@ -205,7 +209,7 @@ projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
-projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
+; projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -217,9 +221,9 @@ projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
 projects[purl][subdir] = "contrib"
-projects[purl][version] = "1.x-dev"
+projects[purl][version] = 1.0-beta1+11-dev
 projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
-projects[purl][branch][] = "7.x-1.x"
+;projects[purl][branch][] = "7.x-1.x"
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
@@ -235,7 +239,7 @@ projects[services][subdir] = "contrib"
 projects[services][version] = 3.x-dev
 
 projects[spaces][subdir] = "contrib"
-projects[spaces][version] = 3.x-dev
+projects[spaces][version] = 3.0-alpha1+9-dev
 projects[spaces][revision] = "eac3a7e"
 projects[spaces][patch][] = "http://drupal.org/files/1470434-spaces-og-28.patch"
 projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
@@ -244,16 +248,16 @@ projects[stringoverrides][version] = 1.8
 projects[stringoverrides][subdir] = "contrib"
 
 projects[strongarm][subdir] = "contrib"
-projects[strongarm][version] = 2.0
+projects[strongarm][version] = 2.0-rc1
 
 projects[token][subdir] = "contrib"
-projects[token][version] = 1.2
+projects[token][version] = 1.4
 
 projects[transliteration][subdir] = "contrib"
 projects[transliteration][version] = 3.1
 
 projects[twitter_pull][subdir] = "contrib"
-projects[twitter_pull][version] = 1.0-rc2
+projects[twitter_pull][version] = 1.0-rc4
 
 projects[uuid][subdir] = "contrib"
 projects[uuid][version] = 1.x-dev
@@ -262,7 +266,7 @@ projects[uuid][patch][] = "http://drupal.org/files/uuid-file_entity_fail_deploym
 projects[uuid][patch][] = "http://drupal.org/files/uuid_validate_error.patch"
 
 projects[views][subdir] = "contrib"
-projects[views][version] = 3.5
+projects[views][version] = 3.5+29-dev
 
 projects[views_bulk_operations][subdir] = "contrib"
 projects[views_bulk_operations][version] = 3.0
