@@ -8,7 +8,7 @@
 <?php print $head; ?>
 <title><?php print $head_title; ?></title>
 <meta http-equiv="x-ua-compatible" content="IE=8">
-<meta name=”viewport” content=”1020”>
+<meta name=”viewport” content=”1040”>
 <?php print $styles; ?>
 <?php print $scripts; ?>
 <?php print $polyfills; ?>
