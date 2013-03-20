@@ -446,7 +446,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 	position: absolute;
 }
 
-/* VIDEO ATTCHD TO A NODE
+/* VIDEO ATTCHD TO A NODE  */
 
 .oembed {
     background: none repeat scroll 0 0 #EEEEEE;
@@ -467,7 +467,11 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     text-align: left;
     text-shadow: none;
 }
-	 */
+
+.os-files-video-single {
+    max-width: none !important;
+}
+	
 
 .feed_item {margin-bottom:8px;}
 .feed_item span {font-style:italic;margin-right:4px;}

@@ -207,6 +207,14 @@ function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
   $form_state['triggering_element']['#id'] = 'edit-submit';
   $file = file_load($form_state['values']['upload']);
   $form_state['values']['type'] = $file->type;
+
+  // The file is uploaded not via a form, there for the entity reference
+  // pre-populate doesn't take affect.
+  if ($og_context = og_context()) {
+    $wrapper = entity_metadata_wrapper('file', $file);
+    $wrapper->{OG_AUDIENCE_FIELD}->set(array($og_context['gid']));
+    $wrapper->save();
+  }
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
@@ -567,13 +575,18 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
   if (isset($file['#theme']) && $file['#theme'] == 'image_style') {
     $file['#theme'] = 'image';
     $file['#path'] = image_style_url($file['#style_name'], $file['#path']);
+    $class = 'file-'.drupal_html_class($tag_info['view_mode']);
+    if (!isset($file['#attributes']['class']) || !in_array($class, $file['#attributes']['class'])) {
+      $file['#attributes']['class'][] = $class;
+    } 
   }
 }
 
 /**
  * File Settings.
  */
-function os_files_media_browser_params_alter(&$media_params){if (isset($media_params['id'])) {
+function os_files_media_browser_params_alter(&$media_params){
+  if (isset($media_params['id'])) {
     if ($media_params['id'] == 'media_wysiwyg') {
       $allowed = array('image', 'audio', 'video', 'html');
       if (is_array($media_params['types'])) {
@@ -684,8 +697,6 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
         $temp['os_files_large'] = $view_modes['os_files_large'];
         $temp['os_files_med'] = $view_modes['os_files_med'];
         $temp['os_files_small'] = $view_modes['os_files_small'];
-        $temp['os_files_link_icon'] = $view_modes['os_files_link_icon'];
-        $temp['os_files_link'] = $view_modes['os_files_link'];
       }
       else { // until there is support for the audio or video tags, this is the best we can do for that kind of file.
         $temp['os_files_link'] = $view_modes['os_files_link'];
@@ -693,6 +704,18 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
       }
       $view_modes = $temp;
       break;
+  }
+}
+
+/**
+ * Implements hook_preprocess_media_thumbnail.
+ * 
+ * Displays the immutable origname as well as the mutable filename.
+ */
+function os_files_preprocess_media_thumbnail(&$vars) {
+  $element = &$vars['element'];
+  if ($element['#file']->filename != $element['#file']->origname) {
+    $element['#name'] = $element['#file']->origname.' ('.$element['#file']->filename.')';
   }
 }
 
