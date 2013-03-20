@@ -635,9 +635,9 @@ class FeatureContext extends DrupalContext {
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
   /**
-   * @Then /^I check the "([^"]*)" term link to the original page$/
+   * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
    */
-  public function iCheckTheTermLinkToTheOriginalPage($term) {
+  public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
     $code = "os_migrate_demo_get_term_id('$term');";
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
 
@@ -650,9 +650,9 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I check the "([^"]*)" term not link to the original page$/
+   * @Given /^I verify the "([^"]*)" term link doesn\'t redirect to the original page$/
    */
-  public function iCheckTheTermNotLinkToTheOriginalPage($term) {
+  public function iVerifyTheTermLinkDoesnTRedirectToTheOriginalPage($term) {
     $code = "os_migrate_demo_get_term_id('$term');";
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
 
