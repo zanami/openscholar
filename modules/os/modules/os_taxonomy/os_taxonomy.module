@@ -335,21 +335,43 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
  *    Referenced array of the options variable from the theme functions.
  */
 function os_taxonomy_get_prefix_path(&$options) {
-  if (count($options['bundles'])) {
-    $map = features_get_component_map('node');
-    foreach ($options['bundles'] as $bundle) {
-      if(isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])) {
-        unset($feature);
-        break;
-      }
-      elseif (isset($map[$bundle]) && count($map[$bundle])) {
-        $feature = current($map[$bundle]);
-      }
+  if (!count($options['bundles'])) {
+    return;
+  }
+  $map = features_get_component_map('node');
+
+  foreach ($options['bundles'] as $bundle) {
+    if (isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])) {
+      unset($feature);
+      break;
     }
-    $options['path_prefix'] = isset($feature) ? variable_get("os_taxonomy_app_path_{$feature}", strval(os_get_app_path($feature))) : 'taxonomy';
-    if (strlen($options['path_prefix'])) {
-      $options['path_prefix'] = $options['path_prefix'] . "/";
+    elseif (isset($map[$bundle]) && count($map[$bundle])) {
+      $feature = current($map[$bundle]);
     }
+  }
+
+  // Counting how much bundles are associated with the vocabulary. If only 1
+  // then we don't need prefix.
+  if ($og_context = og_context()) {
+    $query = db_select('og_vocab', 'ogv');
+    $query->join('og_vocab_relation', 'ogr', 'ogr.vid = ogv.vid');
+    $bundles_count = $query
+      ->fields('ogv')
+      ->condition('ogv.entity_type', 'node')
+      ->condition('ogv.vid', $options['vocabulary'])
+      ->condition('ogr.gid', $og_context['gid'])
+      ->execute()
+      ->rowCount();
+
+    if ($bundles_count === 1) {
+      return;
+    }
+  }
+
+  $options['path_prefix'] = isset($feature) ? variable_get("os_taxonomy_app_path_{$feature}", strval(os_get_app_path($feature))) : 'taxonomy';
+
+  if (strlen($options['path_prefix'])) {
+    $options['path_prefix'] = $options['path_prefix'] . "/";
   }
 }
 
