@@ -296,6 +296,11 @@ class OsMigrateClassesNode extends OsMigrate {
 
     $entity->field_class_link[LANGUAGE_NONE][0]['url'] = $link[0];
     $entity->field_class_link[LANGUAGE_NONE][0]['title'] = $link[1];
+
+    if (!empty($row->path)) {
+      // Disable path-auto.
+      $entity->path['pathauto'] = FALSE;
+    }
   }
 }
 
