@@ -1,4 +1,4 @@
-<div id="<?php echo $bid; ?>" class="<?php echo implode(' ', $classes_array); ?>">
+<div id="<?php echo $bid; ?>" class="<?php echo implode(' ', $classes_array); ?>" title="<?php echo $widget_title; ?>">
   <?php echo $widget_title; ?>
     <div class="widget-controls">
       <?php
