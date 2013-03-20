@@ -184,6 +184,7 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
   $date_format = new DateTime;
 
   if (isset($_GET['date'])) {
+    $_GET['type'] = !empty($_GET['type']) ? $_GET['type'] : 'month';
     if ($_GET['type'] == 'year') {
       // The user watch in a year, return him to the first day of the year.
       $time = mktime(12, 0, 0, 1, 1, $_GET['date']);
