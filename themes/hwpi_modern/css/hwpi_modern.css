@@ -17,7 +17,7 @@ a:visited {
   color: #3A72AB;
 }
 
-.links li a {
+#columns .links li a {
     border-bottom: none;
     font-size:12px;
     font-weight:bold;
