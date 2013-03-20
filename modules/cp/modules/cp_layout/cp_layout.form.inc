@@ -131,7 +131,7 @@ function cp_layout_full_form($form, $form_state){
 
   $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
-    if ($b['region'] == - 1 || $b['region'] === FALSE) {
+    if (!isset($b['region']) || $b['region'] == -1 || $b['region'] === FALSE) {
       $form['unused'][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b

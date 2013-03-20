@@ -180,8 +180,6 @@ function os_layout_get_multiple($contexts, $load_meta = FALSE, $unused_blocks = 
  * @param array $blocks
  */
 function os_layout_set($context_name, $blocks) {
-  _os_layout_sanitize_blocks($blocks);
-
   $context = context_load($context_name);
   $clean_up = false;
 
@@ -271,6 +269,7 @@ function os_layout_set_multiple($contexts, $blocks) {
   $removed_blocks = array();
 
   // try to make blocks the same as in parent contexts
+  _os_layout_sanitize_blocks($blocks);
   _os_layout_adjust_relative_weight($blocks, $parent_blocks);
   $child_blocks = _os_layout_filter_blocks($blocks, $parent_blocks);
 
@@ -556,7 +555,7 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
 function _os_layout_expand_blocks($blocks) {
   $regions = array();
   foreach ($blocks as $bid => $b) {
-    if ($b['region']) {
+    if (isset($b['region']) && $b['region']) {
       $regions[$b['region']][$bid] = $b;
     }
   }
