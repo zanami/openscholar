@@ -189,7 +189,19 @@ a.rslides_nav.prev {
     padding: 0 30px 12px;
  
 }
-	
+
+#layout_16_9_below .hero-copy {
+ height:150px;
+ 
+}
+
+
+#layout_16_9_below .hero-copy p {
+ margin-bottom:15px;
+ 
+}
+
+
 /** 16.9 OVERLAY **/
 	
 #layout_16_9_overlay {
