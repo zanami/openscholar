@@ -24,9 +24,10 @@ projects[biblio][version] = 1.0-rc4
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-allow-disable-no-cache.patch"
 
-; @todo: Boxes patches need to be applied
+; @todo: Boxes patches need to be applied^H^H^H^H^ created
  projects[boxes][subdir] = "contrib"
- projects[boxes][version] = 1.0
+ projects[boxes][version] = 1.0-beta7
+
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
@@ -38,6 +39,7 @@ projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
+; patches needed
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
@@ -47,6 +49,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
+; rbrandon needs to push updates to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
@@ -153,7 +156,7 @@ projects[flag][subdir] = "contrib"
 projects[flag][version] = 2.0
 
 projects[google_feedapi][subdir] = "contrib"
-projects[google_feedapi][version] = 1.0-beta1
+projects[google_feedapi][version] = 1.x
 
 projects[imagefield_crop][subdir] = "contrib"
 projects[imagefield_crop][version] = 2.0
@@ -189,10 +192,7 @@ projects[media_gallery][revision] = "2fcf98e"
 projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-113.patch"
 
 projects[message][subdir] = "contrib"
-projects[message][version] = 1.0
-
-projects[message][subdir] = "contrib"
-projects[message][version] = 1.6
+projects[message][version] = 1.7
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
