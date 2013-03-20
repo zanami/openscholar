@@ -19,14 +19,14 @@ projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][version] = 1.x-dev
 
 ; @todo: Biblio patches need to be applied
-; projects[biblio][subdir] = "contrib"
-; projects[biblio][version] = 1.0-rc4
+projects[biblio][subdir] = "contrib"
+projects[biblio][version] = 1.0-rc4
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-allow-disable-no-cache.patch"
 
 ; @todo: Boxes patches need to be applied
-; projects[boxes][subdir] = "contrib"
-; projects[boxes][version] = 1.0
+ projects[boxes][subdir] = "contrib"
+ projects[boxes][version] = 1.0
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
@@ -80,6 +80,9 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
 
+projects[entitycache][subdir] = "contrib"
+projects[entitycache][version] = 1.1
+
 projects[entityreference][subdir] = "contrib"
 ;projects[entityreference][version] = 1.0-rc5+11-dev
 projects[entityreference][download][type] = git
@@ -127,6 +130,9 @@ projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
 projects[feeds_xpathparser][download][revision] = 5bea17e
 
+projects[field_collection][subdir] = "contrib"
+projects[field_collection][version] = 1.0-beta5
+
 projects[field_group][subdir] = "contrib"
 projects[field_group][version] = 1.1
 
@@ -166,6 +172,9 @@ projects[link][subdir] = "contrib"
 projects[link][version] = 1.x-dev
 projects[link][revision] = "799bca2"
 
+projects[linkchecker][subdir] = "contrib"
+projects[linkchecker][version] = 1.0-beta1
+
 projects[media][subdir] = "contrib"
 projects[media][version] = 2.x-dev
 projects[media][revision] = "c49692b"
@@ -178,6 +187,9 @@ projects[media_gallery][revision] = "2fcf98e"
 ; Unable to apply patch 1333674, not sure it;s still required.
 ;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-113.patch"
+
+projects[message][subdir] = "contrib"
+projects[message][version] = 1.0
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.6
