@@ -230,10 +230,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   // The taxonomy_get_tree() function returns the tree which is not ordered in a
   // tree format. The function hierarchical_taxonomy_get_tree() orders the
   // vocabulary in the tree format. This will ease on the performance side.
-  $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE);
 
-  // No result - quit.
-  if (empty($vocabulary)) {
+  if (!$terms = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE)) {
     return;
   }
 
@@ -244,11 +242,11 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   os_taxonomy_get_prefix_path($options);
   $data = $options['bundles'] = array();
    // process all root term.
-  foreach ($vocabulary as $tid => $item) {
+  foreach ($terms as $tid => $term) {
     // The attached number to the term name.
     $number = NULL;
     if ($options['show_count']) {
-      $number = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
+      $number = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
       $number += $options['add_childs'] && !empty($item->below) ? os_taxonomy_count_term_tagged_items($item->below, $options['bundles']) : 0;
     }
 
@@ -257,34 +255,36 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    os_taxonomy_term_alias($item['url']['path'], $options);
+    $term_path = taxonomy_term_uri($term);
+    $term_path = $term_path['path'];
+    os_taxonomy_term_alias($term_path, $options);
 
-    if (!empty($path_prefix) && strpos($url['path'],'taxonomy/') === 0) {
-      $item->path = str_replace('taxonomy/', $path_prefix, $url['path']);
+    if (!empty($path_prefix) && strpos($term_path, 'taxonomy/') === 0) {
+      $term->path = str_replace('taxonomy/', $path_prefix, $term_path);
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-      $term_name = $item->term_name;
+      $term_name = $term->term_name;
       $data[$tid] = $term_name;
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
       if ($options['show_childs']) {
-        $child_content = !empty($item->below) ? os_taxonomy_build_child_item($item->below, $item, $options) : '';
+        $child_content = !empty($term->below) ? os_taxonomy_build_child_item($term->below, $term, $options) : '';
       }
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
           'number' => $number,
-          'name' => $item->name,
+          'name' => $term->name,
           'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
-          'url_path' => $url,
-          'description' => $item->description,
+          'url_path' => $term_path,
+          'description' => $term->description,
           'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
           'childs' => $child_content,
         )),
-        'class' => array('term-' . drupal_html_class($item->name)),
+        'class' => array('term-' . drupal_html_class($term->name)),
       );
     }
   }
@@ -340,17 +340,17 @@ function os_taxonomy_get_prefix_path(&$options) {
 /**
  * Get the alias of the taxonomy term.
  *
- *  @param $item_path
+ *  @param $term_path
  *    Referenced variable which holds the path of the taxonomy term.
  *  @param $options
  *    array of the options variable from the theme functions.
  */
-function os_taxonomy_term_alias(&$item_path, $options) {
-  if (!empty($options['path_prefix']) && strlen($options['path_prefix']) && strpos($item_path,'taxonomy/') === 0) {
+function os_taxonomy_term_alias(&$term_path, $options) {
+  if (!empty($options['path_prefix']) && strlen($options['path_prefix']) && strpos($term_path, 'taxonomy/') === 0) {
 
     //If in a vsite remove the purl from the path alias
     if (module_exists('vsite') && $purl = vsite_get_purl()) {
-      $path_args = explode('/', drupal_get_path_alias($item_path));
+      $path_args = explode('/', drupal_get_path_alias($term_path));
 
       // Remove the value from the front of the query string
       if (current($path_args) === $purl) {
@@ -359,7 +359,7 @@ function os_taxonomy_term_alias(&$item_path, $options) {
 
       $path_alias = $options['path_prefix'] . implode('/', $path_args);
     }else{
-      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item_path);
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($term_path);
     }
 
     // Check that the path alias doesn't exist yet (e.g. a node with the exact
@@ -376,11 +376,11 @@ function os_taxonomy_term_alias(&$item_path, $options) {
     }
 
     if (!$path_collision) {
-      $item_path = $path_alias;
+      $term_path = $path_alias;
     }
     else {
       // Use the non-aliased name.
-      $item_path = $options['path_prefix'] . $item_path;
+      $term_path = $options['path_prefix'] . $term_path;
     }
   }
 }
