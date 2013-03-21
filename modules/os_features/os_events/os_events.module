@@ -115,6 +115,26 @@ function os_events_preprocess_calendar_datebox(&$vars) {
 }
 
 /**
+ * Adjust the default date for a view based on query values.
+ */
+function os_events_date_default_argument_alter(&$argument, &$value){
+
+  if (isset($_GET['date'])) {
+    if ($_GET['type'] == 'year') {
+      // The user watch in a year, return him to the first day of the year.
+      $time = mktime(12, 0, 0, 1, 1, $_GET['date']);
+    }
+    else {
+      $time = strtotime($_GET['date']);
+    }
+
+    $default_date = new DateObject($time);
+    $value = $default_date->format($argument->arg_format);
+  }
+
+}
+
+/**
  * Implements hook_preprocess_date_views_pager().
  *
  * Dealing with different context of the calendar view modes.
