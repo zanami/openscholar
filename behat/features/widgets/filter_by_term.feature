@@ -5,8 +5,10 @@ Feature:
   Scenario: Verify that the user sees terms in the filter by term widget.
      Given I am logged in as a user with the "administrator" role
        And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
-           | Vocabularies     | authors | select list |
-           | Show empty terms | check   | checkbox    |
+           | Vocabularies           | authors             | select list |
+           | Show empty terms       | check               | checkbox    |
+           | Show child terms       | check               | checkbox    |
+            | Taxonomy tree depth.  | Show all childeren  | select list |
       When I visit "john/publications"
       Then I should see "Filter by term"
        And I should see the following <links>
@@ -17,7 +19,8 @@ Feature:
   @api
   Scenario: Verify that the number of tagged posts appended to the term name.
      Given I am logged in as a user with the "administrator" role
-       And I assign the node "John F. Kennedy" to the term "Stephen William Hawking,Antoine de Saint-Exupéry"
+       And I assign the node "John F. Kennedy" to the term "Antoine de Saint-Exupéry"
+       And I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
        And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
        And I set the term "Douglas Noël Adams" under the term "Stephen William Hawking"
        And the widget "Filter by term" is set in the "Publications" page with the following <settings>:

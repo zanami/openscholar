@@ -159,8 +159,10 @@ class FeatureContext extends DrupalContext {
     }
     else {
       // Normal compare.
-      if (strpos($page_string, $comapre_string) === FALSE) {
-        throw new Exception("Text not found.");
+      foreach (explode("\n", $comapre_string) as $text) {
+        if (strpos($page_string, $text) === FALSE) {
+          throw new Exception(sprintf('The text "%s" was not found.', $text));
+        }
       }
     }
   }
