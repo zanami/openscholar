@@ -93,26 +93,39 @@ function os_events_process_node(&$variables) {
 }
 
 /**
- * Implements hook_preprocess_calendar_datebox().
+ * Implements hook_views_pre_view().
  */
-function os_events_preprocess_calendar_datebox(&$vars) {
-  // Deal only with links.
-  if (!$vars['link']) {
+function os_events_views_pre_view(&$view, &$display_id, &$args) {
+  //if ($view->style_plugin->plugin_name != 'calendar_style' || !empty($view->style_options['mini'])) {
+    // Not a calendar view, or it's a mini-view.
+    // return;
+  //}
+  if (empty($view->display_handler->display->display_options['pager']['options']['date_id'])) {
     return;
   }
 
-  $item = menu_get_item();
+  if (empty($_GET['type']) || !in_array($_GET['type'], array('day', 'week', 'month', 'year'))) {
+    return;
+  }
+  $handler = &$view->display_handler;
 
-  // Get the term alias, if exists.
-  $path = $item['original_map'];
-  unset($path['0']);
+  if ($_GET['type'] != 'month') {
+    $handler->set_option('style_plugin', 'calendar_style');
+  }
 
-  // Get the term path, the clean page path and the build the query string.
-  $query = array('query' => array('date' => $vars['date'], 'type' => 'day'));
+  $values = $handler->get_option('style_options');
+  $values['calendar_type'] = $_GET['type'];
+  $handler->set_option('style_options', $values);
 
-  // Change the link.
-  $vars['link'] = l($vars['day'], 'calendar', $query);
+  $values = $handler->get_option('pager');
+  $values['options']['date_id'] = $_GET['type'];
+  $handler->set_option('pager', $values);
+
+  $values = $handler->get_option('arguments');
+  $values['date_argument']['granularity'] = $_GET['type'];
+  $handler->set_option('arguments', $values);
 }
+
 
 /**
  * Implements hook_preprocess_menu_local_task().
