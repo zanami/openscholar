@@ -43,6 +43,8 @@ p {
   margin: 0 0 1.5em 0;
   }
   
+.not-front .ui-tabs-panel .node-person.node-teaser p {margin-bottom:0;}  
+  
 .page-people .node-person .field-type-text-with-summary p,
   .page-links .node-teaser .view-mode-teaser p,
 .page-software .node-teaser .view-mode-teaser p,
