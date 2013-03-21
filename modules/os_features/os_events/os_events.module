@@ -96,11 +96,8 @@ function os_events_process_node(&$variables) {
  * Implements hook_views_pre_view().
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
-  //if ($view->style_plugin->plugin_name != 'calendar_style' || !empty($view->style_options['mini'])) {
-    // Not a calendar view, or it's a mini-view.
-    // return;
-  //}
-  if (empty($view->display_handler->display->display_options['pager']['options']['date_id'])) {
+  if (empty($view->display_handler->display->display_options['pager']['options']['date_id']) || !empty($view->display_handler->display->display_options['style_options']['mini'])) {
+    // Not a calendar view, or a mini-calendar
     return;
   }
 
