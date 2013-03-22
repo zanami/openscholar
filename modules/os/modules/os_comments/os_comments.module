@@ -66,7 +66,7 @@ function os_comments_form_node_form_alter(&$form, &$form_state, $form_id) {
   // If the node type being editted has Drupal Comments enabled, then the
   // Comment settings should remain unchanged. Otherwise, this hook will
   // remove the Comment settings form section to prevent confusion, and to
-  // prevent multiplt types of comments from being enabled on one individual
+  // prevent multiple types of comments from being enabled on one individual
   // node.
   if (!function_exists('comment_sources_get_source') || !isset($form['#node']->type)) {
     return;
@@ -76,6 +76,8 @@ function os_comments_form_node_form_alter(&$form, &$form_state, $form_id) {
   if ($source == "comment") {
     return;
   }
+
+  // Hides the "Comment settings" vertical tab form section from this node form.
   $form['comment_settings']['#type'] = 'hidden';
 }
 
