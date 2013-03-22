@@ -120,6 +120,16 @@ function os_files_file_insert($file){
 }
 
 /**
+ * Implements hook_file_type_alter().
+ * Ensures no file has the undefined file type
+ */
+function os_files_file_type_alter(&$types, $file) {
+  if (!count($types)) {
+    $types[] = 'undefined';
+  }
+}
+
+/**
  * Return a "Coppy to clip-board" link using clippy library.
  *
  *  @param $url_file
@@ -598,10 +608,12 @@ function os_files_media_browser_params_alter(&$media_params){
     }
     elseif ($media_params['id'] == 'os_link_wysiwyg') {
       $media_params['schemes'] = array('public' => 'public');
+      $media_params['types'][] = 'undefined';
     }
   }
   else {
     $media_params['types'][] = 'document';
+    $media_params['types'][] = 'undefined';
   }
   
   // Are we in multi-tenant? get the file path.
