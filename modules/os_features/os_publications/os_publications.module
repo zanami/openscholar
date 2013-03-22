@@ -400,7 +400,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * @param unknown_type $entry
  */
 function os_publications_biblio_entry_alter(&$entry, $node) {
-
   unset($entry['export_links']);
   if (!empty($node->field_biblio_image[LANGUAGE_NONE][0])) {
     $content = field_attach_view('node', $node, 'teaser');
@@ -410,7 +409,13 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
     $image = '';
   }
   $entry['entry']['#markup'] = _os_publications_biblio_entry_alter($entry['entry']['#markup'], $node);
+  // Attach the abstract slider.
   _os_publications_attach_abstract($entry, $node, 'entry');
+  // Attach the notes if the user chooses to show them.
+  if(variable_get('os_publications_note_in_teaser', FALSE)) {
+    _os_publications_attach_notes($entry, $node);
+  }
+  // Attach the book cover.
   $entry['entry']['#markup'] = $image . $entry['entry']['#markup'];
   $entry['contextual_links'] = array(
   	'#type' => 'contextual_links',
@@ -420,8 +425,10 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
     '#element' => $entry,
     '#weight' => 1000,
   );
-
+  // Add a weight to the download links to allow things to fall properly.
+  $entry['download_links']['#weight'] = 4;
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
+
 }
 
 /**
@@ -464,7 +471,7 @@ function _os_publications_attach_notes(&$entry, $node) {
   if(isset($node->biblio_notes)) {
     $entry['biblio_notes'] = array(
       '#type' => 'container',
-      '#weight' => 4,
+      '#weight' => 5,
       '#attributes' => array(
         'class' => array(
           'biblio-note',
