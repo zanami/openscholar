@@ -1,20 +1,20 @@
 <?php
 // $Id$
 
-include_once ('os_comments.features.inc');
-
 /**
  * @file
  * OS Comments module file.
  */
 
+include_once ('os_comments.features.inc');
+
 /**
  * Implements hook_form_FORM_ID_alter() for cp_app_settings_form.
- *
- * Check if this is a feature form and add comment settings if the feature
- * provides a node.
  */
 function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form_id) {
+  // Checks if this is a feature form and adds comment settingss if the feature
+  // provides a node type.
+
   // Gets the array of node types for this feature.
   $info = features_get_features($form['#feature']);
   // Only continues if this feature provides a node type.
@@ -130,8 +130,6 @@ function os_comments_comment_sources_alter(&$sources) {
 
 /**
  * Implements hook_fb_social_default_presets_alter().
- *
- * @param array $presets
  */
 function os_comments_fb_social_default_presets_alter(&$presets) {
 
@@ -149,11 +147,9 @@ function os_comments_fb_social_default_presets_alter(&$presets) {
 }
 
 /**
- * Save functions for sources in multi-tenant
- */
-
-/**
- * Saves the Disqus node types comment settings
+ * Saves the Disqus node types comment settings.
+ *
+ * @see os_comments_comment_sources_alter()
  */
 function os_comments_disqus_save_vsite($comment_node_types) {
   $vsite = vsite_get_vsite();
@@ -165,7 +161,9 @@ function os_comments_disqus_save_vsite($comment_node_types) {
 }
 
 /**
- * Saves the Facebook node type comments settings
+ * Saves the Facebook node type comments settings.
+ *
+ * @see os_comments_comment_sources_alter()
  */
 function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = '') {
   $vsite = vsite_get_vsite();
@@ -186,6 +184,8 @@ function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = ''
  *   Array containing all node types with Drupal comments enabled, including the
  *   newly added type to enable comments on if the user is enabling Drupal
  *   comments for a type.
+ *
+ * @see os_comments_comment_sources_alter()
  */
 function os_comments_comment_save_vsite($comment_node_types) {
   $vsite = vsite_get_vsite();
@@ -209,10 +209,10 @@ function os_comments_comment_save_vsite($comment_node_types) {
 
 /**
  * Implements hook_cp_settings().
- *
- * Adds field "Disqus shortname" to the CP > Settings form.
  */
 function os_comments_cp_settings() {
+  // Adds field "Disqus shortname" to the CP > Settings form.
+
   $settings = array();
 
   // Returns empty array if Disqus module is not enabled.
@@ -246,12 +246,12 @@ function os_comments_cp_settings() {
 }
 
 /**
- * Implements hook_preprocess_HOOK for node.tpl.php.
- *
- * Shows the "Add new comment" link on node teasers with a non-drupal comment
- * source.
+ * Implements hook_node_view().
  */
 function os_comments_node_view($node, $view_mode) {
+  // Shows the "Add new comment" link on node teasers with a non-drupal comment
+  // source.
+
   // Does nothing unless the node's view mode is teaser.
   if ($view_mode !== 'teaser') {
     return;
@@ -277,7 +277,7 @@ function os_comments_node_view($node, $view_mode) {
 }
 
 /**
- * Implements hook_preprocess_HOOK for node.tpl.php.
+ * Implements hook_preprocess_HOOK() for node.
  */
 function os_comments_preprocess_node(&$vars) {
   // Removes the Drupal comment thread fragment from "Add new comment" link
