@@ -60,6 +60,26 @@ function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ */
+function os_comments_form_node_form_alter(&$form, &$form_state, $form_id) {
+  // If the node type being editted has Drupal Comments enabled, then the
+  // Comment settings should remain unchanged. Otherwise, this hook will
+  // remove the Comment settings form section to prevent confusion, and to
+  // prevent multiplt types of comments from being enabled on one individual
+  // node.
+  if (!function_exists('comment_sources_get_source') || !isset($form['#node']->type)) {
+    return;
+  }
+  $node_type = $form['#node']->type;
+  $source = comment_sources_get_source($node_type);
+  if ($source == "comment") {
+    return;
+  }
+  $form['comment_settings']['#type'] = 'hidden';
+}
+
+/**
  * Validation callback; checks that user has disqus shortname if using discus.
  *
  * @see os_comments_form_cp_app_settings_form_alter()
