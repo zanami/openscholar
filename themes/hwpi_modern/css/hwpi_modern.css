@@ -479,6 +479,9 @@ a.rslides_nav.prev {
     margin-bottom: 0;
 }
 
+#layout_16_9_below .hero-copy h2 {
+    margin-bottom: 16px;
+}
 
 .hero-copy h2 a {
     font-weight: bold;
