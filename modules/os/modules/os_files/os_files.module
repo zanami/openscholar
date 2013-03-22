@@ -461,22 +461,22 @@ function os_files_image_default_styles(){
 
 function os_files_file_default_displays(){
   $keys = array(
-    'image__os_files_xxlarge__file_image' => array(
+    'image__os_files_xxlarge__os_files_image' => array(
       'image_style' => 'os_files_xxlarge'
     ),
-    'image__os_files_xlarge__file_image' => array(
+    'image__os_files_xlarge__os_files_image' => array(
       'image_style' => 'os_files_xlarge'
     ),
-    'image__os_files_large__file_image' => array(
+    'image__os_files_large__os_files_image' => array(
       'image_style' => 'os_files_large'
     ),
-    'image__os_files_med__file_image' => array(
+    'image__os_files_med__os_files_image' => array(
       'image_style' => 'os_files_medium'
     ),
-    'image__os_files_small__file_image' => array(
+    'image__os_files_small__os_files_image' => array(
       'image_style' => 'os_files_small'
     ),
-    'image__default__file_image' => array(
+    'image__default__os_files_image' => array(    // all of the above are deprecated
       'image_style' => 'large'
     )
   );
@@ -484,9 +484,6 @@ function os_files_file_default_displays(){
   foreach ( file_type_get_enabled_types() + array(
     'default' => array()
   ) as $type => $info ) {
-    $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
-    $keys["{$type}__os_files_link_icon__os_link"] = array();
-
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
   }
 
@@ -510,6 +507,13 @@ function os_files_file_default_displays(){
  */
 function os_files_file_formatter_info(){
   $formatters = array();
+  
+  $formatters['os_files_image'] = array(
+    'label' => t('Image'),
+    'default settings' => array(),
+    'view callback' => 'os_files_file_formatter_os_files_image',
+    'settings callback' => 'os_files_file_formatter_os_files_settings',
+  );
 
   $formatters['os_link'] = array(
     'label' => t('Link To File'),
@@ -525,9 +529,47 @@ function os_files_file_formatter_info(){
 }
 
 /**
+ * Renders an image at a given size
+ * Automatically selects the image style to use based on the dimensions set by the user
+ */
+function os_files_file_formatter_os_files_image($file, $display, $langcode) {
+  $breakpoints = array(
+    'os_files_small' => 200,
+    'os_files_medium' => 400,
+    'os_files_large' => 600,
+    'os_files_xlarge' => 800,
+    'os_files_xxlarge' => 1000
+  );
+  
+  $width = isset($file->override['attributes']['width']) 
+            ? $file->override['attributes']['width'] 
+            : $file->image_dimensions['width'];
+  $height = isset($file->override['attributes']['height']) 
+            ? $file->override['attributes']['height'] 
+            : $file->image_dimensions['height'];
+  
+  
+  $formatter = '';
+  foreach ($breakpoints as $style => $dim) {
+    if ($width <= $dim && $height <= $dim) {
+      $formatter = $style;
+    }
+  }
+  if (!$formatter) {
+    $formatter = 'os_files_xxlarge';
+  }
+  dpm($file);
+  
+  $display['settings']['image_style'] = $formatter;
+  return file_entity_file_formatter_file_image_view($file, $display, $langcode);
+}
+
+/**
  * Generates a link to the file
  * This will either be a link to the direct download of a file
  * or to the file's view path (file/$id). Direct download is the default
+ * 
+ * This formatter is @deprecated. Kept around in case anyone is using it.
  */
 function os_files_file_formatter_file_link($file, $display, $langcode){
   $title = field_get_items('file', $file, 'media_title', $langcode);
@@ -560,6 +602,7 @@ function os_files_file_formatter_file_link($file, $display, $langcode){
 }
 
 function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
+  // this block is @deprecated. I think there's one instance of it being used.
   if (isset($tag_info['render_fid']) && $element['content']['file']['#view_mode'] == 'os_files_link') {
     $file = &$element['content']['file'];
     unset($file['icon']);
@@ -692,11 +735,7 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
     case 'public' :
       $type = file_get_type($file);
       if ($type == 'image') {
-        $temp['os_files_xxlarge'] = $view_modes['os_files_xxlarge'];
-        $temp['os_files_xlarge'] = $view_modes['os_files_xlarge'];
-        $temp['os_files_large'] = $view_modes['os_files_large'];
-        $temp['os_files_med'] = $view_modes['os_files_med'];
-        $temp['os_files_small'] = $view_modes['os_files_small'];
+        $temp['default'] = $view_modes['default'];
       }
       else { // until there is support for the audio or video tags, this is the best we can do for that kind of file.
         $temp['os_files_link'] = $view_modes['os_files_link'];
