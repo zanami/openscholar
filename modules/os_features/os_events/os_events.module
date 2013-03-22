@@ -119,17 +119,25 @@ function os_events_preprocess_calendar_datebox(&$vars) {
  */
 function os_events_date_default_argument_alter(&$argument, &$value){
 
-  if (isset($_GET['date'])) {
+  //If we are using the querystring dates and this is not for the minical, then change the defaults
+  if (isset($_GET['date']) && $argument->view->current_display != 'block_1') {
     if ($_GET['type'] == 'year') {
       // The user watch in a year, return him to the first day of the year.
       $time = mktime(12, 0, 0, 1, 1, $_GET['date']);
+      $default_date = new DateObject($time);
+      $value = $default_date->format($argument->arg_format);
+    }elseif($_GET['type'] == 'week' || $_GET['type'] == 'day'){
+      $time = strtotime($_GET['date']);
+      //If this is a valid week then use it as the default
+      if($time){
+        $value = $_GET['date'];
+      }
     }
     else {
       $time = strtotime($_GET['date']);
+      $default_date = new DateObject($time);
+      $value = $default_date->format($argument->arg_format);
     }
-
-    $default_date = new DateObject($time);
-    $value = $default_date->format($argument->arg_format);
   }
 
 }
