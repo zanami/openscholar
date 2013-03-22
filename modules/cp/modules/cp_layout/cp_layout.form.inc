@@ -79,8 +79,11 @@ function cp_layout_full_form($form, $form_state){
   );
 
   $weights = _cp_layout_get_weight_map($regions);
+  $form['unused_wrapper'] = array(
+    '#type' => 'container',
+  );
 
-  $form['unused'] = array(
+  $form['unused_wrapper']['unused'] = array(
     '#theme_wrappers' => array(
       'cp_layout_unused_widgets'
     ),
@@ -132,7 +135,7 @@ function cp_layout_full_form($form, $form_state){
   $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if (!isset($b['region']) || $b['region'] == -1 || $b['region'] === FALSE) {
-      $form['unused'][$bid] = array(
+      $form['unused_wrapper']['unused'][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b
       );
