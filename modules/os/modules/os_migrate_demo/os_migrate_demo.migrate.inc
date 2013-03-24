@@ -744,6 +744,7 @@ class OsMigrateGalleryNode extends OsMigrate {
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
