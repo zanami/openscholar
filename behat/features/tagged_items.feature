@@ -23,3 +23,4 @@ Feature: Testing the tagged items.
      | john/publications  | john/publications/science/air   | The Little Prince         | John F. Kennedy: A Biography|
      | john/reader        | john/reader/science/air         | Engadget rss              | Feeds around the world      |
      | john/software      | john/software/science/air       | Mac OSX                   | Windows 7                   |
+     | john/galleries     | john/galleries/air              | Kittens gallery           | JFK                         |
