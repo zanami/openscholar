@@ -93,6 +93,35 @@ function os_events_process_node(&$variables) {
 }
 
 /**
+ * Calendar datebox preprocess.
+ *
+ * RE-build the links to use query strings, instead of "clean urls".
+ */
+function os_events_preprocess_calendar_datebox(&$vars) {
+  $date = $vars['date'];
+  $view = $vars['view'];
+  $vars['day'] = intval(substr($date, 8, 2));
+  $force_view_url = !empty($view->date_info->block) ? TRUE : FALSE;
+  $month_path = calendar_granularity_path($view, 'month');
+  $year_path = calendar_granularity_path($view, 'year');
+  $day_path = calendar_granularity_path($view, 'day');
+  $url = str_replace(array($month_path, $year_path), $day_path, date_pager_url($view, NULL, $date, $force_view_url, FALSE));
+  $url = explode('/', $url);
+
+  $day = end($url);
+
+  $options = array(
+    'query' => array(
+      'type' => 'day',
+      'day' => $day,
+    ),
+    'absolute' => TRUE,
+  );
+
+  $vars['link'] = !empty($day_path) ? l($vars['day'], 'calendar', $options) : $vars['day'];
+}
+
+/**
  * Implements hook_views_pre_view().
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
