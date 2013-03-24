@@ -301,3 +301,11 @@ function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
     $element['edit']['#href'] = 'cp/build/taxonomy/' . $element['#vocabulary']->machine_name . '/edit';
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
+  $path = 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/add';
+  $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
+}
