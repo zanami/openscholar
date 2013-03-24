@@ -222,23 +222,6 @@ body.navbar .region-sidebar-first {
     margin-right: 9px;
     }
 
-/* MAIN CONTENT AREA 
-
-body.sidebar-first #content,
-body.header-left-main .region-header-second .content {
-    margin-left: 20px;
-    }
-
-body.sidebar-second #content, b
-ody.header-main-right .region-header-second .content {
-    margin-right: 20px;
-    }
-
-body.two-sidebars #content,
-body.header-left-main-right .region-header-second .content {
-    margin-left: 20px;
-    margin-right: 20px;
-    }*/
 
 /* Nodes */
 
@@ -247,3 +230,8 @@ body.header-left-main-right .region-header-second .content {
   border-bottom: 1px solid #D8D6D6;
   display:block;
   }
+  
+  #powerby-login {
+    margin-top: 40px;
+
+}

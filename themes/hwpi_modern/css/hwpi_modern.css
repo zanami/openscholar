@@ -145,7 +145,7 @@ ul.menu ul ul {
 }
 
 h1#page-title {
-  font-size: 40px;
+  font-size: 30px;
   line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
    margin: 0 0 20px;
 }
@@ -177,11 +177,15 @@ h2.block-title {
 
 
 /* Search */
+#search-block-form .container-inline .form-item .form-text {height: 32px;}
+
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-  background-position:  0 -340px;
+   background-position: 2px -340px;
 }
+
+
 
 #search-block-form .form-item label {
 	color:#9A9A9A;
@@ -221,9 +225,8 @@ h2.block-title {
   background: none repeat scroll 0 0 #2D2D2D;
   color: #FFFFFF;
   font-size: 14px;
-  height: 32px;
-  line-height: 32px;
-  padding: 0 19px;
+  line-height: 16px;
+  padding: 7px 19px;
   text-transform: capitalize;
   font-weight: normal;
 }
@@ -355,6 +358,11 @@ table td.mini {
     color: #1E1E1E;
 }
 
+
+#event-start {
+    background: url("../images/event-shield.png") no-repeat scroll 0 0 transparent;
+}
+
 /* Tabs (widget) */
 .ui-tabs .ui-tabs-nav li a {
   text-transform: capitalize;
@@ -387,6 +395,32 @@ table td.mini {
   background-color: #545454;
 }
 
+.section-nav .expanded.menu-depth-2 > a:hover {
+  background-color: #A23338 !important;
+}
+
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a, 
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a, 
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a,
+.section-nav .leaf.menu-depth-3 > a,
+.section-nav .leaf.menu-depth-4 > a,
+.section-nav .leaf.menu-depth-5 > a,
+.section-nav .leaf.menu-depth-6 > a {
+background-color: #f3f3f1 !important;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a:hover, 
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a:hover, 
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a:hover,
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a:hover,
+.section-nav .leaf.menu-depth-3 > a:hover,
+.section-nav .leaf.menu-depth-4 > a:hover,
+.section-nav .leaf.menu-depth-5 > a:hover,
+.section-nav .leaf.menu-depth-6 > a:hover {
+background-color: #e3e3e1 !important;
+}
 
 
 /* Footer */

@@ -254,6 +254,8 @@ table.spaces td.option, table.spaces td.storage {
     padding:15px;
     border: 1px solid #CCC;
  }
+ 
+ .cp-add-new-user ul {list-style-type:none;}
 
 /* CP/BUILD MENU */ 
 .page-cp-build-menu table thead {
@@ -409,20 +411,4 @@ fieldset#edit-biblio-authors .fieldset-legend {
 	padding-left: 0;
 	margin-top: 0;
 	text-transform: none;
-}
-
-.text-format-wrapper .defaultSkin .mceStatusbar {
-	display: none;
-}
-
-.text-format-wrapper .defaultSkin .mceIframeContainer {
-	border-bottom: 0;
-}
-
-.text-format-wrapper .mceIframeContainer iframe {
-	border-bottom: 1px solid #CCC;
-}
-
-.text-format-wrapper .defaultSkin table.mceLayout {
-	border-bottom: 1px solid #CCC;
 }

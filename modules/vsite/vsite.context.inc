@@ -49,18 +49,6 @@ function vsite_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-8',
         ),
-        'os-powered-by' => array(
-          'module' => 'os',
-          'delta' => 'powered-by',
-          'region' => 'footer',
-          'weight' => '10',
-        ),
-        'os-login' => array(
-          'module' => 'os',
-          'delta' => 'login',
-          'region' => 'footer',
-          'weight' => '-10',
-        ),
         'os-install_status' => array(
           'module' => 'os',
           'delta' => 'install_status',
@@ -99,12 +87,6 @@ function vsite_context_default_contexts() {
   $context->reactions = array(
   	'block' => array(
       'blocks' => array(
-      	'os-powered-by' => array(
-          'module' => 'os',
-          'delta' => 'powered-by',
-          'region' => 'footer',
-          'weight' => '10',
-        ),
       )
     )
   );
@@ -148,18 +130,6 @@ function vsite_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'os-powered-by' => array(
-          'module' => 'os',
-          'delta' => 'powered-by',
-          'region' => 'footer',
-          'weight' => '10',
-        ),
-        'os-login' => array(
-          'module' => 'os',
-          'delta' => 'login',
-          'region' => 'footer',
-          'weight' => '-10',
-        ),
       ),
     ),
   );

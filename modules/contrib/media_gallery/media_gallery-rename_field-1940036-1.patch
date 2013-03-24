@@ -1,0 +1,75 @@
+diff --git a/tmp/media_gallery/media_gallery.install b/modules/contrib/media_gallery/media_gallery.install
+index 4d468fc..9460935 100644
+--- a/tmp/media_gallery/media_gallery.install
++++ b/modules/contrib/media_gallery/media_gallery.install
+@@ -1303,3 +1303,70 @@ function media_gallery_update_7010() {
+   }
+   field_bundle_settings('file', $bundle, $bundle_settings);
+ }
++
++/**
++ * Renames field media_gallery_media => media_gallery_file
++ */
++
++function media_gallery_update_7011() {
++  //see: http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
++  $old = 'media_gallery_media';
++  $new = 'media_gallery_file';
++  $transaction = db_transaction();
++  $schema = array(
++    'media_gallery_media_fid' => array(
++        //int(10) 		UNSIGNED 	Yes 	NULL
++      'type' => 'int',
++      'unsignged' => TRUE,
++      'not null' => FALSE,
++      'default' => NULL,
++    ),    
++    'media_gallery_media_display' => array(
++        //tinyint(3) 		UNSIGNED 	No 	1
++      'type' => 'int',
++      'size' => 'tiny',
++      'unsignged' => TRUE,
++      'not null' => TRUE,
++      'default' => 1,
++    ),
++    'media_gallery_media_description' => array(
++      //text 	utf8_general_ci 		Yes 	NULL
++      'type' => 'text',
++      'not null' => FALSE,
++      'default' => NULL,
++    ),
++  );
++  
++  try {
++    db_update('field_config')
++      ->fields(array('field_name' => $new))
++      ->condition('field_name', $old)
++      ->execute();
++      
++    db_update('field_config_instance')
++      ->fields(array('field_name' => $new))
++      ->condition('field_name', $old)
++      ->execute();
++    
++    foreach (array('field_data_', 'field_revision_') as $table_pre) {
++      $old_table = $table_pre . $old;
++      $new_table = $table_pre . $new;
++    
++      db_rename_table($old_table, $new_table);
++  
++      //drop index.  media_gallery_media_fid
++      db_drop_index($new_table, 'media_gallery_media_fid');  
++      foreach (array('fid', 'display', 'description') as $field) {
++        $spec = $schema["${old}_${field}"];
++        $keys = ($field == 'fid') ? array('indexes' => array('media_gallery_file_fid' => array('media_gallery_file_fid'))) : array();
++        db_change_field($new_table, "${old}_${field}", "${new}_${field}", $spec, $keys);        
++      }
++      
++    }
++  } catch (Exception $e) {
++    $transaction->rollback();
++    throw new DrupalUpdateException('Could not update Media Gallery\'s media_gallery_media field.  Rolling back changes.');
++  }
++  
++  return t('Updated Media Gallery field.');
++}

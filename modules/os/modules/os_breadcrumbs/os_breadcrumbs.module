@@ -85,8 +85,6 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
  *  Returns an array of links.
  */
 function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
-  $content_type = _os_breadcrumbs_content_types();
-  $content_type_url = _os_breadcrumbs_content_type_url();
   $links = array();
   $last_item = end($menu_active_trail);
   foreach($menu_active_trail as $key => $menu) {
@@ -102,30 +100,30 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   // So it reads home > publications > my publications
   // rather than home > my publications.
   if(strpos($last_item['href'],'node/') === 0) {
-  	if(isset($last_item['original_map'][1])) {
-  	  $nid = $last_item['original_map'][1];
-  	}else {
-  	  return;
-  	}
-  	$node = node_load($nid);
+    if(isset($last_item['original_map'][1])) {
+      $nid = $last_item['original_map'][1];
+    }else {
+      return;
+    }
+    $node = node_load($nid);
 
-  	// Both software release and class material need to retain their parent content type.
-  	if($node->type == 'class_material' || $node->type == 'software_release') {
-  	  $links = _os_breadcrumbs_build_materials_breadcrumb($node, $content_type);
+    // Both software release and class material need to retain their parent content type.
+    if($node->type == 'class_material' || $node->type == 'software_release') {
+      $links = _os_breadcrumbs_build_materials_breadcrumb($node, _os_breadcrumbs_get_content_type_title($node->type));
   	}else {
-  	  $home_link = array_shift($links);
-  	  $node_url = array_key_exists($node->type, $content_type_url) ? $content_type_url[$node->type] : $node->type;
-  	  if(array_key_exists($node->type,$content_type)) {
-  	  	$short_title = _os_breadcrumbs_shorten_title($content_type[$node->type]);
-  	    array_unshift($links, l(strtoupper($short_title),$node_url));
+      $home_link = array_shift($links);
+      $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
+      if(_os_breadcrumbs_get_content_type_title($node->type) != FALSE) {
+        $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_get_content_type_title($node->type));
+        array_unshift($links, l(strtoupper($short_title),$node_url));
   	  }else {
-  	    // Replace the _ with a space.
-  	    $link_title = str_replace('_', ' ', $node->type);
-  	    $short_title = _os_breadcrumbs_shorten_title($link_title);
-  	    array_unshift($links, l(strtoupper($short_title),$node_url));
-  	  }
-  	  array_unshift($links, $home_link);
-  	}
+        // Replace the _ with a space.
+        $link_title = str_replace('_', ' ', $node->type);
+        $short_title = _os_breadcrumbs_shorten_title($link_title);
+        array_unshift($links, l(strtoupper($short_title),$node_url));
+      }
+      array_unshift($links, $home_link);
+    }
   }
 
   // Check for blog archives.
@@ -234,7 +232,6 @@ function _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail) {
  */
 function _os_breadcrumbs_build_materials_breadcrumb($node) {
   $node_field = '';
-  $content_type = _os_breadcrumbs_content_types();
   $links = array();
   if(isset($node)) {
     // Build the home link.
@@ -251,7 +248,7 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
     // Get the parent content type and class.
     if(isset($parent_node)) {
       // Parent type.
-      $parent_type = array_key_exists($parent_node->type, $content_type) ? $content_type[$parent_node->type] : $parent_node->type;
+      $parent_type = _os_breadcrumbs_get_content_type_title($parent_node->type) != FALSE ? _os_breadcrumbs_get_content_type_title($parent_node->type) : $parent_node->type;
       $short_title = _os_breadcrumbs_shorten_title($parent_type);
       $links[] = l(strtoupper($short_title),$parent_type);
       // Parent name.
@@ -261,7 +258,7 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
       $links[] = l(strtoupper($short_title),'node/'.$parent_class_node);
     }
     // Breadcrumb title.
-    $materials_title = array_key_exists($node->type, $content_type) ? $content_type[$node->type] : $node->type;
+    $materials_title = _os_breadcrumbs_get_content_type_title($node->type) != FALSE ? _os_breadcrumbs_get_content_type_title($node->type) : $node->type;
     $materials_title = _os_breadcrumbs_shorten_title($materials_title);
     // Create the class material breadcrumb now.
 
@@ -285,12 +282,10 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
  */
 function _os_breadcrumbs_node_breadcrumbs($node) {
   $links = array();
-  $content_type = _os_breadcrumbs_content_types();
-  $content_type_url = _os_breadcrumbs_content_type_url();
   if(isset($node)) {
-  	$links[] = l(t('HOME'),'<front>');
-  	// Check for a book.
-  	if(isset($node->book)) {
+    $links[] = l(t('HOME'),'<front>');
+    // Check for a book.
+    if(isset($node->book)) {
   	  // Traversing a book for breadcrumbs had issues separating the parents.
   	  // Orig using book_get_flat_menu, but that returned incorrect parents in certain use cases.
   	  // This method uses the mlid's stored in the p1-p9 elements of the node->book array.
@@ -321,9 +316,9 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
   	    $links = _os_breadcrumbs_build_materials_breadcrumb($node);
   	  }else {
         // Get the node type.
-        $node_type = array_key_exists($node->type, $content_type) ? $content_type[$node->type] : $node->type;
+        $node_type = _os_breadcrumbs_get_content_type_title($node->type) !=FALSE ? _os_breadcrumbs_get_content_type_title($node->type) : $node->type;
         // Get the parent content type link.
-        $node_url = array_key_exists($node->type, $content_type_url) ? $content_type_url[$node->type] : $node->type;
+        $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
         // Parent breadcrumbs.
         $short_parent_title = _os_breadcrumbs_shorten_title($node_type);
         $links[] = l(strtoupper($short_parent_title),$node_url);
@@ -360,36 +355,51 @@ function _os_breadcrumbs_shorten_title($title) {
   return $shortened_title;
 }
 
-function _os_breadcrumbs_content_types() {
-  $content_types = array(
-    'person' => 'people',
-    'biblio' => 'publications',
-    'class' => 'classes',
-    'link' => 'links',
-    'feed' => 'reader',
-    'software_project' => 'software',
+/**
+ * Helper function build the breadcrumb title based off the node type path.
+ * @param $node_type
+ *  node->type.
+ */
+function _os_breadcrumbs_get_content_type_title($node_type) {
+  if(!isset($node_type)) {
+  	return FALSE;
+  }
+  $apps = os_app_info();
+  // Software release and class material needs to be checked seperately.
+  // If not checked sep. the breadcrumb would be Home/Software/Foo/Software
+  $fields_array = array(
     'software_release' => 'software release',
-    'media_gallery' => 'galleries',
     'class_material' => 'class material',
   );
-  return $content_types;
+  foreach ($apps as $app => $info) {
+    if (isset($info['nodetypes']) && is_array($info['nodetypes']) && in_array($node_type, $info['nodetypes'])) {
+      // Check for software release or class material text.
+      if(array_key_exists($node_type, $fields_array)) {
+        $info['path'] = $fields_array[$node_type];
+      }
+      return $info['path'];
+    }
+  }
+  return FALSE;
 }
 
-function _os_breadcrumbs_content_type_url() {
-  $content_type_url = array(
-    'media_gallery' => 'galleries',
-    'bio' => 'biocv',
-    'cv' => 'biocv',
-    'class' => 'classes',
-    'person' => 'people',
-    'event' => 'calendar',
- 	'biblio' => 'publications',
- 	'link' => 'links',
-    'software_project' => 'software',
-    'feed' => 'reader',
-   );
+/**
+ * Helper function to build the breadcrumb app link.
+ * @param $node_type
+ *  node->type.
+ */
+function _os_breadcrumbs_get_content_type_url($node_type) {
+  if(!isset($node_type)) {
+  	return FALSE;
+  }
+  $apps = os_app_info();
+  foreach ($apps as $app => $info) {
+    if (isset($info['nodetypes']) && is_array($info['nodetypes']) && in_array($node_type, $info['nodetypes'])) {
+      return $info['path'];
+    }
+  }
 
-  return $content_type_url;
+  return FALSE;
 }
 
 /**

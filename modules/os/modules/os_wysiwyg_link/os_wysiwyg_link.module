@@ -29,6 +29,17 @@ function os_wysiwyg_link_menu() {
   return $items;
 }
 
+function os_wysiwyg_link_form_file_entity_add_upload_alter(&$form, &$form_state) {
+  $args = $form_state['build_info']['args'][0];
+  if (isset($args['no_redirect']) && $args['no_redirect']) {
+    $form['#submit'][] = 'os_wysiwyg_link_add_upload_submit';
+  }
+}
+
+function os_wysiwyg_link_add_upload_submit($form, &$form_state) {
+  $form_state['no_redirect'] = true;
+}
+
 function os_wysiwyg_link_filter_info() { 
   $filters['owl_filter'] = array(
     'title' => t('Convert File links to correct path'),
@@ -44,8 +55,10 @@ function os_wysiwyg_link_filter($text) {
   $matches = _os_wysiwyg_link_find_links($text);
   foreach ($matches as $m) {
     $file = file_load($m[2]);
-    $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
-    $text = str_replace($m[0], $link, $text);
+    if (isset($file->uri)) {
+      $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
+      $text = str_replace($m[0], $link, $text);
+    }
   }
   return $text;
 }

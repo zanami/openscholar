@@ -69,6 +69,9 @@ font-family: helvetica,arial,sans-serif;
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
+.sub_title {
+    margin-top: -5px;
+}
 
 #header-container a {color:#FFF;}
 
@@ -287,9 +290,8 @@ margin: 8px 0 0 0;
 }
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
-.region-header-third #block-os-secondary-menu  {
-   width:260px;
-   margin: -10px 0 40px;
+.region-header-third .menu  {
+  margin: -10px 5px 0;
 }
 
 .region-header-third .menu ul {
@@ -298,7 +300,7 @@ float:right;
  
 .region-header-third .menu li {
  list-style-image: none;
-    
+
  }
  
 .region-header-third .menu li a {

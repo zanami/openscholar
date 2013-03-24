@@ -68,7 +68,7 @@ function harvard_courses_os_widget() {
   $widgets = array();
 
   $widgets['harvard_courses-courses_filter'] = array(
-    'module' => 'havard_courses',
+    'module' => 'harvard_courses',
     'delta' => 'courses_filter',
     'title' => '',
     'info' => t('Harvard courses filter'),
@@ -111,23 +111,21 @@ function  harvard_courses_block_view($delta) {
  */
 function harvard_courses_courses_filter() {
   if (!$space = spaces_get_space()) {
-    return NULL;
-  }
-
-  $query = db_select('og_membership', 'ogm');
-  $query->join('node', 'n', 'n.nid = ogm.etid');
-  $results = $query
-    ->fields('n')
-    ->condition('ogm.gid', $space->id)
-    ->condition('n.type', 'harvard_course')
-    ->execute()
-    ->fetchAllKeyed();
-
-  if (empty($results)) {
     return;
   }
 
-  $nodes = node_load_multiple(array_keys($results));
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nodes = node_load_multiple(array_keys($result['node']));
   $semester = array();
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);

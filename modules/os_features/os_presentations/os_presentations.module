@@ -20,6 +20,9 @@ function os_presentations_os_app_info() {
   	'nodetypes' => array(
   	  'presentation',
     ),
+    'views tabs' => array(
+      'os_presentations' => array('page'),
+    ),
   );
 
   return $apps;

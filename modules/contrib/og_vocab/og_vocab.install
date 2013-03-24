@@ -239,3 +239,13 @@ function og_vocab_update_7100(&$sandbox) {
   );
   db_add_field('og_vocab', 'field_name', $spec);
 }
+
+/**
+ * Adding a OG vocab field name to existing vocabs.
+ */
+function og_vocab_update_7101() {
+  db_update('og_vocab')
+    ->fields(array('field_name' => OG_VOCAB_FIELD))
+    ->condition('field_name', '', '=')
+    ->execute();
+}

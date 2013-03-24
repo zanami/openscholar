@@ -537,7 +537,7 @@ function os_profiles_field_default_fields() {
         'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
-        'max_filesize' => '',
+        'max_filesize' => '6 MB',
         'max_resolution' => '',
         'min_resolution' => '',
         'title_field' => 0,

@@ -256,31 +256,56 @@ function _os_biocv_cv_exists() {
 }
 
 /**
- * Page callback; renders a Bio node.
+ * Page callback; renders a Bio node with optional CV link.
  */
 function _os_biocv_bio_page_contents() {
-  $output = '';
+  $output = array();
 
-  $vsite = vsite_get_vsite();
-
-  $cv_filepath = FALSE;
+  // Optionally adds CV download link.
   if (!_os_biocv_show_local_tasks()) {
     $cv_node = os_biocv_get_cv_node();
-    if ($cv_node !== FALSE) {
+    if ($cv_node) {
       $cv_filepath = _os_biocv_get_cv_filepath($cv_node);
+      if ($cv_filepath) {
+        $output['cv'] = array(
+         '#markup' => "<h3 class='cv-direct-download'>".t("Download CV: ") . l('PDF', $cv_filepath) . "</h3>",
+        );
+        // Prompts admin user to edit CV PDF upload.
+        if (_os_biocv_access_admin()) {
+          //$edit_link = l(t('Remove or replace your CV'), "node/{$cv_node->nid}/edit");
+          //$output['cv']['#markup'] .= $edit_link;
+        }
+      }
+      // Prompts admin user to upload a CV PDF if they have a CV node without a PDF.
+      else {
+        //$upload_link = l(t('Upload a PDF do display as your CV'), "node/{$cv_node->nid}/edit");
+        //$output['cv']['#markup'] .= $upload_link;
+      }
     }
   }
-  if ($cv_filepath !== FALSE) {
-    $output['cv'] = array(
-     '#markup' => "<h3 class='cv-direct-download'>".t("Download CV: ") . l('PDF', $cv_filepath) . "</h3>",
-    );
-  }
-
   // Loads the Bio node
   $node = os_biocv_get_bio_node();
   if ($node) {
+    if (empty($node->body) && _os_biocv_access_admin()) {
+      // Spoofs a node body in order to print contextual links, etc.
+      // Note: this makes no changes to the bio node because we don't save it.
+      $markup = '<p>' . t('Oops! Nothing to show here yet.') . ' ' . l(t('Add some text to your bio'), "node/{$node->nid}/edit") . '</p>';
+      $node->body['und'] = array(
+        array(
+          'value' => $markup,
+          'summary' => '',
+          'format' => 'filtered_html',
+          'safe_value' => $markup,
+          'safe_summary' => '',
+        ),
+      );
+    }
     drupal_set_title($node->title);
     $output['node'] = node_view($node, 'full');
+  }
+  else if (_os_biocv_access_admin()) {
+    $output['node'] = array();
+    $output['node']['#markup'] = t('Oops! Nothing to show here yet.') . ' ' . l(t('Create a bio post now'), 'node/add/bio');
   }
   return $output;
 }

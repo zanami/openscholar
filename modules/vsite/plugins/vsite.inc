@@ -97,11 +97,6 @@ class vsite extends space_og {
             }
           }
         }
-        else {
-          if ($this->active && $node->nid && arg(0) == 'node' && arg(1) == $node->nid && !arg(2)) {
-            drupal_goto(drupal_get_path_alias(request_path()));
-          }
-        }
         break;
 
       case 'init':
@@ -118,6 +113,7 @@ class vsite extends space_og {
             )
           );
         }
+
         // Redirects to path without purl for vsites with custom domains.
         if ($this->purl_provider == 'vsite_domain') {
           $path = _purl_cache_q();
@@ -140,6 +136,7 @@ class vsite extends space_og {
             }
           }
         }
+
         // Redirects to a node alias.
         if ($node = menu_get_object()) {
           if (isset($node->nid) && !og_is_group_type('node', $node->type)) {
@@ -150,7 +147,7 @@ class vsite extends space_og {
             $sid = isset($sids[0]) ? $sids[0] : NULL;
             // Handles both types of requests:
             // "node/123" and "wrongsite/node/123"
-            if ((!$this->active && $sid) || ($sid && $sid != $this->id)) {
+            if ((!$this->active && $sid) || ($sids && !in_array((int) $this->id, $sids))) {
               // Redirects to the correctly aliased node in its own vsite.
               spaces_load('og', $sid)->activate();
             }
