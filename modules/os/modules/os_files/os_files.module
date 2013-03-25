@@ -714,8 +714,9 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
  */
 function os_files_preprocess_media_thumbnail(&$vars) {
   $element = &$vars['element'];
-  if ($element['#file']->filename != $element['#file']->origname) {
-    $element['#name'] = $element['#file']->origname.' ('.$element['#file']->filename.')';
+  $filename = basename($element['#file']->uri);
+  if ($element['#file']->filename != $filename) {
+    $element['#name'] = $element['#file']->filename.' ('.$filename.')';
   }
 }
 
