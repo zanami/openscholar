@@ -122,6 +122,16 @@ function os_profiles_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_field_display_ENTITY_TYPE_alter().
+ */
+function os_profiles_field_display_node_alter(&$display, $context) {
+  // Disable field redirection if this node is configured to display via field_redirection, and we are not on the full_node page for the node.
+  if (isset($display['type']) && $display['type'] == "field_redirection" && !node_is_page($context['entity'])) {
+    $display['type'] = 'hidden';
+  }
+}
+
+/**
  * Prepares the node title for person nodes.
  */
 function _os_profiles_person_node_title($node) {
