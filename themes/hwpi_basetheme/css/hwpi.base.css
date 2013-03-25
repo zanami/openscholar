@@ -20,7 +20,8 @@ a:visited {
 
 #columns .block.block-boxes-os_taxonomy_fbt ul,
 #columns .block .item-list ul,
-#columns .block.block-boxes-os_boxes_twitterfeed ul
+#columns .block.block-boxes-os_boxes_twitterfeed ul,
+#columns .block.block-boxes-twitter ul
  {list-style: none;}
 
 p:empty {
@@ -304,6 +305,13 @@ ol.search-results li.search-result:last-child {
   text-decoration: underline;
   font-family:arial;
 }
+
+.calendar-calendar .week-view div.single-day .view-item, 
+.calendar-calendar .day-view div.single-day .view-item {
+    float: left;
+    position: relative;
+    width: auto;
+  }
 
 .calendar-calendar div.date-nav h3 {
   color: #1e1e1e;
