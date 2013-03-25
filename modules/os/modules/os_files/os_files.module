@@ -462,22 +462,34 @@ function os_files_image_default_styles(){
 function os_files_file_default_displays(){
   $keys = array(
     'image__os_files_xxlarge__os_files_image' => array(
-      'image_style' => 'os_files_xxlarge'
+      'image_style' => 'os_files_xxlarge',
+      'alt' => '',
+      'title' => '',
     ),
     'image__os_files_xlarge__os_files_image' => array(
-      'image_style' => 'os_files_xlarge'
+      'image_style' => 'os_files_xlarge',
+      'alt' => '',
+      'title' => '',
     ),
     'image__os_files_large__os_files_image' => array(
-      'image_style' => 'os_files_large'
+      'image_style' => 'os_files_large',
+      'alt' => '',
+      'title' => '',
     ),
     'image__os_files_med__os_files_image' => array(
-      'image_style' => 'os_files_medium'
+      'image_style' => 'os_files_medium',
+      'alt' => '',
+      'title' => '',
     ),
     'image__os_files_small__os_files_image' => array(
-      'image_style' => 'os_files_small'
+      'image_style' => 'os_files_small',
+      'alt' => '',
+      'title' => '',
     ),
     'image__default__os_files_image' => array(    // all of the above are deprecated
-      'image_style' => 'large'
+      'image_style' => 'large',
+      'alt' => '',
+      'title' => '',
     )
   );
 
