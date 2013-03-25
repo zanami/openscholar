@@ -131,6 +131,10 @@ function os_profiles_field_display_node_alter(&$display, $context) {
   }
 }
 
+/**
+ * Restrict access to the redirect field on the person node.
+ * @return boolean
+ */
 function os_profiles_field_access($op, $field, $entity_type, $entity, $account) {
   if ($field['field_name'] == 'field_url' && $entity_type == 'node' && $entity->type == 'person' && $op == 'edit') {
     return user_access('edit field redirection', $account);
