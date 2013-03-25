@@ -41,6 +41,7 @@ features[user_permission][] = administer group
 features[user_permission][] = create department content
 features[user_permission][] = create personal content
 features[user_permission][] = create project content
+features[user_permission][] = create subsites
 features[user_permission][] = create vsite content on behalf
 features[user_permission][] = delete any department content
 features[user_permission][] = delete any personal content
