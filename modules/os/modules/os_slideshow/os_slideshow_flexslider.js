@@ -19,27 +19,27 @@ Drupal.behaviors.os_slideshow = {
     function markpage(e) {
       var slider = e.data().flexslider 
       var page = slider.currentSlide      
-      $(slider).find('.flex-page-link').removeClass('active')
-      $(slider).find('#flex-page-'+page).addClass('active')
+      $(slider).find('.flex-pager').removeClass('active')
+      $(slider).find('.flex-pager '+page).addClass('active')
     }
     
     $(window).load(function() {
       for (delta in Drupal.settings.os_slideshow) {
         //start slideshow
         var div = 'div#' + delta;
-        var slider = $(div + ' .flexslider');        
+        var $slider = $(div + ' .flexslider');        
         Drupal.settings.os_slideshow[delta]['after'] = markpage;
-        slider.flexslider(Drupal.settings.os_slideshow[delta]);
+        $slider.flexslider(Drupal.settings.os_slideshow[delta]);
 
         //bind controls 
-        slider.find('#flex-next').click(function() { $(this).closest('.flexslider').flexslider('next') });
-        slider.find('#flex-prev').click(function() { $(this).closest('.flexslider').flexslider('prev'); });
-        slider.find('#flex-pause').click(function() {
-          var slider = $(this).closest('.flexslider');
-          if (slider.closest('.flexslider').hasClass('pause')) {
-            slider.removeClass('pause').flexslider('play');
+        $slider.find('.flex-next').click(function() { $(this).closest('.flexslider').flexslider('next') });
+        $slider.find('.flex-prev').click(function() { $(this).closest('.flexslider').flexslider('prev'); });
+        $slider.find('.flex-pause').click(function() {
+          var $slider = $(this).closest('.flexslider');
+          if ($slider.closest('.flexslider').hasClass('pause')) {
+            $slider.removeClass('pause').flexslider('play');
           } else {
-            slider.addClass('pause').flexslider('pause');
+            $slider.addClass('pause').flexslider('pause');
           }
         });
 
@@ -51,15 +51,14 @@ Drupal.behaviors.os_slideshow = {
         }
         
         //bind pager functions
-        for (var i=0; i<slider.find('img').length; i++) {
+        for (var i=0; i<$slider.find('img').length; i++) {
           var fn = pager_closure(i);
-          slider.find('#flex-page-'+i).click(fn);        
+          $slider.find('#flex-pager '+i).click(fn);        
         }
         
         //mark current pager page
-        var page = (slider.currentSlide === undefined) ? 0 : slider.currentSlide      
-        slider.find('#flex-page-'+page).addClass('active')
-        console.log(page);
+        var page = ($slider.currentSlide === undefined) ? 0 : $slider.currentSlide      
+        $slider.find('#flex-pager '+page).addClass('active')
       }
     });
   }

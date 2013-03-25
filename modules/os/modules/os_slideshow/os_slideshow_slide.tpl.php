@@ -7,7 +7,7 @@
 
 <li>
   <?php print $image; ?>
-  <div class="caption hero-copy">
+  <div class="caption">
     <h2><?php print $headline; ?></h2>
     <p><?php print $description; ?></p>
   </div>

@@ -48,14 +48,7 @@ function os_slideshow_library() {
     'js' => array(libraries_get_path('flexslider') . '/jquery.flexslider-min.js' => array(),),
     //'css' => array(libraries_get_path('flexslider') . '/flexslider.css' => array('type' => 'file','media' => 'screen')),
   );
-
-  $libraries['responsiveslides'] = array(
-    'title' => 'ResponsiveSlides.js',
-    'website' => 'https://github.com/viljamis/ResponsiveSlides.js',
-    'version' => '1.53',
-    'js' => array(libraries_get_path('responsiveslides') . '/responsiveslides.js' => array(),), //not original verison.  patched by HappyCog!
-    //'css' => array(libraries_get_path('responsiveslides') . '/responsiveslides.css' => array('type' => 'file','media' => 'screen')),
-  );
+  
   return $libraries;
 }
 
@@ -302,6 +295,8 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
   $img = ($node->field_image) ? $node->field_image[$lang][0]['uri'] : '';
   $img_vars = array('path' => $img, 'style_name' => $vars['style_name']);
   $vars['image'] = theme('image_style', $img_vars);
+  
+  //no dimensions in image tag!
 
   $url = ($node->field_link) ? $node->field_link[$lang][0]['url'] : '';
   if ($url) {
@@ -316,15 +311,16 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
  */
 function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   //load javascript, pass it our settings
-  drupal_add_library('os_slideshow', 'responsiveslides');
-  drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_slider.js');
+  drupal_add_library('os_slideshow', 'flexslider');
+  drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
   $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
     array('boxes-box-'.$vars['box_delta'] => array(
-      'pager' => TRUE,    //pager
-      'nav' => TRUE,  //control buttons
-      'timeout' => intval($vars['timeout'] + $vars['speed']), //flex starts the timer after transition.  responsive starts it during.  adding them will let responsive look like flex did
-      'speed' => $vars['speed'],  
-      'random' => $vars['random'],
+      'controlNav' => FALSE,    //pager
+      'directionNav' => FALSE,  //control buttons
+      'slideshowSpeed' => intval($vars['timeout']), //flex starts the timer after transition.  responsive starts it during.  adding them will let responsive look like flex did
+      'animationSpeed' => $vars['speed'],  
+      'randomize' => $vars['random'],
+      'animation' => 'fade',
     )
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
