@@ -207,9 +207,6 @@ function _os_link_get_view($params) {
             '#id' => 'file-edit-no-selection',
             '#attributes' => array(
               'id' => 'file-edit-no-selection',
-            ),
-            'text' => array(
-              '#markup' => t('Select a file to edit it.'),
             )
           )
         )
