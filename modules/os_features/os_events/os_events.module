@@ -11,8 +11,8 @@ function os_events_os_app_info() {
 
   $apps['os_events'] = array(
     'path' => 'calendar',
-  	'nodetypes' => array(
-  	  'event',
+    'nodetypes' => array(
+      'event',
     ),
     'views tabs' => array(
       'os_events' => array(
@@ -75,7 +75,7 @@ function os_events_vsite_og_node_type_info() {
  */
 function os_events_process_node(&$variables) {
   if($variables['type'] != 'event') {
-  	return;
+    return;
   }
 
   // Move the terms to the top of the node display.

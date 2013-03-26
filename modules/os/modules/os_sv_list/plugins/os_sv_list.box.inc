@@ -493,16 +493,18 @@ class os_sv_list_box extends os_boxes_default {
 	      }
 	    }
 
-	    $operator = (count($gids) == 1)? "=" : "IN";
-	    $gids = (count($gids) == 1)? current($gids) : $gids;
+	    if(count($gids)){
+		    $operator = (count($gids) == 1)? "=" : "IN";
+		    $gids = (count($gids) == 1)? current($gids) : $gids;
 
-	    if($query instanceof EntityFieldQuery){
-	      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
-	    }else{
-	      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
-	      $query->condition('og.gid', $gids, $operator);
-	      $query->condition('og.entity_type', 'node');
-	      $query->condition('og.group_type', 'node');
+		    if($query instanceof EntityFieldQuery){
+		      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
+		    }else{
+		      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
+		      $query->condition('og.gid', $gids, $operator);
+		      $query->condition('og.entity_type', 'node');
+		      $query->condition('og.group_type', 'node');
+		    }
 	    }
     }
 

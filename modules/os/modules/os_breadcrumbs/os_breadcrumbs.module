@@ -61,7 +61,13 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
   $space = spaces_get_space();
 
   // Get the breadcrumb divider variable.
-  $breadcrumb_divider = '&#47;';
+  $theme_divider = theme_get_setting('breadcrumb_divider');
+  if(isset($theme_divider)) {
+    $breadcrumb_divider = $theme_divider;
+  }else {
+    // Set it to a default of /.
+    $breadcrumb_divider = '&#47;';
+  }
 
   if(isset($links) && is_array($links)) {
     // Set custom breadcrumbs
