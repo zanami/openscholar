@@ -308,10 +308,18 @@ ol.search-results li.search-result:last-child {
 
 .calendar-calendar .week-view div.single-day .view-item, 
 .calendar-calendar .day-view div.single-day .view-item {
-    float: left;
+     float: left;
+    height: 80px;
     position: relative;
-    width: auto;
+    width: 100px;
   }
+
+.calendar-calendar .week-view .full div.calendar-agenda-hour, 
+.calendar-calendar .day-view .full div.calendar-agenda-hour, 
+.calendar-calendar .week-view .full div.calendar-agenda-items, 
+.calendar-calendar .day-view .full div.calendar-agenda-items {
+    height: 80px;
+}
 
 .calendar-calendar div.date-nav h3 {
   color: #1e1e1e;
