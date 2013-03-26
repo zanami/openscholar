@@ -40,6 +40,14 @@ Drupal.wysiwyg.plugins.os_link = {
       src: Drupal.settings.osWysiwygLink.browserUrl, // because media is dumb about its query args
       onLoad: function (e) { self.popupOnLoad(e, selection, editorId); }
     });
+    
+    // adjust size of modal
+    jQuery('iframe.media-modal-frame').attr('width', '').css('width', '100%')
+      .parent('.media-wrapper').css({
+        width: '905px', 
+        left: '50%',
+        marginLeft: '-452.5px'
+      });
   },
   
   insertLink: function (editorId, body, target, attributes) {

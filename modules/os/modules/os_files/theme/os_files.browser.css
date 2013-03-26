@@ -53,10 +53,11 @@
 }
 
 .views-exposed-form .views-exposed-widget {
-	float: none;
 	display: inline-block;
+	padding-right: 0.5em;
 }
 
 .views-exposed-form .views-widget-filter-filename {
-	width: 100%;
+	float: right;
+	padding-top: 0.5em;
 }
