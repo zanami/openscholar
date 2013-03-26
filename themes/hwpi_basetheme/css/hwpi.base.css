@@ -311,8 +311,12 @@ ol.search-results li.search-result:last-child {
      float: left;
     height: 80px;
     position: relative;
-    width: 100px;
+    width: 120px;
   }
+  
+.calendar-calendar .week-view div.single-day .view-item {
+    width: 100px;
+  }  
 
 .calendar-calendar .week-view .full div.calendar-agenda-hour, 
 .calendar-calendar .day-view .full div.calendar-agenda-hour, 
