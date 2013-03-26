@@ -232,8 +232,6 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     $form['preview']['#access'] = false;
   }
   
-  $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
-  
   $form['user']['#access'] = false;
 
   // only display the field if the file is older than 5 minutes
