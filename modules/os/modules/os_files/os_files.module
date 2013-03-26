@@ -608,7 +608,6 @@ function os_files_media_browser_params_alter(&$media_params){
     }
     elseif ($media_params['id'] == 'os_link_wysiwyg') {
       $media_params['schemes'] = array('public' => 'public');
-      $media_params['types'][] = 'undefined';
     }
   }
   else {
