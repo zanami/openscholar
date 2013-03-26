@@ -152,6 +152,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       if (isset($build['field_address'])) {
         $build['field_address']['#label_display'] = 'hidden';
         $build['contact_details']['field_address'] = $build['field_address'];
+        $build['contact_details']['field_address'][0]['#markup'] = str_replace("\n", '<br>', $build['contact_details']['field_address'][0]['#markup']);
         unset($build['field_address']);
       }
       // Contact Details > email
