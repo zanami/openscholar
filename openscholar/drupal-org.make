@@ -139,6 +139,9 @@ projects[field_collection][version] = 1.0-beta5
 projects[field_group][subdir] = "contrib"
 projects[field_group][version] = 1.1
 
+projects[field_redirection][subdir] = "contrib"
+projects[field_redirection][version] = 2.5
+
 projects[file_entity][subdir] = "contrib"
 ;projects[file_entity][version] = 2.0-unstable7+35-dev
 ; projects[file_entity][revision] = "11894c1"
