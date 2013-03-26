@@ -9,10 +9,10 @@
  * Also provides admin form for creating domains for vsites.
  */
 
-// Change the default domain proccessor to our custom processor
+// Changes the default domain proccessor to our custom processor.
 define('PURL_VSITE_DOMAIN', 'vsite_domain');
 
-// Change the default domain proccessor to our custom processor
+// Changes the default domain proccessor to our custom processor.
 define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
@@ -60,10 +60,10 @@ function vsite_domain_enable() {
 
 /**
  * Implements hook_perm().
- *
- * Add new permissions for managing domains witin a vsite
  */
 function vsite_domain_permission() {
+  // Adds new permissions for managing domains witin a vsite.
+
   return array(
     'change vsite domain' => array(
       'title' => t('Change vsite domain'),
@@ -74,10 +74,10 @@ function vsite_domain_permission() {
 
 /**
  * Implements hook_purl_provider().
- *
- * This provides the domain provider for vsite's
  */
 function vsite_domain_purl_provider() {
+  // Provides the domain provider for vsites.
+
   $items = array();
   $items['vsite_domain'] = array(
     'name' => 'VSite Domain Provider',
@@ -93,7 +93,7 @@ function vsite_domain_purl_provider() {
 }
 
 /**
- * Callback to activate the current space, using a domain provider
+ * Apply context callback; activates current space using a domain provider.
  */
 function vsite_domain_apply_context($space_type, $sid) {
   static $once;
@@ -105,8 +105,8 @@ function vsite_domain_apply_context($space_type, $sid) {
     $modifier = purl_load(array('id' => $sid, 'provider' => $space->purl_provider));
     $host = str_replace('http://', '', $_SERVER['HTTP_HOST']);
     if($modifier['value'] != $host && strpos($host, 'www.') === 0 && $modifier['value'] == substr($host, 4)){
-      //If we are at a path prefixed with www and this site is not configured
-      //with www as the default domain then redirect to default
+      // If we are at a path prefixed with www and this site is not configured
+      // with www as the default domain then redirect to default
       unset($_GET['destination']);
       drupal_goto(request_path(), array(
 	      'purl' => array(
@@ -122,9 +122,11 @@ function vsite_domain_apply_context($space_type, $sid) {
 }
 
 /**
- * Context prefix provider callback.
+ * Implements hook_purl_processor().
  */
 function vsite_domain_purl_processor() {
+  // Context prefix provider callback.
+
   $info = array();
   $info['vsite_domain'] = array(
     'title' => t('Scholar Vsite Domain Modifier'),
@@ -149,13 +151,11 @@ function vsite_domain_purl_processor() {
 }
 
 /**
- * Implements cp_settings().
- *
- * @return array
- *
- * @todo Form to set domain
+ * Implements hook_cp_settings().
  */
 function vsite_domain_cp_settings() {
+  // @todo Form to set domain
+
   $settings = array();
   $space = spaces_get_space();
   if (!empty($space)) {
@@ -206,10 +206,7 @@ function vsite_domain_cp_settings() {
 }
 
 /**
- * Validate function for handling the vsite_domain generic setting
- *
- * @param $space vsite
- * @param $value array
+ * Form validate callback; adds purl validation if domain value is set.
  */
 function vsite_domain_cp_settings_domain_validate($form) {
   if (strlen($form['value']['#value'])) {
@@ -220,10 +217,7 @@ function vsite_domain_cp_settings_domain_validate($form) {
 }
 
 /**
- * Submit function for handdling the vsite_domain generic setting
- *
- * @param $space vsite
- * @param $value array
+ * Form submit callback; updates purl table when vsite_domain_name changes.
  */
 function vsite_domain_cp_settings_domain_submit(&$form, &$form_state) {
   $value = &$form_state['values'];
@@ -257,11 +251,13 @@ function vsite_domain_cp_settings_domain_submit(&$form, &$form_state) {
 }
 
 /**
- * Maintain a array of purl's that have been processed, only one vsite_provider should adjust each path
+ * Maintains a static array of purl values that have been processed.
+ *
+ * Note: only one vsite_provider should adjust each path.
  *
  * @param string $purl
  *
- * @ingroup private
+ * @return array $processed
  */
 function _vsite_domain_processed_purls($purl = FALSE) {
   static $processed;
@@ -276,4 +272,3 @@ function _vsite_domain_processed_purls($purl = FALSE) {
 
   return $processed;
 }
-
