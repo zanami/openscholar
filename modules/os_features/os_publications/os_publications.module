@@ -120,9 +120,10 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     $query->condition('ogm.gid', $space->id);
   }
 
-  // Check for publication_type view.
   $item = menu_get_item();
-  if(isset($item['path']) && $item['path'] == 'publications' && isset($item['map'][1]) && $item['map'][1] == 'type') {
+  // Add custom sorting to all filter by publications filters.
+  $filter_array = array('type','year','author');
+  if(isset($item['path']) && $item['path'] == 'publications' && isset($item['map'][1]) && in_array($item['map'][1], $filter_array)) {
     // Reset the order.
     $order = &$query->getOrderBy();
     $order = array();
