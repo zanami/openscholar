@@ -735,7 +735,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	
 /** OS LOGIN CONTAINER STYLES **/	
 /** SLIDER **/
-.slider {
+.os-slider {
   display: none;
   color: black;
   position: static;
@@ -750,7 +750,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	padding: 1px 0 3px 14px
 }
 
-.field-name-og-vocabulary .slider a {text-decoration:underline !important;}
+.field-name-og-vocabulary .os-slider a {text-decoration:underline !important;}
 
 
 .not-logged-in.page-user #columns {
