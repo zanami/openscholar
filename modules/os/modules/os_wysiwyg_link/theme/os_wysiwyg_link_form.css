@@ -1,6 +1,6 @@
 
 div.form-item-link-text {
-	margin: 0 0 -100px 160px ;
+	margin: 10px;
 	position: relative;
 	z-index: 2;
 }
@@ -10,8 +10,7 @@ div.vertical-tabs {
 }
 
 div.vertical-tabs .vertical-tabs-panes {
-	margin-top: 75px;
-	margin-left: 145px;
+	margin-left: 130px;
 }
 
 .vertical-tabs-pane input[type=submit] {
@@ -20,6 +19,22 @@ div.vertical-tabs .vertical-tabs-panes {
 
 div.vertical-tabs .vertical-tabs-list {
 	width: 120px;
+}
+
+.insert-buttons {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: white;
+}
+
+.insert-buttons .form-submit {
+	margin-top: 1em;
+}
+
+.insert-buttons input[value="Cancel"] {
+	float: right;
 }
 
 /* 
