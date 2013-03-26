@@ -39,10 +39,12 @@ div.vertical-tabs .vertical-tabs-list {
 	left: 0;
 	right: 0;
 	background-color: white;
+	border-top: 1px solid lightgray;
 }
 
 .insert-buttons .form-submit {
-	margin-top: 1em;
+	margin-top: 0.5em;
+	margin-bottom: 0;
 }
 
 .insert-buttons input[value="Cancel"] {
