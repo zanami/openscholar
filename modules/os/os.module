@@ -656,9 +656,11 @@ function os_form_alter(&$form, $form_state, $form_id) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
 
-  // Verifying we have a delete button for a node object.
-  if (isset($form['#entity']) && !empty($form['#node_edit_form']) && $form['#node_edit_form'] && !empty($form['actions']['delete'])) {
-    $form['actions']['delete']['#submit'][] = 'os_redirect_to_app_path';
+  // After deleting a node, we need to redirect the user to the app path.
+  // i.e. if the user deleted a node people object, he need to return to /people
+  if ($form_id == 'node_delete_confirm') {
+    $paths = os_get_app_path();
+    $form_state['redirect'] = $paths[$form['#node']->type];
   }
 }
 
