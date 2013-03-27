@@ -818,18 +818,11 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'file',
+          'label' => 'hidden',
+          'module' => 'os_files',
           'settings' => array(),
-          'type' => 'file_default',
-          'weight' => '15',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'module' => 'file',
-          'settings' => array(),
-          'type' => 'file_default',
-          'weight' => '15',
+          'type' => 'os_files_image_list',
+          'weight' => 15,
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
