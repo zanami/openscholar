@@ -10,6 +10,7 @@ mysql:
 
 before_script:
   # Install apache
+  - sudo apt-get update
   - sudo apt-get install apache2
   - sudo a2enmod actions
   - sudo a2enmod rewrite

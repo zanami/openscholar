@@ -114,6 +114,14 @@ function hwpi_basetheme_node_view_alter(&$build) {
         }
       }
 
+      // Make the phone label consistent with the full node view phone label.
+      if(isset($build['field_phone'])) {
+        $phone_plain = $build['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['field_phone'][0]['#markup'] = t('p: ') . $phone_plain;
+        }
+      }
+
       unset($build['links']['node']);
 
       return;
@@ -152,6 +160,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       if (isset($build['field_address'])) {
         $build['field_address']['#label_display'] = 'hidden';
         $build['contact_details']['field_address'] = $build['field_address'];
+        $build['contact_details']['field_address'][0]['#markup'] = str_replace("\n", '<br>', $build['contact_details']['field_address'][0]['#markup']);
         unset($build['field_address']);
       }
       // Contact Details > email
@@ -171,7 +180,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['field_phone']['#label_display'] = 'hidden';
         $phone_plain = $build['field_phone'][0]['#markup'];
         if ($phone_plain) {
-          $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+          $build['field_phone'][0]['#markup'] = t('p: ') . $phone_plain;
         }
         $build['contact_details']['field_phone'] = $build['field_phone'];
         $build['contact_details']['field_phone']['#weight'] = 50;

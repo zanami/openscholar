@@ -2,7 +2,7 @@ Feature: Testing the tagged items.
   Testing that two nodes tagged to one term and only one node tagged to another
   term.
 
-  @api
+  @api @me
   Scenario Outline: verify that the tagged items filter work as expected.
       Given I visit "<first link>"
         And I should see "<first node>"
@@ -13,7 +13,7 @@ Feature: Testing the tagged items.
 
     Examples:
      | first link         | second link                     | first node                | second node                 |
-     | john/classes       | john/classes/science/air        | John F. Kennedy           | Neil Armstrong              |
+     | john/classes       | john/classes/science/fire       | John F. Kennedy           | Neil Armstrong              |
      | john/documents     | john/documents/science/air      | All about nodes           | All about terms             |
      | john/faq           | john/faq/science/air            | What does JFK stands for? | Where does JFK born?        |
      | john/news          | john/news/science/air           | I opened a new personal   | More tests to the semester  |
@@ -23,3 +23,4 @@ Feature: Testing the tagged items.
      | john/publications  | john/publications/science/air   | The Little Prince         | John F. Kennedy: A Biography|
      | john/reader        | john/reader/science/air         | Engadget rss              | Feeds around the world      |
      | john/software      | john/software/science/air       | Mac OSX                   | Windows 7                   |
+     | john/galleries     | john/galleries/air              | Kittens gallery           | JFK                         |
