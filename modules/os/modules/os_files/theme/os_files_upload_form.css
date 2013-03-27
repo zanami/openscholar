@@ -48,6 +48,9 @@
 	border-radius: 20px;
 }
 
-label.file-select:focus {
+#edit-upload label.file-select.focus {
 	background-color: #666;
+	color: #fff;
+	border-color: #555;
+	text-shadow: #222 0 -1px 0;
 }
