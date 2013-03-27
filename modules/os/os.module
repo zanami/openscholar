@@ -330,7 +330,7 @@ function os_os_widget_alter(&$widget) {
 
     if(isset($spaces_features[$module]) && empty($features[$module])){
       //This is provided by a disabled og feature
-      $hidden = true;
+      $hidden = TRUE;
     }
   }
 
@@ -638,7 +638,7 @@ function os_preprocess_page(&$vars) {
  */
 function os_preprocess_menu_link(&$variables) {
   //Remove "menu-path-" and 'active' class from menu items without links.
-  if($variables['element']['#href'] === false && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
+  if($variables['element']['#href'] === FALSE && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
     unset($variables['element']['#attributes']['class'][$path]);
 
     //Remove active class.
@@ -671,7 +671,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
  * @see os_form_alter()
  */
 function os_entity_form_after_build($form, $form_state) {
-  $node = isset($form['#node'])?$form['#node']:null;
+  $node = isset($form['#node'])?$form['#node']:NULL;
   if (!isset($node) && isset($form['#entity']) && !isset($form['#entity']->comment)) {
      // dummy node
     $node = (object)array('type' => 'page');
@@ -1205,7 +1205,7 @@ function os_get_region($module, $delta, $contexts = array()) {
     $plugin = context_get_plugin('reaction', 'block');
 
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(null, $c) as $block) {
+      foreach ($plugin->get_blocks(NULL, $c) as $block) {
         if (isset($block->region) && $block->region) {
           $blocks[$block->module.'-'.$block->delta] = $block->region;
         }
@@ -1355,7 +1355,7 @@ function os_app_info($app_name = NULL) {
  * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
  */
 function os_form_user_login_alter(&$form, $form_state) {
-  if (variable_get('os_login_with_email', true)) {
+  if (variable_get('os_login_with_email', TRUE)) {
     // Replace 'username' with 'Username or e-mail'.
     $form['name']['#title'] = t('Username or e-mail');
     // Replace the description of the user/email login field.
