@@ -222,7 +222,7 @@ function vsite_vocab_field_attach_view_alter(&$output, $context) {
 
   if (count($output[OG_VOCAB_FIELD]['#items']) > 3) {
     // Show links collapsed.
-    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('See also:') . '</a><div class="slider">'. $original .'</div>';
+    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('See also:') . '</a><div class="os-slider">'. $original .'</div>';
 
     $output['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
   }
