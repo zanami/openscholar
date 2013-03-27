@@ -299,3 +299,38 @@ function os_migrate_demo_variable_set($name, $value) {
   spaces_preset_save($vsite);
 }
 
+/**
+ * Set term under a term.
+ */
+function os_migrate_demo_set_term_under_term($child, $parent) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('name', $child)
+    ->execute();
+  $child_tid = reset($result['taxonomy_term'])->tid;
+
+  $term = taxonomy_term_load($child_tid);
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('name', $parent)
+    ->execute();
+  $parent_tid = reset($result['taxonomy_term'])->tid;
+
+  $term->parent = array($parent_tid);
+  taxonomy_term_save($term);
+}
+
+/**
+ * Get the term ID.
+ */
+function os_migrate_demo_get_term_id($term) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('name', $term)
+    ->execute();
+  print(reset($result['taxonomy_term'])->tid);
+}
