@@ -352,7 +352,7 @@ function os_taxonomy_get_prefix_path(&$options) {
 
   // Counting how much bundles are associated with the vocabulary. If only 1
   // then use the prefix of the app related to the node bundle.
-  if ($og_context = og_context()) {
+  if ($og_context = og_context() && !$feature) {
     $query = db_select('og_vocab', 'ogv');
     $query->join('og_vocab_relation', 'ogr', 'ogr.vid = ogv.vid');
     $result = $query
@@ -365,9 +365,10 @@ function os_taxonomy_get_prefix_path(&$options) {
 
 
     if (count($result) === 1) {
-      $paths = os_get_app_path();
-      $options['path_prefix'] = $paths[reset($result)->bundle] . '/';
-      return;
+      $bundle = reset($result)->bundle;
+      if (isset($map[$bundle]) && count($map[$bundle])) {
+        $feature = current($map[$bundle]);
+      }
     }
   }
 
