@@ -6,7 +6,7 @@ Feature:
     Given I visit "stats"
       And I should get:
       """
-      {"success":true,"websites":{"value":"{{*}}","text":"Websites"},"href":"{{*}}","os_version":"7.x-3.x-dev"}
+      {"success":true,"websites":{"value":"{{*}}","text":"Websites"},"href":"{{*}}","os_version":"{{*}}"}
       """
 
   @api
