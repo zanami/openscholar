@@ -93,25 +93,57 @@ function os_events_process_node(&$variables) {
 }
 
 /**
- * Implements hook_preprocess_calendar_datebox().
+ * Calendar datebox preprocess.
+ *
+ * RE-build the links to use query strings, instead of "clean urls".
  */
 function os_events_preprocess_calendar_datebox(&$vars) {
-  // Deal only with links.
-  if (!$vars['link']) {
+  $date = $vars['date'];
+  $view = $vars['view'];
+  $vars['day'] = intval(substr($date, 8, 2));
+  $day_path = calendar_granularity_path($view, 'day');
+
+  $options = array(
+    'query' => array(
+      'type' => 'day',
+      'day' => $vars['date'],
+    ),
+    'absolute' => TRUE,
+  );
+
+  $vars['link'] = !empty($day_path) ? l($vars['day'], 'calendar', $options) : $vars['day'];
+}
+
+/**
+ * Implements hook_views_pre_view().
+ */
+function os_events_views_pre_view(&$view, &$display_id, &$args) {
+  if (empty($view->display_handler->display->display_options['pager']['options']['date_id']) || !empty($view->display_handler->display->display_options['style_options']['mini'])) {
+    // Not a calendar view, or a mini-calendar
     return;
   }
 
-  $item = menu_get_item();
+  if (empty($_GET['type']) || !in_array($_GET['type'], array('day', 'week', 'month', 'year'))) {
+    return;
+  }
+  $handler = &$view->display_handler;
 
-  // Get the term alias, if exists.
-  $path = $item['original_map'];
-  unset($path['0']);
+  if ($_GET['type'] != 'month') {
+    $handler->set_option('style_plugin', 'calendar_style');
+  }
 
-  // Get the term path, the clean page path and the build the query string.
-  $query = array('query' => array('date' => $vars['date'], 'type' => 'day'));
+  $values = $handler->get_option('style_options');
+  $values['calendar_type'] = $_GET['type'];
+  $handler->set_option('style_options', $values);
 
-  // Change the link.
-  $vars['link'] = l($vars['day'], 'calendar', $query);
+  $values = $handler->get_option('pager');
+  $values['options']['date_id'] = $_GET['type'];
+  $handler->set_option('pager', $values);
+
+  $values = $handler->get_option('arguments');
+  $values['date_argument']['granularity'] = $_GET['type'] == 'day' ? 'month' : $_GET['type'];
+
+  $handler->set_option('arguments', $values);
 }
 
 /**
@@ -155,8 +187,8 @@ function os_events_preprocess_date_views_pager(&$variables) {
   }
 
   // Change the link URL and arguments.
-  $variables['next_options']['query'] = array('date' => $next_arg, 'type' => $granularity);
-  $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => $granularity);
+  $variables['next_options']['query'] = array($granularity => $next_arg, 'type' => $granularity);
+  $variables['prev_options']['query'] = array($granularity => $prev_arg, 'type' => $granularity);
   $next_url = $_GET['q'];
   $prev_url = $_GET['q'];
 }
@@ -183,17 +215,17 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
   $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
   $date_format = new DateTime;
 
-  if (isset($_GET['date'])) {
+  if (isset($_GET[$data[1]])) {
     if ($_GET['type'] == 'year') {
       // The user watch in a year, return him to the first day of the year.
-      $time = mktime(12, 0, 0, 1, 1, $_GET['date']);
+      $time = mktime(12, 0, 0, 1, 1, $_GET[$data[1]]);
     }
     else {
-      $time = strtotime($_GET['date']);
+      $time = strtotime($_GET[$data[1]]);
     }
     $date_format->setTimestamp($time);
   }
-
+  
   if ($data[1] == 'week') {
     $date = date_format($date_format, $format[$data[1]]) . date_week(date_format($date_format, 'Y-m-d'));
   }
@@ -202,7 +234,7 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
   }
 
   $options['query']['type'] = $data[1];
-  $options['query']['date'] = $date;
+  $options['query'][$data[1]] = $date;
 }
 
 /**
@@ -244,7 +276,7 @@ function os_events_preprocess_link(&$variables) {
   if ($variables['path'] == 'calendar' && $variables['text'] == t('Month')) {
     // The user watch different view modes of the calendar, remove the active
     // from the the month link.
-    if (!empty($_GET['date']) && !empty($_GET['type'])) {
+    if (!in_array($_GET, array('day', 'week', 'year')) && !empty($_GET['type'])) {
       $key = array_search('active', $variables['options']['attributes']['class']);
       unset($variables['options']['attributes']['class'][$key]);
     }

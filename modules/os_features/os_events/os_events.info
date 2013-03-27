@@ -53,6 +53,5 @@ features[variable][] = node_submitted_event
 features[variable][] = os_taxonomy_app_path_os_events
 features[variable][] = pathauto_node_event_pattern
 features[views_view][] = os_events
-files[] = includes/os_events_calendar_plugin_style.inc
 spaces[types][] = og
 spaces[types][] = site
