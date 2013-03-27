@@ -651,16 +651,17 @@ function os_preprocess_menu_link(&$variables) {
 /**
  * Implements hook_form_alter().
  */
-function os_form_alter(&$form, $form_state, $form_id) {
+function os_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
 
   // After deleting a node, we need to redirect the user to the app path.
-  // i.e. if the user deleted a node people object, he need to return to /people
+  // i.e. if the user deleted a node people object, they need to return to
+  // /people
   if ($form_id == 'node_delete_confirm') {
     $paths = os_get_app_path();
-    $form_state['redirect'] = $paths[$form['#node']->type];
+    $_GET['destination'] = $paths[$form['#node']->type];
   }
 }
 
