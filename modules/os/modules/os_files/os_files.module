@@ -120,6 +120,16 @@ function os_files_file_insert($file){
 }
 
 /**
+ * Implements hook_file_type_alter().
+ * Ensures no file has the undefined file type
+ */
+function os_files_file_type_alter(&$types, $file) {
+  if (!count($types)) {
+    $types[] = 'undefined';
+  }
+}
+
+/**
  * Return a "Coppy to clip-board" link using clippy library.
  *
  *  @param $url_file
@@ -602,6 +612,7 @@ function os_files_media_browser_params_alter(&$media_params){
   }
   else {
     $media_params['types'][] = 'document';
+    $media_params['types'][] = 'undefined';
   }
   
   // Are we in multi-tenant? get the file path.
@@ -714,8 +725,9 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
  */
 function os_files_preprocess_media_thumbnail(&$vars) {
   $element = &$vars['element'];
-  if ($element['#file']->filename != $element['#file']->origname) {
-    $element['#name'] = $element['#file']->origname.' ('.$element['#file']->filename.')';
+  $filename = basename($element['#file']->uri);
+  if ($element['#file']->filename != $filename) {
+    $element['#name'] = $element['#file']->filename.' ('.$filename.')';
   }
 }
 

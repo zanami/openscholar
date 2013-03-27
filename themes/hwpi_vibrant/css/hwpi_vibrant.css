@@ -395,11 +395,14 @@ ul.primary {
 }
 
 .node-type-page .breadcrumb,
-.breadcrumb, .breadcrumb a {
-    margin: -40px 0 35px -15px;
-    color:#FFF;
+.breadcrumb {
+    margin: -40px 0 35px -27px;
+ 
 }
 
+.breadcrumb a {
+    color:#FFF;
+}
 
 /* Border control */
 .not-front.two-sidebars #content-column .content-inner {

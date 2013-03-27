@@ -1,8 +1,8 @@
-diff --git a/tmp/media_gallery/media_gallery.install b/modules/contrib/media_gallery/media_gallery.install
-index 4d468fc..9460935 100644
---- a/tmp/media_gallery/media_gallery.install
-+++ b/modules/contrib/media_gallery/media_gallery.install
-@@ -1303,3 +1303,70 @@ function media_gallery_update_7010() {
+diff --git a/media_gallery.install b/media_gallery.install
+index 4d468fc..a3a60e4 100644
+--- a/media_gallery.install
++++ b/media_gallery.install
+@@ -1303,3 +1303,79 @@ function media_gallery_update_7010() {
    }
    field_bundle_settings('file', $bundle, $bundle_settings);
  }
@@ -10,11 +10,20 @@ index 4d468fc..9460935 100644
 +/**
 + * Renames field media_gallery_media => media_gallery_file
 + */
-+
 +function media_gallery_update_7011() {
-+  //see: http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
 +  $old = 'media_gallery_media';
 +  $new = 'media_gallery_file';
++
++  if (db_table_exists('field_data_'.$new)) {
++    if (db_select('field_data_'.$new, 'f')->fields('f')->execute()->rowCount()==0 && db_table_exists('field_data_'.$old)) {
++      db_drop_table('field_data_'.$new); 
++      db_drop_table('field_revision_'.$new); 
++    } else {
++      return t('Media gallery already using new field.  Not performing upgrade.');
++    }
++  }
++  
++  //see: http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
 +  $transaction = db_transaction();
 +  $schema = array(
 +    'media_gallery_media_fid' => array(
@@ -39,7 +48,7 @@ index 4d468fc..9460935 100644
 +      'default' => NULL,
 +    ),
 +  );
-+  
++    
 +  try {
 +    db_update('field_config')
 +      ->fields(array('field_name' => $new))

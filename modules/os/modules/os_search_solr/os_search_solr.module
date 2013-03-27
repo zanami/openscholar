@@ -151,14 +151,6 @@ function os_search_solr_block_view_alter(&$data,$block) {
       if($block->module == 'facetapi' && $block->delta == $delta_date) {
       	// Alter the title.
       	$data['title'] = 'Filter By Post Date';
-
-        // Hide the Filter by Post Date block if there is only one filter.
-        if(isset($data['content']['ds_created']) && isset($data['content']['ds_created']['#items'])) {
-          $created_array = $data['content']['ds_created']['#items'];
-          if(is_array($created_array) && count($created_array) <= 1) {
-          	$data['content'] = NULL;
-          }
-        }
       }
 
     }

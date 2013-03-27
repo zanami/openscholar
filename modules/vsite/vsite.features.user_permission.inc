@@ -191,5 +191,16 @@ function vsite_user_default_permissions() {
     'module' => 'spaces_og',
   );
 
+  // Exported permission: create subsites.
+  $permissions['create subsites'] = array(
+    'name' => 'create subsites',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'vsite',
+  );
+
   return $permissions;
 }
