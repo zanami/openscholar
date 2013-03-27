@@ -67,7 +67,6 @@
     width:980px;
   }
   
-  
   .mobile #branding-container,
   .mobile #header-container,
   .mobile #columns,
@@ -84,10 +83,9 @@
   .ipad .region-footer,
   .ipad .message-inner,
   .ipad #powerby-login {
-    width:1040px;
+    width:100%;
   }
-    
-
+  
 
   /* Branding */
   #branding_header #branding-container {
@@ -98,6 +96,12 @@
     width: 235px;
     margin: 10px 0 0 -30px;
   }
+  
+  .ipad .branding-left,
+   .mobile .branding-left {
+    margin: 10px 0 0 0;
+  }
+  
   .branding-right {
     float: right;
     line-height: 38px;
