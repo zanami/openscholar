@@ -655,6 +655,11 @@ function os_form_alter(&$form, $form_state, $form_id) {
   if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
+
+  // Verifying we have a delete button for a node object.
+  if (isset($form['#entity']) && !empty($form['#node_edit_form']) && $form['#node_edit_form'] && !empty($form['actions']['delete'])) {
+    $form['actions']['delete']['#submit'][] = 'os_redirect_to_app_path';
+  }
 }
 
 /**
