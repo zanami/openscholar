@@ -98,7 +98,32 @@ Inline files are migrated in 3 steps.
 
 **Spaces Overrides**
 
-This is the other major player in OpenScholar migration.  
+This is the other major player in OpenScholar migration.  Settings per OS site are stored in the spaces_overrides table.  Since there wasn't an override destination and the tables looked straightforward, I opted to do a table copy.  In the interest of modularity, that table copy is divided over several classes for each of the types of overrides.  This ended up being a mistake because rolling back a table copy means emptying the table, so despite there being several spaces_overrides classes they should be treated as a single unit.
+
+* SpacesOverridesTableMigration 
+  - The abstract class other spaces overrides migration classes extend.  
+* SpacesOverridesMenuMigration
+  - Migrates custom menus
+  - Not too much happens here except some name changes, both to the menus and some of the paths.
+* SpacesOverridesVariableMigration
+  - Copies variables.  
+  - Each variable can be renamed and have its value updated by implementing a function. ` _update_variable_$variablename`.  This takes the id and value of the variable.  It returns the new id and value.  Most of them only update the id.
+* SpacesOverridesContextMigration
+  - Updates contexts.  This controls layouts.
+  - Region names changed and needed replacing.
+  - Same with block ids
+  - Some box ids had to be fetched from Boxes migration, so they'd be stored in just one place.
+  - A few blocks were removed and had to be replaced wholesale (see _replace_blocks())
+* SpacesOverridesBoxMigration
+  - Migrates user widgets.  Many of them were changed, so this ended up being a large migration.
+  - New box ids had to be accessible by Context migration as well.  This led to the creation of a BoxPorter class.  Both context and boxes migration created an instancce of a BoxPorter when they had boxes to port.
+    - `BoxPorter::_port_box_$boxID()` takes a box's d6 info, its id, and a bool indicating whether to return the new key or the whole box.  Each of these functions transforms a d6 box into a d7 one.
+* SpacesOverridesBoxesMediaMigration
+  - Not a spaces migration, but a requirement of box migration.  Some d6 boxes had their own media files.  Those needed to be migrated before the d7 box could exist.
+* SpacesOverridesShieldsMigration
+  - Migrates shield settings.  This probably could have been just another box.
+
+
 
 **Minor Migrations**
 
