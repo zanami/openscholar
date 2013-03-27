@@ -44,8 +44,6 @@
 
 
 
-
-
 /* bigscreen three_col_grail - TEMPORARILY COMMENTING OUT BREAKPOINT (PER HWPIs REQUEST)
 @media only screen and (min-width:1025px) { */
 
@@ -68,6 +66,28 @@
     margin-right: auto;
     width:980px;
   }
+  
+  
+  .mobile #branding-container,
+  .mobile #header-container,
+  .mobile #columns,
+  .mobile #menu-bar #block-os-primary-menu,
+  .mobile #footer .gpanel,
+  .mobile .region-footer,
+  .mobile .message-inner,
+  .mobile #powerby-login,
+  .ipad #branding-container,
+  .ipad #header-container,
+  .ipad #columns,
+  .ipad #menu-bar #block-os-primary-menu,
+  .ipad #footer .gpanel,
+  .ipad .region-footer,
+  .ipad .message-inner,
+  .ipad #powerby-login {
+    width:1040px;
+  }
+    
+
 
   /* Branding */
   #branding_header #branding-container {
