@@ -123,7 +123,8 @@ This is the other major player in OpenScholar migration.  Settings per OS site a
 * SpacesOverridesShieldsMigration
   - Migrates shield settings.  This probably could have been just another box.
 
-
+** Vocabularies**
+Vocabs and their terms were contributed by a third party.  I have no further comments on them.  They are a dynamic migration and will need to be run after content.
 
 **Minor Migrations**
 
@@ -132,6 +133,9 @@ This is the other major player in OpenScholar migration.  Settings per OS site a
   - The one surprise here is that we use DynamicMigration to handle comments.  There were was one minor difference between comments of different content types.  DynamicMigration lets us define a generic migration class and register an instance of that for each content type.  Those instances are registered when each content type is migrated.
 * Flags
   - Also dymanic.  
+* Theme
+  - Themes used to be part of the vsite object, but became a spaces override variable.  This means they need to take place after the SO vars.  Mostly it just updates names.
+  - In some cases flavors were made into themes.  
 
 
 
