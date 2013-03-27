@@ -141,7 +141,7 @@ class FeatureContext extends DrupalContext {
 
     if (strpos($comapre_string, '{{*}}')) {
       // Attributes that may changed in different environments.
-      foreach (array('sourceUrl', 'id', 'value', 'href') as $attribute) {
+      foreach (array('sourceUrl', 'id', 'value', 'href', 'os_version') as $attribute) {
         $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
         $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
 
