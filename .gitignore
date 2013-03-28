@@ -17,6 +17,7 @@ openscholar/modules/contrib
 openscholar/themes/contrib
 openscholar/libraries
 openscholar/1
+install.sh
 
 # Behat
 behat.local.yml
