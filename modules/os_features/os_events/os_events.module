@@ -205,10 +205,11 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     'calendar/year',
   );
 
-  if (!in_array($original_path, $view_modes)) {
+  if (!in_array($original_path, $view_modes) && strpos($path, 'calendar/month/') === FALSE) {
     return;
   }
 
+  $mini_calendar = strpos($path, 'calendar/month/') !== FALSE;
   $data = explode('/', $original_path);
   $path = $data[0];
 
@@ -233,8 +234,17 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     $date = date_format($date_format, $format[$data[1]]);
   }
 
-  $options['query']['type'] = $data[1];
-  $options['query'][$data[1]] = $date;
+  $type = $data[1];
+
+  if ($mini_calendar) {
+    $type = 'month';
+    $date = $data[2];
+  }
+
+  $options['query'] = array(
+    'type' => $type,
+    $data[1] => $date,
+  );
 }
 
 /**
