@@ -390,7 +390,7 @@ function os_taxonomy_get_prefix_path(&$options) {
     $bundles = os_taxonomy_og_vocabulary_bundles($options['vocabulary'], $og_context['gid']);
 
     if (count($bundles) === 1) {
-      $bundle = reset($result)->bundle;
+      $bundle = reset($bundles)->bundle;
       if (isset($map[$bundle]) && count($map[$bundle])) {
         $feature = current($map[$bundle]);
       }
