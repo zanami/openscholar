@@ -106,6 +106,10 @@ input[type="search"] {
 	color:#6A6A6A;
 }
 
+.sidebar #search-block-form .form-item label {
+	display: none;
+}
+
 /* Calendar Overrides */
 .view-os-events ul li {
   border: none;
