@@ -1200,7 +1200,7 @@ class csl_label extends csl_format {
     if (empty($text)) {
     foreach ($variables as $variable) {
       $t = (array)$data;
-      if (isset($t[$this->citeproc->map_field($variable)]) && ($term = $this->citeproc->get_locale('term', $variable, $form, $plural))) {
+      if (isset($t[$this->citeproc->map_field($variable)]) && trim($t[$this->citeproc->map_field($variable)]) != FALSE && ($term = $this->citeproc->get_locale('term', $variable, $form, $plural))) {
         $text = $term;
         break;
       }
