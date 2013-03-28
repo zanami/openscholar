@@ -98,7 +98,7 @@ abstract class OsMigrate extends Migration {
       // Create an OG-vocab entity for all group-content bundles
       // @todo: Move to "OG-Vocab" migrate.
       // We can't save OG vocab for all bundles, as it fails in Travis.
-      foreach (array('class', 'news') as $bundle) {
+      foreach (array_keys(os_get_bundles()) as $bundle) {
         $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', $bundle);
         $og_vocab->save();
       }
@@ -114,5 +114,16 @@ abstract class OsMigrate extends Migration {
     $vocabulary = taxonomy_vocabulary_machine_name_load($entity->vocabulary_machine_name);
     $gid = $entity->og_group_ref['destid1'];
     og_vocab_relation_save($vocabulary->vid, 'node', $gid);
+  }
+
+  /**
+   * When migrating a site, check if he have a domain and insert the domain.
+   */
+  public function complete($entity, $row) {
+    if (!in_array($this->bundle, array('personal', 'project')) || empty($row->domain)) {
+      return;
+    }
+
+    os_migrate_demo_spaces_overrides('og', $entity->nid, $row->domain);
   }
 }
