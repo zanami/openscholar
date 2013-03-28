@@ -1,6 +1,5 @@
-
 #toolbar {
-  background: #282828;
+  background: #383838;
 }
 
 #toolbar .toolbar-left > ul {
@@ -41,7 +40,12 @@
 #toolbar a.toggle-active.toggle:hover {
 }
 
-#toolbar .toolbar-menu {
+.toolbar-drawer #toolbar {
+  height: 30px;
+}
+
+#toolbar .toolbar-menu,
+#toolbar #toolbar-drawer-anchor {
   display: none;
 }
 
@@ -49,6 +53,10 @@
   z-index: 5;
   display: block;
   padding: 0 45px 0 0;
+}
+
+.toolbar-drawer #toolbar #toolbar-drawer-anchor {
+  display: block;
 }
 
 #toolbar-drawer-anchor {
@@ -65,7 +73,7 @@
   top: -25%;
   width: 100%;
   padding: 0 20px;
-  background-color: #282828;
+  background-color: #383838;
   -webkit-transition: top 0.25s;
   -moz-transition: top 0.25s;
   -o-transition: top 0.25s;
@@ -108,13 +116,13 @@
 #toolbar div.toolbar-menu ul li a.active,
 #toolbar div.toolbar-menu ul li.active-trail a,
 #toolbar div.toolbar-menu ul li a:active {
-  background-color: #282828;
+  background-color: #383838;
   background-image: none;
 }
 
 #toolbar div.toolbar-menu ul li a.active:hover,
 #toolbar div.toolbar-menu ul li a.active:focus {
-  background-color: #282828;
+  background-color: #383838;
   background-image: none;
 }
 
@@ -135,7 +143,7 @@
 #toolbar div.toolbar-menu ul li a[data-drawer].active-path:active,
 #toolbar div.toolbar-menu ul li a[data-drawer].active-path,
 #toolbar div.toolbar-menu ul li.active-trail a[drawer] {
-  background-color: #282828;
+  background-color: #383838;
   background-image: url('images/toolbar_drawer_link_arrow.png');
   background-repeat: no-repeat;
   background-position: right center;
@@ -145,7 +153,7 @@
 }
 
 #toolbar .toolbar-drawer .drawer ul {
-  background-color: rgba(102,102,102,.4);
+  background-color: rgba(255,255,255,.16);
   background-position: 6px center;
   background-repeat: no-repeat;
   border: 1px solid #000;
@@ -263,4 +271,45 @@
 
 #toolbar #toolbar-user li {
   margin: 0;
+}
+
+/**
+ * Theme "Add new" style links like for Publications, etc. 
+ *
+ * @see global.nav.css
+ */
+.cp-controls-wrapper {
+    margin: 15px 0 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    z-index: 500;
+}
+
+.cp-controls-wrapper a {
+  color:#293352;
+    font-family:helvetica;
+    font-style:normal;
+}
+
+.cp-controls-wrapper a:hover {
+  color:#293352;
+    text-decoration:none;
+}
+
+.cp-controls-wrapper .add_new {
+  float:left;
+  display:inline;
+   background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -379px #A1D4A1 !important;
+    border-radius: 5px 5px 5px 5px;
+    float: left;
+     margin: 0 22px 0 0;
+    padding: 0 8px 0 22px !important;
+    text-decoration:none !important;
+  }
+  
+/* Indents dependent (child) form items on admin/config/openscholar page */
+#edit-os-ga .dependent-options {
+  margin-left: 1.385em;
 }

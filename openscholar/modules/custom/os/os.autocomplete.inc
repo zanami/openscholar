@@ -1,29 +1,34 @@
 <?php
 
 /**
- * @file os.autocomplete.inc
- * OpenScholar's autocomplete functions.
+ * @file
+ * OpenScholar's auto complete functions.
  */
 
 /**
  * Returns all nodes in space, all nodes if outside of space.
  */
 function os_node_autocomplete($str) {
-
-  // initialize view to generate sessions output when viewing a conference.
-  $view = views_get_view('vsite_autocomplete');
-  $view->init();
-
-  $view->set_display('default');
-  $view->set_items_per_page(0);
-  $view->execute();
-
   $matches = array();
-  foreach ($view->result as $node) {
-    if (stristr($node->node_title, $str)) {
-     $matches[$node->node_title. ' [nid:' . $node->nid . ']'] = check_plain($node->node_title);
+
+  if (!empty($str)) {
+    // Loading the OSNodeFieldQuery class.
+    ctools_include('node', 'os');
+
+    $query = new OSNodeFieldQuery();
+    $result = $query
+      ->propertyCondition('title', '%' . $str . '%', 'LIKE')
+      ->execute();
+
+    if (!empty($result['node'])) {
+      // Load the nodes into array.
+      $nodes = node_load_multiple(array_keys($result['node']));
+      foreach ($nodes as $node) {
+        $matches[$node->title . ' [nid:' . $node->nid . ']'] = check_plain($node->title);
+      }
     }
   }
 
+  // Print in JSON the nodes we found.
   drupal_json_output($matches);
 }

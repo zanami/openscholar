@@ -28,6 +28,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options['add_childs'] = FALSE;
     $options['depth'] = 0;
     $options['behavior'] = 'contextual';
+    $options['as_nav'] = FALSE;
 
     return $options;
   }
@@ -48,7 +49,15 @@ class os_taxonomy_fbt extends os_boxes_default {
       $setting_value = !empty($this->options[$setting]) ? $this->options[$setting] : NULL;
       $form[$setting]['#default_value'] = $setting_value;
     }
-    $form += parent::options_form($form_state);
+
+    $form['advanced']['as_nav'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['as_nav'],
+      '#title' => t('Display As Navigation'),
+      '#description' => t('Check this to make this vocabulary display like a menu.'),
+      '#return_value' => TRUE,
+    );
+
     return $form;
   }
 
@@ -63,7 +72,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#type' => 'select',
       '#description' => t('Which vocabularies would you like to use to filter posts.'),
       '#title' => t('Vocabularies'),
-      '#options' => self::get_all_volcabularies(),
+      '#options' => self::get_all_vocabularies(),
       '#required' => TRUE,
     );
 
@@ -173,7 +182,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   public function render() {
     $block = parent::render();
     if (empty($this->options['vocabulary'])) {
-      $this->options['vocabulary'] = current(array_keys(self::get_all_volcabularies()));
+      $this->options['vocabulary'] = current(array_keys(self::get_all_vocabularies()));
 
       if(empty($this->options['vocabulary'])){
         // There are no vocabularies defined in the VSite.
@@ -197,6 +206,11 @@ class os_taxonomy_fbt extends os_boxes_default {
       $this->options['vocabulary'] = current($t);
     }
 
+    $attr = array();
+    if ($this->options['as_nav']) {
+      $this->options['additional_classes'] = 'navigation';
+    }
+
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
         'vid' => $this->options['vocabulary'],
         'options' => $this->options,
@@ -213,7 +227,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   /**
    * Get all the volcabularies id using the taxonomy terms.
    */
-  private function get_all_volcabularies() {
+  private function get_all_vocabularies() {
 
     ctools_include('taxonomy', 'os');
     $taxonomy_vocabularies = os_get_vocabularies();

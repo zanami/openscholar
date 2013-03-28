@@ -43,6 +43,9 @@
 
 			// attach click handler to blocks
 			blocks.click(toc_click);
+			
+			// update the toc
+			update_toc(active);
 
 			window.onpopstate = history_change;
 		},
@@ -78,6 +81,8 @@
 	function page_swap(nid) {
 		Drupal.detachBehaviors($('.node', container)[0]);
 		$('#comments', container).remove();
+		// Swap out the breadcrumbs.
+		$('div.breadcrumb').html(content[nid].breadcrumb);
 		$('.node', container).replaceWith(content[nid].content);
 		// the 2nd .node is a different element from the first
 		var node = $('.node', container).hide().fadeIn();
@@ -99,5 +104,16 @@
 		if ($('.fb-social-comments-plugin').length) {
 			fbAsyncInit();
 		}
+		
+		update_toc(nid); 	
+	}
+    
+	function update_toc(nid) {
+	  if (Drupal.settings.os_books.settings.toc_type != 'partial') return;
+	  var links = $('a[data-nid="'+active+'"]'),
+	    blocks = links.parents('.block-boxes-os_boxes_booktoc');
+	  blocks.find('.block-content li').hide();
+	  links.parents('.block-boxes-os_boxes_booktoc li').show().siblings().show();
+	  links.parent().find('a[data-nid="'+active+'"] + ul > li').show();
 	}
 })(jQuery);

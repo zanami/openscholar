@@ -13,13 +13,26 @@ function cp_layout_full_form($form, $form_state){
   $contexts = os_layout_get_contexts(array(1, 2));
   $ctxs = $ctxs ? $ctxs : array('os_front', 'os_public');
 
-  $form['context_selection'] = array(
-    '#type' => 'select',
-    '#title' => t('Site Section'),
-    '#options' => $contexts,
-    '#default_value' => reset($ctxs),
-    '#multiple' => false
-  );
+  $current = '';
+  if ($ctxs == array('os_public')) {
+    $current = 'os_public';
+  }
+  else {
+    $current = current(array_diff($ctxs, array('os_public')));
+  }
+  if (isset($contexts[$current])) {
+    $form['context_selection'] = array(
+      '#type' => 'select',
+      '#title' => t('Site Section'),
+      '#options' => $contexts,
+      '#default_value' => $current,
+      '#multiple' => false
+    );
+  }
+
+  if (!in_array('os_public', $ctxs)) {
+    $ctxs[] = 'os_public';
+  }
 
   // take custom themes into account
   ctools_include('themes', 'os');
@@ -39,6 +52,9 @@ function cp_layout_full_form($form, $form_state){
 
   $blocks = os_layout_get_multiple($ctxs, true, true);
 
+  $check_lock = !(user_access('edit locked regions') || user_access('manage locked regions'));
+  $locked = variable_get('os_locked_regions');
+
   $form['context'] = array(
     '#type' => 'value',
     '#value' => $ctxs
@@ -52,11 +68,14 @@ function cp_layout_full_form($form, $form_state){
     'sidebar_first',
     'content',
     'sidebar_second',
-    'footer',
     'content_top',
     'content_first',
     'content_second',
-    'content_bottom'
+    'content_bottom',
+    'footer_first',
+    'footer',
+    'footer_third',
+    'footer_bottom',
   );
 
   $weights = _cp_layout_get_weight_map($regions);
@@ -100,7 +119,7 @@ function cp_layout_full_form($form, $form_state){
         'class' => array(
           'cp-region',
           drupal_html_class('cp-region-' . $r),
-          !(user_access('edit region '.$r) || user_access('edit all regions'))?'locked-down':'unlocked',
+          ($check_lock && isset($locked[$r]) && $locked[$r])?'locked-down':'unlocked',
         )
       ),
       'widgets' => array(

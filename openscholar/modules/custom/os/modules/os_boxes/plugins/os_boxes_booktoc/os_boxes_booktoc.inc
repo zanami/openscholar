@@ -13,6 +13,7 @@ class os_boxes_booktoc extends os_boxes_default {
 
     $options['book_nid'] = 0;
     $options['toc_type'] = 'partial';
+    $options['as_nav'] = false;
     return $options;
   }
 
@@ -55,6 +56,14 @@ class os_boxes_booktoc extends os_boxes_default {
       '#default_value' => $this->options['toc_type'],
     );
 
+    $form['advanced']['as_nav'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['as_nav'],
+      '#title' => t('Display As Navigation'),
+      '#description' => t('Check this to make this vocabulary display like a menu.'),
+      '#return_value' => TRUE,
+    );
+
     return $form;
   }
 
@@ -77,7 +86,7 @@ class os_boxes_booktoc extends os_boxes_default {
     }
 
     $book_nid = $this->options['book_nid'];
-    if ($book_nid < 0) {
+    if ($book_nid <= 0) {
       // the toc of the book on the current page
       $node = menu_get_object();
       if (isset($node->book['bid']) && book_type_is_allowed($node->type)) {
@@ -89,7 +98,19 @@ class os_boxes_booktoc extends os_boxes_default {
       }
     }
 
-    $block = os_books_build_toc($node, $this->options['toc_type']) + $block;
+    drupal_add_js(array(
+      'os_books' => array(
+        'settings' => array(
+          'toc_type' => isset($this->options['toc_type'])?$this->options['toc_type']:'full',
+        ),
+      ),
+    ), 'setting');
+
+    $block = os_books_build_toc($book_nid, 'full') + $block;
+
+    if ($this->options['as_nav']) {
+      $this->options['additional_classes'] = 'navigation';
+    }
 
     return $block;
   }

@@ -24,16 +24,7 @@ function theme_os_publications_tabular(&$vars) {
   }
   */
 
-
-
   $citation = _os_publications_plain_citation($node);
-
-  // Strip the 'Available From: <url>' text from the citation.
-  if(isset($node->biblio_url)) {
-  	$searcher = 'Available from: '.$node->biblio_url;
-  	// String replace the url & text.
-  	$citation = str_ireplace($searcher, '', $citation);
-  }
 
   // These fields should not be printed under any circumstances
   // They appear elsewhere with special handling, either in the citation
@@ -115,6 +106,20 @@ function theme_os_publications_tabular(&$vars) {
   $output .= filter_xss($node->biblio_coins, array('span'));
   $output .= '<h3>Citation:</h3><div id="citation-wrapper">' . $citation . '' . theme('biblio_export_links', array('node' => $node)) . '</div>';
 
+  // Move publication image up under the citation.
+  $book_images = field_get_items('node',$node,'field_biblio_image', $node->language);
+  if (!empty($book_images)) {
+    $book_image = reset($book_images);
+    $theme_image = theme('image_style', array(
+      'style_name' => 'book_cover',
+      'path' => $book_image['uri'],
+      'title' => $book_image['title'],
+    ));
+    $book_output = '<div class="publication-cover-container">' . $theme_image . '</div>';
+    // Add the image to the output under the citation.
+    $output .= $book_output;
+  }
+
   foreach ($rows as $row) {
     if (isset($row[0]['data']) && $row[0]['data']) {
       $output .= "<h3>" . $row[0]['data'] . ":</h3>";
@@ -144,7 +149,7 @@ function _os_publications_plain_citation($node) {
     $node->biblio_publisher = "Working Paper";
   }
 
-  $citation = theme('biblio_style', array('node' => $node, 'base' => $base, 'style' => $style));
+  $citation = theme('biblio_style', array('node' => $node, 'base' => $base, 'style_name' => $style));
 
   $citation = strip_tags($citation);
 
@@ -160,7 +165,10 @@ function _os_publications_plain_citation($node) {
       $citation = preg_replace($re, ", </span>$coins", $citation);
     }
 
-    $short_url = 'http://' . shorten_url(url('node/' . $node->nid, array('absolute' => TRUE)));
+    $short_url = shorten_url(url('node/' . $node->nid, array('absolute' => TRUE)));
+    if (!preg_match('|^http://|', $short_url)) {
+      $short_url = 'http://' . $short_url;
+    }
 
     $citation .= ' Copy at ' . l($short_url, $short_url);
   }
@@ -179,12 +187,18 @@ function _os_publications_plain_citation($node) {
   	div.select();
   }
 }', 'inline');
-  $citation = "<div class=\"biblio-citation\" onclick=\"if (event.target) {  selectText(event.target); else selectText(this);\">{$citation}</div>";
+
+  $citation = "<div class=\"biblio-citation\" onclick=\"if (event.target) { selectText(event.target); } else{ selectText(this);} \">{$citation}</div>";
 
   return $citation;
 }
 
 function theme_os_publications_export_links($variables) {
+  if (module_exists('vsite') && !spaces_get_space()) {
+    // Don't show export link when not in a VSite, to prevent from loading too
+    // many nodes.
+    return;
+  }
 
   global $pager_total_items;
   $node   = $variables['node'];
@@ -195,9 +209,6 @@ function theme_os_publications_export_links($variables) {
   if (biblio_access('export')) {
     $show_link = variable_get('biblio_lookup_links', array('google' => TRUE));
     $lookup_links = module_invoke_all('biblio_lookup_link', $node);
-    if ($show_link['google'] && !empty($node)) {
-      $lookup_links['biblio_google_scholar'] = theme('google_scholar_link', array('node' => $node));
-    }
     $nid          = (isset($node->nid)) ? $node->nid : NULL;
     $export_links = module_invoke_all('biblio_export_link', $nid, $filter);
     $links        = array_merge($lookup_links, $export_links);

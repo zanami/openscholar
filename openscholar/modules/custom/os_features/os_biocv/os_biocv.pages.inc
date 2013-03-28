@@ -20,8 +20,8 @@ function os_biocv_settings() {
   $filepath = _os_biocv_get_cv_filepath($node);
 
   if ($filepath !== FALSE) {
-    $edit_link = l(t('remove or replace'), 'node/' . $node->nid . '/edit');
-    $description = t('You may @edit_link your PDF Upload', array('@edit_link' => $edit_link));
+    $edit_link = '/node/' . $node->nid . '/edit';
+    $description = t('You may <a href="@edit_link">remove or replace</a> your PDF Upload', array('@edit_link' => $edit_link));
   }
 
   $form['os_biocv_use_pdf_as_cv'] = array(

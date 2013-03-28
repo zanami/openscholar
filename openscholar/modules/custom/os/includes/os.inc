@@ -1,21 +1,14 @@
 <?php
+// $Id$
 
 /**
  * @file os.inc
- * Provides generic OS management and feature functions. This file is included by default.
- *
- * os_get_bundles
- * Return the avalible bundles based on the privacy.
- *
- * os_get_active_feature
- * Return the current active feature.
- *
- * os_get_feature_path
- * Get the base context path for a feature
+ * Provides generic OS management and feature functions. This file is included
+ * by default.
  */
 
 /**
- * Return the avalible bundles based on the privacy
+ * Returns avalible bundles, with option to filter by spaces_features status.
  *
  * @param $privacy
  *  Can be array:
@@ -31,72 +24,68 @@
  * @return
  *  Array keyed with the bundle ID and the bundle name as value.
  */
-function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE) {
-  $ret_all = FALSE;
-  if (is_bool($privacy) && $privacy) {
-    $ret_all = TRUE;
+function os_get_bundles($include_status = array(1), $space_type = 'og', $reset = FALSE) {
+  $return_all = FALSE;
+  if ($include_status === TRUE) {
+    $return_all = TRUE;
   }
-  elseif (!is_array($privacy)) {
-    $privacy = array($privacy);
+  elseif (!is_array($include_status)) {
+    $include_status = array($include_status);
   }
 
   $bundles = array();
+  $app_info = os_app_info();
+  $spaces_features = variable_get('spaces_features', array());
 
-  // Reset static feature list.
-  $features = spaces_features($space_type, $reset);
-  $site_features = variable_get('spaces_features', array());
-
-  foreach ($features as $name => $feature) {
-    $info = $feature->info['features'];
-    if (!isset($info['node'])) continue;
-    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
-
-    // Get bundle name, we call the node_info hook directly since
-    // this is called during bootstrap
-    module_load_include('features.inc', $name);
-    $node_info_hook = $name . '_node_info';
-    if (function_exists($node_info_hook)) {
-      $node_info = $node_info_hook();
+  foreach ($app_info as $app_name => $info) {
+    if (!isset($info['nodetypes'])) {
+      continue;
+    }
+    $module = $info['module'];
+    if (!$return_all && (!isset($spaces_features[$module]) || !in_array($spaces_features[$module], $include_status))) {
+      continue;
     }
 
-    foreach ($info['node'] as $nodetype) {
-      // Hide harvard API importer node from content types list.
-      if ($nodetype == 'harvard_api_importer') {
-        continue;
-      }
-
-      if (isset($node_info[$nodetype]['name'])) {
-        $bundles[$nodetype] = $node_info[$nodetype]['name'];
+    $_node_types = _node_types_build();
+    foreach ($info['nodetypes'] as $nodetype) {
+      if (isset($_node_types->names[$nodetype])) {
+        $bundles[$nodetype] = $_node_types->names[$nodetype];
       }
       else {
-        $bundles[$nodetype] = $feature->info['name'];
+        $bundles[$nodetype] = $module;
       }
     }
   }
+
+  // Sort the bundles in alphabetical order.
+  asort($bundles);
+
+  //Allow other modules to alter the os bundle list
+  drupal_alter('os_get_bundles', $bundles);
 
   return $bundles;
 }
 
 /**
- * Return the current active feature based on active contexts
+ * Returns the current active feature based on active contexts.
  *
  * @return object
  * The active feature.
  */
-function os_get_active_feature(){
+function os_get_active_feature() {
   static $active_feature;
 
-  if(!isset($active_feature)){
+  if (!isset($active_feature)) {
     $features = spaces_features('og');
     $contexts = context_active_contexts();
-    if(!empty($contexts) && is_array($contexts)){
+    if (!empty($contexts) && is_array($contexts)) {
       foreach ($features as $feature) {
         $info = $feature->info['features'];
         if (isset($info['context'])) {
           foreach ($info['context'] as $ctx) {
-            if(array_key_exists($ctx, $contexts)){
+            if (array_key_exists($ctx, $contexts)) {
               $active_feature = $feature;
-              break(2);
+              break (2);
             }
           }
         }
@@ -108,28 +97,32 @@ function os_get_active_feature(){
 }
 
 /**
- * Get the base context path for a feature.  This is the path that will match to this features context.
+ * @function os_get_app_path
  *
- * @param string Feature
+ * Gets the base context path for a feature.  This is the path that will match
+ * to this features context.
  *
- * @return string path
+ * @param string $app_name (optional)
+ *   The machine name of the app (a feature module).  If left blank, all app paths will be returned.
+ *   Providing $app_name will return that app's path, or FALSE if none.
+ *
+ * @return string $path
  */
-function os_get_feature_path($feature){
+function os_get_app_path($app_name = NULL) {
+  $app_info = ($app_name) ? os_app_info($app_name) : os_app_info();
 
-  $feature = features_get_features($feature);
-  if($feature && isset($feature->info['features']['context'])){
-    foreach ($feature->info['features']['context'] as $context) {
-    	$f_context = context_load($context);
-    	if(isset($f_context->conditions['path']) && isset($f_context->conditions['path']['values'])){
-    	  foreach ($f_context->conditions['path']['values'] as $path) {
-    	  	if(substr($path,-2) == '/*'){
-    	  	  return substr($path, 0, (strlen($path) - 2));
-    	  	}
-    	  }
-    	}
-    }
-
+  if (isset($app_info['path'])) {
+    return (isset($app_info['path']) && strlen($app_info['path'])) ? $app_info['path'] : FALSE;
   }
 
-  return false;
+  //return multiple type => path
+  $apps = array();
+  foreach ($app_info as $app) {
+    if (isset($app['nodetypes']) && $app['nodetypes'] && isset($app['path']) && $app['path']) {
+      $apps += array_fill_keys($app['nodetypes'], $app['path']);
+    }
+  }
+
+  return ($apps) ? $apps : FALSE;
 }
+

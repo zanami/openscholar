@@ -169,7 +169,6 @@ function os_user_default_permissions() {
       0 => 'administrator',
       1 => 'manager',
       2 => 'vsite admin',
-      3 => 'vsite user',
     ),
     'module' => 'file_entity',
   );
@@ -365,13 +364,16 @@ function os_user_default_permissions() {
     'module' => 'user',
   );
 
-  // Exported permission: create boxes.
-  $permissions['create boxes'] = array(
-    'name' => 'create boxes',
+  // Exported permission: create files.
+  $permissions['create files'] = array(
+    'name' => 'create files',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
     ),
-    'module' => 'boxes',
+    'module' => 'file_entity',
   );
 
   // Exported permission: create url aliases.
@@ -386,13 +388,16 @@ function os_user_default_permissions() {
     'module' => 'path',
   );
 
-  // Exported permission: delete boxes.
-  $permissions['delete boxes'] = array(
-    'name' => 'delete boxes',
+  // Exported permission: delete any files.
+  $permissions['delete any files'] = array(
+    'name' => 'delete any files',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
     ),
-    'module' => 'boxes',
+    'module' => 'file_entity',
   );
 
   // Exported permission: delete revisions.
@@ -406,18 +411,19 @@ function os_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit all regions.
-  $permissions['edit all regions'] = array(
-    'name' => 'edit all regions',
+  // Exported permission: download any files.
+  $permissions['download any files'] = array(
+    'name' => 'download any files',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'anonymous user',
+      1 => 'authenticated user',
     ),
-    'module' => 'os',
+    'module' => 'file_entity',
   );
 
-  // Exported permission: edit file.
-  $permissions['edit own files'] = array(
-    'name' => 'edit own files',
+  // Exported permission: edit any files.
+  $permissions['edit any files'] = array(
+    'name' => 'edit any files',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -497,7 +503,7 @@ function os_user_default_permissions() {
     'module' => 'search',
   );
 
-  // Exported permission: view file.
+  // Exported permission: view files.
   $permissions['view files'] = array(
     'name' => 'view files',
     'roles' => array(

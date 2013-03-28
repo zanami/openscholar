@@ -5,7 +5,7 @@
  */
 function os_frontpage(){
 
-  return "I AM THE HOME PAGE";
+  return " ";
 }
 
 /**
@@ -33,8 +33,8 @@ function os_user_page() {
   global $user;
   module_load_include('pages.inc', 'user');
 
-  if ($user->uid && isset($_GET['destination']) && isset($_GET['destination']) != 'user'){
-  	//Redirect to destination
+  if ($user->uid && isset($_GET['destination']) && $_GET['destination'] != 'user'){
+    //Redirect to destination
     drupal_goto();
   }elseif ($user->uid) {
     menu_set_active_item('user/' . $user->uid);

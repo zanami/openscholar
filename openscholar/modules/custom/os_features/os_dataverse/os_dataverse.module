@@ -10,6 +10,19 @@
 include_once 'os_dataverse.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_dataverse_os_app_info() {
+  $apps = array();
+
+  $apps['os_dataverse'] = array(
+    'path' => 'data',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_menu().
  */
 function os_dataverse_menu() {

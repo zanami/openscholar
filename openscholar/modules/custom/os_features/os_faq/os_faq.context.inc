@@ -26,12 +26,6 @@ function os_faq_context_default_contexts() {
         'faq' => 'faq',
       ),
     ),
-    'path' => array(
-      'values' => array(
-        'faq' => 'faq',
-        'faq/*' => 'faq/*',
-      ),
-    ),
     'node' => array(
       'values' => array(
         'faq' => 'faq',
@@ -40,13 +34,31 @@ function os_faq_context_default_contexts() {
         'node_form' => '0',
       ),
     ),
+    'path' => array(
+      'values' => array(
+        'faq' => 'faq',
+        'faq/*' => 'faq/*',
+      ),
+    ),
     'views' => array(
       'values' => array(
         'os_faq' => 'os_faq',
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'boxes-os_faq_sv_list' => array(
+          'module' => 'boxes',
+          'delta' => 'os_faq_sv_list',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
+      ),
+    ),
+    'menu' => 'faq',
+  );
   $context->condition_mode = 0;
 
   // Translatables

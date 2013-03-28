@@ -129,6 +129,9 @@ function _os_books_build_tree_recursive($tree, $flatten = FALSE) {
     $output[$nid]['content'] = drupal_render(node_show($node));
     $output[$nid]['url'] = drupal_get_path_alias('node/'.$nid);
     $output[$nid]['title'] = node_page_title($node);
+    if (module_exists('os_breadcrumbs')) {
+      $output[$nid]['breadcrumb'] = os_breadcrumbs_get_breadcrumbs(NULL, $node);
+    }
     if ($link['link']['has_children']) {
       $children = _os_books_build_tree_recursive($link['below'], $flatten);
       if ($flatten) {

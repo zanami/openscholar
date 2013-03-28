@@ -1,6 +1,8 @@
 name = OpenScholar
-description = Install OpenScholar
+description = A full-featured site-creation package designed for the academic community. A single OpenScholar installation can host thousands of personal or project sites.
 core = 7.15
+version = 7.x-3.4
+
 files[] = openscholar.profile
 files[] = openscholar.install
 files[] = tests/openscholar.test
@@ -24,6 +26,7 @@ dependencies[] = toolbar
 dependencies[] = overlay
 dependencies[] = file
 dependencies[] = rdf
+dependencies[] = dblog
 
 ; Contrib - core
 dependencies[] = ctools
@@ -38,7 +41,6 @@ dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
 dependencies[] = advanced_help
-dependencies[] = module_filter
 
 ; media / files / wysiwyg
 dependencies[] = imagefield_crop
@@ -54,6 +56,12 @@ dependencies[] = media_oembed
 ; media custom
 dependencies[] = media_embed
 
+; performance
+dependencies[] = entitycache
+
+; web services
+dependencies[] = restws
+
 ; boxes
 dependencies[] = views_slideshow_cycle
 
@@ -62,6 +70,7 @@ dependencies[] = os
 dependencies[] = os_help
 dependencies[] = os_files
 dependencies[] = os_files_private
+dependencies[] = os_books
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
 dependencies[] = os_search_db
@@ -69,6 +78,8 @@ dependencies[] = os_shields
 dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
+dependencies[] = os_tasks
+dependencies[] = os_wysiwyg_link
 
 ; Control Panel
 dependencies[] = cp
@@ -80,28 +91,31 @@ dependencies[] = cp_content
 dependencies[] = cp_toolbar
 
 ; Features
+dependencies[] = os_biocv
+dependencies[] = os_blog
+dependencies[] = os_booklets
+dependencies[] = os_classes
+dependencies[] = os_dataverse
+dependencies[] = os_events
+dependencies[] = os_faq
+dependencies[] = os_image_gallery
 dependencies[] = os_links
 dependencies[] = os_news
-dependencies[] = os_image_gallery
-dependencies[] = os_publications
 dependencies[] = os_pages
-dependencies[] = os_events
-dependencies[] = os_reader
-dependencies[] = os_blog
-dependencies[] = os_classes
 dependencies[] = os_presentations
-dependencies[] = os_software
-dependencies[] = os_dataverse
-dependencies[] = os_booklets
 dependencies[] = os_profiles
+dependencies[] = os_publications
+dependencies[] = os_reader
+dependencies[] = os_software
+dependencies[] = os_stats
 dependencies[] = os_taxonomy
-dependencies[] = os_biocv
 
 ; other
 dependencies[] = diff
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
+dependencies[] = respondjs
 
 files[] = openscholar.profile
 

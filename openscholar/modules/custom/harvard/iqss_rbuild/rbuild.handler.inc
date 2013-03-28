@@ -298,7 +298,7 @@ class rbuild_handler implements os_software_handler {
 
     $datestr_matches = array();
     // Matches a datetime string formatted like "14-Jul-2006 14:49"
-    $datestr_pattern = '/(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(").*>0?(\d+?-\w+-\d{4}\s+\d+:\d{2})/i';
+    $datestr_pattern = '/a href\="(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(").*>0?(\d+?-\w+-\d{4}\s+\d+:\d{2})/i';
     preg_match_all($datestr_pattern, $index_file_data, $datestr_matches);
 
     // Extracts the parts we want: unique versions and package filenames.

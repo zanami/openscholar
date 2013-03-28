@@ -21,6 +21,13 @@ function cp_menu_menu() {
     'access callback' => 'spaces_access_admin',
     'type' => MENU_CALLBACK,
   );
+  $items['cp/build/%/delete/%ctools_js'] = array(
+    'title' => 'Delete Link',
+    'page callback' => 'cp_menu_delete_link',
+    'page arguments' => array(2, 4),
+    'access callback' => 'spaces_access_admin',
+    'type' => MENU_CALLBACK,
+  );
 
   $items['cp/build/menu'] =
   $items['cp/build/menu/%'] = array(
@@ -58,6 +65,15 @@ function cp_menu_menu() {
     'page arguments' => array(3, 5),
     'access callback' => 'spaces_access_admin',
     'file' => 'cp_menu.form.inc',
+  );
+
+
+  $items['admin/config/openscholar/cp_menu'] = array(
+    'title' => 'Control Panel Menu',
+    'file' => 'cp_menu.admin.inc',
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_menu_admin'),
   );
 
   return $items;
@@ -115,10 +131,10 @@ function cp_menu_node_update($node) {
     return;
   }
 
-  if (!$node->os_menu['enabled'] || $node->os_menu['delete']) {
+  if (!@$node->os_menu['enabled'] || @$node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-      os_menu_link_delete($link['menu_name'], $link['mlid']);
+      os_menu_link_delete_link($link['menu_name'], $link['mlid']);
     }
   }
 
@@ -129,7 +145,7 @@ function cp_menu_node_update($node) {
       $link['menu_name'] = $node->os_menu['parent'];
       $link['options']['attributes'] = array('title' => $node->os_menu['description']);
       if ($node->os_menu['new_window']) {
-        $link['options']['attributes']['taret'] = '_blank';
+        $link['options']['attributes']['target'] = '_blank';
       }
       os_menu_link_save($link);
     } else {
@@ -143,7 +159,7 @@ function cp_menu_node_update($node) {
 function cp_menu_node_delete($node) {
   ctools_include('menu', 'os');
   if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-    os_menu_link_delete($link['menu_name'], $link['mlid']);
+    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
   }
 }
 
@@ -160,11 +176,6 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
 
 	        if (in_array($menu, $menus)) {
 	          $fragment = 'cp/menu/nojs/new/';
-	          if ($space = spaces_get_space()) {
-	            $fragment = $space->group->purl . '/' . $fragment;
-	          }
-	          //ctools_include('modal');
-	          //ctools_modal_add_js();
 	          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
 	        }
 	      }
@@ -203,18 +214,28 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
     $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
 
-    $form['os_menu']['link']['new_window'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Open Link in New Window'),
-      '#default_value' => 0,
-    );
-
-
     //update the defaults to include $links
     $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
     $form['os_menu']['link']['description']['#default_value'] =
-      (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
+    (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
+
+    $form['os_menu']['link']['new_window'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Open Link in New Window'),
+        '#default_value' => 0,
+    );
+
+    //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
+    if (!variable_get('cp_menu_link_options_new_window', FALSE)) {
+      $form['os_menu']['link']['new_window']['#type'] = 'hidden';
+    }
+
+    if (!variable_get('cp_menu_link_options_tooltip', FALSE)) {
+      $form['os_menu']['link']['description']['#type'] = 'hidden';
+    }
+
+
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
 
     $url = l('Page Layout', 'cp/build/layout', array());
@@ -229,13 +250,14 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
   	// Set the title from the cache title and set the form title to the cache title if it exists.
     if (isset($cache['title'])) {
-	  $title = check_plain($cache['title']);
-	  // Check for the form title
-	  if(isset($form['title'])) {
-  	    $form['title']['#default_value'] = $title;
-	  }
+  	  $title = check_plain($cache['title']);
+  	  // Check for the form title
+  	  if(isset($form['title'])) {
+    	    $form['title']['#default_value'] = $title;
+  	  }
     }
 
+    //use menu from cp_menu wizard or default to primary
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     if (isset($form['os_menu'])) {
 	    $form['os_menu']['enabled']['#default_value'] = 1;
@@ -248,14 +270,20 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
 
+    //use new url provided by menu wizard
+    if (isset($cache['new_node_url'])) {
+      $form['path']['alias']['#default_value'] = $cache['new_node_url'];
+      $form['path']['pathauto']['#default_value'] = FALSE;
+    }
+    
     // Cache shouldn't be deleted on the first pass of adding a new biblio.
-    if(isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
+    if (isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
       // Check for the form state input - biblio type, this will be present if we are past
       // the Publication Type select form.
-      if(isset($form_state['input']['biblio_type'])) {
+      if (isset($form_state['input']['biblio_type'])) {
       	cp_menu_cache_clear('cp_menu');
       }
-    }else {
+    } else {
       cp_menu_cache_clear('cp_menu');
     }
   }
@@ -274,7 +302,7 @@ function cp_menu_node_submit($node, $form, &$state) {
     }
 
     foreach(array('link_title','description','parent','new_window') as $delta) {
-      if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
+      if (isset($state['values']['os_menu'][$delta]) && ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value'])) {
         $node->os_menu['dirty'] = TRUE;
         return;
       }
@@ -325,6 +353,11 @@ function cp_menu_edit_link($link, $js) {
       // In typical usage you will do something else here, such as update a
       // div with HTML or redirect the page based upon the results of the modal
       // form.
+
+      //refresh after renaming
+      if ($form_state['values']['op'] == 'Save') {
+        $commands[] = ctools_ajax_command_reload();
+      }
       print ajax_render($commands);
       exit;
     }
@@ -338,6 +371,81 @@ function cp_menu_edit_link($link, $js) {
   }
 }
 
+/*
+ * @function cp_menu_delete_link
+ *
+ * Menu callback function for deleting a link from cp/build/menu
+ */
+function cp_menu_delete_link($link, $js) {
+  ctools_include('menu', 'os');
+  $link = os_menu_link_load($link);
+  if ($js) {
+    ctools_include('modal');
+    ctools_include('ajax');
+    $form_state = array(
+      'title' => t('Delete Link'),
+      'ajax' => $js,
+      'build_info' => array(
+        'args' => array($link),
+      ),
+    );
+    $output = ctools_modal_form_wrapper('cp_menu_delete_link_form', $form_state);
+
+    if ($form_state['executed'] && $js) {
+      $commands = array();
+      $commands[] = ctools_modal_command_dismiss(t('Link Removed'));
+
+      //refresh after deleting
+      if ($form_state['values']['op'] == 'Delete') {
+        $commands[] = ctools_ajax_command_reload();
+      }
+      print ajax_render($commands);
+      exit;
+    }
+
+    // Otherwise, just return the output.
+    print ajax_render($output);
+    exit;
+  }
+  else {
+    return drupal_get_form('cp_menu_delete_link_form', $link);
+  }
+}
+
+function cp_menu_delete_link_form($form, $form_state, $link) {
+  $form['text'] = array(
+    '#type' => 'markup',
+    '#markup' => t('Are you sure you want to delete the "@title" link?  It cannot be recovered.', array('@title'=>$link['title'])),
+  );
+  $form['actions'] = array(
+    '#type' => 'actions',
+      'delete' => array(
+        '#type' => 'submit',
+        '#value' => t('Delete'),
+      ),
+    'cancel' => array(
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+    ),
+  );
+
+  $form['#link'] = $link;
+
+  $form['#submit'] = array('cp_menu_delete_link_form_submit');
+
+  return $form;
+}
+
+
+function cp_menu_delete_link_form_submit($form, $form_state) {
+  ctools_include('menu', 'os');
+  $link = $form['#link'];
+
+  if ($form_state['values']['op'] == t('Delete')) {
+    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
+  }
+}
+
 function cp_menu_edit_link_form($form, $form_state, $link) {
   $form_state['title'] = t('Title');
 
@@ -346,23 +454,27 @@ function cp_menu_edit_link_form($form, $form_state, $link) {
   $form['title'] = array(
     '#title' => t('Title'),
     '#type' => 'textfield',
-    '#description' => t('Name your link.'),
+    '#description' => t('Text for your link or heading.'),
     '#default_value' => $link['link_title'],
   );
 
-  $form['new_window'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('New Window'),
-    '#description' => t('Open link in new tab or window'),
-    '#default_value' => isset($link['options']['attributes']['target']),
-  );
+  if (variable_get('cp_menu_link_options_new_window', FALSE)) {
+    $form['new_window'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('New Window'),
+      '#description' => t('Open link in new tab or window'),
+      '#default_value' => isset($link['options']['attributes']['target']),
+    );
+  }
 
-  $form['tooltip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tooltip'),
-    '#description' => t('Text displayed when mouse hovers over link'),
-    '#default_value' => $link['options']['attributes']['title'],
-  );
+  if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
+    $form['tooltip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Tooltip'),
+      '#description' => t('Text displayed when mouse hovers over link'),
+      '#default_value' => $link['options']['attributes']['title'],
+    );
+  }
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -370,9 +482,9 @@ function cp_menu_edit_link_form($form, $form_state, $link) {
       '#type' => 'submit',
       '#value' => t('Save'),
     ),
-    'delete' => array(
+    'cancel' => array(
       '#type' => 'submit',
-      '#value' => t('Delete'),
+      '#value' => t('Cancel'),
     ),
   );
 
@@ -396,8 +508,10 @@ function cp_menu_edit_link_form_submit($form, $form_state) {
 
   if ($form_state['values']['op'] == t('Save')) {
     $link['link_title'] = $form_state['values']['title'];
-    $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
-    if ($form_state['values']['new_window']) {
+    if (isset($form_state['values']['tooltip'])) {
+      $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
+    }
+    if (isset($form_state['values']['new_window']) && $form_state['values']['new_window']) {
       $link['options']['attributes']['target'] = '_blank';
     }
     else {
@@ -405,8 +519,5 @@ function cp_menu_edit_link_form_submit($form, $form_state) {
     }
 
     os_menu_link_save($link);
-  }
-  elseif ($form_state['values']['op'] == t('Delete')) {
-    os_menu_link_delete($link['menu_name'], $link['mlid']);
   }
 }

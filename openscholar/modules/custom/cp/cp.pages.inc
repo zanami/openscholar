@@ -78,8 +78,11 @@ function cp_app_settings_form($form, $form_state, $app_name) {
   // Stores the current feature in the form data
   $form['#feature'] = $app_name;
 
+  $form['#submit'][] = 'cp_app_settings_form_submit';
+
   return $form;
 }
+
 
 /**
  * @todo Function description
@@ -94,4 +97,19 @@ function _cp_app_settings_remove_no_form($element, $form_state) {
   }
 
   return $element;
+}
+
+function cp_app_settings_form_submit($form, &$form_state) {
+  $mode = overlay_get_mode();
+  if ($mode== 'child') {
+    overlay_close_dialog();
+    $form_state['no_redirect'] = TRUE;
+    $form_state['redirect'] = FALSE;
+  } elseif (($mode == 'parent') && $form_state['ajax']) {
+    $var = ($form_state['values']['os_publications_note_in_teaser']) ? 'public' : 'private';
+    $cmd[] = ctools_modal_command_dismiss();
+    $cmd[] = ajax_command_replace('#edit-7 div.description>strong>em', "<em class='placeholder'>$var</em>");
+    print ajax_render($cmd);
+    exit;
+  } 
 }

@@ -28,19 +28,28 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="warning messages">',
+        '#markup' => t('You must enable the !link to create a slideshow.', array('!link' => l('Media Gallery app', 'cp/build/features'))),
+        '#suffix' => '</div>',
+      );
+    }
+    
     $form = parent::options_form($form_state);
 
     //get the media gallery nodes.
     $galleries = array();
-    if ($view = views_get_view('os_image_gallery_slideshow')) {
-      $view->execute_display('default', array());
+    ctools_include('node', 'os');
+    $efq = new OSNodeFieldQuery();
+    $efq->propertyCondition('type', 'media_gallery');
+    $result = $efq->execute();
 
-      //just get gallery nids and titles
-      $r = $view->result;
-      foreach ($r as $result) {
-        if (!isset($galleries[$result->node_file_usage_nid])) {
-          $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
-        }
+    if (isset($result['node']) && count($result['node'])) {
+      foreach(node_load_multiple(array_keys($result['node'])) as $node) {
+        $galleries[$node->nid] = $node->title;
       }
     }
 
@@ -141,6 +150,13 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    
+    //no slideshow when media gallery is disabled
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return $block;
+    }
+    
     drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
 
@@ -201,7 +217,7 @@ class os_boxes_slideshow extends os_boxes_default {
       $prefix = 'slideshow_';
       $data = array();
       foreach ($styles as $name => $presets) {
-        if (strpos($name, $prefix) !== false) {
+        if (strpos($name, $prefix) === 0) {
           $dim = current($presets['effects']);
           $dim = $dim['data'];
           $data[$dim['width']] = $dim;

@@ -156,7 +156,7 @@ function iqss_projects_front_infoblock_content() {
   }else{
   	//Create a site
   	$items[] = array(
-	  '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
+	  '#title' => ((count($vsites) >= 1) ? 'Create a site' : 'Get your website!'),
 	  '#href' => 'site/register',
   	  '#type' => 'link',
 	);
@@ -196,14 +196,14 @@ function iqss_projects_front_navblock_content() {
   }else{
   	//Create a site
   	$items[] = array(
-	  '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
+	  '#title' => ((count($vsites) >= 1) ? 'Create a site' : 'Get your website!'),
 	  '#href' => 'site/register',
   	  '#type' => 'link',
 	);
   }
 
-  $txt = 'Need a Site for a Project?';
-  $url = 'http://projects.iq.harvard.edu';
+  $txt = 'Need a Personal Site?';
+  $url = 'http://scholar.harvard.edu/';
   $mode = variable_get('openscholar_installation_mode', 'scholar');
 
   if ($mode == 'project'){

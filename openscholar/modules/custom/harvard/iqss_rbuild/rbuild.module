@@ -116,11 +116,6 @@ function rbuild_node_insert($node) {
   // Initializes releases only for Projects whose Method field == "rBuild".
   $field_items = field_get_items('node', $node, 'field_software_method');
   $field_value = $field_items[0]['value'];
-  if ($field_value !== 'Rbuild repository') {
-    return;
-  }
-
-  rbuild_fetch_releases($node);
 }
 
 /**
@@ -227,7 +222,7 @@ function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $p
     return FALSE;
   }
 
-  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created, &$context);
+  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created, $context);
   return TRUE;
 }
 
@@ -248,6 +243,23 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $start_time = time();
   $default_language = 'und';
 
+  // Prepares the vsite SID for the new node.
+  $items = field_get_items('node', $project_node, OG_AUDIENCE_FIELD);
+  if (count($items) > 0 && isset($items[0]['target_id'])) {
+    $sid = $items[0]['target_id'];
+  }
+  else {
+    $sid = 3633;
+  }
+  // Returns if we cannot load the vsite.
+  if (module_exists('vsite')) {
+    include_once (drupal_get_path('module', 'vsite') . '/includes/vsite.inc');
+    $vsite = vsite_get_vsite($sid);
+    if (!$vsite) {
+      return;
+    }
+  }
+
   // Prepares basic settings of our new Software Release node
   $node           = new stdClass();
   $node->type     = 'software_release';
@@ -258,11 +270,10 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
 
   // Adds $node->nid and more properties
   node_save($node);
+
+  // Loads newly created node and adds to vsite.
   $node = node_load($node->nid);
-  if (module_exists('vsite')) {
-    include_once (drupal_get_path('module', 'vsite') . '/includes/vsite.inc');
-    vsite_add_entity($node);
-  }
+  vsite_add_entity($node, 'node', $vsite);
 
   // Prepares field values
   $recommended = ($version == $package['version']) ? 1 : 0;
@@ -314,12 +325,18 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
     return FALSE;
   }
 
-  // Saves file to the root of the files directory.
+  // Saves file to Gary's files directory.
   $contents      = file_get_contents($filepath);
-  $file          = file_save_data($contents, 'public://' . $filename, FILE_EXISTS_RENAME);
-  $file->display = 1;
-
-  return $file;
+  $loc           = 'public://gking/files/';
+  $exists_and_writable = file_prepare_directory($loc, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  if ($exists_and_writable) {
+    $file = file_save_data($contents, $loc . $filename, FILE_EXISTS_REPLACE);
+    if ($file) {
+      $file->display = 1;
+      return $file;
+    }
+  }
+  return FALSE;
 }
 
 /**
@@ -642,7 +659,7 @@ function _rbuild_get_recommended_release_version($nid, $type = 'software_release
   $version = '';
 
   // Includes class OSNodeFieldQuery (extends EntityFieldQuery)
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
 
   $query = new OSNodeFieldQuery('software_release');
   $query

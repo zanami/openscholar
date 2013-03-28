@@ -10,6 +10,25 @@
 include_once 'os_booklets.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_booklets_os_app_info() {
+  $apps = array();
+
+  $apps['os_booklets'] = array(
+    'path' => 'documents',
+  	'nodetypes' => array(
+  	  'book',
+    ),
+    'views tabs' => array(
+      'os_booklets' => array('page'),
+    ),
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_menu().
  */
 function os_booklets_menu() {
@@ -32,13 +51,38 @@ function os_booklets_menu() {
  * Implements hook_menu_alter().
  */
 function os_booklets_menu_alter(&$items) {
+
+  if (isset($items['node/%node/outline'])) {
+    $items['node/%node/outline']['page callback'] = 'os_booklets_book_root_outline';
+    $items['node/%node/outline']['page arguments'] = array(1);
+    $items['node/%node/outline']['file'] = 'book.admin.inc';
+    $items['node/%node/outline']['file path'] = drupal_get_path('module', 'book');
+  }
+
   if (isset($items['book'])) {
-    //Provided by core books this shows a list of all books in the system, formatted poorly. restrict access to this page
+    // Provided by core book
+    // Shows a list of all books in the system, formatted poorly.
+    // restrict access to this page
     $items['book']['access arguments'] = array('administer book outlines');
   }
 }
 
+/**
+ * Page callback; returns the book_admin_edit form for the root of the book.
+ */
+function os_booklets_book_root_outline($node) {
+  $root = os_books_get_root($node);
+  return drupal_get_form('book_admin_edit', $root);
+}
 
+/**
+ * Implements hook_form_FORM_ID_alter() for book_admin_edit.
+ */
+function os_booklets_form_book_admin_edit_alter(&$form, $form_state) {
+  if ($form['#node']->type == 'book') {
+    $form['save']['#value'] = t('Save Booklet Outline');
+  }
+}
 
 
 /**
@@ -212,7 +256,7 @@ function _os_booklets_option_filter_form_alter(&$form) {
   }
 
   // Includes class OSNodeFieldQuery (extends EntityFieldQuery)
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
 
   $query = new OSNodeFieldQuery('book');
   $result = $query->execute();

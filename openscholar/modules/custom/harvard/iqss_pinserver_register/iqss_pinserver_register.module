@@ -78,41 +78,109 @@ function iqss_pinserver_register_vsite_users_profile_node_submit($form, &$form_s
  * Validation callback; for vsite_register_form.
  */
 function iqss_pinserver_register_validate($form, &$form_state) {
-  // Checks if multiple sites is limited and if site already exists
-  if ($uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($uid)) >= variable_get('openscholar_vsites_per_user', 1)) {
-    $commands[] = ctools_ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
-    ctools_ajax_render($commands);
+  global $user;
+
+  // Ajax validation.
+  if ($_GET['q'] == 'system/ajax') {
+    if ($form_state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation' ||
+        $form_state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
+      // Let AJAX handler deal with validating this element.
+      return;
+    }
+    else {
+      // Someone submitted the form; must validate all.
+      return iqss_pinserver_register_ajax_submit_validation($form, $form_state);
+    }
   }
+
+  // Fall back to standard validation.
+  foreach (iqss_pinserver_register_validate_elements($form_state['values']) as $element => $msg) {
+    if ($msg) {
+      form_set_error($element, $msg);
+    }
+  }
+
+  return;
+}
+
+/**
+ * When form is submitted with AJAX enabled, also run this validation.
+ */
+function iqss_pinserver_register_ajax_submit_validation(&$form, &$form_state) {
+  global $user;
+
+  $commands = $valid = array();
+
+  foreach(iqss_pinserver_register_validate_elements($form_state) as $element => $msg) {
+    if ($msg) {
+      $commands[] = ajax_command_html("#${element}-errors", theme('item_list', array('items'=>array($msg), 'type'=>'ul', 'attributes'=>array('class'=>array('error')))));
+    }
+    else {
+      $valid[] = ajax_command_html("#${element}-errors", '');
+    }
+  }
+
+  //print new errors
+  if (count($commands)) {
+    $generic_error = array(ajax_command_html('#form-errors', theme('item_list', array('items'=>array('There were errors creating your website. Please look above to correct them.'), 'type'=>'ul', 'attributes'=>array('class'=>array('error'))))));
+    print ajax_render(array_merge($commands, $valid, $generic_error));
+    exit;
+  }
+
+  return;
 }
 
 /**
  * Submit callback; for vsite_register_form.
  */
-function iqss_pinserver_register_submit($form, $state) {
+function iqss_pinserver_register_submit($form, &$form_state) {
   global $user;
 
-  //new user and vsite should have already been created, check to make sure the user information is present
-  if (isset($_SESSION['pinserver']['huid']) && !empty($_SESSION['pinserver']['huid']) && isset($user->uid) && !empty($user->uid)) {
-    // Add user to database.
-    iqss_pinserver_register_add_row($user->uid, $_SESSION['pinserver']['huid']);
+  $uid = $user->uid;
+  $huid = NULL;
 
-    if (in_array('anonymous user', $user->roles) && !user_access('create vsite content on behalf')) {
-      // log user in
-      // Update the user table timestamp noting user has logged in.
-      // This is also used to invalidate one-time login links.
-      $user->login = time();
-
-      db_update('users')->fields(array('login' => $user->login))->condition('uid', $user->uid, '=')->execute();
-    }
+  // For accounts created by admin, get the new UID of the account we just created.
+  if(isset($form_state['values']['name'])) {
+    $uid = user_load_by_name($form_state['values']['name'])->uid;
   }
-  else {
-    error_log('WARNING: The module could not insert the new user information into the database because the user information was not supplied.');
-    return;
+
+  // Look hard for HUID. Prefer form value over session value.
+  if(isset($form_state['values']['huid']) && !empty($form_state['values']['huid']) && is_numeric($form_state['values']['huid'])) {
+    $huid = $form_state['values']['huid'];
+  }
+  else if(isset($_SESSION['pinserver']['huid']) && !empty($_SESSION['pinserver']['huid']) && is_numeric($_SESSION['pinserver']['huid'])) {
+    $huid = $_SESSION['pinserver']['huid'];
+  }
+
+  // Create UID->HUID association in database if UID and HUID are present.
+  if (!empty($uid) && !empty($huid) && !iqss_pinserver_register_add_row($uid, $huid)) {
+    error_log('WARNING: The iqss_pinserver_register_submit function could not add the UID->HUID association to the database');
   }
 
   // Removes pinserver session vars.
   pinserver_remove_session();
 }
+
+/**
+ * Validate all form elements.
+ */
+function iqss_pinserver_register_validate_elements(&$form_state) {
+  $errors = array();
+
+  // Validate HUID.
+  $huid_errors = iqss_pinserver_register_validate_huid($form_state['values']['huid']);
+  if(isset($huid_errors[0])) {
+    $errors['huid'] = $huid_errors[0];
+  }
+
+  // Check if user can create vsites.
+  if ($user->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('openscholar_vsites_per_user')) {
+    $errors['form'] = t('You do not have permission to create more websites.');
+  }
+
+  return $errors;
+}
+
 
 /**
  * Checks if HUID is numeric and is a new unique ID number.
@@ -126,18 +194,18 @@ function iqss_pinserver_register_submit($form, $state) {
 function iqss_pinserver_register_validate_huid($huid) {
   $errors = array();
 
-  // Empty string is okay.
-  if ($huid == '') {
+  // Empty HUID field is okay.
+  if (empty($huid)) {
     return $errors;
   }
 
   // Verifies HUID is numeric.
-  if (!is_numeric($huid)) {
+  else if (!is_numeric($huid)) {
     $errors[] = t('The @harvard_id must be numeric.', array('@harvard_id' => 'Harvard ID'));
   }
 
   // Verifies HUID does not already exist in database.
-  elseif (iqss_pinserver_register_get_uid_from_huid($huid)) {
+  else if (iqss_pinserver_register_get_uid_from_huid($huid)) {
     $errors[] = t('The @harvard_id you have entered already exists in the database.', array('@harvard_id' => 'Harvard ID'));
   }
 
@@ -147,13 +215,12 @@ function iqss_pinserver_register_validate_huid($huid) {
 /**
  * AJAX callback; for huid field
  */
-function iqss_pinserver_register_ajax_validation(&$form, &$state) {
+function iqss_pinserver_register_ajax_validation(&$form, &$form_state) {
   // clear this to avoid having notices clutter the form during ajax validation
   drupal_get_messages();
-  $elem = $state['triggering_element']['#name'];
   return theme('vsite_register_form_errors', array(
-    'name' => $elem,
-    'errors' => iqss_pinserver_register_validate_huid($state['values']['huid']),
+    'name' => $form_state['triggering_element']['#name'],
+    'errors' => iqss_pinserver_register_validate_huid($form_state['values']['huid']),
   ));
 }
 
@@ -165,7 +232,7 @@ function iqss_pinserver_register_vsite_register_form_page() {
 
   // Handle users logged in already.
   if ($user->uid) {
-    return iqss_pinserver_register_redirect($user->uid);
+    return iqss_pinserver_register_create_vsite_redirect();
   }
 
   // Sends user to pinserver if not logged-in locally or via the pinserver
@@ -174,48 +241,49 @@ function iqss_pinserver_register_vsite_register_form_page() {
   }
 
   // Redirects pinserver-logged-in user if they don't own a vsite.
-  $uid = iqss_pinserver_register_get_uid_from_huid();
-  return iqss_pinserver_register_redirect($uid);
-}
-
-
-/**
-  * Check if user can create vsites or not, and redirect appropriately.
-  */
-function iqss_pinserver_register_redirect($uid) {
-  $vsites = vsite_get_vsite_by_owner($uid);
-
-  if (vsite_vsite_exists_access($vsites)) {
-    // Can create new vsites; provide form to create a new vsite.
-    return drupal_get_form('vsite_register_form');
-  }
-  else if (count($vsites)) {
-    // Can't create new sites; redirect user to existing vsite(s).
-    return iqss_pinserver_register_login_redirect($uid, $vsites);
-  }
-
-  return drupal_goto('node');  // This shouldn't happen.
-}
-
-
-/**
- * Logs in the pinserver user and redirects to any passed destination.
- */
-function iqss_pinserver_register_login_redirect($uid, $vsites) {
-  global $user;
-
-  if ($uid) {
+  if ($uid = iqss_pinserver_register_get_uid_from_huid()) {
     // Logs the user in based on the HUID->UID association.
     $user = user_load(array('uid' => $uid));
     $user->login = time();
     db_update('users')->fields(array('login' => $user->login))->condition('uid', $user->uid, '=')->execute();
   }
 
+  return iqss_pinserver_register_create_vsite_redirect();
+}
+
+
+/**
+  * Check if user can create vsites or not, or requested a private file, and redirect appropriately.
+  */
+function iqss_pinserver_register_create_vsite_redirect() {
+  global $user;
+
+  // Redirect user to requested private file (or other private destination).
   if (isset($_GET['redirect'])) {
-    // Redirects user to requested private file (or other private destination).
-    drupal_goto(preg_replace('|^/|', '', $_GET['redirect']));
+    // Strip superfluous preceeding '/' before redirecting.
+    return drupal_goto(preg_replace('|^/|', '', $_GET['redirect']));
   }
 
+  $vsites = vsite_get_vsite_by_owner($user->uid);
+
+  // Can user create vsites or not?
+  if (vsite_vsite_exists_access($vsites)) {
+    // Can create new vsites; provide form to create a new vsite.
+    return drupal_get_form('vsite_register_form');
+  }
+  else if (count($vsites)) {
+    // Can't create new sites; redirect user to existing vsite(s).
+    return iqss_pinserver_register_existing_vsite_redirect($vsites);
+  }
+
+  return drupal_goto('node');  // This shouldn't happen.
+}
+
+
+/*
+ * Redirect to the proper vsite.
+ */
+function iqss_pinserver_register_existing_vsite_redirect($vsites) {
   // Redirects user to existing vsite(s).
   $count = count($vsites);
 
@@ -273,13 +341,6 @@ function iqss_pinserver_register_get_uid_from_huid($huid = NULL) {
 }
 
 /**
-  * Implements hook_user_logout().
-  */
-function iqss_pinserver_register_user_logout($account) {
-  pinserver_remove_session();
-}
-
-/**
   * Implements hook_user_delete().
   */
 function iqss_pinserver_register_user_delete($account) {
@@ -316,13 +377,12 @@ function iqss_pinserver_register_get_huid($uid) {
  * Attaches a new HUID textfield element to the given form.
  */
 function _iqss_pinserver_register_huid_field(&$form) {
-  $form['huid'] = array(
+  $form['user_fieldset']['huid'] = array(
     '#type' => 'textfield',
     '#title' => t('Harvard ID'),
     '#size' => 35,
-    '#weight' => 10,
     '#required' => FALSE,
-    '#description' => t('Optional: Enter the @huid of the web site owner', array('@huid' => 'Harvard ID')),
+    '#description' => t('Enter the @huid of the web site owner', array('@huid' => 'Harvard ID')),
     '#ajax' => array(
       'callback' => 'iqss_pinserver_register_ajax_validation',
       'wrapper' => 'huid-errors',

@@ -40,7 +40,7 @@ function vsite_register_form($form, &$state) {
   $default_bundle = variable_get('os_default_group_bundle', 'personal');
   $bundles = array();
   foreach ($group_types['node'] as $bundle => $label) {
-    if (user_access("create {$bundle} content") && (!isset($parent) || in_array($bundle, array('personal', 'project')))) {
+    if (user_access("create {$bundle} content") && (!isset($parent) || in_array($bundle, variable_get('subsite_bundles',array('personal', 'project'))))) {
       $bundles[$bundle] = $label;
     }
   }
@@ -71,7 +71,7 @@ function vsite_register_form($form, &$state) {
   $selected_bundle = isset($state['values']['bundle']) ? $state['values']['bundle'] : $default_bundle;
 
   //Get enabled presets and load their titles
-  $enabled_presets = variable_get('os_enabled_spaces_presets', array());
+  $enabled_presets = array_filter(variable_get('os_enabled_spaces_presets', array()));
   $presets = spaces_preset_load();
   foreach($enabled_presets as $key => $value) {
     $enabled_presets[$key] = $presets[$key]->title;
@@ -140,7 +140,7 @@ function vsite_register_form($form, &$state) {
       '#description' => t('Enter the name of the user who will manage this new site or !create_new.',
         array('!create_new' => $ajax_link)
       ),
-    	'#autocomplete_path' => 'user/autocomplete',
+    	'#autocomplete_path' => 'vsite/autocomplete/user',
     );
 
     //flag for JS to set when create new user is clicked
@@ -154,6 +154,8 @@ function vsite_register_form($form, &$state) {
     );
 
     $form['user_fieldset'] += _vsite_register_user_form();
+
+    $form['user_fieldset']['huid'] = array();
 
     $form['user_fieldset']['new_user_close_div'] = array(
       '#markup' => '</div>',
@@ -224,7 +226,6 @@ function _vsite_register_user_form() {
   $form['password'] = array(
     '#type' => 'password_confirm',
     '#size' => 35,
-    '#description' => t('Password'),
   );
   /*
   $form['notify'] = array(

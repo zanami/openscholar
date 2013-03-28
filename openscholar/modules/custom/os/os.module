@@ -34,7 +34,7 @@ function os_menu() {
   );
 
   $items['admin/config/openscholar'] = $items['admin/config/openscholar/openscholar'] = array(
-    'title' => 'Openscholar Settings',
+    'title' => 'OpenScholar Settings',
     'description' => 'Administer OpenScholar specific settings.',
     'position' => 'left',
     'weight' => -5,
@@ -95,22 +95,23 @@ function os_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_entity_info_alter().
+ *
+ * Adds a view mode to nodes for use in sidebar widgets
+ */
+function os_entity_info_alter(&$info) {
+  $info['node']['view modes']['sidebar_teaser'] = array(
+    'label' => 'Sidebar Teaser',
+    'custom settings' => TRUE,
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function os_block_info() {
   ctools_include('menu', 'os');
 
-  $blocks['powered-by'] = array(
-    'info' => t('Powered by Openscholar'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-
-  $blocks['login'] = array(
-    'info' => t('Login Button'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
   $blocks['get-started'] = array(
     'info' => t('Get Started - A block to help site admins setup thier site.'),
     'weight' => '-10',
@@ -145,15 +146,6 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-    case 'powered-by':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_powered_by');
-      return $block;
-
-    case 'login':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_login');
-      return $block;
 
     case 'get-started':
       if (user_access('manage group space')) {
@@ -189,8 +181,10 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer_first', 'footer_third', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
-      '#theme' => 'os_nice_menus',
+      '#theme' => $theme,
       '#menu_name' => $data->delta,
       '#region' => $data->region,
     );
@@ -230,7 +224,6 @@ function theme_os_nice_menus($variables) {
 
   // Has to be nice_menus. the rest won't take a direction.
   $block = theme('nice_menus', $variables);
-
   return $block['content'];
 }
 
@@ -320,6 +313,28 @@ function os_os_widget_alter(&$widget) {
       'tags' => array('Content'),
     );
   }
+
+  $features = variable_get('spaces_features');
+
+  //Lets make sure that this widget should be shown, is the module enabled
+  $hidden = (!empty($widget['hidden']) || (!empty($widget['module']) && !module_exists($widget['module'])));
+
+  //Is the feature public
+  if(!$hidden || !empty($widget['module']) && module_exists('spaces')){
+    $spaces_features = spaces_features('og');
+    if($widget['module'] == 'views'){
+      list($module,) = explode("-", $widget['delta'], 2);
+    }else{
+      $module = $widget['module'];
+    }
+
+    if(isset($spaces_features[$module]) && empty($features[$module])){
+      //This is provided by a disabled og feature
+      $hidden = true;
+    }
+  }
+
+  $widget['hidden'] = $hidden;
 }
 
 /**
@@ -336,7 +351,9 @@ function os_theme() {
       'variables' => array(
         'link_text' => 'Admin Login',
         'attributes' => array(
-          'class' => 'footer-login',
+          'class' => array(
+          	'footer-login'
+          ),
         ),
       ),
     ),
@@ -361,10 +378,16 @@ function os_theme() {
  * during custom_theme.
  */
 function os_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'init') {
+  if ($hook == 'watchdog' && module_exists('dblog') && !db_table_exists('watchdog')) {
+    // The dblog table doesn't exists. Preventing from other module the option
+    // to log.
+    // @see http://drupal.org/node/429188
+    $implementations = array();
+  }
+  elseif ($hook == 'init') {
     unset($implementations['purl']);
   }
-  if ($hook == 'form_alter') {
+  elseif ($hook == 'form_alter') {
     unset($implementations['os']);
     $implementations['os'] = FALSE;
   }
@@ -399,6 +422,9 @@ function os_process_node(&$vars) {
   // Adds a CSS class to the comment-add link.
   _os_process_node_links_comment_add_class($vars);
 
+  // adds theme hook suggestion to load this template if it exists
+  $vars['theme_hook_suggestions'][] = 'node__'.$vars['type'].'__'.$vars['view_mode'];
+
   // Only proceeds if we have a "Read more" link.
   if (!isset($vars['content']['links']['node']['#links']['node-readmore'])) {
     return;
@@ -413,7 +439,7 @@ function os_process_node(&$vars) {
 
   // Compares what will be displayed to the user against the full body value.
   $body_item      = array_shift($body_items);
-  $body_full      = trim($body_item['value']);
+  $body_full      = isset($body_item['safe_value']) ? trim($body_item['safe_value']) : trim($body_item['value']);
   $body_display   = isset($vars['content']['body'][0]['#markup']) ? trim($vars['content']['body'][0]['#markup']) : '';
   $body_shortened = (bool)(strlen($body_full) > strlen($body_display));
 
@@ -438,7 +464,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
       if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
-        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] .= " $class";
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = array($class);
@@ -456,6 +482,16 @@ function _os_process_node_links_comment_add_class(&$vars) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function os_preprocess_page(&$vars) {
+
+  //hide useless tabs
+  if (is_array($vars['tabs']['#primary'])) {
+    foreach ($vars['tabs']['#primary'] as $delta => $tab) {
+      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/outline','node/%/log' ))) {
+        unset($vars['tabs']['#primary'][$delta]);
+      }
+    }
+  }
+
   $types = os_get_bundles();
 
   $links = array();
@@ -466,9 +502,11 @@ function os_preprocess_page(&$vars) {
   }
 
   // Sets page title to match the menu link title
-  ctools_include('menu', 'os');
-  $menu_item = os_menu_load_link_path($_GET['q']);
-  drupal_set_title($menu_item['title']);
+  if ($view = views_get_current_view()) {
+    ctools_include('menu', 'os');
+    $menu_item = os_menu_load_link_path($_GET['q']);
+    drupal_set_title($menu_item['title']);
+  }
 
   if (overlay_get_mode() == 'child') {
     return;
@@ -491,7 +529,7 @@ function os_preprocess_page(&$vars) {
         }
       }
     }
-    if ($printed && spaces_access_admin() && node_access('create', $type)) {
+    if ($printed && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => $_node_types->names[$type],
@@ -531,7 +569,7 @@ function os_preprocess_page(&$vars) {
       '#links' => $links,
       '#title' => t('Add New'),
       '#class' => 'add_new',
-      '#access' => spaces_access_admin(),
+      '#access' => count($links),
     );
   }
   elseif (count($links) == 1) {
@@ -595,6 +633,22 @@ function os_preprocess_page(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_menu_link
+ * @param array $variables
+ */
+function os_preprocess_menu_link(&$variables) {
+  //Remove "menu-path-" and 'active' class from menu items without links.
+  if($variables['element']['#href'] === false && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
+    unset($variables['element']['#attributes']['class'][$path]);
+
+    //Remove active class.
+    if(isset($variables['element']['#localized_options']['attributes']['class'])){
+      $variables['element']['#localized_options']['attributes']['class'] = array_diff($variables['element']['#localized_options']['attributes']['class'], array('active'));
+    }
+  }
+}
+
+/**
  * Implements hook_form_alter().
  */
 function os_form_alter(&$form, $form_state, $form_id) {
@@ -628,6 +682,12 @@ function os_entity_form_after_build($form, $form_state) {
 function os_form_node_form_alter(&$form, $form_state) {
   unset($form['options']['promote']);
   $form['path']['pathauto']['#description'] = t('Uncheck this to create a custom alias below.');
+  if (isset($form['field_upload']['und']['add_more']['#value'])) {
+    $form['field_upload']['und']['add_more']['#value'] = t('Add media');
+  }
+  if (isset($form['og_group_ref']['und'][0]['admin']['add_more']['#value'])) {
+    $form['og_group_ref']['und'][0]['admin']['add_more']['#value'] = t('Add administrator');
+  }
 }
 
 /**
@@ -640,9 +700,16 @@ function os_settings_form($form_state) {
     $form['#redirect'] = '';
   }
 
-  $form['os_use_dropdowns'] = array(
+  $form['os_general'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#weight' => 0,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Use Dropdowns'),
+    '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
   );
@@ -662,8 +729,40 @@ function os_ctools_plugin_type() {
       'load themes' => TRUE,
       'info file' => TRUE,
       'extension' => 'flav',
+      'cache' => TRUE,
     ),
   );
+}
+
+/**
+ * Implements hook_date_formats
+ *
+ * Provides formats for time, date, and abbreviated date types
+ */
+function os_date_formats() {
+  return array(
+    array(
+      'type' => 'os_time',
+      'format' => 'g:ia',
+    ),
+    array(
+      'type' => 'os_date_abbreviated',
+      'format' => 'M d, g:ia',
+    ),
+    array(
+      'type' => 'os_date',
+      'format' => 'Y-m-d',
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types
+ *
+ * Provides three new types of date formats.
+ */
+function os_date_format_types() {
+  return array('os_time' => t('Time'), 'os_date' => t('Date'), 'os_date_abbreviated' => t('Abbreviated'));
 }
 
 /**
@@ -785,7 +884,7 @@ function theme_openscholar_get_started() {
   $result = <<<MESSAGE
       <div id="message_welcome_message">
         <div class="toggle">$short_message</div>
-        <div id="welcome_wrapper" class="slider">
+        <div id="welcome_wrapper" class="os-slider">
           <h3>{$welcome_message}</h3>
           <p>Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.</p>
           {$links}
@@ -889,7 +988,11 @@ function os_system_info_alter(&$info, $file, $type) {
   // If the base theme for this theme is 'os_basetheme' or if the is a 'vsite'
   // theme add the default regions.
   if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
-
+    if (!file_exists(dirname($file->filename) . '/favicon.ico')) {
+      $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
+      $info['settings']['default_favicon'] = 0;
+    }
+    
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
       'branding_footer' => 'Branding Footer',
@@ -906,6 +1009,10 @@ function os_system_info_alter(&$info, $file, $type) {
       'sidebar_first' => 'SideBar Left',
       'sidebar_second' => 'SideBar Right',
       'footer' => 'Footer',
+      'footer_top' => 'Footer Top',
+      'footer_first' => 'Footer Left',
+      'footer_third' => 'Footer Right',
+      'footer_bottom' => 'Footer Bottom'
     );
   }
 }
@@ -918,7 +1025,21 @@ function os_system_info_alter(&$info, $file, $type) {
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
 
-  // Pages to add a destination return to their links.
+  // Check if the user asked for any RESTWS services.
+  if (module_exists('restws')) {
+    foreach (array_keys(restws_get_format_info()) as $format) {
+      if (strpos($_GET['q'], $format) !== FALSE) {
+        // When accessing to any address the spaces module use purl_goto(). The
+        // purl_goto() use url() for knowing the path of the URL we accessing.
+        // url() will return eventually the path.
+        // This section alter the $path to the $_GET['q'] which is node/%.json
+        // which will convert by the url() to foo/bar.
+        $path = $_GET['q'];
+        return;
+      }
+    }
+  }
+
   $loop_back_pages = array(
     'user',
     'user/logout',
@@ -1021,6 +1142,13 @@ function os_node_view_alter(&$build) {
   if (!empty($node->nid)) {
     $build['#contextual_links']['node'] = array('node', array($node->nid));
   }
+
+  // fixes broken tags when <!--break--> is used
+  if ($build['#view_mode'] == 'teaser' && isset($build['body']) && is_array($build['body'])) {
+    foreach (element_children($build['body']) as $c) {
+      $build['body'][$c]['#markup'] = _filter_htmlcorrector($build['body'][$c]['#markup']);
+    }
+  }
 }
 
 /**
@@ -1029,20 +1157,16 @@ function os_node_view_alter(&$build) {
  * Defines permissions for all the regions of the default theme
  */
 function os_permission() {
-  $regions = array_keys(system_region_list(variable_get('theme_default')));
-
   $perms = array(
-    'edit all regions' => array(
-      'title' => t('Edit All Regions'),
-      'description' => t('Edit the contents of all regions'),
+    'manage locked regions' => array(
+      'title' => t('Manage Locked Regions'),
+      'description' => t('Set which regions are locked')
+    ),
+    'edit locked regions' => array(
+      'title' => t('Edit Locked Regions'),
+      'description' => t('Allows users to edit locked regions')
     ),
   );
-  foreach ($regions as $r) {
-    $perms['edit region ' . $r] = array(
-      'title' => t('Edit Region !region', array('!region' => $r)),
-      'description' => t('Edit the contents of the region !region', array('!region' => $r)),
-    );
-  }
 
   return $perms;
 }
@@ -1059,14 +1183,23 @@ function os_get_region($module, $delta, $contexts = array()) {
   }
 
   $plugin = context_get_plugin('reaction', 'block');
-  $bid = $module . '-' . $delta;
+  $bid = $module.'-'.$delta;
 
   $blocks = &drupal_static(__FUNCTION__, array());
   if (empty($blocks)) {
+
+    if (empty($contexts)) {
+      $contexts = context_active_contexts();
+    }
+    ctools_include('layout', 'os');
+    uksort($contexts, '_os_context_sort_by_hierarchy');
+
+    $plugin = context_get_plugin('reaction', 'block');
+
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(NULL, $c) as $bid => $block) {
-        if (isset($block->region)) {
-          $blocks[$block->module . '-' . $block->delta] = $block->region;
+      foreach ($plugin->get_blocks(null, $c) as $block) {
+        if (isset($block->region) && $block->region) {
+          $blocks[$block->module.'-'.$block->delta] = $block->region;
         }
       }
     }
@@ -1081,7 +1214,18 @@ function os_get_region($module, $delta, $contexts = array()) {
 function os_access_region($module, $delta) {
   $region = os_get_region($module, $delta);
 
-  return user_access('edit region ' . $region) || user_access('edit all regions');
+  $locked = variable_get('os_locked_regions', array());
+  $spaces = spaces_access_admin();
+
+  // the region is locked
+  if (isset($locked[$region]) && $locked[$region]) {
+    // check the permission
+    return $spaces && (user_access('edit locked regions') || user_access('manage locked regions'));
+  }
+  else {
+    // the region is not locked, so just return whatever spaces says
+    return $spaces;
+  }
 }
 
 /**
@@ -1183,7 +1327,7 @@ function os_app_info($app_name = NULL) {
         foreach ($apps as $key => $app) {
           // Adds default values.
           $app += array(
-          	'restricted site types' => array(),
+          	'path' => '',
           );
 
           // Adds the module information.
@@ -1197,4 +1341,66 @@ function os_app_info($app_name = NULL) {
   }
 
   return empty($app_name) ? $info : $info[$app_name];
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
+ */
+function os_form_user_login_alter(&$form, $form_state) {
+  if (variable_get('os_login_with_email', true)) {
+    // Replace 'username' with 'Username or e-mail'.
+    $form['name']['#title'] = t('Username or e-mail');
+    // Replace the description of the user/email login field.
+    $form['name']['#description'] = t('You may login with either your assigned username or your e-mail address.');
+    // Add a new validation.
+    // Validation function vsite_user_login_validate must run first.
+    array_unshift($form['#validate'],'os_user_login_validate');
+  }
+}
+
+/**
+ * Implements hook_validate().
+ * Custom validation for user_login form to allow users to login with their email address.
+ */
+function os_user_login_validate($form, &$form_state) {
+  if (isset($form_state['values']['name']) && $form_state['values']['name']) {
+    // Load their username from their email address.
+    if ($name = db_query("SELECT name FROM {users} WHERE LOWER(mail) = LOWER(:email)", array(':email' => $form_state['values']['name']))->fetchField()) {
+      // Set the form['name'] to the users username for proper drupal user login form validation.
+      form_set_value($form['name'], $name, $form_state);
+    }
+  }
+}
+
+function os_library() {
+  $l = array();
+
+  $l['os.ajax-fix'] = array(
+    'title' => 'Ajax Termination Fix',
+    'version' => '1.0',
+    'js' => array(
+      drupal_get_path('module', 'os').'/theme/os_ajaxterminate.js' => array('group' => JS_LIBRARY),
+    ),
+  );
+
+  return $l;
+}
+
+function os_library_alter(&$l) {
+  $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
+}
+
+/**
+ * Customize what resources will be avalible for RestWS to use
+ **/
+function os_restws_resource_info_alter(&$info){
+
+//   //Remove entity types except those listed
+//   $enabled_entities = variable_get('os_restws_entities',array('node'));
+//   foreach (entity_get_info() as $entity_type => $info) {
+//     if(isset($info[$entity_type]) && !in_array($entity_type, $enabled_entities)){
+//       unset($info[$entity_type]);
+//     }
+//   }
+
 }

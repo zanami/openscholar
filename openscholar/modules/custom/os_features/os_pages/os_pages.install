@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * Updates all pages_pages contexts to individual page contexts
+ */
+function os_pages_update_7001(&$sandbox) {
+  $q = db_select('spaces_overrides', 'so')
+       ->fields('so')
+       ->condition('object_id', 'pages_pages:reaction:block')
+       ->execute();
+
+  $default = os_pages_context_custom('os_pages-page-1');
+
+  foreach ($q as $r) {
+    $group = $r->id;
+    $q2 = db_select('node', 'n')
+          ->fields('n', array('nid'))
+          ->condition('n.type', 'page');
+    $q2->join('og_membership', 'ogm', 'ogm.etid = n.nid AND ogm.entity_type =\'node\'');
+    $q2->condition('ogm.gid', $group);
+
+    $q2 = $q2->execute();
+    foreach ($q2 as $n) {
+      $ctx_name = 'os_pages-page-'.$n->nid;
+      $ctx = clone $r;
+      $ctx->object_id = $ctx_name.':reaction:block';
+      $ctx->value = unserialize($ctx->value);
+      $ctx->value['blocks'] = array_merge($ctx->value['blocks'], $default->reactions['block']['blocks']);
+      drupal_write_record('spaces_overrides', $ctx);
+    }
+  }
+
+  db_delete('spaces_overrides')
+  ->condition('object_id', 'pages_pages:reaction:block')
+  ->execute();
+}
+
+function os_pages_update_7002(&$sandbox) {
+  $q = db_select('spaces_overrides', 'so')
+       ->fields('so')
+       ->condition('object_id', 'os_pages-page-%', 'LIKE')
+       ->execute();
+
+  $default = os_pages_context_custom('os_pages-page-1');
+
+  foreach ($q as $r) {
+    $r->value = unserialize($r->value);
+    $r->value['blocks'] = array_merge($r->value['blocks'], $default->reactions['block']['blocks']);
+    drupal_write_record('spaces_overrides', $r, array('type', 'id', 'object_type', 'object_id'));
+  }
+}

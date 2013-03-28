@@ -51,6 +51,15 @@ function os_publications_install() {
         }
       }
     }
+
+    // Remove second biblio_secondary_title field mapping.
+    $field_map = biblio_get_map('field_map','csl');
+    if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
+      if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
+	    $field_map['collection-title'] = '';
+	    biblio_set_map('field_map', 'csl', $field_map);
+	  }
+    }
   }
 }
 
@@ -162,4 +171,108 @@ function os_publications_update_7002(){
   }
 
   return t('Removed inline indents from biblio_citeproc citations.');
+}
+
+/**
+ * Remove the second mapping of biblio_secondary_title which causes duplicate title entries in certain citations.
+ */
+function os_publications_update_7003() {
+  if(!module_exists('biblio_citeproc')){
+  	return t('CiteProc not installed, update not needed.');
+  }
+  $field_map = biblio_get_map('field_map','csl');
+  if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
+    if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
+	  $field_map['collection-title'] = '';
+	  biblio_set_map('field_map', 'csl', $field_map);
+	  return t('Second biblio_secondary_title field mapping removed.');
+	}
+  }
+}
+
+/**
+ * Remove the migrate related residual "Select Type..." publication type from the biblio_types table.
+ */
+function os_publications_update_7004() {
+  if(!db_table_exists('biblio_types')) {
+  	return;
+  }
+
+  $result = db_select('biblio_types', 'b')
+    ->fields('b', array('tid'))
+    ->condition('name', 'Select Type...','=')
+    ->execute()
+    ->fetchField();
+
+  if(empty($result)) {
+  	return;
+  }
+
+  $delete_type = db_delete('biblio_types')
+    ->condition('tid',$result)
+  	->execute();
+
+  return t('Select Type... has been removed from the biblio_types table.');
+}
+
+/**
+ * Add more biblio years, separate existing one so there's room for more.
+ **/
+function os_publications_update_7005() {
+  $default_bibyears = array(9998 => 'In Press', 9999 => 'Submitted');
+  $scholar_bibyears = array(9999 => 'Submitted', 9998 => 'In Press', 10000 => 'Forthcoming');
+  $new_bibyears = array(10000=>'Forthcoming', 10010=>'Submitted', 10020=>'In Preparation', 10030=>'In Press', 10040=>'Working Paper');
+  $current_bibyears = variable_get('biblio_years_text', $default_bibyears);
+
+  ksort($current_bibyears);
+  ksort($scholar_bibyears);
+  ksort($default_bibyears);
+
+  //Only run this update for sites with the default configuration or our configuration
+  if (($current_bibyears != $default_bibyears) && ($current_bibyears != $scholar_bibyears)) {
+    return t('Biblio years/text settings have been modified.  Did not run update.');
+  }
+
+  $text_to_year = array_flip($new_bibyears);
+  foreach($current_bibyears as $year => $text) {
+    db_update('biblio')
+      ->condition('biblio_year', $year)
+      ->fields(array('biblio_year' => $text_to_year[$text]))
+      ->execute();
+  }
+
+  variable_set('biblio_years_text', $new_bibyears);
+
+  //people used to be able to override this.  those who have won't have the new options.  clear them out, that funcitonality is no longer supported.
+  db_delete('spaces_overrides')
+    ->condition('object_id', 'biblio_years_text')
+    ->condition('object_type', 'variable')
+    ->execute();
+
+  return t('Updated biblio years.');
+}
+
+/**
+ * Replace the newly patched chicago-author-date.csl file in the DB to correct a spacing issue in the citation.
+ */
+function os_publications_update_7006() {
+  if(!module_exists('biblio_citeproc')) {
+  	return;
+  }
+
+  $dir = drupal_get_path('module', 'biblio_citeproc') . '/style';
+  // Update only the chicago-author-date.csl file.
+  $file_name = '/chicago-author-date.csl';
+  $file = $dir . $file_name;
+  // Check for the chicago-author-date.csl.
+  if(!file_exists($file)) {
+    return;
+  }
+
+  $csl = file_get_contents($file);
+  $name = basename($file_name);
+  // Use citeproc's function to update the db.
+  biblio_citeproc_install_style($name, $csl);
+
+  return t('Chicago-author-date.csl file has been replaced');
 }

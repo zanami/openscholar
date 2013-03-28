@@ -43,6 +43,8 @@ function os_booklets_default_box() {
   $box->options = array(
     'visibility' => 'feature',
     'book_nid' => '-1',
+    'toc_type' => 'full',
+    'as_nav' => false,
   );
   $export['os_booktoc'] = $box;
 

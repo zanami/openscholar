@@ -57,6 +57,14 @@ function pinserver_config() {
     '#description' => t('Specify the path to redirect the user after all pinserver module processing is complete. Use a relative path that comes after "!base_url".', array('!base_url' =>$base_url)),
   );
 
+  $form['pinserver']['pinserver_azp_passphrase'] = array(
+    '#type' => 'textfield',
+    '#title' => t('AuthZProxy passphrase file'),
+    '#required' => FALSE,
+    '#default_value' => variable_get('pinserver_azp_passphrase', variable_get('pinserver_gpg_dir', DRUPAL_ROOT . '/.gnupg') . '/azp_passphrase'),
+    '#description' => t('Enter the absolute path to the AuthZProxy passphrase file, if your are expecting AuthZProxy tokens.'),
+  );
+
   $form['pinserver']['pinserver_auth_str'] = array(
     '#type' => 'radios',
     '#title' => t('PIN Authentication Server Setup'),
@@ -67,6 +75,18 @@ function pinserver_config() {
     ),
     '#required' => TRUE,
     '#description' => t('The server that is returning the user back to this site after successful PIN login.'),
+  );
+
+  $form['pinserver']['pinserver_hash_huid'] = array(
+    '#type' => 'radios',
+    '#title' => t('Hash HUIDs for added security'),
+    '#default_value' => variable_get('pinserver_hash_huid', '0'),
+    '#options' => array(
+      '0' => t('HUID is not hashed'),
+      '1' => t('HUID is hashed'),
+    ),
+    '#required' => TRUE,
+    '#description' => t('This will store the HUIDs in the OpenScholar database as an MD5 hash instead of plaintext, so they are kept more secure.'),
   );
 
   $form['pinserver']['pinserver_ip_validation'] = array(

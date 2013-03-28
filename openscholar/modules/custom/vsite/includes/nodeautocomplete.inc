@@ -42,7 +42,7 @@ function vsite_node_autocomplete_callback($string = '') {
   $matches = array();
 
   if (trim($string)) {
-    include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+    ctools_include('node', 'os');
     $query = new OSNodeFieldQuery();
     $query->propertyCondition('title', $string, 'CONTAINS');
     $result = $query->execute();

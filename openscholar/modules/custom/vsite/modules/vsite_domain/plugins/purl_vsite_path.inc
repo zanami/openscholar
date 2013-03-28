@@ -16,7 +16,7 @@ if (!class_exists('purl_vsite_path')) {
   class purl_vsite_path extends purl_path implements purl_processor {
 
     public static $disabled = array();
-    //allowing domain suffix to have alphanumeric chars, hyphens, underscores, minimum of 3 chararcters long
+    // Allows domain suffix to have alphanumeric chars, hyphens, underscores, minimum of 3 chararcters long
     public $modifier_regex = '!^[a-z0-9_-]{3,}+$!';
 
     public function method() {
@@ -30,6 +30,7 @@ if (!class_exists('purl_vsite_path')) {
       $valid_values = array_diff_key($valid_values, _vsite_domain_processed_purls());
       $parsed = parent::parse($valid_values, $q);
 
+      $space_found = FALSE;
       // Does not return spaces without the correct domain
       foreach ($parsed as $site => $settings) {
         if ($settings->provider == 'spaces_og' && variable_get('purl_base_domain', FALSE)) {
@@ -40,16 +41,15 @@ if (!class_exists('purl_vsite_path')) {
           }
 
           if (!is_string($vsite_domain)) {
-
             $vsite_domain = FALSE;
-
           }
 
-          if (in_array($settings->value, self::$disabled) ||
-            (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
-            //            || (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', 'scholar.iq.harvard.edu')))
+          if ($space_found || in_array($settings->value, self::$disabled) || (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
           ) {
             unset($parsed[$site]);
+          }else{
+            //We have a valid OG Space
+            $space_found = TRUE;
           }
         }
       }
@@ -67,7 +67,7 @@ if (!class_exists('purl_vsite_path')) {
       if (isset($class) && call_user_func(array($class, 'is_excluded_path'), $path)) {
         return;
       }
-      
+
       // If we are asking for the absolute url then return the correct base url for a path provider
       if (array_key_exists('absolute', $options) && $options['absolute']) {
         if ($element->id && $vsite = spaces_load('og', $element->id)) {

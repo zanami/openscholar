@@ -20,16 +20,133 @@ function gkplus_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['gking_update_filefield/%'] = array(
-    'title' => 'Update Filefield',
-    'page callback' => 'gkplus_update_filefield_page',
-    'page arguments' => array(1),
-    'access callback' => 'gkplus_access_file',
-    'access arguments' => array(1),
+  $items['gking_upload_filefield'] = array(
+    'title' => 'Upload Filefield',
+    'page callback' => 'gkplus_upload_filefield_page',
+    'page arguments' => array(),
+    'access callback' => '_gkplus_upload_filefield_access',
+    'access arguments' => array('af485c726a866b57f1a53519226107ef'),
     'type' => MENU_CALLBACK,
   );
 
   return $items;
+}
+
+/**
+ * Page callback; provides nodeorder form for a given taxonomy term.
+ *
+ * @ingroup nodeorder
+ */
+function gkplus_nodeorder_form($js = NULL, $tid = NULL) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  // Gracefully degrades if $js is not set.
+  if (!$js) {
+    return drupal_get_form('nodeorder_admin_display_form', $tid);
+  }
+
+  ctools_include('ajax');
+  ctools_include('modal');
+  require_once (drupal_get_path('module', 'nodeorder') . '/nodeorder.admin.inc');
+
+  $form_state = array(
+    'title' => t('Order Term Nodes'),
+    'ajax' => TRUE,
+    'build_info' => array(
+       'args' => array($tid),
+    ),
+  );
+
+  $output = ctools_modal_form_wrapper('nodeorder_admin_display_form', $form_state);
+
+  if ($form_state['submitted'] && form_get_errors() == FALSE) {
+    $output = array();
+    $output[] = ctools_ajax_command_reload();
+  }
+  print ajax_render($output);
+  exit;
+}
+
+/**
+ * Page callback; accesses $_POST to upload file from a shell script (curl).
+ *
+ * 4-digit error codes indicate the validity of the 4 curl POST parameters.
+ *
+ * Form post variables may be one of:
+ *  - 0 : missing or invalid
+ *  - 1 : unknown or not yet checked
+ *  - 2 : valid
+ *
+ * The position of parameter in 3-digit code is filename, contents, auth.
+ */
+function gkplus_upload_filefield_page() {
+  print t("Processing upload...") . "\n";
+  if (!isset($_POST['filename']) || !isset($_POST['contents']) || !isset($_POST['auth'])) {
+    print t("Error: missing parameters.") . "\n";
+    print t("Error code ") . isset($_POST['filename']) ? '2' : 0 . isset($_POST['contents']) ? '2' : 0 . isset($_POST['auth']) ? '2' : 0 . '0\n';
+    exit();
+  }
+
+  $filename = $_POST['filename'];
+
+  $loc = 'public://gking/files/';
+  $exists_and_writable = file_prepare_directory($loc, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  if ($exists_and_writable) {
+    $file = file_save_data($_POST['contents'], $loc . $filename, FILE_EXISTS_REPLACE);
+    if (!$file) {
+      print "Error: could not upload file. Debug info:<br/><br/>";
+      print print_r(var_dump($_POST));
+      exit();
+    }
+  }
+  else {
+    print t("Directory does not exist or is not writable.") . "\n";
+    exit();
+  }
+
+  $file->display = 1;
+  $filepath = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath() . '/gking/files/' . $_POST['filename'];
+  global $base_url;
+  print "Success: $filename uploaded.\n\n\tLink: $base_url/$filepath\n\n";
+  exit();
+}
+
+/**
+ * Access callback; checks that a $_POST variable matches an md5 hash.
+ */
+function _gkplus_upload_filefield_access($compare = 'af485c726a866b57f1a53519226107ef') {
+  // Verifies the correct backdoor post param exists.
+  if (!isset($_POST['auth']) || $_POST['auth'] != $compare) {
+    print t("Error: missing authentication.") . "\n";
+    print $_POST['auth'] . ':' . $compare . "\n";
+    exit();
+  }
+
+  // Verifies the filename exists in post parameters.
+  if (!isset($_POST['filename'])) {
+    print t('Error: missing filename.') . "\n";
+    exit();
+  }
+
+  // Looks for the file in the file_managed table.
+  $filename = $_POST['filename'];
+  $uri = db_select('file_managed', 'f')
+    ->fields('f', array('uri'))
+    ->condition('origname', $filename, '=')
+    ->condition('uri', '%' . db_like('gking/files') . '%', 'LIKE')
+    ->range(0, 1)
+    ->orderBy('fid')
+    ->execute()
+    ->fetchField();
+
+  // Exits if a file with that name does not exist.
+  if (!$uri || strlen($uri) === 0) {
+    print t('Error: Existing file not found: ') . "$filename\n";
+    exit();
+  }
+
+  return TRUE;
 }
 
 /**
@@ -123,42 +240,6 @@ function gkplus_strongarm() {
 }
 
 /**
- * Page callback; provides nodeorder form for a given taxonomy term.
- *
- * @ingroup nodeorder
- */
-function gkplus_nodeorder_form($js = NULL, $tid = NULL) {
-  if (!_gkplus_check_purl()) {
-    return;
-  }
-  // Gracefully degrades if $js is not set.
-  if (!$js) {
-    return drupal_get_form('nodeorder_admin_display_form', $tid);
-  }
-
-  ctools_include('ajax');
-  ctools_include('modal');
-  require_once (drupal_get_path('module', 'nodeorder') . '/nodeorder.admin.inc');
-
-  $form_state = array(
-    'title' => t('Order Term Nodes'),
-    'ajax' => TRUE,
-    'build_info' => array(
-       'args' => array($tid),
-    ),
-  );
-
-  $output = ctools_modal_form_wrapper('nodeorder_admin_display_form', $form_state);
-
-  if ($form_state['submitted'] && form_get_errors() == FALSE) {
-    $output = array();
-    $output[] = ctools_ajax_command_reload();
-  }
-  print ajax_render($output);
-  exit;
-}
-
-/**
  * Implements hook_init().
  */
 function gkplus_init() {
@@ -183,9 +264,6 @@ function gkplus_cron() {
 
   // Adjust system weight for module gkplus to be after nodeorder.
   _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
-
-  // Checks for new files to update filefields.
-  _gkplus_updatefile_cron();
 }
 
 /**
@@ -243,6 +321,35 @@ function gkplus_node_view($node, $view_mode, $langcode) {
     return;
   }
   $node->title = '';
+}
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function gkplus_node_view_alter(&$build, $type) {
+  if (!_gkplus_check_purl()) return;
+
+  if ($build['#node']->type == 'biblio' && isset($build['og_vocabulary'])) {
+    $i = 5;
+    $vocab = &$build['og_vocabulary'];
+    $parents = array();
+    foreach ($vocab['#items'] as $t) {
+      $ancestors = taxonomy_get_parents_all($t['target_id']);
+      // if there are more than 2 terms in the ancestors list, we want the 2nd to last
+      // if there's only, get that one
+      $offset = min(count($ancestors), 2);
+      $targ = $ancestors[count($ancestors)-$offset];
+      $parents[$targ->tid] = $targ;
+    }
+
+    $values = array();
+    foreach ($parents as $tid => $term) {
+      $url = entity_uri('taxonomy_term', $term);
+      $values[] = l($term->name, $url['path']);
+    }
+
+    $vocab[0] = array('#markup' => 'See also: '.implode(', ', $values));
+  }
 }
 
 /**
@@ -496,124 +603,6 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
 }
 
 /**
- * Page callback; updates a node that has an attached file with the same name.
- *
- * @param string $filename
- * @param bool $return
- *
- * @ingroup updatefile
- */
-function gkplus_update_filefield_page($filename, $return = FALSE) {
-  $source_uri = 'public://gking/tmpdir/' . $filename;
-  $dest_uri = 'public://gking/files/' . $filename;
-
-  // First makes sure we have a file to copy to.
-  $fid = db_select('file_managed', 'f')
-    ->fields('f', array('fid'))
-    ->condition('uri', $dest_uri, '=')
-    ->range(0, 1)
-    ->orderBy('fid', 'DESC')
-    ->execute()
-    ->fetchField();
-  if ($fid === FALSE) {
-    print t("Error: No existing file found at <em>@destination</em>", array('@destination' => $dest_uri));
-    exit();
-  }
-
-  // Copies the unmanaged file from tmpdir to the files dir.
-  $source_filepath = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath() . '/gking/tmpdir/' . $filename;
-  $file = file_unmanaged_copy($source_filepath, $dest_uri, FILE_EXISTS_REPLACE);
-  if ($file === FALSE) {
-    print t("Error: Could not copy file: <em>@destination</em>", array('@destination' => $dest_uri));
-    if (!$return) {
-      exit();
-    }
-    return FALSE;
-  }
-
-  // Updates the file table to reflect new timestamp and filesize.
-  $realpath = drupal_realpath($dest_uri);
-  $filesize = filesize($realpath);
-  $timestamp = time();
-  db_update('file_managed')
-    ->fields(array('filesize' => $filesize, 'timestamp' => $timestamp))
-    ->condition('fid', $fid, '=')
-    ->execute();
-
-  print t("Successfully updated file: <em>@filename</em>", array('@filename' => $filename));
-  if (!$return) {
-    exit();
-  }
-  return TRUE;
-}
-
-/**
- * Returns whether a file exists in the temp directory.
- *
- * @ingroup updatefile
- */
-function gkplus_access_file($filename) {
-  $temp_path = _gkplus_temp_path();
-  $filepath = $temp_path . $filename;
-  return file_exists($filepath);
-}
-
-/**
- * Cron callback; attempts to upload any system file updated since last cron.
- *
- * @see gkplus_cron()
- *
- * @ingroup updatefile
- */
-function _gkplus_updatefile_cron() {
-  // Creates the update file directory if it doesn't already exist.
-  _gkplus_verify_tmpdir();
-
-  // Updates file fields if a newer version of an existing file is found.
-  $last_update = variable_get('gkplus_last_updated_filefields', 0);
-  $temp_path  = _gkplus_temp_path();
-  if ($handle = opendir($temp_path)) {
-    while (FALSE !== ($file = readdir($handle))) {
-      $filepath = $temp_path . $file;
-      // drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
-      if (filectime($filepath) >= $last_update && is_file($filepath) && !(strpos($file, '.') === 0)) {
-        gkplus_update_filefield_page($file, TRUE);
-      }
-    }
-    closedir($handle);
-  }
-
-  // Records time of this cron run to compare against next time.
-  variable_set('gkplus_last_updated_filefields', time());
-}
-
-/**
- * Creates the update file directory if it doesn't already exist.
- *
- * @see _gkplus_updatefile_cron()
- *
- * @ingroup updatefile
- */
-function _gkplus_verify_tmpdir() {
-  $temp_path = _gkplus_temp_path();
-  $check_path = '';
-  $path_parts = explode('/', $temp_path);
-
-  // Loops over parent directories to ensure entire path exists.
-  foreach ($path_parts as $path_part) {
-    if (strlen(trim($path_part)) <= 0) {
-      continue;
-    }
-    $check_path = $check_path . $path_part . '/';
-    if (is_dir($check_path)) {
-      continue;
-    }
-
-    mkdir($check_path, 0775);
-  }
-}
-
-/**
  * Returns TRUE if the node is set to use the custom setting.
  *
  * @param int $etid
@@ -656,19 +645,6 @@ function _gkplus_entity_setting_update($etid, $setting, $value) {
     unset($etids[array_search($etid, $etids)]);
     variable_set($variable_name, $etids);
   }
-}
-
-/**
- * Returns the directory filepath for the automatic updatefile directory.
- *
- * @ingroup updatefile
- */
-function _gkplus_temp_path() {
-  $temp_dir    = variable_get('gking_script_tmpdir', "/gking/tmpdir/");
-  $files_dir   = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath();
-  $temp_path   = $files_dir . $temp_dir;
-
-  return $temp_path;
 }
 
 /**

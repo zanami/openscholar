@@ -98,7 +98,7 @@ class os_boxes_addthis extends os_boxes_default {
 
     //after removing and readding this widget, page needs a reload.  trigger it with js
     if (preg_match('/os\/widget\/boxes\/os_addthis\/remove\/\w/', $_GET['q'])) {
-      $block['content'] = '<script type="text/javascript">window.parent.location.reload();</script>';
+      $block['content'] = '<script type="text/javascript">if (window.parent.location.hash){window.parent.location.hash=""};window.parent.location.reload();</script>';
     }
     return $block;
   }

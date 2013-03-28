@@ -22,7 +22,7 @@ function os_faq_default_box() {
   $box->title       = 'Recent FAQs';
   $box->description = 'Recent FAQs';
   $box->options     = array(
-    'content_type' => 'feed',
+    'content_type' => 'faq',
     'display' => 'display_title',
     'more' => 1,
     'more_text' => 'More',

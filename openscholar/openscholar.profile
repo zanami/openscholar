@@ -8,7 +8,7 @@ function openscholar_install_tasks($install_state) {
 
   // OS flavors (production, development, etc)
   $tasks['openscholar_flavor_form'] = array(
-    'display_name' => t('Choose a enviroment'),
+    'display_name' => t('Choose environment'),
     'type' => 'form'
   );
 
@@ -153,9 +153,10 @@ function openscholar_vsite_modules_batch(&$install_state){
     if (variable_get('os_dummy_content', FALSE)) {
       $modules[] = 'os_migrate_demo';
     }
+    $modules[] = 'harvard_activity_reports';
   }
 
-  return _opnescholar_module_batch($modules);
+  return _openscholar_module_batch($modules);
 }
 
 /**
@@ -196,7 +197,7 @@ function _openscholar_migrate_content($class, $type, &$context) {
  * @see
  *   http://api.drupal.org/api/drupal/includes%21install.core.inc/function/install_profile_modules/7
  */
-function _opnescholar_module_batch($modules) {
+function _openscholar_module_batch($modules) {
   $t = get_t();
 
   $files = system_rebuild_module_data();
@@ -252,9 +253,40 @@ function _opnescholar_module_batch($modules) {
     'operations' => $operations,
     'title' => st('Installing @needed modules.', array('@needed' => $additions)),
     'error_message' => st('The installation has encountered an error.'),
-    'finished' => '_install_profile_modules_finished'
+    'finished' => '_openscholar_install_profile_modules_finished'
   );
   return $batch;
+}
+
+
+/**
+ * Set OG's permissions for group-members.
+ */
+function _openscholar_install_profile_modules_finished($success, $results, $operations) {
+  _install_profile_modules_finished($success, $results, $operations);
+  if (!module_exists('vsite')) {
+    return;
+  }
+
+  // Set permissions per group-type.
+  $default_rid = array_search(OG_AUTHENTICATED_ROLE, og_get_default_roles());
+  $default_permissions = og_get_default_permissions();
+  $permissions = array_keys($default_permissions[$default_rid]);
+
+  // Remove permissions to "edit any" or "delete any" content.
+  foreach ($permissions as $key => $permission) {
+    if (strpos($permission, 'update any') === 0 || strpos($permission, 'delete any') === 0) {
+      unset($permissions[$key]);
+    }
+  }
+
+  $group_types = og_get_all_group_bundle();
+  foreach (array_keys($group_types['node']) as $bundle) {
+    $rids = og_roles('node', $bundle);
+    // Get the role ID of the group-member.
+    $rid = array_search(OG_AUTHENTICATED_ROLE, $rids);
+    og_role_grant_permissions($rid, $permissions);
+  }
 }
 
 /**
@@ -276,11 +308,31 @@ function openscholar_install_finished(&$install_state) {
     $output .= '<p>'. st('<a href="@url">Visit your new site</a> or <a href="@settings" class="overlay-exclude">change Openscholar settings</a>.', array('@url' => url(''), '@settings' => url('admin/config/openscholar', array('query' => array('destination' => ''))))) . '</p>';
   }
 
+  // Flush all caches to ensure that any full bootstraps during the installer
+  // do not leave stale cached data, and that any content types or other items
+  // registered by the install profile are registered correctly.
+  drupal_flush_all_caches();
+
   // Remember the profile which was used.
   variable_set('install_profile', drupal_get_profile());
 
+  // Install profiles are always loaded last
+  db_update('system')
+    ->fields(array('weight' => 1000))
+    ->condition('type', 'module')
+    ->condition('name', drupal_get_profile())
+    ->execute();
+
+  // Cache a fully-built schema.
+  drupal_get_schema(NULL, TRUE);
+
   // Remove the variable we used during the installation.
   variable_del('os_dummy_content');
+
+  // Run cron to populate update status tables (if available) so that users
+  // will be warned if they've installed an out of date Drupal version.
+  // Will also trigger indexing of profile-supplied content or feeds.
+  drupal_cron_run();
 
   return $output;
 }

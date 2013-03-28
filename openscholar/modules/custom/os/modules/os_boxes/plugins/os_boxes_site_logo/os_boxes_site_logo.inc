@@ -47,15 +47,18 @@ class os_boxes_site_logo extends os_boxes_default {
           $ratio = $ratio[0]/$ratio[1];
         }
       }
-
+      $allowed_file_types = 'gif png jpg jpeg';
       $form['file'] = array(
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
-        '#description' => t('Upload a photo and position the cropping tool over it if necessary.'),
+        '#description' => t('Upload a photo and position the cropping tool over it if necessary.<br/>Allowed file types: <strong>' . $allowed_file_types . '</strong>'),
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
         '#default_value' => $fid,
+        '#upload_validators' => array(
+          'file_validate_extensions' => array($allowed_file_types),
+        ),
         '#dimensions' => array(
           'x' => !empty($x)?$x:0,
           'y' => !empty($y)?$y:0,
@@ -71,6 +74,10 @@ class os_boxes_site_logo extends os_boxes_default {
           )
         )
       );
+      
+      if (function_exists('imagefield_crop_upload_validate')) {
+        $form['file']['#upload_validators']['imagefield_crop_upload_validate'] = array(null, $instance);
+      }
 
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $form['file']['#upload_location'] = 'public://'.$space->group->purl.'/files';

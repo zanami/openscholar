@@ -57,15 +57,24 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
       'weight' => '-9',
     );
 
-    $fp_blocks['views-os_activity-block_1'] = array(
-      'module' => 'views',
-      'delta' => 'os_activity-block_1',
-      'region' => 'footer',
-      'weight' => '-30',
-    );
-
   }
 }// end function
+
+/**
+ * Implements hook_os_widget_alter().
+ */
+function iqss_projects_front_os_widget_alter(&$widget) {
+  //Keep the default box instances that this module provides from getting used sitewide
+  if($widget['module'] == 'boxes' && function_exists('iqss_projects_front_default_box')){
+    static $fp_boxes;
+    //Front Page Boxes
+    if(!isset($fp_boxes)) $fp_boxes =  iqss_projects_front_default_box();
+
+    if(isset($fp_boxes[$widget['delta']])){
+      $widget['hidden'] = true;
+    }
+  }
+}
 
 /**
  * Implement hook_strongarm
@@ -86,18 +95,18 @@ function iqss_projects_front_strongarm() {
   	$strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   	$strongarm->api_version = 1;
   	$strongarm->name = 'os_stats_enabled';
-  	$strongarm->value = serialize(array(
-  		'Publications'=>(bool)0,
-  		'Vsites'=>(bool)1,
-  		'Nodes'=>(bool)1,
-  		'Files'=>(bool)1,
-  		'Filesize'=>(bool)0,
-  		'Users'=>(bool)0,
-  	));
+  	$strongarm->value = array(
+  		'filesize' => 0,
+  		'users' => 0,
+  		'websites' => 1,
+  		'posts' => 1,
+  		'publications' => 0,
+  		'files' => 1,
+  	);
   	$export['os_stats_enabled'] = $strongarm;
 
   	return $export;
-}// end function
+}
 
 /**
  * Implements hook_preprocess_page().

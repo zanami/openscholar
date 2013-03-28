@@ -75,9 +75,7 @@ class os_boxes_bio extends os_boxes_default {
     // Prepares node with selected view_mode and show_title options.
     $view_mode = ($this->options['teaser'] == 'teaser') ? 'teaser' : 'full';
     $node = node_load($nid);
-    if (isset($this->options['show_title']) && (int)$this->options['show_title'] === 0) {
-      $node->title = '';
-    }
+    $node->show_title = $this->options['show_title'];
 
     $content = render(node_view($node, $view_mode));
     return $content;
@@ -93,9 +91,13 @@ class os_boxes_bio extends os_boxes_default {
     if (!isset($spaces_features["os_biocv"])) {
       return '';
     }
-    //
-    $vsite = vsite_get_vsite();
-    if(!$vsite || !$vsite->access_admin()) {
+    // Shows nothing if a vsite can be loaded but this user isn't admin.
+    if (function_exists('vsite_get_vsite') && $vsite = vsite_get_vsite()) {
+      if (!$vsite->access_admin()) {
+        return '';
+      }
+    }
+    elseif (!node_access('create','bio')) {
       return '';
     }
     // Otherwise, displays vsite admin empty text, prompting bio configuration.

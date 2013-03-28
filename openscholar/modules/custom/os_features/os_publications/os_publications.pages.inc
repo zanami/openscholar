@@ -6,16 +6,20 @@ function os_publications_overview() {
 
   if (count($args) == 0) {
     // get default types the user has selected
-    $defaults = variable_get('os_publications_default_types', array());
-    if (count($defaults)) {
-      $args = array('type', $defaults);
+    $defaults = variable_get('os_publications_filter_publication_types', array());
+
+    //Filter out bad data
+    unset($defaults[-1]);
+
+    if (count(array_filter($defaults))) {
+      $args = array('type', array_filter($defaults));
     }
   }
 
-  $ckey = _os_publications_cache_key($args);
-  if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    //return $cache->data;
-  }
+//   $ckey = _os_publications_cache_key($args);
+//   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
+//     return $cache->data;
+//   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
   $output = call_user_func_array('biblio_page', $args);
@@ -23,8 +27,14 @@ function os_publications_overview() {
   // remove the filter status message
   unset($output['biblio_page']['header']['filter_status']);
 
+  // remove the sorting option
+  unset($output['biblio_page']['header']['sort_links']);
+
+  // remove the alphabetic filtering
+  unset($output['biblio_page']['header']['alpha_line']);
+
   // handle caching
-  cache_set($ckey, $output, 'cache_biblio_lists');
+  //cache_set($ckey, $output, 'cache_biblio_lists');
 
   return $output;
 }
@@ -39,7 +49,15 @@ function _os_publications_cache_key($args) {
 
   $key = array();
   $key[] = 'biblio';
+
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $key[] = 'space';
+    $key[] = $space->id;
+  }
+
+  $has_arg = false;
   if (isset($arg_list['f'])) {
+    $has_arg = true;
     foreach ($arg_list['f'] as $l => $d) {
       if (is_array($d)) {
         foreach ($d as $v) {
@@ -55,18 +73,25 @@ function _os_publications_cache_key($args) {
   }
 
   if (isset($arg_list['s'])) {
+    $has_arg = true;
     $key[] = 'sort';
     $key[] = $arg_list['s'];
   }
 
   if (isset($arg_list['o'])) {
+    $has_arg = true;
     $key[] = 'order';
     $key[] = $arg_list['o'];
   }
 
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    $key[] = 'space';
-    $key[] = $space->id;
+  if (!$has_arg) {
+    $key[] = 'args';
+    $key[] = 'no';
+  }
+
+  if (isset($_GET['page'])) {
+    $key[] = 'page';
+    $key[] = $_GET['page'];
   }
 
   return implode(':', $key);
@@ -188,14 +213,6 @@ function os_publications_settings() {
     '#description' => t('If this is checked and you add a note to a publication then it will show as part of a publications teaser.'),
   );
 
-  $form['left']['biblio_rowsperpage'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Publications per page'),
-    '#size' => 5,
-    '#default_value' => variable_get('biblio_rowsperpage', 25),
-    '#description' => t('Select the number of publication to be displayed on each page.'),
-  );
-
   $form['left']['biblio_sort'] = array(
     '#type' => 'radios',
     '#title' => t('By default, sort publications by which category'),
@@ -218,16 +235,16 @@ function os_publications_settings() {
     //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
   );
 
-  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -2 AND visible = 1');
+  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -1 AND visible = 1');
   foreach ($result as $option) {
     $results[$option->tid] = $option->name;
   }
   asort($results);
 
-  $form['right']['scholar_publications_filter_publication_types'] = array(
+  $form['right']['os_publications_filter_publication_types'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Show only publications of type'),
-    '#default_value' => variable_get('scholar_publications_filter_publication_types', array_keys($results)),
+    '#default_value' => variable_get('os_publications_filter_publication_types', array_keys($results)),
     '#options' => $results,
     '#description' => t('The main list of publications on your publications page will list the types slected here.'),
     '#attributes' => array('class' => array('form-checkboxes-scrolling')),
@@ -248,3 +265,34 @@ function os_publications_settings() {
   return system_settings_form($form);
 }
 
+function os_publications_reset(&$form, &$form_state) {
+  $form['help'] = array(
+    '#markup' => t('Select tables to reset:'),
+  );
+
+  $form['biblio_field_type'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Field Settings'),
+    '#description' => t('Will update standard publication types to our defaults. Will not affect publication types you have added.'),
+  );
+
+  $form['biblio_contributor_type'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Contributor Settings'),
+    '#description' => t('Will completely replace all Contributor settings.'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Go'),
+    )
+  );
+
+  $form['#submit'][] = 'os_publications_reset_submit';
+}
+
+function os_publications_reset_submit($form, $form_state) {
+  //dpm($form_state['values']);
+}

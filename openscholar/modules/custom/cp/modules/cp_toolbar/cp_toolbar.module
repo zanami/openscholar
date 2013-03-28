@@ -94,12 +94,14 @@ function cp_toolbar_view() {
     '#attributes' => array('id' => 'toolbar-user'),
   );
 
+  $base_domain = variable_get('purl_base_domain');
+
   $links = array(
     'help' => array(
       'title' => t('Help'),
       // 'href' => 'admin/help',
-      'href' => 'help/os_help/User-Documentation',
-     // 'query' => array('popup'=>'1'),
+      'href' => !empty($base_domain) ? $base_domain . '/help/os_help/User-Documentation' : 'help/os_help/User-Documentation',
+ 	  // 'query' => array('popup'=>'1'),
       'html' => TRUE,
       'description' => t('Get help on various topics'),
     ),
@@ -116,7 +118,6 @@ function cp_toolbar_view() {
       'title' => '<span class="home-link">Home</span>',
       'href' => '<front>',
       'html' => TRUE,
-      'attributes' => array('title' => t('Home')),
       'description' => t('Return to your home page'),
     ),
   );
@@ -132,10 +133,20 @@ function cp_toolbar_view() {
     $links['content'] = $l + array(
       '#paths' => array('node/add'),
       'attributes' => array(
-        'title' => t('Content'),
         'data-drawer' => 'content-drawer',
       )
     );
+  }else{
+    //They have access to add content but not list
+    $l = menu_get_item('cp/content/add');
+    if ($l['access']) {
+      $links['content'] = $l + array(
+        '#paths' => array(),
+        'attributes' => array(
+          'data-drawer' => 'content-drawer',
+        )
+      );
+    }
   }
   $l = menu_get_item('cp/build');
   if ($l['access']) {
@@ -143,7 +154,6 @@ function cp_toolbar_view() {
     $links['site'] = $l + array(
       '#paths' => array(),
       'attributes' => array(
-        'title' => t('Build'),
         'data-drawer' => 'site-drawer',
       )
     );
@@ -152,18 +162,12 @@ function cp_toolbar_view() {
   if ($l['access']) {
     $links['appearance'] = $l + array(
       '#paths' => array(),
-      'attributes' => array(
-        'title' => t('Appearance'),
-      )
     );
   }
   $l = menu_get_item('cp/settings');
   if ($l['access']) {
     $links['settings'] = $l + array(
       '#paths' => array(),
-      'attributes' => array(
-        'title' => t('Settings'),
-      )
     );
   }
   $l = menu_get_item('cp/users');
@@ -171,10 +175,6 @@ function cp_toolbar_view() {
     $l['title'] = t('People');
     $links['people'] = $l + array(
       '#paths' => array(),
-      'attributes' => array(
-        'title' => t('People'),
-        //'data-drawer' => 'people-drawer',
-      )
     );
   }
   // Make sure the contact module is enabled
@@ -184,9 +184,6 @@ function cp_toolbar_view() {
     if ($l['access']) {
       $links['support'] = $l + array(
         '#paths' => array(),
-        'attributes' => array(
-          'title' => t('Support'),
-        )
       );
     }
   }
@@ -241,7 +238,7 @@ function cp_toolbar_fill_drawer() {
   $content = system_admin_menu_block($item);
   // Bypass the node/add listing if only one content type is available.
 
-  $bundles = os_get_bundles();
+  $bundles = os_get_bundles(array(1,2));
   asort($bundles);
 
   $links = array();
