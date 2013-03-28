@@ -27,6 +27,40 @@ function os_taxonomy_menu_alter(&$items) {
   }
 }
 
+/**
+ * Implements hook_entity_info_alter().
+ */
+function os_taxonomy_entity_info_alter(&$entity_info) {
+  $entity_info['taxonomy_term']['uri callback'] = 'os_taxonomy_taxonomy_term_uri';
+}
+
+/**
+ * OS taxonomy module custom entity URI callback.
+ *
+ * @param $term
+ *  Taxonomy term object.
+ *
+ * @return
+ *  Array contains the path of the term.
+ */
+function os_taxonomy_taxonomy_term_uri($term) {
+  $path = taxonomy_term_uri($term);
+
+  if ($context = og_context()) {
+    // Get the associated bundles with the vocabulary.
+    $bundles = os_taxonomy_og_vocabulary_bundles($term->vid, $context['gid']);
+
+    if (count($bundles) == 1) {
+      $options['bundles'] = array(reset($bundles)->bundle);
+      os_taxonomy_get_prefix_path($options);
+
+      // Change the path by adding the app path.
+      $path['path'] = $options['path_prefix'] . drupal_get_path_alias($path['path']);
+    }
+  }
+
+  return $path;
+}
 
 /**
  * Implements hook_views_query_alter().
@@ -269,7 +303,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
     // The attached number to the term name.
-    $number = null;
+    $number = NULL;
     if ($options['show_count']) {
       $number = $item['tagged_items'];
       $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
@@ -353,18 +387,9 @@ function os_taxonomy_get_prefix_path(&$options) {
   // Counting how much bundles are associated with the vocabulary. If only 1
   // then use the prefix of the app related to the node bundle.
   if ($og_context = og_context() && !$feature) {
-    $query = db_select('og_vocab', 'ogv');
-    $query->join('og_vocab_relation', 'ogr', 'ogr.vid = ogv.vid');
-    $result = $query
-      ->fields('ogv')
-      ->condition('ogv.entity_type', 'node')
-      ->condition('ogv.vid', $options['vocabulary'])
-      ->condition('ogr.gid', $og_context['gid'])
-      ->execute()
-      ->fetchAllAssoc('id');
+    $bundles = os_taxonomy_og_vocabulary_bundles($options['vocabulary'], $og_context['gid']);
 
-
-    if (count($result) === 1) {
+    if (count($bundles) === 1) {
       $bundle = reset($result)->bundle;
       if (isset($map[$bundle]) && count($map[$bundle])) {
         $feature = current($map[$bundle]);
@@ -377,6 +402,32 @@ function os_taxonomy_get_prefix_path(&$options) {
   if (strlen($options['path_prefix'])) {
     $options['path_prefix'] = $options['path_prefix'] . "/";
   }
+}
+
+/**
+ * Get the associated bundles with the vocabulary.
+ *
+ * @param $vocabulary
+ *  The vocabulary ID.
+ * @param $gid
+ *  The group ID.
+ *
+ * @return
+ *  Array of bundles associated with the vocabulary.
+ */
+function os_taxonomy_og_vocabulary_bundles($vocabulary, $gid) {
+
+  $query = db_select('og_vocab', 'ogv');
+  $query->join('og_vocab_relation', 'ogr', 'ogr.vid = ogv.vid');
+  $result = $query
+    ->fields('ogv')
+    ->condition('ogv.entity_type', 'node')
+    ->condition('ogv.vid', $vocabulary)
+    ->condition('ogr.gid', $gid)
+    ->execute()
+    ->fetchAllAssoc('id');
+
+  return $result;
 }
 
 /**
