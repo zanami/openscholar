@@ -674,4 +674,19 @@ class FeatureContext extends DrupalContext {
       throw new Exception("The text {$text} found under #{$id}");
     }
   }
+
+  /**
+   * @Then /^I should verify i am at "([^"]*)"$/
+   */
+  public function iShouldVerifyIAmAt($given_url) {
+    $url = $this->getSession()->getCurrentUrl();
+    $base_url = $startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
+
+    $path = str_replace($base_url, '', $url);
+
+    if ($path != $given_url) {
+      throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
+    }
+  }
 }
+
