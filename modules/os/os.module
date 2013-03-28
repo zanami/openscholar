@@ -1295,12 +1295,16 @@ function _os_get_install_status() {
 
   // get the install time
   $install = variable_get('install_time', 0);
+  
+  if (!isset($branch)) {
+    $branch = variable_get('os_status_branch', NULL);
+  }
 
   $date = 'D d M, g:i a';
   $output .= '<strong>Drupal Version:</strong> ' . VERSION . '<br>';
   if (isset($branch)) {
     $output .= '<strong>Current Branch:</strong> ' . $branch . '<br>';
-  }
+  } 
   if (isset($update)) {
     $output .= '<strong>Code Updated On:</strong> ' . date($date, $update) . '<br>';
   }
