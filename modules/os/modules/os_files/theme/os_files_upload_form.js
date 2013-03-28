@@ -4,16 +4,18 @@
 Drupal.behaviors.os_upload_form = {
   attach: function (ctx) {
     var $ = jQuery,
-        $input = $('<input class="file-select form-submit" type="button" value="Upload">'),
+        $input = $('<label for="edit-upload-upload" class="file-select form-submit">Upload</label>'),
         $file_select = $('#edit-upload input[type="file"]', ctx);
-    $input.click(function (e) {
-      $file_select.click();
-    });
     $file_select.before($input);
-    $file_select.change(function (e) {
+    $input.bind('mousedown', function (e) {$input.addClass('focus');})
+          .bind('mouseup', function(e) {$input.removeClass('focus');});
+    
+    function changeHandler (e) {
       if (!('result' in e) || e.result) {
         $('#file-entity-add-upload .form-actions #edit-next', ctx).click();
       }
-    });
+    }
+    
+    $file_select.change(changeHandler).bind('propertychange', changeHandler);
   }
-}
+};

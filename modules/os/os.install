@@ -73,3 +73,14 @@ function os_update_7006() {
 
   return t('OS Wysiwyg Link module already installed.');
 }
+
+/**
+ * Enable OS Mailchimp
+ **/
+function os_update_7007() {
+  if (module_enable(array('os_mailchimp'))) {
+    return t('OS Mailchimp module installed.');
+  }
+
+  return t('OS Mailchimp module already installed.');
+} 
