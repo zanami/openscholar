@@ -245,13 +245,13 @@ projects[password_hustle][version] = 1.0
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
-projects[purl][subdir] = "contrib"
-: projects[purl][version] = 1.0-beta1+11-dev
-projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
-;projects[purl][branch][] = "7.x-1.x"
-projects[purl][download][type] = git
-projects[purl][download][branch] = 7.x-1.x
-projects[purl][download][revision] = 469e866
+;projects[purl][subdir] = "contrib"
+;: projects[purl][version] = 1.0-beta1+11-dev
+;projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
+;;projects[purl][branch][] = "7.x-1.x"
+;projects[purl][download][type] = git
+;projects[purl][download][branch] = 7.x-1.x
+;projects[purl][download][revision] = 469e866
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
