@@ -199,20 +199,19 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
 
     if (isset($build['og_vocabulary'])) {
+      $temp = array();
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);
         $v = taxonomy_vocabulary_load($t->vid);
 
-        if (!isset($build[$v->machine_name])) {
+        if (!isset($temp[$v->machine_name])) {
           $m = $v->machine_name;
-          $build[$m] = array(
+          $temp[$m] = array(
             '#type' => 'container',
-            '#weight' => $block_zebra,
             '#attributes' => array(
               'class' => array(
                 'block',
-                $m,
-                (($block_zebra++ % 2)?'even':'odd')
+                $m
               )
             ),
             'inner' => array(
@@ -227,7 +226,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
           );
         }
 
-        $build[$v->machine_name]['inner'][$t->tid] = array(
+        $temp[$v->machine_name]['inner'][$t->tid] = array(
           '#prefix' => '<div>',
           '#suffix' => '</div>',
           '#theme' => 'link',
@@ -236,6 +235,13 @@ function hwpi_basetheme_node_view_alter(&$build) {
           '#options' => array('attributes' => array(), 'html' => false),
         );
       }
+      
+      ksort($temp);
+      foreach ($temp as $k => $b) {
+        $temp[$k]['#weight'] = $block_zebra;
+        $temp[$k]['#attributes']['class'][] = (($block_zebra++ % 2)?'even':'odd');
+      }
+      $build += $temp;
 
       unset($build['og_vocabulary']);
     }
