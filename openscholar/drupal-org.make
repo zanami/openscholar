@@ -18,17 +18,6 @@ projects[apachesolr_attachments][version] = 1.2
 projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][version] = 1.x-dev
 
-; @todo: Biblio patches need to be applied
-projects[biblio][subdir] = "contrib"
-projects[biblio][version] = 1.0-rc4
-; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
-; projects[biblio][patch][] = "http://drupal.org/files/biblio-allow-disable-no-cache.patch"
-
-; @todo: Boxes patches need to be applied^H^H^H^H^ created
- projects[boxes][subdir] = "contrib"
- projects[boxes][version] = 1.0-beta7
-
-
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 
@@ -65,9 +54,9 @@ projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.pa
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
-projects[deploy][subdir] = "contrib"
-projects[deploy][version] = 2.x-dev
-projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
+; projects[deploy][subdir] = "contrib"
+; projects[deploy][version] = 2.x-dev
+; projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
 
 projects[diff][subdir] = "contrib"
 projects[diff][version] = 2.0
@@ -99,9 +88,9 @@ projects[entityreference_prepopulate][download][branch] = 7.x-1.1
 projects[entityreference_prepopulate][download][revision] = f7b7168
 ;projects[entityreference_prepopulate][version] = 1.1+2-dev
 
-projects[entity_dependency][subdir] = "contrib"
-projects[entity_dependency][version] = 1.x-dev
-projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
+; projects[entity_dependency][subdir] = "contrib"
+; projects[entity_dependency][version] = 1.x-dev
+; projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
 projects[eva][subdir] = "contrib"
 projects[eva][version] = 1.2
