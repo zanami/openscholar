@@ -165,34 +165,52 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
     }
   }
 
-  // Check for blog archives.
-  $menu_items = menu_get_item();
-  if(isset($menu_items) && $menu_items['path'] == 'blog') {
-    $blog_map = $menu_items['map'];
-    if(isset($blog_map) && count($blog_map) > 1) {
-      // Rebuild the breadcrumbs based on the blog archives.
+  // Check for blog archives or publication filters.
+  $item = menu_get_item();
+  if(isset($item) && ($item['path'] == 'blog' || (strpos($item['path'], 'publications') === 0))) {
+    $map = $item['original_map'];
+    if(isset($map) && count($map) > 1) {
+      // Rebuild the breadcrumbs.
       $links = array();
       $links[] = l(t('Home'),'<front>');
-      foreach($blog_map as $key => $blog_archive) {
-      	$blog_breadcrumb_path = $blog_archive;
-      	if($blog_breadcrumb_path == 'all') {
-          $blog_archive_title = 'Archive';
-      	  $blog_breadcrumb_path = $menu_items['path'] . '/' . $blog_breadcrumb_path;
-      	}elseif(is_numeric($blog_breadcrumb_path)) {
-          $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
-      	}else {
-      	  $blog_archive_title = $blog_breadcrumb_path;
-      	}
-      	$short_title = _os_breadcrumbs_shorten_title($blog_archive_title);
-      	if($key == (count($blog_map)) - 1) {
-          // Remove trailing page title for now.
-      	  $links[] = ''; // t(ucfirst($short_title));
-        }else {
-          $links[] = l(strtoupper($short_title), $blog_breadcrumb_path);
-        }
+      switch($item['original_map'][0]) {
+      	case 'blog':
+          foreach($map as $key => $blog_archive) {
+      	    $blog_breadcrumb_path = $blog_archive;
+      	    if($blog_breadcrumb_path == 'all') {
+              $blog_archive_title = 'Archive';
+      	      $blog_breadcrumb_path = $item['path'] . '/' . $blog_breadcrumb_path;
+            }elseif(is_numeric($blog_breadcrumb_path)) {
+              $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
+            }else {
+      	      $blog_archive_title = $blog_breadcrumb_path;
+            }
+            $short_title = _os_breadcrumbs_shorten_title($blog_archive_title);
+            if($key == (count($map)) - 1) {
+              // Remove trailing page title for now.
+      	      $links[] = ''; // t(ucfirst($short_title));
+            }else {
+              $links[] = l(strtoupper($short_title), $blog_breadcrumb_path);
+            }
+          }
+          break;
+      	case 'publications':
+          // For now we only want the breadcrumb to maintain the user is in publications.
+          // We won't list the filter in the breadcrumb because there's no view assocaited to say "type".
+          $publicaiton_filter_array = array_slice($map,0,2);
+          foreach($publicaiton_filter_array as $key => $pub_link) {
+            if($key == (count($publicaiton_filter_array)) - 1) {
+              // Remove trailing page title for now.
+      	      $links[] = ''; // t(ucfirst($short_title));
+            }else {
+              $links[] = l(strtoupper($pub_link), $pub_link);
+            }
+          }
+          break;
       }
     }
   }
+
   return $links;
 }
 
