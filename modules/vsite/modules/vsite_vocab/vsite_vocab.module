@@ -222,7 +222,7 @@ function vsite_vocab_field_attach_view_alter(&$output, $context) {
 
   if (count($output[OG_VOCAB_FIELD]['#items']) > 3) {
     // Show links collapsed.
-    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('See also:') . '</a><div class="slider">'. $original .'</div>';
+    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('See also:') . '</a><div class="os-slider">'. $original .'</div>';
 
     $output['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
   }
@@ -300,4 +300,12 @@ function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
     $element['add']['#href'] = 'cp/build/taxonomy/' . $element['#vocabulary']->machine_name . '/add';
     $element['edit']['#href'] = 'cp/build/taxonomy/' . $element['#vocabulary']->machine_name . '/edit';
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
+  $path = 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/add';
+  $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
 }

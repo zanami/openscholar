@@ -790,11 +790,6 @@ ul.nice-menu-down li li.menuparent:hover {
 }
 
 
-.section-nav a:link,
-.section-nav a:visited {
-	color: inherit;
-	
-}
 
 .section-nav a:hover {
 	background-color: #bfc2c4 !important;

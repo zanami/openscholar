@@ -52,6 +52,13 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '6',
         ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '6',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -124,6 +131,13 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '2',
+        ),
+        'full' => array(
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
@@ -206,6 +220,13 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '4',
         ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '4',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -276,6 +297,12 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '9',
+        ),
+        'full' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
@@ -355,6 +382,12 @@ function os_profiles_field_default_fields() {
           'type' => 'hidden',
           'weight' => '10',
         ),
+        'full' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '10',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -429,6 +462,12 @@ function os_profiles_field_default_fields() {
           'type' => 'hidden',
           'weight' => '12',
         ),
+        'full' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '12',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -498,6 +537,16 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'profile_full',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+        'full' => array(
           'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
@@ -607,6 +656,13 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '3',
         ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '3',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -677,6 +733,13 @@ function os_profiles_field_default_fields() {
       'description' => 'e.g. Assistant Professor at Harvard University Faculty of Arts and Sciences',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
+        ),
+        'full' => array(
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
@@ -755,10 +818,10 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'file',
+          'label' => 'hidden',
+          'module' => 'os_files',
           'settings' => array(),
-          'type' => 'file_default',
+          'type' => 'os_files_image_list',
           'weight' => 15,
         ),
         'sidebar_teaser' => array(
@@ -833,6 +896,105 @@ function os_profiles_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-person-field_url'.
+  $fields['node-person-field_url'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_url',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'link',
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+      ),
+      'translatable' => '0',
+      'type' => 'link_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'person',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'If a value is entered here then links to this page will redirect to the entered URL.  This post will still appear in lists.  Leave this field blank to allow users to see this page.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '19',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'field_redirection',
+          'settings' => array(
+            '404_if_empty' => 0,
+            'code' => '301',
+          ),
+          'type' => 'field_redirection',
+          'weight' => '19',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_url',
+      'label' => 'Redirect',
+      'required' => 0,
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'configurable_title' => 0,
+          'rel' => '',
+          'target' => 'default',
+          'title' => '',
+        ),
+        'display' => array(
+          'url_cutoff' => '80',
+        ),
+        'enable_tokens' => 0,
+        'rel_remove' => 'default',
+        'title' => 'none',
+        'title_maxlength' => '128',
+        'title_value' => '',
+        'url' => 0,
+        'user_register_form' => FALSE,
+        'validate_url' => 1,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_field',
+        'weight' => '39',
+      ),
+    ),
+  );
+
   // Exported field: 'node-person-field_website'.
   $fields['node-person-field_website'] = array(
     'field_config' => array(
@@ -870,6 +1032,13 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'link',
+          'settings' => array(),
+          'type' => 'link_default',
+          'weight' => '5',
+        ),
+        'full' => array(
           'label' => 'hidden',
           'module' => 'link',
           'settings' => array(),
@@ -930,11 +1099,13 @@ function os_profiles_field_default_fields() {
   t('Attach Files');
   t('Email');
   t('First Name');
+  t('If a value is entered here then links to this page will redirect to the entered URL.  This post will still appear in lists.  Leave this field blank to allow users to see this page.');
   t('Last Name');
   t('Middle Name or Initial');
   t('Phone');
   t('Photo');
   t('Professional Titles/Affiliations');
+  t('Redirect');
   t('Short bio');
   t('Websites');
   t('e.g. Assistant Professor at Harvard University Faculty of Arts and Sciences');

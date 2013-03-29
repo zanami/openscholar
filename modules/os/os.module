@@ -884,7 +884,7 @@ function theme_openscholar_get_started() {
   $result = <<<MESSAGE
       <div id="message_welcome_message">
         <div class="toggle">$short_message</div>
-        <div id="welcome_wrapper" class="slider">
+        <div id="welcome_wrapper" class="os-slider">
           <h3>{$welcome_message}</h3>
           <p>Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.</p>
           {$links}

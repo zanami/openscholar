@@ -88,6 +88,8 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
     );
     $view->set_title(t('@term', $params));
   }
+  
+  os_taxonomy_activate_context($tid);
 }
 
 /**
@@ -102,9 +104,21 @@ function os_taxonomy_term_page($taxonomy_term) {
     'taxonomy_term' => $taxonomy_term,
     'options' => $options,
   );
-  $context_name = 'os_taxonomy-term-'.$taxonomy_term->tid;
+  
+  os_taxonomy_activate_context($taxonomy_term);
 
-  if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
+  return theme('os_taxonomy_tagged_nodes', $variables);
+}
+
+
+function os_taxonomy_activate_context($taxonomy_term) {
+  if (isset($taxonomy_term->tid)) {
+    $taxonomy_term = $taxonomy_term->tid;
+  }
+  
+  $context_name = 'os_taxonomy-term-'.$taxonomy_term;
+
+  if (($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
     $variables['options']['bundles'] = $feature->info['features']['node'];
     $context_name .= '-'.$feature->name;
   }
@@ -112,8 +126,6 @@ function os_taxonomy_term_page($taxonomy_term) {
   if ($ctx = context_load($context_name)) {
     context_set('context', $ctx->name, $ctx);
   }
-
-  return theme('os_taxonomy_tagged_nodes', $variables);
 }
 
 /**

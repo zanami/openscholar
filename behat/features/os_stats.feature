@@ -1,12 +1,12 @@
 Feature:
   Testing the stats feature JSON ouput.
 
-  @api
+  @api @current
   Scenario: Verify for the json output for a specific node.
     Given I visit "stats"
       And I should get:
       """
-      {"success":true,"websites":{"value":"{{*}}","text":"Websites"},"href":"{{*}}","os_version":"7.x-3.x-dev"}
+      {"success":true,"websites":{"value":"{{*}}","text":"Websites"},"href":"{{*}}","os_version":"{{*}}"}
       """
 
   @api
