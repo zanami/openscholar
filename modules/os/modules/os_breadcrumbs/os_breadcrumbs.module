@@ -54,31 +54,15 @@ function _os_breadcrumbs_check_taxonomy($item) {
   if(!isset($item['original_map'])) {
   	return;
   }
-
-  // Check the current context.
-  $app_module = array();
-  $content_type = FALSE;
-
-  $context_array = context_active_contexts();
-  $apps = os_app_info();
-
-  // Gather all the app module names.
-  foreach ($apps as $app => $info) {
-    if (isset($info['module'])) {
-      array_push($app_module, $info['module']);
-    }
+  // Check for active feature.
+  $feature = os_get_active_feature();
+  if($feature) {
+    $path_prefix = variable_get("os_taxonomy_app_path_{$feature->name}", strval(os_get_app_path($feature->name)));
   }
-
-  // Loop the active contexts to see if we are in a context of an app or not.
-  foreach($context_array as $context => $info) {
-    if(isset($info->export_module) && in_array($info->export_module, $app_module)) {
-      $content_type = $info->export_module;
-      break;
-    }
-  }
+  $slice_count = isset($path_prefix) ? count(explode("/",$path_prefix)) : 0;
 
   // If we are in a content type or not will depend on how we check for taxonomy.
-  $path_parts = array_slice($item['original_map'], $content_type != FALSE ? 1 : 0);
+  $path_parts = array_slice($item['original_map'], $slice_count);
   if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
     return;
   }
@@ -95,8 +79,8 @@ function _os_breadcrumbs_check_taxonomy($item) {
   }
 
   // If we are in a context, appead the module to the path.
-  if($content_type != FALSE) {
-    $path = $content_type . '/' . $path;
+  if(isset($path_prefix)) {
+    $path = isset($path_prefix) ? $path_prefix . '/' . $path :  $path;
   }
 
   return $path;
@@ -226,18 +210,25 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   $links[] = l(t('HOME'),'<front>');
 
   $terms_array = explode('/', $path);
-  // Check the first item for a content type.
   if(!isset($terms_array) && !is_array($terms_array)) {
     return $links;
   }
-  if($terms_array[0] != 'taxonomy') {
-    // We have a content type included, load the path.
-    $app = os_app_info($terms_array[0]);
-    if(isset($app) && is_array($app) && isset($app['path'])) {
-      $prepend_taxonomy = TRUE;
-      // Prepend the content_type onto the breadcrumb trail.
-      $links[] = l(strtoupper($app['path']),$app['path']);
-    }
+  $taxonomy_key = array_search('taxonomy', $terms_array);
+  if($taxonomy_key === FALSE) {
+    return $links;
+  }
+  if($taxonomy_key != 0) {
+  	$prepend_taxonomy = TRUE;
+  	// Build the links
+  	$parent_array = array_slice($terms_array, 0, $taxonomy_key);
+  	foreach($parent_array as $parent => $title) {
+      if($parent == 0) {
+      	$append_paths = $title;
+      }else {
+        $append_paths .= '/'.$title;
+      }
+      $links[] = l(strtoupper($title), $append_paths);
+  	}
   }
   // Get the tid.
   $tid = array_pop($terms_array);
@@ -267,7 +258,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   	}else {
   	  $term_path = taxonomy_term_uri($term);
   	  // If we are in a content type, it needs to be appended onto the breadcrumb link for consistancy.
-  	  $term_url = $prepend_taxonomy == TRUE ? $app['path'] . '/' . $term_path['path'] : $term_path['path'];
+  	  $term_url = $prepend_taxonomy == TRUE ? $append_paths . '/' . $term_path['path'] : $term_path['path'];
   	  $links[] = l(strtoupper($short_title), $term_url);
   	}
   }
