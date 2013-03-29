@@ -20,7 +20,7 @@ function os_wysiwyg_link_menu() {
   
   $items['os/wysiwyg/link/insert'] = array(
     'title' => 'Insert Link',
-    'access callback' => 'spaces_access_admin',
+    'access callback' => 'spaces_access_user',
     'page callback' => 'os_wysiwyg_link_insert',
     'file' => 'os_wysiwyg_link.insert.inc',
     'type' => MENU_CALLBACK,
