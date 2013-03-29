@@ -15,7 +15,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':Data Write';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = NULL;
+  $cron_rule->rule = '40 */2 * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':Data Write'] = $cron_rule;
@@ -25,7 +25,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':External Service';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = NULL;
+  $cron_rule->rule = '50 1 * * 0';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':External Service'] = $cron_rule;
@@ -35,7 +35,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':default';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = NULL;
+  $cron_rule->rule = '35 */6 * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':default'] = $cron_rule;
@@ -45,7 +45,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':Periodic';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = '15 */12 * * *';
+  $cron_rule->rule = '5 2 * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':Periodic'] = $cron_rule;
@@ -55,7 +55,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':Queue';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = '15 */12 * * *';
+  $cron_rule->rule = '10 3,4,5,18 * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':Queue'] = $cron_rule;
@@ -75,7 +75,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = ':Search';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = '15 */1 * * *';
+  $cron_rule->rule = '*/30 * * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = NULL;
   $cron_rules[':Search'] = $cron_rule;
@@ -127,7 +127,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->disable = NULL;
   $cron_rule->rule = NULL;
   $cron_rule->weight = NULL;
-  $cron_rule->context = 'Infrequent';
+  $cron_rule->context = 'External Service';
   $cron_rules['citation_distribute_cron'] = $cron_rule;
 
   $cron_rule = new stdClass;
