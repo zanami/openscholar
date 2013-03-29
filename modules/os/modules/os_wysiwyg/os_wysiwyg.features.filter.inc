@@ -31,7 +31,7 @@ function os_wysiwyg_filter_default_formats() {
     a[!href|target<_blank|title|name],
     div[align<center?justify?left?right],
     p[align<center?justify?left?right],
-    br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],
+    br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height|alt|title],
     sup,sub,
     table[style|border|align<center?left?right|cellpadding|cellspacing|bgcolor],
     tr[align<center?justify?left?right|valign],
