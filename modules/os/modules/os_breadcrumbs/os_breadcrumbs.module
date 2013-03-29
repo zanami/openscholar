@@ -16,31 +16,31 @@ function os_breadcrumbs_build_breadcrumbs() {
   $item = menu_get_item();
 
   if(empty($menu_object)) {
-	// Check for taxonomy.
-  	if($path = _os_breadcrumbs_check_taxonomy($item)) {
+    // Check for taxonomy.
+    if($path = _os_breadcrumbs_check_taxonomy($item)) {
       $links = _os_breadcrumbs_build_taxonomy_breadcrumb($path);
-	}else {
-	  // Load top level breadcrumbs.
-   	  $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
-	}
+    }else {
+      // Load top level breadcrumbs.
+      $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+    }
   }else {
-  	// Load the app type.
+    // Load the app type.
     $app_type = $menu_object->type;
     switch($app_type) {
       case 'page':
-      	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
-    	break;
+        $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+        break;
       case 'book':
-      	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
-    	break;
+        $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+        break;
       case 'class_material':
-      	$links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
-      	break;
+        $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+        break;
       case 'software_release':
-      	$links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
-      	break;
+        $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+        break;
       default:
-    	$links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+        $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
     }
   }
 
@@ -52,7 +52,7 @@ function os_breadcrumbs_build_breadcrumbs() {
  */
 function _os_breadcrumbs_check_taxonomy($item) {
   if(!isset($item['original_map'])) {
-  	return;
+    return;
   }
   // Check for active feature.
   $feature = os_get_active_feature();
@@ -108,10 +108,9 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
     drupal_set_breadcrumb($links);
     // Get custom breadcrumbs
     $breadcrumbs = drupal_get_breadcrumb();
-
     $breadcrumbs_render = '<div class="breadcrumb">'. implode(' <span>'.$breadcrumb_divider.'</span> ', $breadcrumbs) .'</div>';
   }else {
-  	return;
+    return;
   }
 
   return $breadcrumbs_render;
@@ -128,7 +127,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   $links = array();
   $last_item = end($menu_active_trail);
   foreach($menu_active_trail as $key => $menu) {
-  	$short_title = _os_breadcrumbs_shorten_title($menu['title']);
+    $short_title = _os_breadcrumbs_shorten_title($menu['title']);
     if($key == (count($menu_active_trail)) - 1) {
       $links[] = '';//t(ucfirst($short_title));
     }else {
@@ -177,10 +176,10 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
       foreach($blog_map as $key => $blog_archive) {
       	$blog_breadcrumb_path = $blog_archive;
       	if($blog_breadcrumb_path == 'all') {
-      	  $blog_archive_title = 'Archive';
+          $blog_archive_title = 'Archive';
       	  $blog_breadcrumb_path = $menu_items['path'] . '/' . $blog_breadcrumb_path;
       	}elseif(is_numeric($blog_breadcrumb_path)) {
-		  $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
+          $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
       	}else {
       	  $blog_archive_title = $blog_breadcrumb_path;
       	}
@@ -218,17 +217,17 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
     return $links;
   }
   if($taxonomy_key != 0) {
-  	$prepend_taxonomy = TRUE;
-  	// Build the links
-  	$parent_array = array_slice($terms_array, 0, $taxonomy_key);
-  	foreach($parent_array as $parent => $title) {
+    $prepend_taxonomy = TRUE;
+    // Build the links
+    $parent_array = array_slice($terms_array, 0, $taxonomy_key);
+    foreach($parent_array as $parent => $title) {
       if($parent == 0) {
       	$append_paths = $title;
       }else {
         $append_paths .= '/'.$title;
       }
       $links[] = l(strtoupper($title), $append_paths);
-  	}
+    }
   }
   // Get the tid.
   $tid = array_pop($terms_array);
@@ -251,16 +250,16 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   $links[] = t(strtoupper($short_title));
   $terms_ordered = array_reverse($term_hierarchy);
   foreach($terms_ordered as $key => $term) {
-  	$short_title = _os_breadcrumbs_shorten_title($term->name);
-  	if($key == (count($terms_ordered)) - 1) {
-  	  // Remove trailing page title for now.
-  	  $links[] = ''; // t(ucfirst($short_title));
-  	}else {
-  	  $term_path = taxonomy_term_uri($term);
-  	  // If we are in a content type, it needs to be appended onto the breadcrumb link for consistancy.
-  	  $term_url = $prepend_taxonomy == TRUE ? $append_paths . '/' . $term_path['path'] : $term_path['path'];
-  	  $links[] = l(strtoupper($short_title), $term_url);
-  	}
+    $short_title = _os_breadcrumbs_shorten_title($term->name);
+    if($key == (count($terms_ordered)) - 1) {
+      // Remove trailing page title for now.
+      $links[] = ''; // t(ucfirst($short_title));
+    }else {
+      $term_path = taxonomy_term_uri($term);
+      // If we are in a content type, it needs to be appended onto the breadcrumb link for consistancy.
+      $term_url = $prepend_taxonomy == TRUE ? $append_paths . '/' . $term_path['path'] : $term_path['path'];
+      $links[] = l(strtoupper($short_title), $term_url);
+    }
   }
   return $links;
 }
@@ -273,7 +272,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
 function _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail) {
   $links = array();
   foreach($menu_active_trail as $key => $menu) {
-  	$short_title = _os_breadcrumbs_shorten_title($menu['title']);
+    $short_title = _os_breadcrumbs_shorten_title($menu['title']);
     if($key == (count($menu_active_trail)) - 1) {
       // Remove trailing page title for now.
       $links[] = ''; // t($short_title);
@@ -345,35 +344,35 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
     $links[] = l(t('HOME'),'<front>');
     // Check for a book.
     if(isset($node->book)) {
-  	  // Traversing a book for breadcrumbs had issues separating the parents.
-  	  // Orig using book_get_flat_menu, but that returned incorrect parents in certain use cases.
-  	  // This method uses the mlid's stored in the p1-p9 elements of the node->book array.
-  	  // TODO: find a better method to accomplish the breadcrumbs.
+      // Traversing a book for breadcrumbs had issues separating the parents.
+      // Orig using book_get_flat_menu, but that returned incorrect parents in certain use cases.
+      // This method uses the mlid's stored in the p1-p9 elements of the node->book array.
+      // TODO: find a better method to accomplish the breadcrumbs.
       $mlid_array = array();
-  	  for($i = 1; $i < 10; $i ++) {
+      for($i = 1; $i < 10; $i ++) {
         if($node->book['p'.$i] != 0) {
       	  $mlid_array[] = $node->book['p'.$i];
       	}
       }
       if(count($mlid_array > 0)) {
       	foreach($mlid_array as $mlid) {
-		  $book = book_link_load($mlid);
+          $book = book_link_load($mlid);
       	  $short_title = _os_breadcrumbs_shorten_title($book['link_title']);
      	  if($node->book['mlid'] == $book['mlid']) {
-     	  	// Remove trailing page title for now.
-     	  	$links[] =''; // t(ucfirst($short_title));
-     	  	break;
+            // Remove trailing page title for now.
+            $links[] =''; // t(ucfirst($short_title));
+            break;
       	  }else {
-      		$links[] = l(strtoupper($short_title),$book['link_path']);
+            $links[] = l(strtoupper($short_title),$book['link_path']);
       	  }
       	}
       }
-  	}else {
-  	  // Not a book, just a regular node.
-   	  // Check for software releases or class material.
-  	  if($node->type == 'class_material' || $node->type == 'software_release') {
-  	    $links = _os_breadcrumbs_build_materials_breadcrumb($node);
-  	  }else {
+    }else {
+      // Not a book, just a regular node.
+      // Check for software releases or class material.
+      if($node->type == 'class_material' || $node->type == 'software_release') {
+        $links = _os_breadcrumbs_build_materials_breadcrumb($node);
+      }else {
         // Get the node type.
         $node_type = _os_breadcrumbs_get_content_type_title($node->type) !=FALSE ? _os_breadcrumbs_get_content_type_title($node->type) : $node->type;
         // Get the parent content type link.
@@ -385,8 +384,8 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
         $short_title = _os_breadcrumbs_shorten_title($node->title);
         // Remove trailing page title for now.
         $links[] ='';// t(strtoupper($short_title));
-  	  }
-  	}
+      }
+    }
   }
   return $links;
 }
@@ -400,7 +399,7 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
  */
 function _os_breadcrumbs_shorten_title($title) {
   if(empty($title)) {
-  	return;
+    return;
   }
   // Set to 125 for now, @todo: discuss best practices for long titles.
   $shorten_length = 125;
@@ -409,7 +408,7 @@ function _os_breadcrumbs_shorten_title($title) {
     $shortened_title = substr($title, 0, strpos($title, "\n"));
     $shortened_title .= '...';
   }else {
-  	$shortened_title = $title;
+    $shortened_title = $title;
   }
   return $shortened_title;
 }
@@ -421,7 +420,7 @@ function _os_breadcrumbs_shorten_title($title) {
  */
 function _os_breadcrumbs_get_content_type_title($node_type) {
   if(!isset($node_type)) {
-  	return FALSE;
+    return FALSE;
   }
   $apps = os_app_info();
   // Software release and class material needs to be checked seperately.
@@ -449,7 +448,7 @@ function _os_breadcrumbs_get_content_type_title($node_type) {
  */
 function _os_breadcrumbs_get_content_type_url($node_type) {
   if(!isset($node_type)) {
-  	return FALSE;
+    return FALSE;
   }
   $apps = os_app_info();
   foreach ($apps as $app => $info) {
@@ -474,17 +473,17 @@ function _os_breadcrumbs_get_content_type_url($node_type) {
  */
 function os_breadcrumbs_get_breadcrumbs($menu_active_trail = NULL, $node = NULL) {
   if(isset($menu_active_trail) && is_array($menu_active_trail)) {
-  	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+    $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
   }elseif (isset($node) && is_object($node)) {
     $links = _os_breadcrumbs_node_breadcrumbs($node);
   }else {
-  	$menu_active_trail = menu_get_active_trail();
-  	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+    $menu_active_trail = menu_get_active_trail();
+    $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
   }
   if(isset($links)) {
     return os_breadcrumbs_setup_breadcrumbs($links);
   }else {
-  	return;
+    return;
   }
 }
 
@@ -497,23 +496,23 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   if(context_isset('context', 'os_public')) {
     $space = spaces_get_space();
     if(isset($space)) {
-  	  $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+      $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
     }else {
-  	  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
+      $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
     }
     if(!isset($breadcrumb_show)) {
-  	  $breadcrumb_show = 1;
-  	}
-  	$links = os_breadcrumbs_build_breadcrumbs();
-  	$breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
-	if(isset($breadcrumbs)) {
-	  // Check for users wanting to show their breadcrumbs on their frontpage.
-	  if(!drupal_is_front_page() && $breadcrumb_show == 0) {
-	    $variables['breadcrumb'] = $breadcrumbs;
-	  }else {
-	    $variables['breadcrumb'] = '';
-	  }
-	}
+      $breadcrumb_show = 1;
+    }
+    $links = os_breadcrumbs_build_breadcrumbs();
+    $breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
+    if(isset($breadcrumbs)) {
+      // Check for users wanting to show their breadcrumbs on their frontpage.
+      if(!drupal_is_front_page() && $breadcrumb_show == 0) {
+        $variables['breadcrumb'] = $breadcrumbs;
+      }else {
+        $variables['breadcrumb'] = '';
+      }
+    }
   }
 }
 
