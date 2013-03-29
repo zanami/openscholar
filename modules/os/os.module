@@ -949,6 +949,18 @@ function os_context_registry() {
   return $registry;
 }
 
+
+
+/**
+ * Implements hook_cron().
+ *
+ * Allows another method for cleaning out the page_cache for non-memcache entries
+ */
+function os_cron() {
+  //Clear expired Items from page cache
+  cache_clear_all(NULL, 'cache_page');
+}
+
 /**
  * Implements hook_context_registry_alter().
  */
@@ -1000,7 +1012,7 @@ function os_system_info_alter(&$info, $file, $type) {
       $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
       $info['settings']['default_favicon'] = 0;
     }
-    
+
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
       'branding_footer' => 'Branding Footer',
@@ -1295,7 +1307,7 @@ function _os_get_install_status() {
 
   // get the install time
   $install = variable_get('install_time', 0);
-  
+
   if (!isset($branch)) {
     $branch = variable_get('os_status_branch', NULL);
   }
@@ -1304,7 +1316,7 @@ function _os_get_install_status() {
   $output .= '<strong>Drupal Version:</strong> ' . VERSION . '<br>';
   if (isset($branch)) {
     $output .= '<strong>Current Branch:</strong> ' . $branch . '<br>';
-  } 
+  }
   if (isset($update)) {
     $output .= '<strong>Code Updated On:</strong> ' . date($date, $update) . '<br>';
   }

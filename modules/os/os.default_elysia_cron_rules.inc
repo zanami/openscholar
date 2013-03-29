@@ -43,6 +43,16 @@ function os_default_elysia_cron_rules() {
   $cron_rule = new stdClass;
   $cron_rule->disabled = FALSE; /* Edit this to true to make a default cron_rule disabled initially */
   $cron_rule->api_version = 1;
+  $cron_rule->name = ':Page Cache';
+  $cron_rule->disable = FALSE;
+  $cron_rule->rule = '*/15 * * * *';
+  $cron_rule->weight = NULL;
+  $cron_rule->context = NULL;
+  $cron_rules[':Page Cache'] = $cron_rule;
+
+  $cron_rule = new stdClass;
+  $cron_rule->disabled = FALSE; /* Edit this to true to make a default cron_rule disabled initially */
+  $cron_rule->api_version = 1;
   $cron_rule->name = ':Periodic';
   $cron_rule->disable = FALSE;
   $cron_rule->rule = '5 2 * * *';
@@ -209,6 +219,16 @@ function os_default_elysia_cron_rules() {
   $cron_rule->weight = NULL;
   $cron_rule->context = 'Infrequent';
   $cron_rules['oembedcore_cron'] = $cron_rule;
+
+  $cron_rule = new stdClass;
+  $cron_rule->disabled = FALSE; /* Edit this to true to make a default cron_rule disabled initially */
+  $cron_rule->api_version = 1;
+  $cron_rule->name = 'os_cron';
+  $cron_rule->disable = NULL;
+  $cron_rule->rule = NULL;
+  $cron_rule->weight = NULL;
+  $cron_rule->context = 'Page Cache';
+  $cron_rules['os_cron'] = $cron_rule;
 
   $cron_rule = new stdClass;
   $cron_rule->disabled = FALSE; /* Edit this to true to make a default cron_rule disabled initially */
