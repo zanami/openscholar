@@ -20,6 +20,10 @@ Drupal.behaviors.osWysiwygBrowserAutoSubmit = {
     Drupal.media.popups.mediaStyleSelector.mediaBrowserOnLoad = function (e) {
       var doc = $(e.currentTarget.contentDocument);
       if ($('#edit-format option', doc).length == 1) {
+        $('#edit-format', doc).parent('.form-item').hide();
+      }
+      
+      if ($('#media-format-form fieldset#edit-options .fieldset-wrapper *:visible', doc).length == 0) {
         e.currentTarget.contentWindow.Drupal.media.formatForm.submit.apply($('#media-format-form a.fake-ok', doc)[0]);
       }
     };
