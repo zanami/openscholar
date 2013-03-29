@@ -13,17 +13,12 @@ function os_breadcrumbs_build_breadcrumbs() {
   $links = array();
   $menu_object = menu_get_object();
   $menu_active_trail = menu_get_active_trail();
-  $menu_items = menu_get_item();
-  $map_check = $menu_items['map'];
+  $item = menu_get_item();
+
   if(empty($menu_object)) {
-	// Check for taxonomy outside of a content_type.
-	if(strpos($menu_items['path'],'taxonomy') === 0) {
-	  // Load taxonomy breadcrumbs.
-	  $links = _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items);
-	// Chek for taxonomy in a content type.
-	}elseif(isset($map_check) && in_array('taxonomy',$map_check)) {
-	  // Load taxonomy breadcrumbs.
-	  $links = _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items);
+	// Check for taxonomy.
+  	if($path = _os_breadcrumbs_check_taxonomy($item)) {
+      $links = _os_breadcrumbs_build_taxonomy_breadcrumb($path);
 	}else {
 	  // Load top level breadcrumbs.
    	  $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
@@ -50,6 +45,45 @@ function os_breadcrumbs_build_breadcrumbs() {
   }
 
   return $links;
+}
+
+/**
+ * Function to check for taxonomy in the path.
+ */
+function _os_breadcrumbs_check_taxonomy($item) {
+  if(!isset($item['original_map'])) {
+  	return;
+  }
+  // Check for active feature.
+  $feature = os_get_active_feature();
+  if($feature) {
+    $path_prefix = variable_get("os_taxonomy_app_path_{$feature->name}", strval(os_get_app_path($feature->name)));
+  }
+  $slice_count = isset($path_prefix) ? count(explode("/",$path_prefix)) : 0;
+
+  // If we are in a content type or not will depend on how we check for taxonomy.
+  $path_parts = array_slice($item['original_map'], $slice_count);
+  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+    return;
+  }
+
+  //Check the path prefixed with the purl if we are in a vsite
+  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+    array_unshift($path_parts, vsite_get_purl());
+    if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+      return;
+    }
+  }
+  if (strpos($path, 'taxonomy/term/') !== 0) {
+    return;
+  }
+
+  // If we are in a context, appead the module to the path.
+  if(isset($path_prefix)) {
+    $path = isset($path_prefix) ? $path_prefix . '/' . $path :  $path;
+  }
+
+  return $path;
 }
 
 /**
@@ -169,18 +203,35 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
  * @param $menu_items
  *  Variable based off menu_get_item().
  */
-function _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items) {
+function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   $links = array();
+  $prepend_taxonomy = FALSE;
   // Build the home link.
   $links[] = l(t('HOME'),'<front>');
-  // Check for taxonomy in a content_type.
-  if(strpos($menu_items['path'],'taxonomy') === FALSE) {
-  	$short_title = _os_breadcrumbs_shorten_title($menu_items['path']);
-    // Prepend the content_type onto the breadcrumb trail.
-    $links[] = l(strtoupper($short_title),$menu_items['path']);
+
+  $terms_array = explode('/', $path);
+  if(!isset($terms_array) && !is_array($terms_array)) {
+    return $links;
+  }
+  $taxonomy_key = array_search('taxonomy', $terms_array);
+  if($taxonomy_key === FALSE) {
+    return $links;
+  }
+  if($taxonomy_key != 0) {
+  	$prepend_taxonomy = TRUE;
+  	// Build the links
+  	$parent_array = array_slice($terms_array, 0, $taxonomy_key);
+  	foreach($parent_array as $parent => $title) {
+      if($parent == 0) {
+      	$append_paths = $title;
+      }else {
+        $append_paths .= '/'.$title;
+      }
+      $links[] = l(strtoupper($title), $append_paths);
+  	}
   }
   // Get the tid.
-  $tid = end($menu_items['original_map']);
+  $tid = array_pop($terms_array);
   // Load all the parent term.
   $term_hierarchy = taxonomy_get_parents_all($tid);
   // Load the vid.
@@ -206,7 +257,9 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items) {
   	  $links[] = ''; // t(ucfirst($short_title));
   	}else {
   	  $term_path = taxonomy_term_uri($term);
-  	  $links[] = l(strtoupper($short_title), $term_path['path']);
+  	  // If we are in a content type, it needs to be appended onto the breadcrumb link for consistancy.
+  	  $term_url = $prepend_taxonomy == TRUE ? $append_paths . '/' . $term_path['path'] : $term_path['path'];
+  	  $links[] = l(strtoupper($short_title), $term_url);
   	}
   }
   return $links;
