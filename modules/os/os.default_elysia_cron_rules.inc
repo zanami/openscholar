@@ -117,7 +117,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->disable = NULL;
   $cron_rule->rule = NULL;
   $cron_rule->weight = NULL;
-  $cron_rule->context = ':Search';
+  $cron_rule->context = 'Search';
   $cron_rules['apachesolr_cron'] = $cron_rule;
 
   $cron_rule = new stdClass;
