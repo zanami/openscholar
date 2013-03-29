@@ -59,7 +59,7 @@ projects[devel][version] = 1.3
 ; projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
 
 projects[diff][subdir] = "contrib"
-projects[diff][version] = 2.0
+projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
