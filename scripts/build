@@ -51,3 +51,8 @@ cd $ROOT
   # Restore updated site.
   mv $BUILD_ROOT/www-build $BUILD_ROOT/www
 )
+
+# Copy unmakable contrib files
+(
+  cp -R contrib/* openscholar/modules/contrib/
+)
