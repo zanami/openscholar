@@ -200,7 +200,7 @@ padding: 10px 0;
 }
 
 
-/** SLIDESHOW **/
+/** SLIDESHOW 
 a.rslides_nav.next {
     background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
 }
@@ -231,4 +231,4 @@ a.rslides_nav.prev {
 
 }
 
-	
+	**/
