@@ -116,13 +116,6 @@ class vsite extends space_og {
 
         // Redirects to path without purl for vsites with custom domains.
         if ($this->purl_provider == 'vsite_domain') {
-          // First checks whether we are shared "1" or owned "0" domain.
-          // Most custom domain sites will be "0" -- a single site hosted here.
-          $shared = variable_get('vsite_domain_shared', 0);
-          // Don't redirect if we are processing this domain as a group sites.
-          if ($shared) {
-            break;
-          }
           $path = _purl_cache_q();
           $path_parts = explode('/', $path);
           $index = array_shift($path_parts);
