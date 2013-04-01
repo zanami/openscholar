@@ -196,13 +196,13 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
           break;
       	case 'publications':
           // For now we only want the breadcrumb to maintain the user is in publications.
-          // We won't list the filter in the breadcrumb because there's no view assocaited to say "type".
+          // We won't list the filter in the breadcrumb because it produces unexpected results.
           $publicaiton_filter_array = array_slice($map,0,2);
           foreach($publicaiton_filter_array as $key => $pub_link) {
             if($key == (count($publicaiton_filter_array)) - 1) {
               // Remove trailing page title for now.
-      	      $links[] = ''; // t(ucfirst($short_title));
-            }else {
+              $links[] = ''; // t(ucfirst($short_title));
+            } else {
               $links[] = l(strtoupper($pub_link), $pub_link);
             }
           }
@@ -239,6 +239,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
     // Build the links
     $parent_array = array_slice($terms_array, 0, $taxonomy_key);
     foreach($parent_array as $parent => $title) {
+      // We need to append the content type to the terms.
       if($parent == 0) {
       	$append_paths = $title;
       }else {
