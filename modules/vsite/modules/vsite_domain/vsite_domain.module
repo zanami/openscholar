@@ -23,16 +23,16 @@ function vsite_domain_enable() {
   // Configure purl, grab OG method, replace path with vsite_path
   $purl_types = variable_get('purl_types', array());
   if (variable_get('purl_method_spaces_og', FALSE)) {
-    //Remove standard path processing
+    // Removes standard path processing
     if (isset($purl_types['path'])) {
       unset($purl_types['path']);
     }
-    //Remove standard domain processing
+    // Removes standard domain processing
     if (isset($purl_types['domain'])) {
       unset($purl_types['domain']);
     }
 
-    //Add new domain and path processing
+    // Adds new domain and path processing
     $purl_types['vsite_domain'] = 'vsite_domain';
     $purl_types['vsite_path'] = 'vsite_path';
     variable_set('purl_types', $purl_types);
@@ -41,12 +41,13 @@ function vsite_domain_enable() {
     variable_set('purl_method_vsite_domain', 'vsite_domain');
   }
 
-  //Domain should be set to correct base, so that it does not change when domain providers are used
+  // Domain should be set to correct base, so that it does not change when
+  // domain providers are used
   if (!variable_get('purl_base_domain', FALSE)) {
     variable_set('purl_base_domain', $base_url);
   }
 
-  // Weight vsite_domain to be after Spaces OG
+  // Sets vsite_domain module weight to be after Spaces OG in system table.
   $weight = db_query("SELECT weight FROM {system} WHERE type = :type AND name = :name", array(
       ':type' => 'module',
       ':name' => 'spaces_og',
@@ -162,10 +163,8 @@ function vsite_domain_cp_settings() {
     // This check is here in case another module disables this or in case strongarm has
     // not initilized the variable yet.
     if (in_array('vsite_domain', array_keys(variable_get('purl_types', array())))) {
-      $vsite_domain = variable_get('vsite_domain_name', '');
-      $vsite_domain_shared = variable_get('vsite_domain_shared', '');
-      dpm($vsite_domain);
-      dpm($vsite_domain_shared);
+      $domain = variable_get('vsite_domain_name', '');
+      $shared = variable_get('vsite_domain_shared', '');
       // Wraps the entire form addition in the user_access check.
       if (user_access('change vsite domain')) {
         // Only includes validate and submit callbacks for user 1.
@@ -178,23 +177,28 @@ function vsite_domain_cp_settings() {
             '#title' => t('Domain'),
             '#weight' => 0,
           ),
-          'form' => purl_form('vsite_domain', $vsite->group->nid, $vsite_domain),
+          'form' => purl_form('vsite_domain', $vsite->group->nid, $domain),
           'submit' => array('vsite_domain_cp_settings_domain_submit'),
         );
 
-        //Set the title since purl does not give you control over this
+        // Overrides the purl form defaults.
+        // Sets the title since purl does not give you control over this
         $settings['vsite_domain_name']['form']['value']['#title'] = t('Custom domain name');
         $settings['vsite_domain_name']['form']['value']['#field_prefix'] = 'http://';
-        // Not required
+        // Leaving the vsite domain name field blank means use purl base domain.
         $settings['vsite_domain_name']['form']['value']['#required'] = FALSE;
-        // Use our validate function
+        // Use our validate function (which still invokes purl's validate).
         $settings['vsite_domain_name']['form']['#element_validate'] = array('vsite_domain_cp_settings_domain_validate');
         $settings['vsite_domain_name']['form']['#access'] = user_access('change vsite domain');
         $settings['vsite_domain_name']['form']['sid'] = array(
           '#type' => 'hidden',
           '#value' => isset($vsite->group->nid) ? $vsite->group->nid : 0,
         );
+        // Adds the option to share multiple vsites on one domain
+        // If this option is selected, we actually do not make a purl record.
         $settings['vsite_domain_name']['form']['vsite_domain_shared'] = array(
+          // Adds javascript effects to disable/check the box when no domain
+          // is set. Attempts to align with the actual allowed states.
           '#states' => array(
             'enabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => TRUE)),
             'disabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
@@ -202,13 +206,14 @@ function vsite_domain_cp_settings() {
           ),
           '#type' => 'checkbox',
           '#title' => t('Share domain name'),
-          '#default_value' => $vsite_domain_shared,
+          '#default_value' => $shared,
           '#weight' => 10,
           '#description' => t("Add \"<em><strong>/@site</strong></em>\" to the URL and share this domain name with other sites (default).<br/>If you own this custom domain, uncheck to use for just this site.", array('@site' => vsite_get_purl($vsite))),
         );
-        // Checkbox #default_value = 1 does NOT show as checked.
+        // If shared, makes sure to display the shared option as "checked".
+        // Needed because checkbox #default_value = 1 does NOT show as checked.
         // @see http://drupal.org/node/104852
-        if ($vsite_domain_shared) {
+        if ($shared) {
           $settings['vsite_domain_name']['form']['vsite_domain_shared']['#states']['checked'][':input[name="vsite_domain_name[value]"]'] = array('enabled' => TRUE);
         }
       }
@@ -239,3 +244,4 @@ function _vsite_domain_processed_purls($purl = FALSE) {
 
   return $processed;
 }
+
