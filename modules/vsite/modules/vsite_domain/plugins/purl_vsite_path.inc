@@ -44,8 +44,8 @@ if (!class_exists('purl_vsite_path')) {
           }
 
           if (in_array($settings->value, self::$disabled) ||
-            (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
-            //            || (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', 'scholar.iq.harvard.edu')))
+            (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
+            (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', 'scholar.iq.harvard.edu')))
           ) {
             unset($parsed[$site]);
           }
