@@ -276,7 +276,7 @@ class vsite extends space_og {
    * The parent exlcudes 'features' and 'features/*'
    * We want them back
    */
-  protected function excluded_paths() {
+  protected static function excluded_paths() {
     $excluded = parent::excluded_paths();
 
     unset($excluded[array_search('features', $excluded)]);
@@ -324,7 +324,7 @@ class vsite extends space_og {
       if ($this->purl_provider) {
         // Sets the provider to use for redirection
         $options = array(
-          'query' => drupal_http_build_query(drupal_get_query_parameters()),
+          'query' => drupal_get_query_parameters(),
           'purl' => array(
             'provider' => $this->purl_provider,
             'id' => $this->id,
