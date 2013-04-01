@@ -25,20 +25,14 @@ function os_breadcrumbs_build_breadcrumbs() {
     }
   }else {
     // Load the app type.
-    $app_type = $menu_object->type;
-    switch($app_type) {
+    $bundle = $menu_object->type;
+    switch($bundle) {
       case 'page':
-        $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
-        break;
       case 'book':
         $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
         break;
       case 'class_material':
-        $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
-        break;
       case 'software_release':
-        $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
-        break;
       default:
         $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
     }
