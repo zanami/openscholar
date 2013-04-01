@@ -21,7 +21,7 @@ function os_news_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_news';
-  $strongarm->value = 1;
+  $strongarm->value = 0;
   $export['comment_default_mode_news'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -65,7 +65,7 @@ function os_news_strongarm() {
   $strongarm->name = 'date_format_semi_long';
   $strongarm->value =  'F j, Y - H:i';
   $export['date_format_semi_long'] = $strongarm;
-  
+
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;

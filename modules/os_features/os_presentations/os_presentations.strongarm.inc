@@ -26,7 +26,7 @@ function os_presentations_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_presentation';
-  $strongarm->value = 1;
+  $strongarm->value = 0;
   $export['comment_default_mode_presentation'] = $strongarm;
 
   $strongarm = new stdClass();
