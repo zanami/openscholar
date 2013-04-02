@@ -374,6 +374,28 @@ function iqss_pinserver_register_get_huid($uid) {
 }
 
 /**
+ * Deny Create to group content when a user has not passed through PIN
+ *
+ * @param node $node
+ * @param string $op
+ * @param user $account
+ * @return string
+ */
+function iqss_pinserver_register_node_access($node, $op, $account) {
+  if($op != 'create'){
+    //Only influence the create operation.
+    return;
+  }
+
+  //Get Bundle
+  $type = is_string($node) ? $node : $node->type;
+
+  if (og_is_group_type('node', $type) && !pinserver_check_status()) {
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
  * Attaches a new HUID textfield element to the given form.
  */
 function _iqss_pinserver_register_huid_field(&$form) {
@@ -390,3 +412,5 @@ function _iqss_pinserver_register_huid_field(&$form) {
     '#field_suffix' => theme('vsite_register_form_errors', array('name' => 'huid')),
   );
 }
+
+
