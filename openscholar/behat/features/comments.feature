@@ -1,8 +1,8 @@
 Feature:
   Testing the comment publishing for a blog entry.
 
-  @api @current
-  Scenario: Check that all of the apps are turned on
+  @api
+  Scenario: Check that a user can create a new blog post
     Given I am logged in as a user with the "administrator" role
      When I visit "john/blog"
       And I click "First blog"
