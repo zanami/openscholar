@@ -23,7 +23,7 @@ function pinserver_menu() {
     'access callback' => TRUE,
   );
 
-  $items['admin/settings/pinserver'] = array(
+  $items['admin/config/openscholar/pinserver'] = array(
     'title' => t('Pinserver'),
     'description' => t('Modify Harvard Pinserver configuration, access, and logging'),
     'type' => MENU_NORMAL_ITEM,
