@@ -227,7 +227,31 @@ function dyntextfield_form_biblio_node_form_alter(&$form, $form_state) {
     }
   }
 
+  // Add a new validation for dynatext.
+  if(!isset($form['#validate'])) {
+    $form['#validate'] = array();
+  }
+  array_unshift($form['#validate'],'dynatext_biblio_validate_extras');
+
   return $form;
+}
+
+/**
+ * Function to trim the whitespaces off the biblio_extra dynatext field.
+ */
+function dynatext_biblio_validate_extras($form, &$form_state) {
+  if(!isset($form_state['values'])) {
+    return;
+  }
+  if(isset($form_state['values']['field_biblio_extra']['und'])) {
+    $biblio_extras = $form_state['values']['field_biblio_extra']['und'];
+    foreach($biblio_extras as $key => &$value) {
+      if(is_array($value)) {
+        $form_state['values']['field_biblio_extra']['und'][$key]['value'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['value']);
+        $form_state['values']['field_biblio_extra']['und'][$key]['label'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['label']);
+      }
+    }
+  }
 }
 
 /**
@@ -245,7 +269,7 @@ function dyntextfield_biblio_bibtex_export_post($pub, &$bibtex) {
   // @todo use field api to access (and set) these values.
   while ($field_info = db_fetch_array($result)) {
     $field_name = $field_info['field_name'];
-    
+
     // Adds these fields to the biblio export
     if (isset($node->$field_name) && is_array($node->$field_name)) {
       foreach ($node->$field_name as $field) {
