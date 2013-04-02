@@ -16,47 +16,6 @@ define('PURL_VSITE_DOMAIN', 'vsite_domain');
 define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
- * Implements hook_init().
- *
-function vsite_domain_init() {
-
-  // Only runs this init function once per page load.
-  static $vsite_domain_check;
-  if (isset($vsite_domain_check)) {
-    return;
-  }
-  $vsite_domain_check = TRUE;
-
-  // Checks to make sure we are in a vsite space.
-  $vsite = vsite_get_vsite();
-  if (!$vsite) {
-    return;
-  }
-
-  // Only continues if the vsite has a custom domain name.
-  if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])
-    || empty($vsite->controllers->variable->values['space']['vsite_domain_name'])
-  ) {
-    return;
-  }
-
-  // Gets the vsite's pURL to compare to the current Drupal menu path.
-  $purl = vsite_get_purl($vsite);
-  if (empty($purl)) {
-    return;
-  }
-
-  // If the first item in the path is the pURL, redirect away.
-  $request_path = request_path();
-  $request_path_args = explode('/', $request_path);
-  $index = array_shift($request_path_args);
-  if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
-    $path_without_purl = implode('/', $request_path_args);
-    drupal_goto($path_without_purl);
-  }
-}*/
-
-/**
  * Implements hook_enable().
  */
 function vsite_domain_enable() {

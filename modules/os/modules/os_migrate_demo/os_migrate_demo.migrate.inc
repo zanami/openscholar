@@ -263,6 +263,7 @@ class OsMigrateClassesNode extends OsMigrate {
     array('semester', 'Semester'),
     array(OG_AUDIENCE_FIELD, 'Site'),
     array(OG_VOCAB_FIELD, 'Terms'),
+    array('path', 'Path')
   );
 
   public $dependencies = array(
@@ -283,6 +284,8 @@ class OsMigrateClassesNode extends OsMigrate {
     $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
       ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
       ->separator('|');
+
+    $this->addFieldMapping('path', 'path');
   }
 
   /**
@@ -293,6 +296,11 @@ class OsMigrateClassesNode extends OsMigrate {
 
     $entity->field_class_link[LANGUAGE_NONE][0]['url'] = $link[0];
     $entity->field_class_link[LANGUAGE_NONE][0]['title'] = $link[1];
+
+    if (!empty($row->path)) {
+      // Disable path-auto.
+      $entity->path['pathauto'] = FALSE;
+    }
   }
 }
 
@@ -738,11 +746,13 @@ class OsMigrateGalleryNode extends OsMigrate {
     array('images', 'Images'),
     array('destination', 'Destination'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
@@ -759,6 +769,10 @@ class OsMigrateGalleryNode extends OsMigrate {
     $this->addFieldMapping('media_gallery_file:source_dir')
       ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
     $this->addFieldMapping('media_gallery_file:destination_dir', 'destination');
+
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 }
 

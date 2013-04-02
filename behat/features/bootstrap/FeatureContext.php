@@ -141,7 +141,7 @@ class FeatureContext extends DrupalContext {
 
     if (strpos($comapre_string, '{{*}}')) {
       // Attributes that may changed in different environments.
-      foreach (array('sourceUrl', 'id', 'value', 'href') as $attribute) {
+      foreach (array('sourceUrl', 'id', 'value', 'href', 'os_version') as $attribute) {
         $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
         $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
 
@@ -597,7 +597,6 @@ class FeatureContext extends DrupalContext {
    * @Given /^I invalidate cache$/
    */
   public function iInvalidateCache() {
-
     $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
@@ -656,6 +655,43 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+  /**
+   * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (empty($element)) {
+      throw new exception("The term {$term} did not link to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I verify the "([^"]*)" term link doesn\'t redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkDoesnTRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (!empty($element)) {
+      throw new exception("The term {$term} linked us to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
    * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
    */
   public function iShouldNotSeeUnder($text, $id) {
@@ -665,4 +701,19 @@ class FeatureContext extends DrupalContext {
       throw new Exception("The text {$text} found under #{$id}");
     }
   }
+
+  /**
+   * @Then /^I should verify i am at "([^"]*)"$/
+   */
+  public function iShouldVerifyIAmAt($given_url) {
+    $url = $this->getSession()->getCurrentUrl();
+    $base_url = $startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
+
+    $path = str_replace($base_url, '', $url);
+
+    if ($path != $given_url) {
+      throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
+    }
+  }
 }
+

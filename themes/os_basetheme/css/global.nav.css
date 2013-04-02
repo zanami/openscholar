@@ -476,7 +476,12 @@ color: #FFF !important;
     right: 0;
     top: 0;
     width: auto;
-    z-index: 500;
+    z-index: 18;
+}
+
+#content-column div.contextual-links-wrapper.contextual-links-processed {
+   right: -15px;
+   z-index: 19;
 }
 
 .contextual-controls-wrapper a {
@@ -790,11 +795,6 @@ ul.nice-menu-down li li.menuparent:hover {
 }
 
 
-.section-nav a:link,
-.section-nav a:visited {
-	color: inherit;
-	
-}
 
 .section-nav a:hover {
 	background-color: #bfc2c4 !important;

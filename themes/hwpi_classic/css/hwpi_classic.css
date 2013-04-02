@@ -86,10 +86,15 @@ h1.node-title,
 
 
 
-#content-column h2,
-#content-column h3,
-#content-column h4 {
+#content-column .field-name-body h2,
+#content-column .field-name-body h3,
+#content-column .field-name-body h4 {
 	margin-bottom: 16px;
+	font-weight: normal;
+}
+
+#content-column .field-name-body h2 {
+	font-size: 24px;
 }
 
 

@@ -1310,13 +1310,19 @@ function media_gallery_update_7010() {
  */
 
 function media_gallery_update_7011() {
-  if (db_table_exists('field_data_media_gallery_file')) {
-    return t('Media gallery already using new field.  Not performing upgrade.');
+  $old = 'media_gallery_media';
+  $new = 'media_gallery_file';
+
+  if (db_table_exists('field_data_'.$new)) {
+    if (db_select('field_data_'.$new, 'f')->fields('f')->execute()->rowCount()==0 && db_table_exists('field_data_'.$old)) {
+      db_drop_table('field_data_'.$new); 
+      db_drop_table('field_revision_'.$new); 
+    } else {
+      return t('Media gallery already using new field.  Not performing upgrade.');
+    }
   }
   
   //see: http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
-  $old = 'media_gallery_media';
-  $new = 'media_gallery_file';
   $transaction = db_transaction();
   $schema = array(
     'media_gallery_media_fid' => array(

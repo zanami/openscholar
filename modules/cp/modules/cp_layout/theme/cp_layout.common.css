@@ -336,8 +336,7 @@
   margin-bottom: 1px;
   margin-top: 0.1em;
   font-family: helvetica,Arial,Verdana,sans-serif;
-  float:left;
-  width:400px;
+
 }
 
 #widget-categories ul {
@@ -391,17 +390,16 @@
   background: url('images/websiteLayoutBarLabel.png') no-repeat;
 }
  
-.cp-layout-change {display:block;}    
     
 /** ADD NEW WIDGET DROPDOWN **/
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
   /*background: url("/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;*/
   border-radius: 5px 5px 0 0;
   float: right;
- margin-top: 2px;
+ margin: 21px -21px 0;
   padding: 1px 8px 0 5px !important;
   background:#52854C;
-  clear: right;
+
 }
 
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {
