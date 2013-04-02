@@ -211,7 +211,7 @@ projects[nodeorder][version] = 1.1
 
 projects[oembed][subdir] = "contrib"
 projects[oembed][version] = 0.x-dev
-projects[oembed][revision] = "baefb69"
+; projects[oembed][revision] = "baefb69"
 
 projects[og][subdir] = "contrib"
 ; projects[og][version] = 2.0-rc2+6-dev
