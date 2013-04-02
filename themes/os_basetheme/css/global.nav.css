@@ -479,6 +479,11 @@ color: #FFF !important;
     z-index: 18;
 }
 
+#content-column div.contextual-links-wrapper.contextual-links-processed {
+   right: -15px;
+   z-index: 19;
+}
+
 .contextual-controls-wrapper a {
 	color:#293352;
     font-family:helvetica;
