@@ -379,8 +379,8 @@ function iqss_pinserver_register_get_huid($uid) {
  * Deny Create to group content when a user has not passed through PIN.
  */
 function iqss_pinserver_register_node_access($node, $op, $account) {
-  if($op != 'create'){
-    //Only influence the create operation.
+  if($op != 'create' || $account->uid){
+    //Only influence the create operation for logged out users.
     return;
   }
 
