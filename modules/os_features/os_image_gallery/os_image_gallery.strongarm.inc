@@ -25,7 +25,7 @@ function os_image_gallery_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_media_gallery';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['comment_default_mode_media_gallery'] = $strongarm;
 
   $strongarm = new stdClass();

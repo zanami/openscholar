@@ -34,7 +34,7 @@ function os_software_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_software_project';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['comment_default_mode_software_project'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -42,7 +42,7 @@ function os_software_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_software_release';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['comment_default_mode_software_release'] = $strongarm;
 
   $strongarm = new stdClass();

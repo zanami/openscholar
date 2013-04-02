@@ -27,7 +27,7 @@ function os_links_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_link';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['comment_default_mode_link'] = $strongarm;
 
   $strongarm = new stdClass();

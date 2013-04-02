@@ -59,7 +59,7 @@ function os_classes_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_class';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['comment_default_mode_class'] = $strongarm;
 
   $strongarm = new stdClass();
