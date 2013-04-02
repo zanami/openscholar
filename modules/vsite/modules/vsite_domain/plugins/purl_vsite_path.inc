@@ -44,7 +44,9 @@ if (!class_exists('purl_vsite_path')) {
             $vsite_domain = FALSE;
           }
 
-          if ($space_found || in_array($settings->value, self::$disabled) || (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
+          if ($space_found || in_array($settings->value, self::$disabled) ||
+             (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
+             (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', FALSE)))
           ) {
             unset($parsed[$site]);
           }else{
@@ -79,8 +81,8 @@ if (!class_exists('purl_vsite_path')) {
         }
         // Checks for a group domain
         else {
-          global $base_url;
-          $options['base_url'] = variable_get('purl_base_domain', $base_url);
+          global $base_path, $base_root;
+          $options['base_url'] = variable_get('purl_base_domain', $base_root).$base_path;
         }
       }
 
