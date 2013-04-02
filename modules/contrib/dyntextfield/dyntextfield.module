@@ -245,7 +245,7 @@ function dynatext_biblio_validate_extras($form, &$form_state) {
   }
   if(isset($form_state['values']['field_biblio_extra']['und'])) {
     $biblio_extras = $form_state['values']['field_biblio_extra']['und'];
-    foreach($biblio_extras as $key => &$value) {
+    foreach($biblio_extras as $key => $value) {
       if(is_array($value)) {
         $form_state['values']['field_biblio_extra']['und'][$key]['value'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['value']);
         $form_state['values']['field_biblio_extra']['und'][$key]['label'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['label']);
