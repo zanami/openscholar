@@ -10,10 +10,11 @@
  */
 function vsite_domain_cp_settings_domain_validate($form, $form_state) {
 
-  // Prepares form values to validate more...
+  // Extracts the important values from the form.
   $domain = $form_state['values']['vsite_domain_name']['value'];
   $shared = $form_state['values']['vsite_domain_name']['vsite_domain_shared'];
   $sid = $form['sid']['#value'];
+
   // Validates owned domains:
   if ($shared == 0) {
     // First, exits if purl_form_validate() fails.
@@ -24,8 +25,9 @@ function vsite_domain_cp_settings_domain_validate($form, $form_state) {
         return FALSE;
       }
     }
+    // Checks that this domain isn't already shared by other sites.
     if ($domain) {
-      // Checks that this domain isn't already shared by other sites.
+      // Finds any vsite_domain_name variables that match this domain.
       $result = db_select('spaces_overrides', 'so')
         ->fields('so', array('id'))
         ->condition('object_type', 'variable')
@@ -34,6 +36,7 @@ function vsite_domain_cp_settings_domain_validate($form, $form_state) {
         ->condition('value', "%$domain%", 'LIKE')
         ->execute()
         ->fetchAssoc();
+      // Throws form_set_error() if any are found.
       if ($result) {
         $count = format_plural(count($result), '1 other site', '@count other sites');
         form_set_error($form['#parents'][0], t('You may not own this domain. It is currently shared by @count.', array('@count' => $count)));
@@ -49,15 +52,14 @@ function vsite_domain_cp_settings_domain_validate($form, $form_state) {
       ->condition('id', $sid, '!=')
       ->execute()
       ->fetchAssoc();
+    // Throws form_set_error() if another site owns this domain.
     if ($result) {
       form_set_error('vsite_domain_shared', t('You may not share this domain. Another site currently owns it.'));
     }
   }
 
-  // Validates shared and owned domains.
+  // Validates both shared and owned domains.
   // Checks that the custom domain is not the same as purl_base_domain.
-  // Note: $base_url and purl_base_domain may differ, but $base_url is a better
-  // default value than ''.
   $purl_base_domain = variable_get('purl_base_domain', '');
   $purl_base_domain = preg_replace("(https?://)", "", $purl_base_domain);
   if (strtolower($domain) == strtolower($purl_base_domain)) {
