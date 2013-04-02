@@ -147,32 +147,6 @@ function os_files_private_file_download($uri) {
     return file_get_content_headers($file);
   }
 
-  // Getting this far means the app is on, and the user is not a site member.
-  // Next: Checks if pinserver is enabled.
-  $use_pinserver = variable_get('os_files_private_pinserver', 0);
-
-  // If enabled, serves file to users who can login via Harvard Pinserver.
-  if ($use_pinserver) {
-    if (function_exists('pinserver_check_status')) {
-      // Serves file if user is already authenticated, or just got authenticated.
-      // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-      if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
-        return file_get_content_headers($file);
-      }
-      // Otherwise, sends the user to Pinserver to log in.
-      else if (function_exists('pinserver_redirect')) {
-        return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI']));
-      }
-    }
-  }
-
-  // Getting this far means the app is on, user is not site member,
-  // and user could not log in through pinserver (maybe pinserver is disabled).
-  // Sends anonymous users to login page.
-  if (user_is_anonymous()) {
-    return drupal_goto('user/login', array('query' => drupal_get_destination()));
-  }
-
   // Getting this far means the user is authenticated, but is both not a site
   // member and is unable to login via pinserver. User is not allowed to access.
   // Restricts access.
