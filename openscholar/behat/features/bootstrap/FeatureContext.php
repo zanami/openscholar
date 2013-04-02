@@ -358,6 +358,9 @@ class FeatureContext extends DrupalContext {
     // them.
     foreach ($this->box as $box_handler) {
       $data = explode(',', $box_handler);
+      foreach ($data as &$value) {
+        $value = trim($value);
+      }
       $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
       $this->getDriver()->drush("php-eval \"{$code}\"");
     }
