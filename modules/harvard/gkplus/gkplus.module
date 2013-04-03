@@ -457,10 +457,7 @@ function gkplus_form_taxonomy_form_term_submit($form, &$form_state) {
  *
  * @ingroup nodeorder
  */
-function gkplus_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id != 'taxonomy_form_vocabulary') {
-    return;
-  }
+function gkplus_form_taxonomy_form_vocabulary_alter(&$form, &$form_state, $form_id) {
   // Hides nodeorder's "Orderable" checkbox on the vocabulary edit form.
   if (isset($form['settings']['orderable'])) {
     $form['settings']['orderable']['#type'] = 'value';
@@ -642,7 +639,7 @@ function _gkplus_entity_setting_update($etid, $setting, $value) {
  */
 function _gkplus_check_sid($sid = GKPLUS_SID) {
   $vsite = vsite_get_vsite();
-  return ($vsite && $vsite->group->purl == $sid);
+  return ($vsite && $vsite->id == $sid);
 }
 
 /**
