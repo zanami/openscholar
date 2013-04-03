@@ -1,0 +1,3 @@
+Vocabulary don't appear in the same order in the nodes groups.
+-- http://drupal.org/node/1959726
+-- http://drupal.org/files/vocabulary-order-display-correctly-1959726-2_0.patch
