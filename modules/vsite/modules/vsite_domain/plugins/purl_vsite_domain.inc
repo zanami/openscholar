@@ -37,9 +37,9 @@ if (!class_exists('purl_vsite_domain')) {
       }
 
       if (isset($class) && call_user_func(array($class, 'is_excluded_path'), $q)) {
-        global $base_root;
+        global $base_url;
         // Matches based on global base URL
-        return $base_root;
+        return $base_url;
       }
       else {
         $domain = parent::detect($q);
@@ -94,7 +94,7 @@ if (!class_exists('purl_vsite_domain')) {
       if ($plugin) {
         $class = ctools_plugin_get_class($plugin, 'handler');
       }
-
+	  
       // Doesn't alter if link destination is an excluded path
       if (isset($class) && call_user_func(array($class, 'is_excluded_path'), $path)) {
         return;
@@ -106,8 +106,8 @@ if (!class_exists('purl_vsite_domain')) {
         $options['base_url'] = "http://{$element->value}";
       }
       else {
-        global $base_path, $base_root;
-        $options['base_url'] = variable_get('purl_base_domain', $base_root).$base_path;
+        global $base_url;
+        $options['base_url'] = variable_get('purl_base_domain', $base_url);
       }
     }
 
@@ -119,7 +119,7 @@ if (!class_exists('purl_vsite_domain')) {
       if ((!($vsite = spaces_get_space()) && !($vsite = spaces_load('og', $item->id))) || !strlen($vsite->group->purl)) {
         return;
       }
-
+	  
       // Aliases query if it has not been aliased yet
       if (!in_array($vsite->group->purl, _vsite_domain_processed_purls())) {
         _vsite_domain_processed_purls($vsite->group->purl);

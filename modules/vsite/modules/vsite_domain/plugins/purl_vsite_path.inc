@@ -81,8 +81,8 @@ if (!class_exists('purl_vsite_path')) {
         }
         // Checks for a group domain
         else {
-          global $base_path, $base_root;
-          $options['base_url'] = variable_get('purl_base_domain', $base_root).$base_path;
+          global $base_url;
+          $options['base_url'] = variable_get('purl_base_domain', $base_url);
         }
       }
 
