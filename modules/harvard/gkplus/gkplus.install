@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Implements hook_install().
+ *
+ * Sets the custom taxonomy settings to the specified vsite.
+ */
+function gkplus_install() {
+  // Loads the vsite and sets the new variable value.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite(GKPLUS_SID)) {
+    // Overridden taxonomy settings for this site.
+    $options = array(
+      'tree' => TRUE,
+      'max_depth' => 3,
+      'description' => TRUE,
+      'nodeorder' => TRUE,
+    );
+
+    $vsite->controllers->variable->set('os_taxonomy_term_page_options', $options);
+  }
+}
