@@ -8,7 +8,8 @@ Drupal.behaviors.os_upload_form = {
         $file_select = $('#edit-upload input[type="file"]', ctx);
     $file_select.before($input);
     $input.bind('mousedown', function (e) {$input.addClass('focus');})
-          .bind('mouseup', function(e) {$input.removeClass('focus');});
+          .bind('mouseup', function(e) {$input.removeClass('focus');})
+          .bind('click', function(e) {$file_select.click();});
     
     function changeHandler (e) {
       if (!('result' in e) || e.result) {
