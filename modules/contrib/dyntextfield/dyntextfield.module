@@ -111,13 +111,17 @@ function dyntextfield_field_formatter_view($entity_type, $entity, $field, $insta
   switch ($display['type']) {
     case 'dyntextfield_default':
       foreach ($items as $delta => $item) {
-        $element[$delta] = array('#markup' => '<span class="dyntext_label field-label">' . check_plain($item['label']) . ':</span>&nbsp;<span class="dyntext_value">' . check_plain($item['value']) . '</span>');
+        // Don't include label/value who have whitespaces only in the field.
+        if(trim($item['label']) == false && trim($item['value']) == false) continue;
+        $element[$delta] = array('#markup' => '<span class="dyntext_label field-label">' . check_plain(trim($item['label'])) . ':</span>&nbsp;<span class="dyntext_value">' . check_plain(trim($item['value'])) . '</span>');
       }
       break;
 
     case 'dyntextfield_plain':
       foreach ($items as $item) {
-        $element[$delta] = array('#markup' => check_plain($item['label'] . ': ' . $item['value']));
+        // Don't include label/value who have whitespaces only in the field.
+        if(trim($item['label']) == true && trim($item['value']) == true) continue;
+        $element[$delta] = array('#markup' => check_plain(trim($item['label']) . ': ' . trim($item['value'])));
       }
       break;
   }
@@ -226,32 +230,7 @@ function dyntextfield_form_biblio_node_form_alter(&$form, $form_state) {
       }
     }
   }
-
-  // Add a new validation for dynatext.
-  if(!isset($form['#validate'])) {
-    $form['#validate'] = array();
-  }
-  array_unshift($form['#validate'],'dynatext_biblio_validate_extras');
-
   return $form;
-}
-
-/**
- * Function to trim the whitespaces off the biblio_extra dynatext field.
- */
-function dynatext_biblio_validate_extras($form, &$form_state) {
-  if(!isset($form_state['values'])) {
-    return;
-  }
-  if(isset($form_state['values']['field_biblio_extra']['und'])) {
-    $biblio_extras = $form_state['values']['field_biblio_extra']['und'];
-    foreach($biblio_extras as $key => $value) {
-      if(is_array($value)) {
-        $form_state['values']['field_biblio_extra']['und'][$key]['value'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['value']);
-        $form_state['values']['field_biblio_extra']['und'][$key]['label'] = trim($form_state['values']['field_biblio_extra']['und'][$key]['label']);
-      }
-    }
-  }
 }
 
 /**
