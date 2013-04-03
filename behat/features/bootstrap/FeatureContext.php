@@ -688,5 +688,12 @@ class FeatureContext extends DrupalContext {
       throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
     }
   }
+
+  /**
+   * @Given /^the module "([^"]*)" is enabled$/
+   */
+  public function moduleEnabled($module_name) {
+    $this->getDriver()->drush("en -y {$module_name}");
+  }
 }
 
