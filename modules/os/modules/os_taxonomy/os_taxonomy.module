@@ -243,8 +243,6 @@ function theme_os_taxonomy_term_item($variables) {
  *      - bundles: The bundles type of the tagged node that will include in the
  *        count.
  *      - show_count: Show the number of tagged nodes next to the term
- *      - add_childs: Define if we add the childs tagged node number to the
- *        count.
  *      - show_empty_terms: Show empty terms in the terms list.
  *      - link_to_empty_terms: Show en empty term name as a link to the term.
  *      - show_term_descriptions: Show to term descprition under the title.
@@ -260,7 +258,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     'depth' => 0,
     'bundles' => array(),
     'show_count' => TRUE,
-    'add_childs' => FALSE,
     'show_childs' => TRUE,
     'tid_active_class' => 0,
     'show_empty_terms' => TRUE,
@@ -293,7 +290,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     $number = NULL;
     if ($options['show_count']) {
       $number = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
-      $number += $options['add_childs'] && !empty($term->below) ? os_taxonomy_count_term_tagged_items($term->below, $options['bundles']) : 0;
     }
 
     // Skip on this if we don't display empty children term.
@@ -303,16 +299,12 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
     $term_path = taxonomy_term_uri($term);
     os_taxonomy_term_alias($term_path['path'], $options);
-
     // Don't process terms that are in not in level 0.
-    if ($item['is_child']) {
-      continue;
-    }
+
     // The attached number to the term name.
     $number = NULL;
-    if ($options['show_count']) {
-      $number = $item['tagged_items'];
-      $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
+    if ($options['show_count'] && !empty($term->below)) {
+      $number = os_taxonomy_count_term_tagged_items($term->below);
     }
 
     if (!empty($path_prefix) && strpos($term_path, 'taxonomy/') === 0) {
@@ -577,43 +569,7 @@ function os_taxonomy_select_list_validate($form, &$form_state) {
 }
 
 /**
- * Return array of items for the function os_taxonomy_term_item().
- *
- *  @param $terms
- *    Array of taxonomy term obejcts.
- *  @param $options
- *    Settings variable of the theme function.
- */
-function os_taxonomy_build_term_items($terms, $options) {
-  $items = array();
-  os_taxonomy_get_prefix_path($options);
-
-  foreach ($terms as $tid => $term) {
-    $url = entity_uri('taxonomy_term', $term);
-    os_taxonomy_term_alias($url['path'], $options);
-    $items[$tid] = array(
-      'term_name' => $term->name,
-      'description' => $term->description,
-      'url' => $url,
-      'class' => $options['tid_active_class'] == $tid ? 'active' : '',
-      'is_child' => taxonomy_get_parents($tid) ? TRUE : FALSE,
-      'tagged_items' => os_taxonomy_count_term_tagged_items(array($term), $options['bundles']),
-    );
-
-    // Add the number of tagged nodes to the children when needed.
-    if ($options['show_childs']) {
-      $childrens = os_taxonomy_get_term_childrens($term->tid, $term->vid, $options);
-      if ($options['add_childs']) {
-        $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
-      }
-      $items[$tid]['childs'] = os_taxonomy_build_term_items($childrens, $options);
-    }
-  }
-  return $items;
-}
-
-/**
- * Loading the taxonomy term childrens and remove all the childrens that their
+ * Loading the taxonomy term childrens and remove all the children's that their
  * depth in the vocabulary is bigger than the require nested level defined in
  * the box settings.
  * Because we are using recursive function for rendering the terms children with
@@ -628,7 +584,7 @@ function os_taxonomy_build_term_items($terms, $options) {
  *    Settings variable of the theme function.
  *
  *  @return
- *    Taxonomy terms childrens ready to be rendered by the theme function.
+ *    Taxonomy terms children's ready to be rendered by the theme function.
  */
 function os_taxonomy_get_term_childrens($tid, $vid, $options) {
   $tree = &drupal_static(__FUNCTION__, array());
@@ -666,8 +622,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
   foreach ($items as $item) {
     $number = NULL;
     if ($options['show_count']) {
-      $number = $options['add_childs'] && isset($item->below) ? os_taxonomy_count_term_tagged_items($item->below, $options['bundles']) : 0;
-      $number += $tagged_items = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
+      $number = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
     }
 
     $child_content = '';

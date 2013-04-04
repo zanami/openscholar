@@ -164,15 +164,6 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Show number of posts tagged to a term next to the term.'),
     );
 
-    $form['add_childs'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Add tagged children to the count'),
-      '#description' => t('Should posts tagged to childeren of a term be added to the count.'),
-      '#dependency' => array(
-        'edit-show-count' => array(1),
-      ),
-    );
-
     return $form;
   }
 
