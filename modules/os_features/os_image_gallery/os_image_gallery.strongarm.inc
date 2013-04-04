@@ -14,11 +14,34 @@ function os_image_gallery_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_anonymous_media_gallery';
+  $strongarm->value = 0;
+  $export['comment_anonymous_media_gallery'] = $strongarm;
 
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_mode_media_gallery';
+  $strongarm->value = 1;
+  $export['comment_default_mode_media_gallery'] = $strongarm;
+
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_per_page_media_gallery';
+  $strongarm->value = '50';
+  $export['comment_default_per_page_media_gallery'] = $strongarm;
+
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_media_gallery';
-  $strongarm->value = 0;
+  $strongarm->value = '0';
   $export['comment_media_gallery'] = $strongarm;
 
   $strongarm = new stdClass();
