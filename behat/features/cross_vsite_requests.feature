@@ -1,8 +1,8 @@
 Feature:
-  In order to keep owned custom domains exclusively for only one site, as a 
+  In order to keep owned custom domains exclusively for only one site, as a
   visitor I should not be able to access other sites on custom domains.
 
-  @api
+  @api @wip
   Scenario: Page available on purl base domain, but not found on custom domain.
     Given I am logged in as "admin"
      When I visit "site/register"
