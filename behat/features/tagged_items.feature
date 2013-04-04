@@ -2,7 +2,7 @@ Feature: Testing the tagged items.
   Testing that two nodes tagged to one term and only one node tagged to another
   term.
 
-  @api @me
+  @api
   Scenario Outline: verify that the tagged items filter work as expected.
       Given I visit "<first link>"
         And I should see "<first node>"
