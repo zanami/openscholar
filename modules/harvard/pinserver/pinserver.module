@@ -521,7 +521,6 @@ function pinserver_forbidden_page() {
 /**
  * Register a "JS" callback.
  *
- *
  * @return array
  *   An array of callbacks with the following possible keys for each callback:
  *   - callback: (required) The function to call to display the results when an ajax call occurs on this path
@@ -539,7 +538,7 @@ function pinserver_js() {
   return array(
     'files' => array(
       'callback' => 'pinserver_private_file_download_js',
-      'dependencies' => array('os_files_private','user'),
+      'dependencies' => array('os_files_private','user', 'file_entity'),
       'bootstrap'    => DRUPAL_BOOTSTRAP_VARIABLES,
 //      'access arguments' => array('e.g. permission'),
 //       'access callback'  => 'callback function'
@@ -576,12 +575,10 @@ function pinserver_file_download($uri) {
 	// If enabled, serves file to users who can login via Harvard Pinserver.
 	if ($use_pinserver && file_uri_scheme($uri) != 'private' && file_exists($uri)) { //TODO CHANGE TO PRIVATE
 
-	  //File
-	  $file = file_uri_to_object($uri);
-
 	  // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
 	  // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
 	  if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
+	    $file = file_uri_to_object($uri, FALSE);
 	    return file_get_content_headers($file);
 	  }
 	  // Otherwise, sends the user to Pinserver to log in.
