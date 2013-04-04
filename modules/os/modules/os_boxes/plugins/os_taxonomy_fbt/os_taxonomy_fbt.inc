@@ -180,8 +180,29 @@ class os_taxonomy_fbt extends os_boxes_default {
         return $block;
       }
     }
+
     // For now - display the first vocabulary terms.
-    if (empty($this->options['behavior']) || $this->options['behavior'] == '--all--') {
+    if (empty($this->options['bundles']) || $this->options['behavior'] == '--all--') {
+      $this->options['bundles'] = array();
+    }
+
+    if ($this->options['behavior'] == 'contextual') {
+      $paths = os_get_app_path();
+      $menu = menu_get_item();
+
+      $this->options['bundles'] = array();
+      if ($menu['map'][0] == 'node') {
+        $this->options['bundles'] = array($menu['map'][1]->type);
+      }
+      else {
+        foreach ($paths as $bundle => $path) {
+          if ($path == $menu['original_map'][0]) {
+            $this->options['bundles'][] = $bundle;
+          }
+        }
+      }
+    }
+    else {
       $this->options['bundles'] = array();
     }
 
