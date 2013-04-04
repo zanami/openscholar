@@ -118,7 +118,7 @@ function os_events_preprocess_calendar_datebox(&$vars) {
  * Implements hook_views_pre_view().
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
-  if (empty($view->display_handler->display->display_options['pager']['options']['date_id']) || !empty($view->display_handler->display->display_options['style_options']['mini'])) {
+  if (empty($view->display_handler->display->display_options['pager']['options']['date_id'])) {
     // Not a calendar view, or a mini-calendar
     return;
   }
@@ -127,6 +127,22 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
     return;
   }
   $handler = &$view->display_handler;
+
+  if (!empty($view->display_handler->display->display_options['style_options']['mini'])) {
+    // Set the default date of the mini calendar to the date the user watching.
+    $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
+
+    if ($_GET['type'] == 'year') {
+      // The user watch a year, return him the current time.
+      $time = time();
+    }
+    else {
+      $time = strtotime($_GET[$_GET['type']]);
+    }
+
+    $view->args[0] = date($format['month'], $time);
+    return;
+  }
 
   if ($_GET['type'] != 'month') {
     $handler->set_option('style_plugin', 'calendar_style');

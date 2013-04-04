@@ -32,8 +32,6 @@ function os_publications_user_default_permissions() {
     'name' => 'administer biblio',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
     ),
     'module' => 'biblio',
   );
@@ -43,8 +41,6 @@ function os_publications_user_default_permissions() {
     'name' => 'edit biblio authors',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
     ),
     'module' => 'biblio',
   );
