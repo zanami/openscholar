@@ -327,6 +327,8 @@ function harvard_courses_node_insert($node) {
 
 /**
  * Implements hook_node_presave().
+ *
+ * Needed to ensure that course node titles don't contain entity codes.
  */
 function harvard_courses_node_presave($node) {
   if ($node->type != 'harvard_course') {
