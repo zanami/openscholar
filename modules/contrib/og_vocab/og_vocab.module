@@ -292,6 +292,8 @@ function og_vocab_og_fields_info() {
   $items[OG_VOCAB_FIELD] = array(
     'type' => array('group content'),
     'description' => t('Complex widget to reference taxonomy terms related to accessible groups.'),
+    // Allow multiple OG-vocab fields on the same bundle.
+    'multiple' => TRUE,
     'field' => array(
       'settings' => array(
         'handler' => 'base',
@@ -607,17 +609,23 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
     $ordered_terms[] = array(
       'term' => $term,
       'weight' => $vocabulary->weight,
+      'vid' => $vocabulary->vid,
     );
   }
 
-  uasort($ordered_terms, 'drupal_sort_weight');
+  uasort($ordered_terms, 'og_vocab_sort_weight');
+
+  // Re-build the terms array, as it is now ordered.
+  $terms = array();
+  foreach ($ordered_terms as $info) {
+    $terms[] = $info['term'];
+  }
 
   $settings = $display['settings'];
 
   if ($settings['concatenate']) {
     $values = array();
-    foreach ($ordered_terms as $info) {
-      $term = $info['term'];
+    foreach ($terms as $term) {
       $url = entity_uri('taxonomy_term', $term);
       $values[] = l($term->name, $url['path']);
     }
@@ -628,8 +636,7 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
 
   // Iterate over each term and group by vocabulary.
   $data = array();
-  foreach ($ordered_terms as $info) {
-    $term = $info['term'];
+  foreach ($terms as $term) {
     if (empty($data['vocabylary'][$term->vid])) {
       $vocab = taxonomy_vocabulary_load($term->vid);
       $data['vocabylary'][$term->vid] = check_plain($vocab->name);
@@ -648,6 +655,27 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
   }
 
   return $element;
+}
+
+/**
+ * Sorts a structured array by the 'weight' element, and if they are equal then
+ * by the vocabylary ID.
+ *
+ * @param $a
+ *   First item for comparison.
+ * @param $b
+ *   Second item for comparison.
+ *
+ * @see drupal_sort_weight()
+ */
+function og_vocab_sort_weight($a, $b) {
+  $result = drupal_sort_weight($a, $b);
+  if ($result !== 0) {
+    return $result;
+  }
+
+  // Sort by the vocabulary ID.
+  return ($a['vid'] < $b['vid']) ? -1 : 1;
 }
 
 
@@ -1148,28 +1176,18 @@ function og_vocab_form_alter(&$form, $form_state, $form_id) {
   if (!in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || !$context = og_vocab_is_group_admin_context()) {
     return;
   }
-  $form['#submit'][] = 'og_vocab_redirect_to_group_vocabularies';
-}
+  if ($form_id == 'taxonomy_overview_terms') {
 
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function og_vocab_form_og_ui_admin_settings_alter(&$form, $form_state) {
-  $form['og_vocab_use_queue'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Delete OG vocab terms reference with the queue'),
-    '#description' => t('Use the advance queue for deleting the OG vocabulary term reference when OG vocabulary is deleted.'),
-    '#default_value' => variable_get('og_vocab_use_queue', FALSE),
-    '#disabled' => !module_exists('advancedqueue'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="og_use_queue"]' => array('checked' => TRUE),
-      ),
-    ),
-    '#attributes' => array(
-      'class' => array('entityreference-settings'),
-    ),
-  );
+    // Alter the 'Add term' link that is displayed when no terms have yet been
+    // added.
+    $og_vocab = taxonomy_vocabulary_load($form['#vocabulary']->vid);
+    $relation = og_vocab_relation_get($og_vocab->vid);
+    if (og_user_access($relation->group_type, $relation->gid, 'administer taxonomy')) {
+      $path = "group/$relation->group_type/$relation->gid/admin/taxonomy/$og_vocab->machine_name/add";
+      $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
+    }
+  }
+  $form['#submit'][] = 'og_vocab_redirect_to_group_vocabularies';
 }
 
 /**
@@ -1469,14 +1487,25 @@ function og_vocab_advanced_queue_info() {
 }
 
 /**
+ * Implements hook_cron_queue_info().
+ */
+function og_vocab_cron_queue_info() {
+  $items['og_vocab'] = array(
+    'title' => t('OG Vocabulary'),
+    'worker callback' => 'og_vocab_remove_referenced_items_queue_worker',
+    'time' => 60,
+  );
+  return $items;
+}
+
+
+/**
  * Advanced queue worker; Process a queue item.
  *
- * The item holds the Message ID, and user ID of the last user the email
- * was sent to.
+ * When a OG vocabulary is being deleted we need to remove the reference between
+ * the nodes to the terms.
  */
-function og_vocab_advancedqueue_worker($item, $end_time = FALSE) {
-  $queue = DrupalQueue::get('og_vocab');
-  $data = $item->data;
+function og_vocab_remove_referenced_items_queue_worker($data, $end_time = FALSE) {
   extract($data);
 
   // Get range of the group content.
@@ -1507,7 +1536,7 @@ function og_vocab_advancedqueue_worker($item, $end_time = FALSE) {
 
   if (empty($result)) {
     // No more group-content for this entity, so we can delete the task item.
-    return $queue->deleteItem($item);
+    return;
   }
 
   foreach ($result as $row) {
@@ -1536,15 +1565,16 @@ function og_vocab_advancedqueue_worker($item, $end_time = FALSE) {
   }
 
   // Update the item with the last OG-membership ID.
-  $item->data['last_id'] = $last_id;
-  db_update('advancedqueue')
-    ->fields(array(
-    'data' => serialize($item->data),
-  ))
-    ->condition('item_id', $item->item_id)
-    ->execute();
+  $data = array(
+    'vid' => $vid,
+    'entity_type' => $entity_type,
+    'bundle' => $bundle,
+    'field_name' => $field_name,
+    'group_type' => $group_type,
+    'gid' => $gid,
+    'last_id' => $last_id,
+  );
 
-  // Release the item.
-  $queue->releaseItem($item);
-  return TRUE;
+  $queue = DrupalQueue::get('og_vocab');
+  return $queue->createItem($data);
 }
