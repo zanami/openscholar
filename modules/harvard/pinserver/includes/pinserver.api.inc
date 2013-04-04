@@ -9,6 +9,9 @@
  * @return bool
  */
 function pinserver_check_status($timeout = FALSE) {
+
+  //@todo redirect @auth
+
   // Verifies that the current user has a valid token with reg_time & HUID.
   if (isset($_SESSION['pinserver']['reg_time']) && isset($_SESSION['pinserver']['huid'])) {
     // Immediately returns TRUE if there is no timeout set.
