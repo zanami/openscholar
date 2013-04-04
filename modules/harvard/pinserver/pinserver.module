@@ -519,6 +519,51 @@ function pinserver_forbidden_page() {
 }
 
 /**
+ * Register a "JS" callback.
+ *
+ *
+ * @return array
+ *   An array of callbacks with the following possible keys for each callback:
+ *   - callback: (required) The function to call to display the results when an ajax call occurs on this path
+ *   - includes: (optional) Load aditional files from the /includes directory, without the extension
+ *   - dependencies: (optional) Load additional modules for this callback
+ *   - bootstrap: (optional) The bootstrap level Drupal should boot to, defaults
+ *                to DATABASE or SESSION if an access argument/callback is defined
+ *   - file: (optional) In which file the callback function is defined
+ *   - access arguments: (optional) Arguments for the access callback
+ *   - access callback: (optional) Callback for the access check, default to
+ *                      user_access if there is an acces argument defined
+ *
+ */
+function pinserver_js() {
+  return array(
+    'files' => array(
+      'callback' => 'pinserver_private_file_download_js',
+      'dependencies' => array('os_files_private','user'),
+      'bootstrap'    => DRUPAL_BOOTSTRAP_VARIABLES,
+//      'access arguments' => array('e.g. permission'),
+//       'access callback'  => 'callback function'
+    ),
+  );
+}
+
+function pinserver_private_file_download_js(){
+  $path = func_get_args();
+  //For now lets restrict this to private files
+  $scheme = "private";
+$scheme = "public";//TMP
+  $target = implode('/', $path);
+  $uri = $scheme . '://' . $target;
+
+  $headers = pinserver_file_download($uri);
+  if (count($headers)) {
+    file_transfer($uri, $headers);
+  }
+
+  return JS_MENU_ACCESS_DENIED;
+}
+
+/**
  * Implements hook_file_download().
  *
  * Checks for pinserver and serves file if all rules pass.
@@ -529,7 +574,11 @@ function pinserver_file_download($uri) {
 	$use_pinserver = variable_get('os_files_private_pinserver', 0);
 
 	// If enabled, serves file to users who can login via Harvard Pinserver.
-	if ($use_pinserver) {
+	if ($use_pinserver && file_uri_scheme($uri) != 'private' && file_exists($uri)) { //TODO CHANGE TO PRIVATE
+
+	  //File
+	  $file = file_uri_to_object($uri);
+
 	  // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
 	  // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
 	  if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
