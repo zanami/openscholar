@@ -28,9 +28,8 @@ Feature:
            | Show empty terms                 | check   | checkbox    |
            | Show number of posts             | check   | checkbox    |
            | Show child terms                 | check   | checkbox    |
-           | Add tagged children to the count | check   | checkbox    |
       When I visit "john/publications"
-      Then I should see "Antoine de Saint-Exupéry (2)"
+      Then I should see "Antoine de Saint-Exupéry (1)"
        And I should see "Stephen William Hawking (1)"
 
   @api

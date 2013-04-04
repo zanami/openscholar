@@ -658,13 +658,6 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
-   */
-  public function iSetTheTermUnderTheTerm($child, $parent) {
-    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
-  }
-  /**
    * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
    */
   public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
