@@ -535,22 +535,27 @@ function pinserver_forbidden_page() {
  *
  */
 function pinserver_js() {
+  // Ensure the stream wrappers are available
+  drupal_load('module', 'system');
+  pinserver_init_variables();
+
   return array(
     'files' => array(
       'callback' => 'pinserver_private_file_download_js',
-      'dependencies' => array('os_files_private','user', 'file_entity'),
-      'bootstrap'    => DRUPAL_BOOTSTRAP_VARIABLES,
-//      'access arguments' => array('e.g. permission'),
-//       'access callback'  => 'callback function'
+      'dependencies' => array('file_entity','syslog','system','file'),
+      //.'bootstrap'    => DRUPAL_BOOTSTRAP_VARIABLES,
+      //'access callback' => 'pinserver_js_clean_bootstrap'
+      'includes' => array('path'),
     ),
   );
 }
 
 function pinserver_private_file_download_js(){
+
   $path = func_get_args();
   //For now lets restrict this to private files
   $scheme = "private";
-$scheme = "public";//TMP
+
   $target = implode('/', $path);
   $uri = $scheme . '://' . $target;
 
@@ -560,6 +565,21 @@ $scheme = "public";//TMP
   }
 
   return JS_MENU_ACCESS_DENIED;
+}
+
+/**
+ * Init the variables $conf without loading all of the bootstrap modules.
+ * This prevents hook_init from running on modules the js hook does not list.
+ */
+function pinserver_init_variables(){
+  global $conf;
+
+  // Initialize the lock system.
+  require_once DRUPAL_ROOT . '/' . variable_get('lock_inc', 'includes/lock.inc');
+  lock_initialize();
+
+  // Load variables from the database, but do not overwrite variables set in settings.php.
+  $conf = variable_initialize(isset($conf) ? $conf : array());
 }
 
 /**
@@ -573,7 +593,7 @@ function pinserver_file_download($uri) {
 	$use_pinserver = variable_get('os_files_private_pinserver', 0);
 
 	// If enabled, serves file to users who can login via Harvard Pinserver.
-	if ($use_pinserver && file_uri_scheme($uri) != 'private' && file_exists($uri)) { //TODO CHANGE TO PRIVATE
+	if ($use_pinserver && file_uri_scheme($uri) == 'private' && file_exists($uri)) { //TODO CHANGE TO PRIVATE
 
 	  // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
 	  // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
