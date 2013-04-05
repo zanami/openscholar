@@ -210,12 +210,10 @@ class OgVocab extends Entity {
    * Overrides Entity::delete().
    */
   public function delete() {
-    $use_queue = variable_get('og_use_queue', FALSE) && variable_get('og_vocab_use_queue', FALSE) && module_exists('advancedqueue');
-
-    if ($use_queue) {
+    if (variable_get('og_use_queue', FALSE)) {
       // Add item to the queue.
       $group = og_vocab_relation_get($this->vid);
-      $task = array(
+      $data = array(
         'vid' => $this->vid,
         'entity_type' => $this->entity_type,
         'bundle' => $this->bundle,
@@ -227,7 +225,7 @@ class OgVocab extends Entity {
       );
 
       $queue = DrupalQueue::get('og_vocab');
-      $queue->createItem($task);
+      $queue->createItem($data);
     }
 
     // After defining the item data, if we used queue, delete the entity.
