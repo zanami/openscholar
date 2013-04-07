@@ -23,12 +23,12 @@ Feature:
        And I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
        And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
        And I set the term "Douglas Noël Adams" under the term "Stephen William Hawking"
-       And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
+       And the widget "Filter by term" is set in the "Classes" page with the following <settings>:
            | Vocabularies                     | authors | select list |
            | Show empty terms                 | check   | checkbox    |
            | Show number of posts             | check   | checkbox    |
            | Show child terms                 | check   | checkbox    |
-      When I visit "john/publications"
+      When I visit "john/classes"
       Then I should see "Antoine de Saint-Exupéry (1)"
        And I should see "Stephen William Hawking (1)"
 

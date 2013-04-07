@@ -182,7 +182,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     }
     ctools_include('layout', 'os');
 
-    if (empty($this->options['bundles']) || $this->options['behavior'] == '--all--') {
+    if ($this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
     }
     else if (!empty($this->options['behavior']) && $this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
