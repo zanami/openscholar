@@ -625,8 +625,7 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
 
   if ($settings['concatenate']) {
     $values = array();
-    foreach ($ordered_terms as $info) {
-      $term = $info['term'];
+    foreach ($terms as $term) {
       $url = entity_uri('taxonomy_term', $term);
       $values[] = l($term->name, $url['path']);
     }
@@ -637,8 +636,7 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
 
   // Iterate over each term and group by vocabulary.
   $data = array();
-  foreach ($ordered_terms as $info) {
-    $term = $info['term'];
+  foreach ($terms as $term) {
     if (empty($data['vocabylary'][$term->vid])) {
       $vocab = taxonomy_vocabulary_load($term->vid);
       $data['vocabylary'][$term->vid] = check_plain($vocab->name);
