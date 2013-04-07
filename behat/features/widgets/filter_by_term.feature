@@ -92,7 +92,7 @@ Feature:
         Wrote The Hitchhiker's Guide to the Galaxy
         """
 
-  @api @current
+  @api
   Scenario: Verify the terms links direct us to the correct path.
      Given I am logged in as a user with the "administrator" role
        And the widget "Filter by term" is set in the "Classes" page with the following <settings>:
