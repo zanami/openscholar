@@ -111,6 +111,7 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
 
   $group_key = key($query->where);
   $alias = $query->add_table('field_data_og_vocabulary');
+  $query->set_distinct();
 
   $tid = str_replace('taxonomy/term/', '', $path);
   $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
@@ -372,8 +373,6 @@ function os_taxonomy_get_prefix_path(&$options) {
   }
   $map = features_get_component_map('node');
 
-  $feature = '';
-
   foreach ($options['bundles'] as $bundle) {
     if (isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])) {
       unset($feature);
@@ -386,7 +385,7 @@ function os_taxonomy_get_prefix_path(&$options) {
 
   // Counting how much bundles are associated with the vocabulary. If only 1
   // then use the prefix of the app related to the node bundle.
-  if ($og_context = og_context() && !$feature) {
+  if ($og_context = og_context() && !isset($feature)) {
     $bundles = os_taxonomy_og_vocabulary_bundles($options['vocabulary'], $og_context['gid']);
 
     if (count($bundles) === 1) {
