@@ -44,7 +44,10 @@ if (!class_exists('purl_vsite_path')) {
             $vsite_domain = FALSE;
           }
 
-          if ($space_found || in_array($settings->value, self::$disabled) || (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
+          global $base_url;
+          if ($space_found || in_array($settings->value, self::$disabled) ||
+             (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
+             (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST))
           ) {
             unset($parsed[$site]);
           }else{
