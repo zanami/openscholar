@@ -110,7 +110,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
           //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
           //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'])) . '<Br />';
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'], 'html' => TRUE)) . '<br />';
         }
       }
 
@@ -199,8 +199,20 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
 
     if (isset($build['og_vocabulary'])) {
-      foreach ($build['og_vocabulary']['#items'] as $tid) {
-        $t = taxonomy_term_load($tid['target_id']);
+      $terms = taxonomy_term_load_multiple($build['og_vocabulary']['#items']);
+      $ordered_terms = array();
+
+      foreach ($terms as $term) {
+        $vocabulary = taxonomy_vocabulary_load($term->vid);
+        $ordered_terms[] = array(
+          'term' => $term,
+          'weight' => $vocabulary->weight,
+        );
+      }
+
+      uasort($ordered_terms, 'drupal_sort_weight');
+      foreach ($ordered_terms as $info) {
+        $t = $info['term'];
         $v = taxonomy_vocabulary_load($t->vid);
 
         if (!isset($build[$v->machine_name])) {

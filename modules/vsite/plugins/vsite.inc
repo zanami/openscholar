@@ -71,6 +71,21 @@ class vsite extends space_og {
   }
 
   /**
+   * Deactivate Space
+   */
+  function deactivate(){
+    // If variable controller had been init'ed reset it.
+    // This prevent overridden variables from interacting
+    // with the page.
+    if(isset($this->controllers->variable)){
+      global $conf;
+      $conf = $this->controllers->variable->get(NULL,'original');
+    }
+
+    parent::deactivate();
+  }
+
+  /**
    * Implements space->router().
    */
   public function router($op, $node = NULL) {
@@ -276,7 +291,7 @@ class vsite extends space_og {
    * The parent exlcudes 'features' and 'features/*'
    * We want them back
    */
-  protected function excluded_paths() {
+  protected static function excluded_paths() {
     $excluded = parent::excluded_paths();
 
     unset($excluded[array_search('features', $excluded)]);
@@ -324,7 +339,7 @@ class vsite extends space_og {
       if ($this->purl_provider) {
         // Sets the provider to use for redirection
         $options = array(
-          'query' => drupal_http_build_query(drupal_get_query_parameters()),
+          'query' => drupal_get_query_parameters(),
           'purl' => array(
             'provider' => $this->purl_provider,
             'id' => $this->id,

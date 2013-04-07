@@ -527,7 +527,6 @@ class OgVocabUnbindFromContentType extends DrupalWebTestCase {
     $wrapper->save();
 
     variable_set('og_use_queue', TRUE);
-    variable_set('og_vocab_use_queue', TRUE);
   }
 
   /**

@@ -504,6 +504,11 @@ class OsMigrateBlogNode extends OsMigrate {
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigrateProjectNode', 'OsMigratePersonalNode'));
   }
+
+  public function prepare($entity, $row) {
+    // Make sure node has comments.
+    $entity->comment = COMMENT_NODE_OPEN;
+  }
 }
 
 /**
