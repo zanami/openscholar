@@ -283,7 +283,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
   // If there is more than 0 bundles using this vocabulary.
   os_taxonomy_get_prefix_path($options);
-  $data = $options['bundles'] = array();
+  $data = array();
    // process all root term.
   foreach ($terms as $tid => $term) {
     // The attached number to the term name.
@@ -304,7 +304,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     // The attached number to the term name.
     $number = NULL;
     if ($options['show_count'] && !empty($term->below)) {
-      $number = os_taxonomy_count_term_tagged_items($term->below);
+      $number = os_taxonomy_count_term_tagged_items($term->below, $options['bundles']);
     }
 
     if (!empty($path_prefix) && strpos($term_path, 'taxonomy/') === 0) {
@@ -371,6 +371,8 @@ function os_taxonomy_get_prefix_path(&$options) {
     return;
   }
   $map = features_get_component_map('node');
+
+  $feature = '';
 
   foreach ($options['bundles'] as $bundle) {
     if (isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])) {
