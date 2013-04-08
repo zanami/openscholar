@@ -71,6 +71,7 @@ features[variable][] = node_options_vsite
 features[variable][] = node_preview_vsite
 features[variable][] = node_submitted_vsite
 features[variable][] = og_context_negotiation_group_context
+features[variable][] = og_node_access_strict
 features[variable][] = os_enabled_spaces_presets
 features[variable][] = os_vsites_per_user
 features[views_view][] = os_subsites

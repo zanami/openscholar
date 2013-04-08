@@ -5,11 +5,18 @@ Drupal.behaviors.os_upload_form = {
   attach: function (ctx) {
     var $ = jQuery,
         $input = $('<label for="edit-upload-upload" class="file-select form-submit">Upload</label>'),
-        $help = $('<div class="form-help"></div>')
+        $help = $('<div class="form-help"></div>'),
         $file_select = $('#edit-upload input[type="file"]', ctx);
-    $file_select.before($input);
-    $input.bind('mousedown', function (e) {$input.addClass('focus');})
-          .bind('mouseup', function(e) {$input.removeClass('focus');});
+
+    $file_select.before($input).click(function (e) {
+    	if ($file_select.hasClass('focus')){
+    	  e.preventDefault();
+    	}
+    	$file_select.addClass('focus');
+    });
+    $input.bind('mousedown', function (e) {$file_select.show(); $input.addClass('focus');})
+          .bind('mouseup', function(e) {$file_select.hide(); $input.removeClass('focus');})
+          .click(function(e) {$file_select.click();});
      
     $('.form-item-upload label[for="edit-upload"]', ctx).after($help);
     
@@ -17,6 +24,7 @@ Drupal.behaviors.os_upload_form = {
       if (!('result' in e) || e.result) {
         $('#file-entity-add-upload .form-actions #edit-next', ctx).click();
       }
+      $file_select.removeClass('focus');
     }
     
     $file_select.change(changeHandler).bind('propertychange', changeHandler);

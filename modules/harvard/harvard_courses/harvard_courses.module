@@ -326,6 +326,24 @@ function harvard_courses_node_insert($node) {
 }
 
 /**
+ * Implements hook_node_presave().
+ *
+ * Needed to ensure that course node titles don't contain entity codes.
+ */
+function harvard_courses_node_presave($node) {
+  if ($node->type != 'harvard_course') {
+    return;
+  }
+
+  // Replaces HTML entities in node titles with their actual character values.
+  $new_title = filter_xss(decode_entities($node->title));
+  // Handles &apos, which is only supported by html_entity_decode() in php =>5.4
+  // @see https://bugs.php.net/bug.php?id=63806
+  $new_title = str_replace('&apos;', '\'', $new_title);
+  $node->title = $new_title;
+}
+
+/**
  * Implement hook_preprocess_page().
  */
 function harvard_courses_preprocess_page(&$variables) {

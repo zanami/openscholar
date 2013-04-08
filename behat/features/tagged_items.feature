@@ -2,7 +2,7 @@ Feature: Testing the tagged items.
   Testing that two nodes tagged to one term and only one node tagged to another
   term.
 
-  @api @me
+  @api
   Scenario Outline: verify that the tagged items filter work as expected.
       Given I visit "<first link>"
         And I should see "<first node>"
@@ -23,4 +23,4 @@ Feature: Testing the tagged items.
      | john/publications  | john/publications/science/air   | The Little Prince         | John F. Kennedy: A Biography|
      | john/reader        | john/reader/science/air         | Engadget rss              | Feeds around the world      |
      | john/software      | john/software/science/air       | Mac OSX                   | Windows 7                   |
-     | john/galleries     | john/galleries/air              | Kittens gallery           | JFK                         |
+     #| john/galleries     | john/galleries/air              | Kittens gallery           | JFK                         |
