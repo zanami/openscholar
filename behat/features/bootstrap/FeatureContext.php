@@ -584,17 +584,51 @@ class FeatureContext extends DrupalContext {
     $rows = $table->getRows();
     $baseUrl = $this->locatePath('');
 
-    foreach ($rows as $row) {
-      $this->visit($row[0]);
-      $url = $this->getSession()->getCurrentUrl();
+    if (count(reset($rows)) == 3) {
+      foreach ($rows as $row) {
+        $this->visit($row[0]);
+        $url = $this->getSession()->getCurrentUrl();
 
-      if ($url != $baseUrl . $row[2]) {
-        throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+        if ($url != $baseUrl . $row[2] && $url != 'http://lincoln.local/' . $row[2]) {
+          throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+        }
+
+        $john_response_code = $this->responseCode($baseUrl . $row[0]);
+        $lincoln_response_code = $this->responseCode('http://lincoln.local/' . $row[0]);
+        if ($john_response_code != $row[1] && $lincoln_response_code != $row[1]) {
+          throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$john_response_code}/{$lincoln_response_code} reponse code.");
+        }
       }
+    }
+    else {
+      foreach ($rows as $row) {
+        $code = "os_migrate_demo_get_node_nid('$row[1]');";
+        $nid = $this->getDriver()->drush("php-eval \"{$code}\"");
 
-      $response_code = $this->responseCode($baseUrl . $row[0]);
-      if ($response_code != $row[1]) {
-        throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$response_code} reponse code.");
+
+        if ($row[2] == 'No') {
+          $VisitUrl = 'node/' . $nid;
+        }
+        else {
+          $code = "print drupal_get_path_alias('node/{$nid}');";
+          $VisitUrl = $this->getDriver()->drush("php-eval \"{$code}\"");
+        }
+
+        if (!empty($row[0])) {
+          $VisitUrl = $row[0] . $VisitUrl;
+        }
+
+        $this->visit($VisitUrl);
+        $url = $this->getSession()->getCurrentUrl();
+
+        if ($url != $baseUrl . $row[4]) {
+          throw new Exception("When visiting {$VisitUrl} we did not redirected to {$row[4]} but to {$url}.");
+        }
+
+        $response_code = $this->responseCode($baseUrl . $VisitUrl);
+        if ($response_code != $row[3]) {
+          throw new Exception("When visiting {$VisitUrl} we did not get a {$row[3]} reponse code but the {$response_code} reponse code.");
+        }
       }
     }
   }
