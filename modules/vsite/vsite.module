@@ -3,6 +3,25 @@
 
 
 /**
+ * Implements hook_init().
+ *
+ * Adding css which relate to the vsite.
+ */
+function vsite_init() {
+  if (!$context = og_context()) {
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper($context['group_type'], $context['gid']);
+
+  $css_files = $wrapper->field_css_files->value();
+
+  foreach ($css_files as $css_file) {
+    drupal_add_css($css_file['uri'], array('group' => CSS_THEME));
+  }
+}
+
+/**
  * @file
  * A virtual-site (VSite) is a node that is a "group".
  */

@@ -14,7 +14,7 @@ function vsite_field_default_fields() {
   $fields['node-department-field_css_files'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_css_files',
@@ -73,7 +73,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'txt',
+        'file_extensions' => 'css',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -97,30 +97,11 @@ function vsite_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
-          'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
-            'public' => 'public',
-          ),
-          'allowed_types' => array(
-            'audio' => 0,
-            'document' => 0,
-            'html' => 0,
-            'image' => 'image',
-            'undefined' => 0,
-            'video' => 0,
-          ),
-          'browser_plugins' => array(
-            'media_default--media_browser_1' => 0,
-            'media_default--media_browser_my_files' => 0,
-            'media_internet' => 0,
-            'upload' => 0,
-          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
+        'type' => 'file_generic',
         'weight' => '34',
       ),
     ),
@@ -216,7 +197,7 @@ function vsite_field_default_fields() {
   $fields['node-personal-field_css_files'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_css_files',
@@ -299,30 +280,11 @@ function vsite_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
-          'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
-            'public' => 'public',
-          ),
-          'allowed_types' => array(
-            'audio' => 0,
-            'document' => 0,
-            'html' => 0,
-            'image' => 'image',
-            'undefined' => 0,
-            'video' => 0,
-          ),
-          'browser_plugins' => array(
-            'media_default--media_browser_1' => 0,
-            'media_default--media_browser_my_files' => 0,
-            'media_internet' => 0,
-            'upload' => 0,
-          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
+        'type' => 'file_generic',
         'weight' => '36',
       ),
     ),
@@ -418,7 +380,7 @@ function vsite_field_default_fields() {
   $fields['node-project-field_css_files'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_css_files',
@@ -477,7 +439,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'txt',
+        'file_extensions' => 'css',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -501,30 +463,11 @@ function vsite_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
-          'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
-            'public' => 'public',
-          ),
-          'allowed_types' => array(
-            'audio' => 0,
-            'document' => 0,
-            'html' => 0,
-            'image' => 'image',
-            'undefined' => 0,
-            'video' => 0,
-          ),
-          'browser_plugins' => array(
-            'media_default--media_browser_1' => 0,
-            'media_default--media_browser_my_files' => 0,
-            'media_internet' => 0,
-            'upload' => 0,
-          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
+        'type' => 'file_generic',
         'weight' => '36',
       ),
     ),
