@@ -92,13 +92,14 @@ Feature:
         Wrote The Hitchhiker's Guide to the Galaxy
         """
 
-  @api
+  @api @wip
   Scenario: Verify the terms links direct us to the correct path.
      Given I am logged in as a user with the "administrator" role
        And the widget "Filter by term" is set in the "Classes" page with the following <settings>:
            | Vocabularies           | authors   | select list |
            | Show empty terms       | check     | checkbox    |
-       And I set the term "Antoine de Saint-Exupéry" under the term "Stephen William Hawking"
+      # We should set those terms upon migrate, instead of here.
+      And I set the term "Antoine de Saint-Exupéry" under the term "Stephen William Hawking"
       When I visit "john/classes"
       Then I verify the "Stephen William Hawking" term link redirect to the original page
        And I verify the "Antoine de Saint-Exupéry" term link doesn't redirect to the original page
