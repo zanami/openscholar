@@ -1,4 +1,4 @@
 <virtualhost lincoln.local:*>
 ServerName lincoln.local
-DocumentRoot http://127.0.0.1
+DocumentRoot /home/travis/drupal
 </virtualhost>
