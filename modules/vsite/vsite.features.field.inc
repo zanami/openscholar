@@ -73,7 +73,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'css',
+        'file_extensions' => 'css zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -256,7 +256,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'txt',
+        'file_extensions' => 'css zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -439,7 +439,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'css',
+        'file_extensions' => 'css zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
