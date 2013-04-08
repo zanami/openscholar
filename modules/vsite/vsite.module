@@ -14,10 +14,52 @@ function vsite_init() {
 
   $wrapper = entity_metadata_wrapper($context['group_type'], $context['gid']);
 
-  $css_files = $wrapper->field_css_files->value();
+  $files = $wrapper->field_css_files->value();
 
-  foreach ($css_files as $css_file) {
-    drupal_add_css($css_file['uri'], array('group' => CSS_THEME));
+  foreach ($files as $file) {
+    if ($file['filemime'] == 'text/css') {
+      // This is simple css file - uncluding it without any problem.
+      drupal_add_css($file['uri'], array('group' => CSS_THEME));
+    }
+    else {
+      // Extract the files inside the ZIP archive file.
+      $folder_name = str_replace(array('.', '_'), '-', $file['filename']);
+      $files_folder = variable_get('file_public_path', conf_path() . '/files');
+
+      $file_path = $files_folder . '/' . $file['filename'];
+      $extract_path = $files_folder . '/' . $folder_name;
+
+      if (!file_exists($extract_path)) {
+        $zip = new ZipArchive;
+        $res = $zip->open($file_path);
+
+        if ($res === TRUE) {
+          // Extract the file.
+          $zip->extractTo($extract_path);
+          $zip->close();
+        }
+        else {
+          // couldn't extract the zip file, display an error message and
+          // watchdog.
+          $params = array(
+            '@file' => $file_path,
+            '@path' => $extract_path,
+          );
+
+          $message = t('Unable to extract @file to @path', $params);
+          watchdog('vsite', $message);
+          drupal_set_message($message, 'error');
+        }
+      }
+      else {
+        // Get all the CSS files and include them.
+        $files = glob($extract_path . '/*.css');
+
+        foreach ($files as $file) {
+          drupal_add_css($file, array('group' => CSS_THEME));
+        }
+      }
+    }
   }
 }
 
