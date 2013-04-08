@@ -23,6 +23,13 @@ function iqss_projects_front_update_7001(&$sandbox){
   }
 }
 
+/**
+ * Enable the os_pinserver module.
+ */
+function iqss_projects_front_update_7002() {
+  module_enable(array('os_pinserver'));
+}
+
 
 /**
  * Init mollom to protect the following forms.
