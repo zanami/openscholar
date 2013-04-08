@@ -102,6 +102,10 @@ function pinserver_check_user() {
     drupal_goto();
   }
 
+  if (isset($_GET['tk_forward'])) {
+    drupal_goto(ltrim($query_params['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
+  }
+
   // Parses and validates the PIN token.
   $token_data = pinserver_check_token();
 
@@ -603,7 +607,7 @@ function pinserver_file_download($uri) {
 	  }
 	  // Otherwise, sends the user to Pinserver to log in.
 	  else if (function_exists('pinserver_redirect')) {
-	    return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI']));
+	    return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
 	  }
 	}
 }
