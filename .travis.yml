@@ -24,6 +24,7 @@ before_script:
   - sudo service apache2 reload
 
   # Verify the virtual hosts worked. Delete after it worked.
+  - pwd
   - curl lincoln.local
 
   - "mysql -e 'create database drupal;'"
