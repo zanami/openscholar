@@ -35,6 +35,11 @@ function os_publications_overview() {
 
   // handle caching
   //cache_set($ckey, $output, 'cache_biblio_lists');
+  
+  // change the page title to match the menu entry
+  ctools_include('menu', 'os');
+  $menu_item = os_menu_load_link_path($_GET['q']);
+  drupal_set_title($menu_item['title']);
 
   return $output;
 }
