@@ -7,7 +7,7 @@
 <div class="controls-wrap">
   <ol class="flex-control-nav flex-control-paging">
     <?php for($n = 0 ; $n < $node_count; $n++):?>
-      <li><a href="#" class="flex-pager <?php echo $n; ?>"><?php echo $n; ?></a></li>
+      <li><a href="#" class="flex-pager p<?php echo $n; ?>"><?php echo $n; ?></a></li>
     <?php endfor;?>
   </ol>
   
