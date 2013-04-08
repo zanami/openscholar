@@ -10,18 +10,16 @@
  */
 function pinserver_check_status($timeout = FALSE) {
 
-  //@todo redirect @auth
-
   // Verifies that the current user has a valid token with reg_time & HUID.
-  if (isset($_SESSION['pinserver']['reg_time']) && isset($_SESSION['pinserver']['huid'])) {
+  if (pinserver_get_user_huid()) {
     // Immediately returns TRUE if there is no timeout set.
     if (!$timeout) {
       return TRUE;
     }
+
     // Otherwise, only returns TRUE if we are before the timeout time.
-    $current_time = time();
-    $timeout_time = $_SESSION['pinserver']['reg_time'] + $timeout;
-    if ($current_time < $timeout_time) {
+    $pin_user = pinserver_get_user();
+    if (time() < ($pin_user['reg_time'] + $timeout)) {
       return TRUE;
     }
   }
@@ -29,52 +27,78 @@ function pinserver_check_status($timeout = FALSE) {
 }
 
 /**
- * API function - Checks if user is Harvard employee based on $_SESSION variable.
+ * Checks if user is Harvard employee based on pinserver variable.
  *
  * @return string or FALSE
  */
 function pinserver_is_harvard_employee() {
-  if (isset($_SESSION['pinserver']['harvard_employee']) && !empty($_SESSION['pinserver']['harvard_employee'])) {
-    return $_SESSION['pinserver']['harvard_employee'];
+
+  if($user = pinserver_get_user() && isset($user['harvard_employee'])){
+    return $user['harvard_employee'];
   }
+
   return FALSE;
 }
 
 /**
- * API function - Return all session values (set after successful pinserver login)
+ * Returns the current pinserver user.
+ *
+ * @param $user
+ * The pin user to set as logged in.
+ *
+ * @param $use_session
+ * Should this pin user be stored in the session.
  */
-function pinserver_get_session() {
-  // Returns array with pinserver session values if not empty.
-  if (!empty($_SESSION['pinserver'])) {
-    foreach ($_SESSION['pinserver'] as $key => $val) {
-      $session_values['key'] = $val;
+function pinserver_get_user($user = false, $set_session = false) {
+  $pin_user = &drupal_static(__FUNCTION__);
+
+  if($user){
+    $pin_user = $user;
+
+    if(isset($_SESSION['pinserver']) || $set_session){
+      $_SESSION['pinserver'] = $user;
     }
-    return $session_values;
+  }elseif (empty($pin_user) && $_SESSION['pinserver']){
+    $pin_user = $_SESSION['pinserver'];
   }
-  else {
-    return FALSE;
-  }
+
+  return $pin_user;
 }
 
 /**
- * API function - Returns huid (set after successful pinserver login)
+ * Returns the huid of the logged-in pinserver user.
  */
-function pinserver_get_session_huid() {
-  // Returns array with pinserver session values.
-  if ($_SESSION['pinserver']['huid']) {
-    return $_SESSION['pinserver']['huid'];
+function pinserver_get_user_huid() {
+
+  if($user = pinserver_get_user() && isset($user['huid'])){
+    return $user['huid'];
   }
-  else {
-    return FALSE;
-  }
+
+  return FALSE;
 }
 
 /**
- * API function - Remove session values set after successful pinserver login
+ * Remove session values set after successful pinserver login.
  */
 function pinserver_remove_session() {
   // Remove session values.
   if (isset($_SESSION['pinserver'])) {
     unset($_SESSION['pinserver']);
   }
+}
+
+/**
+ * Create a user and set them as logged in using token data.
+ */
+function pinserver_add_user_from_token($token_data, $use_session = FALSE){
+
+  // Places encrypted harvard uid into session array.
+  $pin_user['huid'] = $token_data['user_id'];
+  $pin_user['reg_time'] = time();
+
+  if(isset($token_data['department']) && !empty($token_data['department'])) {
+    $pin_user['harvard_employee'] = $token_data['department'];
+  }
+
+  pinserver_get_user($pin_user, $use_session);
 }

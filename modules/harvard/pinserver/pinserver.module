@@ -13,6 +13,7 @@ function pinserver_menu() {
   $items['pinserver/auth'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'pinserver_check_user',
+    'page arguments' => array(TRUE),
     'access callback' => TRUE,
   );
 
@@ -93,12 +94,12 @@ function pinserver_redirect($args = array()) {
 /**
  * First function called after user has authenticated via pinserver and returned to site
  */
-function pinserver_check_user() {
+function pinserver_check_user($use_session = FALSE) {
 
   // First, verifies the pinserver settings.
   if ($error = pinserver_check_system_settings()) {
     error_log($error);
-    drupal_set_message(t("New web sites are not available at this time but should be available shortly. Please check back within the hour or email us at !support_mail.", array('!support_mail' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . variable_get('pinserver_support_contact') . '</a>')));
+    drupal_set_message(t("Harvard PIN service is not available at this time but should be available shortly. Please check back later or email us at !support_mail.", array('!support_mail' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . variable_get('pinserver_support_contact') . '</a>')));
     drupal_goto();
   }
 
@@ -109,9 +110,6 @@ function pinserver_check_user() {
   // Parses and validates the PIN token.
   $token_data = pinserver_check_token();
 
-  // FOR DEVELOPING: Uncomment to fake auth locally
-  //unset($token_data['errors']);
-
   // Redirects to error page if any errors are returned.
   if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
     $errors = implode(',', array_unique($token_data['errors']));
@@ -119,27 +117,18 @@ function pinserver_check_user() {
   }
 
   // Success! Code beyond this point handles a successful PIN authentication.
-
-  // Places encrypted harvard uid into session array.
-  $_SESSION['pinserver']['huid'] = $token_data['user_id'];
-  $_SESSION['pinserver']['reg_time'] = time();
-
-  if(isset($token_data['department']) && !empty($token_data['department'])) {
-    $_SESSION['pinserver']['harvard_employee'] = $token_data['department'];
-  }
+  pinserver_add_user_from_token($token_data, $use_session);
 
   // Invokes hook_pinserver().
   module_invoke_all('pinserver');
 
   // Redirects user to redirect URL if specified (probably a private file)
-  $query_params = array();
   if (isset($_GET['redirect'])) {
-    $query_params['redirect'] = $_GET['redirect'];
-    drupal_goto(ltrim($query_params['redirect'], '/'));
+    drupal_goto(ltrim($_GET['redirect'], '/'));
   }
 
   // Redirects user to landing page set in pinserver configuration page
-  drupal_goto(variable_get('pinserver_landing_path'), array('query' => $query_params));
+  drupal_goto(variable_get('pinserver_landing_path'));
 }
 
 /**
@@ -408,7 +397,6 @@ function pinserver_check_token() {
   3) __authen_time / "Timestamp" is valid and not more than a few minutes old
   */
 
-
   // Verify application name.
   if ($values['app'] != variable_get('pinserver_app_name')) {
     $values['errors'][] = 'name';
@@ -520,131 +508,4 @@ function theme_pinserver_token_error($values = NULL) {
 function pinserver_forbidden_page() {
   drupal_access_denied();
   die();
-}
-
-/**
- * Register a "JS" callback.
- *
- * @return array
- *   An array of callbacks with the following possible keys for each callback:
- *   - callback: (required) The function to call to display the results when an ajax call occurs on this path
- *   - includes: (optional) Load aditional files from the /includes directory, without the extension
- *   - dependencies: (optional) Load additional modules for this callback
- *   - bootstrap: (optional) The bootstrap level Drupal should boot to, defaults
- *                to DATABASE or SESSION if an access argument/callback is defined
- *   - file: (optional) In which file the callback function is defined
- *   - access arguments: (optional) Arguments for the access callback
- *   - access callback: (optional) Callback for the access check, default to
- *                      user_access if there is an acces argument defined
- *
- */
-function pinserver_js() {
-  // Ensure the stream wrappers are available
-  drupal_load('module', 'system');
-  pinserver_init_variables();
-
-  return array(
-    'files' => array(
-      'callback' => 'pinserver_private_file_download_js',
-      'dependencies' => array('file_entity','syslog','system','file'),
-      //.'bootstrap'    => DRUPAL_BOOTSTRAP_VARIABLES,
-      //'access callback' => 'pinserver_js_clean_bootstrap'
-      'includes' => array('path'),
-    ),
-  );
-}
-
-function pinserver_private_file_download_js(){
-
-  $path = func_get_args();
-  //For now lets restrict this to private files
-  $scheme = "private";
-
-  $target = implode('/', $path);
-  $uri = $scheme . '://' . $target;
-
-  $headers = pinserver_file_download($uri);
-  if (count($headers)) {
-    file_transfer($uri, $headers);
-  }
-
-  return JS_MENU_ACCESS_DENIED;
-}
-
-/**
- * Init the variables $conf without loading all of the bootstrap modules.
- * This prevents hook_init from running on modules the js hook does not list.
- */
-function pinserver_init_variables(){
-  global $conf;
-
-  // Initialize the lock system.
-  require_once DRUPAL_ROOT . '/' . variable_get('lock_inc', 'includes/lock.inc');
-  lock_initialize();
-
-  // Load variables from the database, but do not overwrite variables set in settings.php.
-  $conf = variable_initialize(isset($conf) ? $conf : array());
-}
-
-/**
- * Implements hook_file_download().
- *
- * Checks for pinserver and serves file if all rules pass.
- */
-function pinserver_file_download($uri) {
-
-  // Next: Checks if pinserver is enabled.
-	$use_pinserver = variable_get('os_files_private_pinserver', 0);
-
-	// If enabled, serves file to users who can login via Harvard Pinserver.
-	if ($use_pinserver && file_uri_scheme($uri) == 'private' && file_exists($uri)) { //TODO CHANGE TO PRIVATE
-
-	  // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
-	  // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-	  if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
-	    $file = file_uri_to_object($uri, FALSE);
-	    return file_get_content_headers($file);
-	  }
-	  // Otherwise, sends the user to Pinserver to log in.
-	  else if (function_exists('pinserver_redirect')) {
-	    return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
-	  }
-	}
-}
-
-/**
- * Implements hook_form_FORM_ID_alter() for os_files_private_settings.
- *
- * Set the URI schema to private when adding a new file via file/add.
- *
- * @see os_files_private_settings()
- */
-function pinserver_form_cp_app_settings_form_alter(&$form, $form_state) {
-  if ($form['#feature'] != 'os_files_private') {
-    return;
-  }
-
-  // Checks that the current vsite has a value for the pinserver app name variable.
-  $pinserver_app_name = variable_get('pinserver_app_name', NULL);
-  if ($pinserver_app_name) {
-    $form['os_files_private_pinserver'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Extend access to Harvard Community'),
-      '#default_value' => variable_get('os_files_private_pinserver', 0),
-      '#description' => t('By default, private files are only accessible to your site members. By extending access to Harvard Community, anyone with a valid Harvard XID can log in using the Harvard Pinserver to access your private files.'),
-      '#weight' => 1,
-    );
-  }
-
-  // Allows administrators only to edit pinserver app name in spaces_overrides.
-  if (user_access('administer pinserver')) {
-    $form['pinserver_app_name'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Harvard PIN server application name'),
-      '#required' => FALSE,
-      '#default_value' => variable_get('pinserver_app_name'),
-      '#description' => t('Enter the application name given to you by Harvard Directory Services.' ),
-    );
-  }
-
 }
