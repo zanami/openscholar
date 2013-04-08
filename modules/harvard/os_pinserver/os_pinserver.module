@@ -5,17 +5,19 @@
  */
 function os_pinserver_menu_alter(&$items) {
 
-  // Alters page callback
-  $items['site/register']['page callback'] = 'os_pinserver_vsite_register_form_page';
-  $items['site/register']['module'] = 'os_pinserver';
-  $items['site/register']['access callback'] = 'os_pinserver_vsite_exists_access';
-  $items['user/register']['page callback'] = 'os_pinserver_vsite_register_form_page';
-  $items['user/register']['module'] = 'os_pinserver';
-  $items['user/register']['access callback'] = 'os_pinserver_vsite_exists_access';
+  if(variable_get('os_pinserver_registration', FALSE)){
+	  // Alters page callback
+	  $items['site/register']['page callback'] = 'os_pinserver_vsite_register_form_page';
+	  $items['site/register']['module'] = 'os_pinserver';
+	  $items['site/register']['access callback'] = 'os_pinserver_vsite_exists_access';
+	  $items['user/register']['page callback'] = 'os_pinserver_vsite_register_form_page';
+	  $items['user/register']['module'] = 'os_pinserver';
+	  $items['user/register']['access callback'] = 'os_pinserver_vsite_exists_access';
 
-  // Removes page arguments and adds file values.
-  unset($items['site/register']['page arguments'], $items['user/register']['page arguments']);
-  $items['site/register']['file'] = $items['user/register']['file'] = 'os_pinserver.pages.inc';
+	  // Removes page arguments and adds file values.
+	  unset($items['site/register']['page arguments'], $items['user/register']['page arguments']);
+	  $items['site/register']['file'] = $items['user/register']['file'] = 'os_pinserver.pages.inc';
+  }
 }
 
 /**
@@ -31,6 +33,11 @@ function os_pinserver_vsite_exists_access() {
  * Implements hook_form_FORM_ID_alter() for vsite_register_form.
  */
 function os_pinserver_form_vsite_register_form_alter(&$form, $form_state, $form_id) {
+  //Should pinserver take over registration
+  if(!variable_get('os_pinserver_registration', FALSE)){
+    return;
+  }
+
   // Attaches submit and validate callbacks
   $form['#submit'][] = 'os_pinserver_register_submit';
   $form['#validate'][] = 'os_pinserver_register_validate';
@@ -166,7 +173,8 @@ function os_pinserver_register_ajax_validation(&$form, &$form_state) {
  * Deny Create to group content when a user has not passed through PIN.
  */
 function os_pinserver_node_access($node, $op, $account) {
-  if($op != 'create' || $account->uid){
+
+  if($op != 'create' || $account->uid || !variable_get('os_pinserver_registration', FALSE)){
     //Only influence the create operation for logged out users.
     return;
   }
@@ -213,7 +221,7 @@ function os_pinserver_register_validate_huid($huid) {
  * Implements hook_form_FORM_ID_alter() for vsite_users_profile_node_form.
  */
 function os_pinserver_form_vsite_users_profile_node_form_alter(&$form, $form_state, $form_id) {
-  if (!isset($form['buttons']['submit'])) {
+  if (!isset($form['buttons']['submit']) || !variable_get('os_pinserver_registration', FALSE)) {
     return;
   }
 
@@ -251,8 +259,8 @@ function os_pinserver_add_row($uid, $huid) {
   $object->uid      = (int)$uid;
   $object->huid     = (int)$huid;
   $object->reg_time = time();
-  if (!db_query("SELECT uid FROM {iqss_pinserver_register} WHERE huid = $huid")->fetchField()) {
-    drupal_write_record('iqss_pinserver_register', $object);
+  if (!db_query("SELECT uid FROM {os_pinserver} WHERE huid = $huid")->fetchField()) {
+    drupal_write_record('os_pinserver', $object);
     return TRUE;
   }
 
@@ -272,7 +280,7 @@ function os_pinserver_get_uid_from_huid($huid = NULL) {
   }
 
   if ($huid) {
-    return db_query("SELECT uid FROM {iqss_pinserver_register} WHERE huid = :huid", array(':huid' => $id))->fetchField();
+    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $id))->fetchField();
   }
 
   return FALSE;
@@ -282,7 +290,7 @@ function os_pinserver_get_uid_from_huid($huid = NULL) {
  * Implements hook_user_delete().
  */
 function os_pinserver_user_delete($account) {
-  db_delete('iqss_pinserver_register')->condition('uid', (int)$account->uid)->execute();
+  db_delete('os_pinserver')->condition('uid', (int)$account->uid)->execute();
 }
 
 /**
@@ -293,7 +301,7 @@ function os_pinserver_get_user_huid($uid = false) {
     global $user;
     $uid  = $user->uid;
   }
-  return db_query("SELECT huid{iqss_pinserver_register} WHERE uid = %d", (int)$uid)->fetchField();
+  return db_query("SELECT huid {os_pinserver} WHERE uid = %d", (int)$uid)->fetchField();
 }
 
 /**
@@ -407,6 +415,24 @@ function os_pinserver_form_cp_app_settings_form_alter(&$form, $form_state) {
       '#description' => t('Enter the application name given to you by Harvard Directory Services.' ),
     );
   }
+
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for pinserver_config.
+ *
+ * Set the URI schema to private when adding a new file via file/add.
+ *
+ * @see os_files_private_settings()
+ */
+function os_pinserver_form_pinserver_config_form_alter(&$form, $form_state) {
+
+  $form['pinserver']['os_pinserver_registration'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Should Pinserver control access to site and user registration?'),
+    '#required' => FALSE,
+    '#default_value' => variable_get('os_pinserver_registration', FALSE),
+  );
 
 }
 

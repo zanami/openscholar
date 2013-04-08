@@ -36,6 +36,9 @@ function iqss_scholars_front_update_7002(&$sandbox) {
  */
 function iqss_scholars_front_update_7003(&$sandbox) {
   module_enable(array('os_pinserver'));
+
+  //Pinserver should take over registration
+  variable_set('os_pinserver_registration', TRUE);
 }
 
 /**

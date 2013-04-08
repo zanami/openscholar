@@ -28,6 +28,9 @@ function iqss_projects_front_update_7001(&$sandbox){
  */
 function iqss_projects_front_update_7002() {
   module_enable(array('os_pinserver'));
+
+  //Pinserver should take over registration
+  variable_set('os_pinserver_registration', TRUE);
 }
 
 
