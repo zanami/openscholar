@@ -7,6 +7,29 @@
 	display: none;
 }
 
+#file-entity-add-upload label[for="edit-upload"] {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#file-entity-add-upload .form-required {
+	display: none;
+}
+
+#file-entity-add-upload .form-help {
+	background: url('../../../../../themes/os_basetheme/images/scholarbase-sprite.png') no-repeat 0 -150px;
+	width: 20px;
+	height: 20px;
+	text-indent: -10em;
+	display: inline-block;
+	overflow: hidden;
+	margin: 0 5px;
+}
+
+#file-entity-add-upload .form-item-upload .form-help:hover {
+	background-position: 0 -170px;
+}
+
 #file-entity-add-upload .form-item-upload .form-file {
 	display: block;
 	position: absolute;
@@ -18,7 +41,11 @@
 }
 
 #file-entity-add-upload .form-item-upload .description {
-	display: none;
+	visibility: hidden;
+}
+
+#file-entity-add-upload .form-item-upload .form-help:hover ~ .description {
+	visibility: visible;
 }
 
 #file-entity-add-upload .form-actions {
