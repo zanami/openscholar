@@ -24,7 +24,6 @@ before_script:
   - sudo service apache2 reload
 
   # Verify the virtual hosts worked. Delete after it worked.
-  - pwd
   - curl lincoln.local
 
   - "mysql -e 'create database drupal;'"
@@ -38,6 +37,7 @@ before_script:
   - cd drupal
   - mv /home/travis/build/openscholar/openscholar ./profiles
   - cd profiles/openscholar
+  - pwd
   - bash scripts/setup
   # Install a multi-tanent, development site.
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
