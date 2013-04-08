@@ -21,7 +21,26 @@ function vsite_drush_command() {
     ),
     'aliases' => array('vrd'),
   );
+  $items['vsite-redirect-list'] = array(
+    'description' => dt('List custom vsite URLs.'),
+    'options' => array(),
+    'examples' => array('drush vrl'),
+    'aliases' => array('vrl'),
+  );
   return $items;
+}
+
+function drush_vsite_redirect_list() {
+  $query = db_select('purl')
+    ->fields('purl', array('value', 'id'))
+    ->condition('provider', 'vsite_domain');
+  $query->join('node', 'n', 'n.nid = purl.id');
+  $query->fields('n', array('title'));
+  $results = $query->execute();
+
+  foreach ($results->fetchAllAssoc('id') as $result) {
+    drush_print(dt('@id: @domain -> @title', array('@title'=>$result->title, '@id'=>$result->id, '@domain' => $result->value)));
+  }
 }
 
 /**
@@ -30,16 +49,20 @@ function vsite_drush_command() {
 function drush_vsite_redirect_disable() {
   $nid = drush_get_option('nid', 0);
 
-  $query = db_delete('spaces_overrides')
+  $spaces_query = db_delete('spaces_overrides')
     ->condition('object_type', 'variable')
     ->condition('object_id', 'vsite_domain_name');
 
+  $purl_query = db_delete('purl')
+    ->condition('provider', 'vsite_domain');
+
   if ($nid) {
-    $query->condition('id', $nid);
+    $spaces_query->condition('id', $nid);
+    $purl_query->condition('id', $nid);
   }
 
-  $query->execute();
-
+  $spaces_query->execute();
+  $purl_query->execute(); 
 
   if ($nid) {
     // Get the vsite path.
@@ -50,6 +73,7 @@ function drush_vsite_redirect_disable() {
       ->execute()
       ->fetchAssoc();
   }
+
 
   // Clearing the cache for the change to take place.
   drupal_flush_all_caches();
