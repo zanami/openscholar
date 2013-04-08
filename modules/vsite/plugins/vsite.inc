@@ -71,6 +71,21 @@ class vsite extends space_og {
   }
 
   /**
+   * Deactivate Space
+   */
+  function deactivate(){
+    // If variable controller had been init'ed reset it.
+    // This prevent overridden variables from interacting
+    // with the page.
+    if(isset($this->controllers->variable)){
+      global $conf;
+      $conf = $this->controllers->variable->get(NULL,'original');
+    }
+
+    parent::deactivate();
+  }
+
+  /**
    * Implements space->router().
    */
   public function router($op, $node = NULL) {
@@ -97,11 +112,6 @@ class vsite extends space_og {
             }
           }
         }
-        else {
-          if ($this->active && $node->nid && arg(0) == 'node' && arg(1) == $node->nid && !arg(2)) {
-            drupal_goto(drupal_get_path_alias(request_path()));
-          }
-        }
         break;
 
       case 'init':
@@ -118,6 +128,7 @@ class vsite extends space_og {
             )
           );
         }
+
         // Redirects to path without purl for vsites with custom domains.
         if ($this->purl_provider == 'vsite_domain') {
           $path = _purl_cache_q();
@@ -140,6 +151,7 @@ class vsite extends space_og {
             }
           }
         }
+
         // Redirects to a node alias.
         if ($node = menu_get_object()) {
           if (isset($node->nid) && !og_is_group_type('node', $node->type)) {
@@ -150,7 +162,7 @@ class vsite extends space_og {
             $sid = isset($sids[0]) ? $sids[0] : NULL;
             // Handles both types of requests:
             // "node/123" and "wrongsite/node/123"
-            if ((!$this->active && $sid) || ($sid && $sid != $this->id)) {
+            if ((!$this->active && $sid) || ($sids && !in_array((int) $this->id, $sids))) {
               // Redirects to the correctly aliased node in its own vsite.
               spaces_load('og', $sid)->activate();
             }
@@ -279,7 +291,7 @@ class vsite extends space_og {
    * The parent exlcudes 'features' and 'features/*'
    * We want them back
    */
-  protected function excluded_paths() {
+  protected static function excluded_paths() {
     $excluded = parent::excluded_paths();
 
     unset($excluded[array_search('features', $excluded)]);
@@ -327,7 +339,7 @@ class vsite extends space_og {
       if ($this->purl_provider) {
         // Sets the provider to use for redirection
         $options = array(
-          'query' => drupal_http_build_query(drupal_get_query_parameters()),
+          'query' => drupal_get_query_parameters(),
           'purl' => array(
             'provider' => $this->purl_provider,
             'id' => $this->id,

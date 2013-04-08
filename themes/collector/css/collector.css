@@ -244,3 +244,11 @@ body.sidebar-second #footer, body.two-sidebars #footer {
   display:block;
   }
 
+
+.breadcrumb {
+    margin: 15px 0 0 30px;
+}
+
+.node-type-page .breadcrumb {
+    margin: 15px 0 15px 20px;
+}

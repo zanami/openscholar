@@ -158,6 +158,13 @@ function vsite_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'og_node_access_strict';
+  $strongarm->value = FALSE;
+  $export['og_node_access_strict'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'os_enabled_spaces_presets';
   $strongarm->value = array(
     'os_department' => 'os_department',

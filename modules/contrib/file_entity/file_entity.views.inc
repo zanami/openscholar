@@ -80,6 +80,15 @@ function file_entity_views_data() {
     ),
   );
 
+  // File schema type.
+  $data['file_managed']['schema_type'] = array(
+    'title' => t('Schema type'),
+    'help' => t('Filter files by private/public schema.'),
+    'filter' => array(
+      'handler' => 'views_handler_filter_scehma_type',
+    ),
+  );
+
   // Download link.
   $data['file_managed']['download'] = array(
     'title' => t('Download link'),

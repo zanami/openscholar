@@ -20,6 +20,9 @@ function os_classes_os_app_info() {
   	  'class',
   		'class_material',
     ),
+    'views tabs' => array(
+      'os_classes' => array('page'),
+    ),
   );
 
   return $apps;
@@ -151,3 +154,4 @@ function os_classes_process_node(&$vars) {
     unset($vars['content']['os_classes_entity_view_1']);
   }
 }
+

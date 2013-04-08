@@ -276,6 +276,11 @@ p.copy {
   border-color:#CFCFCF;
   }
 
-p.copy a.poweredby {
-  background-position: 0 -26px;
-  }
+#powered-by a {
+    background-position:  0 -26px;
+
+}
+
+.view-os-image-gallery-slideshow .views-slideshow-controls-bottom {
+    padding: 20px 5px 0;
+}

@@ -42,9 +42,10 @@ function hwpi_basetheme_preprocess_node(&$vars) {
 function hwpi_basetheme_process_node(&$vars) {
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
-    if (!$vars['teaser']) {
+    if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
-    } 
+      $vars['title'] = NULL;
+    }
   }
 }
 
@@ -53,29 +54,34 @@ function hwpi_basetheme_process_node(&$vars) {
  * Alter the results of node_view().
  */
 function hwpi_basetheme_node_view_alter(&$build) {
-
   // Persons, heavily modify the output to match the HC designs
   if ($build['#node']->type == 'person') {
 
-    // Pic + Bio
-    if (isset($build['field_person_photo'])) {
-      $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
-      $build['pic_bio']['#suffix'] = '</div>';
-      $build['pic_bio']['#weight'] = -9;
+    $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
+    $build['pic_bio']['#suffix'] = '</div>';
+    $build['pic_bio']['#weight'] = -9;
 
-      if (isset($build['body'])) {
-        $build['body']['#label_display'] = 'hidden';
-        $build['pic_bio']['body'] = $build['body'];
-        unset($build['body']);
-      }
+    if (isset($build['body'])) {
+      $build['body']['#label_display'] = 'hidden';
+      $build['pic_bio']['body'] = $build['body'];
+      unset($build['body']);
     }
-    else {
-      $build['body']['#weight'] = -9;
+
+    //join titles
+    $title_field = &$build['field_professional_title'];
+    if ($title_field) {
+      $keys = array_filter(array_keys($title_field), 'is_numeric');
+      foreach ($keys as $key) {
+        $titles[] = $title_field[$key]['#markup'];
+        unset($title_field[$key]);
+      }
+      $glue = ($build['#view_mode'] == 'sidebar_teaser') ? ', ' : "<br />\n";
+      $title_field[0] = array('#markup' => implode($glue, $titles));
     }
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      
+
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
       foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
@@ -87,29 +93,35 @@ function hwpi_basetheme_node_view_alter(&$build) {
       }
 
       //hide the rest
-      foreach (array('field_address', 'field_email', 'field_phone') as $field) {
+      foreach (array('field_address') as $field) {
         if (isset($build[$field])) {
           unset($build[$field]);
         }
       }
-      
-      //join titles      
-      $title_field = &$build['pic_bio']['field_professional_title'];
-      $keys = array_filter(array_keys($title_field), 'is_numeric');
-      foreach ($keys as $key) {
-        $titles[] = $title_field[$key]['#markup'];
-        unset($title_field[$key]);
+
+      if (isset($build['field_email'])) {
+        $email_plain = $build['field_email'][0]['#markup'];
+        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
       }
-      $title_field[0] = array('#markup' => implode(', ', $titles));
-      
+
       //newlines after website
-      foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
-        $item = $build['pic_bio']['field_website']['#items'][$delta];
-        //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-        $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-        $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+      if (isset($build['pic_bio']['field_website'])) {
+        foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
+          $item = $build['pic_bio']['field_website']['#items'][$delta];
+          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'], 'html' => TRUE)) . '<br />';
+        }
       }
-      
+
+      // Make the phone label consistent with the full node view phone label.
+      if(isset($build['field_phone'])) {
+        $phone_plain = $build['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['field_phone'][0]['#markup'] = t('p: ') . $phone_plain;
+        }
+      }
+
       unset($build['links']['node']);
 
       return;
@@ -127,6 +139,11 @@ function hwpi_basetheme_node_view_alter(&$build) {
       unset($build['field_person_photo']);
     }
 
+    $children = element_children($build['pic_bio']);
+    if (empty($children)) {
+      $build['pic_bio']['#access'] = false;
+    }
+
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.
     // This is kind of deliberate to avoid having to handle the complexity of dealing with the layout or
     // setting messages etc.
@@ -134,48 +151,68 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $block_zebra = 0;
 
     // Contact Details
-    $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
-    $build['contact_details']['#suffix'] = '</div></div>';
-    $build['contact_details']['#weight'] = -8;
+    if ($build['#view_mode'] != 'sidebar_teaser') {
+      $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
+      $build['contact_details']['#suffix'] = '</div></div>';
+      $build['contact_details']['#weight'] = -8;
 
-    // Contact Details > address
-    if (isset($build['field_address'])) {
-      $build['field_address']['#label_display'] = 'hidden';
-      $build['contact_details']['field_address'] = $build['field_address'];
-      unset($build['field_address']);
-    }
-    // Contact Details > email
-    if (isset($build['field_email'])) {
-      $build['field_email']['#label_display'] = 'hidden';
-      $email_plain = $build['field_email'][0]['#markup'];
-      if ($email_plain) {
-        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+      // Contact Details > address
+      if (isset($build['field_address'])) {
+        $build['field_address']['#label_display'] = 'hidden';
+        $build['contact_details']['field_address'] = $build['field_address'];
+        $build['contact_details']['field_address'][0]['#markup'] = str_replace("\n", '<br>', $build['contact_details']['field_address'][0]['#markup']);
+        unset($build['field_address']);
       }
-      $build['contact_details']['field_email'] = $build['field_email'];
-      unset($build['field_email']);
-    }
-    // Contact Details > phone
-    if (isset($build['field_phone'])) {
-      $build['field_phone']['#label_display'] = 'hidden';
-      $phone_plain = $build['field_phone'][0]['#markup'];
-      if ($phone_plain) {
-        $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
-      }
-      $build['contact_details']['field_phone'] = $build['field_phone'];
-      unset($build['field_phone']);
-    }
+      // Contact Details > email
+      if (isset($build['field_email'])) {
+        $build['field_email']['#label_display'] = 'inline';
+        $email_plain = mb_strtolower($build['field_email'][0]['#markup']);
+        if ($email_plain) {
 
-    // Websites
-    $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
-    $build['website_details']['#suffix'] = '</div></div>';
-    $build['website_details']['#weight'] = -7;
-    $build['field_website']['#label_display'] = 'hidden';
-    $build['website_details']['field_website'] = $build['field_website'];
-    unset($build['field_website']);
+          $build['field_email'][0]['#markup'] = l($email_plain, 'mailto:'.$email_plain, array('absolute'=>TRUE));
+        }
+        $build['contact_details']['field_email'] = $build['field_email'];
+        $build['contact_details']['field_email']['#weight'] = -50;
+        unset($build['field_email']);
+      }
+      // Contact Details > phone
+      if (isset($build['field_phone'])) {
+        $build['field_phone']['#label_display'] = 'hidden';
+        $phone_plain = $build['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['field_phone'][0]['#markup'] = t('p: ') . $phone_plain;
+        }
+        $build['contact_details']['field_phone'] = $build['field_phone'];
+        $build['contact_details']['field_phone']['#weight'] = 50;
+        unset($build['field_phone']);
+      }
+
+      // Websites
+      if (isset($build['field_website'])) {
+        $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+        $build['website_details']['#suffix'] = '</div></div>';
+        $build['website_details']['#weight'] = -7;
+        $build['field_website']['#label_display'] = 'hidden';
+        $build['website_details']['field_website'] = $build['field_website'];
+        unset($build['field_website']);
+      }
+    }
 
     if (isset($build['og_vocabulary'])) {
-      foreach ($build['og_vocabulary']['#items'] as $tid) {
-        $t = taxonomy_term_load($tid['target_id']);
+      $terms = taxonomy_term_load_multiple($build['og_vocabulary']['#items']);
+      $ordered_terms = array();
+
+      foreach ($terms as $term) {
+        $vocabulary = taxonomy_vocabulary_load($term->vid);
+        $ordered_terms[] = array(
+          'term' => $term,
+          'weight' => $vocabulary->weight,
+        );
+      }
+
+      uasort($ordered_terms, 'drupal_sort_weight');
+      foreach ($ordered_terms as $info) {
+        $t = $info['term'];
         $v = taxonomy_vocabulary_load($t->vid);
 
         if (!isset($build[$v->machine_name])) {
@@ -419,4 +456,29 @@ function hwpi_basetheme_status_messages($vars) {
     $output .= "</div></div></div>";
   }
   return $output;
+}
+
+function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
+  if ($entity->type != 'event') {
+    return;
+  }
+
+  // only display the start time for this particular instance of a repeat event
+  $entity->view = views_get_current_view();
+
+  if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
+    $result = $entity->view->result[$entity->view->row_index];
+    $field = 'field_data_field_date_field_date_value';
+    $delta = -1;
+    foreach ($entity->field_date[LANGUAGE_NONE] as $d => $r) {
+      if ($r['value'] == $result->$field) {
+        $delta = $d;
+        break;
+      }
+    }
+    $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
+  }
+  else {
+    $entity->active_date = $vars['items'][0];
+  }
 }

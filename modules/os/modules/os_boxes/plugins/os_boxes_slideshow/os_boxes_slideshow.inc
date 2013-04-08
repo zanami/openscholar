@@ -28,6 +28,16 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="warning messages">',
+        '#markup' => t('You must enable the !link to create a slideshow.', array('!link' => l('Media Gallery app', 'cp/build/features'))),
+        '#suffix' => '</div>',
+      );
+    }
+    
     $form = parent::options_form($form_state);
 
     //get the media gallery nodes.
@@ -140,6 +150,13 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    
+    //no slideshow when media gallery is disabled
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return $block;
+    }
+    
     drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
 
@@ -200,7 +217,7 @@ class os_boxes_slideshow extends os_boxes_default {
       $prefix = 'slideshow_';
       $data = array();
       foreach ($styles as $name => $presets) {
-        if (strpos($name, $prefix) !== false) {
+        if (strpos($name, $prefix) === 0) {
           $dim = current($presets['effects']);
           $dim = $dim['data'];
           $data[$dim['width']] = $dim;

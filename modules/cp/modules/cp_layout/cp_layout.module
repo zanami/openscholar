@@ -180,12 +180,6 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
       $links[] = $l;
     }
   }
-  if (count($links) == 0) {
-    $links[] = array(
-      'html' => TRUE,
-      'title' => t('You do not have permission<br> to create any widgets.'),
-    );
-  }
 
   $vars = array(
     'title' => 'Add New Widget',

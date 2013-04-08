@@ -71,6 +71,14 @@ function os_publications_strongarm() {
   /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
+  $strongarm->name = 'biblio_rowsperpage';
+  $strongarm->value = '20';
+  $export['biblio_rowsperpage'] = $strongarm;
+
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
   $strongarm->name = 'biblio_sort_tabs';
   $strongarm->value = array(
     'author' => 'author',

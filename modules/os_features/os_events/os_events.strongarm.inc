@@ -101,6 +101,13 @@ function os_events_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'os_taxonomy_app_path_os_events';
+  $strongarm->value = 'calendar/upcoming';
+  $export['os_taxonomy_app_path_os_events'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_event_pattern';
   $strongarm->value = 'event/[node:title]';
   $export['pathauto_node_event_pattern'] = $strongarm;

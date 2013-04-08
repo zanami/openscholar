@@ -54,8 +54,46 @@ function _os_date_formats() {
  * Allow access to node/%.json to all of the users.
  */
 function os_update_7005() {
-  // Allow accessing resource node to all users.
-  foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
-    user_role_grant_permissions($rid, array('access resource node'));
+  //Only grant this if the module is installed
+  if (module_exists('restws')){
+    // Allow accessing resource node to all users.
+    foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
+      user_role_grant_permissions($rid, array('access resource node'));
+    }
   }
+}
+
+/**
+ * Enable the OS WYSIWYG Link Module
+ */
+function os_update_7006() {
+  if (module_enable(array('os_wysiwyg_link'))) {
+    return t('OS Wysiwyg Link module installed.');
+  }
+
+  return t('OS Wysiwyg Link module already installed.');
+}
+
+/**
+ * Enable OS Mailchimp
+ **/
+function os_update_7007() {
+  if (module_enable(array('os_mailchimp'))) {
+    return t('OS Mailchimp module installed.');
+  }
+
+  return t('OS Mailchimp module already installed.');
+}
+
+
+
+/**
+ * Enable Elysia Cron
+ **/
+function os_update_7008() {
+  if (module_enable(array('elysia_cron'))) {
+    return t('Elysia Cron module installed.');
+  }
+
+  return t('Elysia Cron module already installed.');
 }

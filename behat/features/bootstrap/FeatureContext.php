@@ -136,8 +136,32 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldGet(PyStringNode $string) {
     $page = $this->getSession()->getPage();
-    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
-      throw new Exception("Text not found.");
+    $comapre_string = $string->getRaw();
+    $page_string = $page->getContent();
+
+    if (strpos($comapre_string, '{{*}}')) {
+      // Attributes that may changed in different environments.
+      foreach (array('sourceUrl', 'id', 'value', 'href', 'os_version') as $attribute) {
+        $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
+
+        // Dealing with JSON.
+        $page_string = preg_replace('/"'. $attribute . '":".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/"'. $attribute . '":".+?"/', '', $comapre_string);
+      }
+
+      if ($page_string != $comapre_string) {
+        $output = "The strings are not matching.\n";
+        $output .= "Page: {$page_string}\n";
+        $output .= "Search: {$comapre_string}\n";
+        throw new Exception($output);
+      }
+    }
+    else {
+      // Normal compare.
+      if (strpos($page_string, $comapre_string) === FALSE) {
+        throw new Exception("Text not found.");
+      }
     }
   }
 
@@ -269,7 +293,7 @@ class FeatureContext extends DrupalContext {
 
     $metasteps = array();
     // @TODO: Don't use the hard coded address - remove john from the address.
-    $metasteps[] = new Step\When('I visit "john/os/widget/boxes/' . $delta . '/edit"');
+    $this->visit('john/os/widget/boxes/' . $delta . '/edit');
 
     // @TODO: Use XPath to fill the form instead of giving the type of the in
     // the scenario input.
@@ -312,6 +336,15 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
+   */
+  public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
+    $code = "os_migrate_demo_assign_node_to_term('$node', '$term', '$type');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+
+  /**
    * Hide the boxes we added during the scenario.
    *
    * @AfterScenario
@@ -325,6 +358,9 @@ class FeatureContext extends DrupalContext {
     // them.
     foreach ($this->box as $box_handler) {
       $data = explode(',', $box_handler);
+      foreach ($data as &$value) {
+        $value = trim($value);
+      }
       $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
       $this->getDriver()->drush("php-eval \"{$code}\"");
     }
@@ -474,6 +510,18 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should see a pager$/
+   */
+  public function iShouldSeeAPager() {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[@class='item-list']");
+
+    if (!$element) {
+      throw new Exception("The pager wasn't found.");
+    }
+  }
+
+  /**
    * @Given /^I set courses to import$/
    */
   public function iSetCoursesToImport() {
@@ -606,5 +654,75 @@ class FeatureContext extends DrupalContext {
     curl_close($ch);
 
     return $curlInfo['http_code'];
+  }
+
+  /**
+   * @Then /^I should see the random string$/
+   */
+  public function iShouldSeeTheRandomString() {
+    $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+  /**
+   * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (empty($element)) {
+      throw new exception("The term {$term} did not link to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I verify the "([^"]*)" term link doesn\'t redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkDoesnTRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (!empty($element)) {
+      throw new exception("The term {$term} linked us to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeUnder($text, $id) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
+    if ($element) {
+      throw new Exception("The text {$text} found under #{$id}");
+    }
+  }
+
+  /**
+   * @Then /^I should verify i am at "([^"]*)"$/
+   */
+  public function iShouldVerifyIAmAt($given_url) {
+    $url = $this->getSession()->getCurrentUrl();
+    $base_url = $startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
+
+    $path = str_replace($base_url, '', $url);
+
+    if ($path != $given_url) {
+      throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
+    }
   }
 }

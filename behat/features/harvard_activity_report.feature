@@ -25,11 +25,15 @@ Feature:
     </response>
     """
 
-  @api
+  @api @wip
   Scenario: Test a query withing a VSite for a year with publication, where the answer should be "ok".
     Given I visit "john/harvard_activity_reports?year=1943"
     Then I should get:
     """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
+      <person huid="" sourceUrl="{{*}}" action_status="ok">
+        <publication id="{{*}}" pubType="Book" pubSource="OpenScholar">
           <citation>. The Little Prince. </citation>
           <linkToArticle></linkToArticle>
           <yearOfPublication>1943</yearOfPublication>
@@ -42,6 +46,6 @@ Feature:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" sourceUrl="http://127.0.0.1/john" action_status="ok"/>
+      <person huid="" sourceUrl="{{*}}" action_status="ok"/>
     </response>
     """

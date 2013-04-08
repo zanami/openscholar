@@ -336,6 +336,7 @@
   margin-bottom: 1px;
   margin-top: 0.1em;
   font-family: helvetica,Arial,Verdana,sans-serif;
+
 }
 
 #widget-categories ul {
@@ -388,7 +389,7 @@
   width: 99px;
   background: url('images/websiteLayoutBarLabel.png') no-repeat;
 }
-    
+ 
     
 /** ADD NEW WIDGET DROPDOWN **/
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
@@ -398,6 +399,7 @@
  margin: 21px -21px 0;
   padding: 1px 8px 0 5px !important;
   background:#52854C;
+
 }
 
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {

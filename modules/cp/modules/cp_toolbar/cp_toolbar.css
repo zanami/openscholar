@@ -308,3 +308,8 @@
     padding: 0 8px 0 22px !important;
     text-decoration:none !important;
   }
+  
+/* Indents dependent (child) form items on admin/config/openscholar page */
+#edit-os-ga .dependent-options {
+  margin-left: 1.385em;
+}

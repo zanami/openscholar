@@ -108,7 +108,6 @@ function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings)
   if (empty($settings['wysiwyg'])) {
     unset($element['content']['#prefix'], $element['content']['#suffix']);
   
-    $element['content']['file']['#attributes'] = array();
     if (isset($settings['width'])) {
       $element['content']['file']['#attributes']['width'] = $settings['width'];
     }
@@ -145,6 +144,8 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
 
   // settings there are no UI options for
   $settings['gecko_spellcheck'] = true;
+  $settings['theme_advanced_path'] = false;
+  $settings['theme_advanced_statusbar'] = false;
   drupal_add_css(drupal_get_path('module', 'os_wysiwyg') . '/os_wysiwyg.css');
 
   // reorder buttons
@@ -174,6 +175,12 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
   $toggle_start = array_search('pdw', $btns);
   $toggle = array_splice($btns, $toggle_start, 1);
   $insert = array_merge($insert, $toggle);
+  
+  // os_wysiwyg_link button
+  $link_start = array_search('os_link', $btns);
+  $link = array_splice($btns, $link_start, 1);
+  $unlink_start = array_search('unlink', $btns);
+  array_splice($btns, $unlink_start, 0, $link);
 
   array_splice($btns, $format_start, 0, $insert);
 

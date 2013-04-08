@@ -120,6 +120,16 @@ section {
   display: block;
 }
 
+
+.lt-ie9 img,
+.lt-ie9 object,
+.lt-ie9 embed,
+.lt-ie9 video {
+  max-width: 100%;
+  border:none;
+}
+
+
 /* Default font sizes for headings, can be overridden in theme settings or set them here */
 
 h1 {
@@ -128,6 +138,12 @@ h1 {
 h1.node-title {
 	font-size:1.15em;
 }
+
+.sub_title {
+	display:block;
+	font-size:.75em;
+}
+
 
 h2 {
 	font-size:1.3em;
@@ -262,6 +278,12 @@ margin: 0 0 1.5em 17px;
     list-style: none;
 }
 
+.block.block-boxes-os_boxes_html ul,
+.block .field-name-body ul {
+     list-style: disc;
+  
+}
+
 ul ul,
 ul ol,
 ol ol,
@@ -347,7 +369,7 @@ ul ul ul ul {
 	margin-left:0;
 }
 
-.sidebar .block-boxes-os_taxonomy_fbt ul ul {margin-left:10px;}
+.sidebar .block-boxes-os_taxonomy_fbt ul ul {margin: 0 10px;}
 
 .boxes-box ul.featured-links {
  
@@ -510,6 +532,16 @@ table embed,
 table object,
 table video {
   max-width: none;
+}
+
+.lt-ie9 img,
+.lt-ie9 object,
+.lt-ie9 embed,
+.lt-ie9 video {
+  max-width: 100%;
+  border:none;
+  width:auto;
+  height:auto;
 }
 
 /* Override max-width 100% for map displays, as much as possible anyway... */

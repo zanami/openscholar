@@ -605,7 +605,7 @@ class csl_name extends csl_format {
           }
           else {
             switch ($this->{'name-as-sort-order'}) {
-              case 'first':
+              case 'first' && $rank == 0:
               case 'all':
                 $text = $name['lastname'] . $this->sort_separator . $given;
                 break;
@@ -1117,7 +1117,7 @@ class csl_text extends csl_format {
     $text = '';
     switch ($this->source) {
       case 'variable':
-        if (!isset($data->{$this->variable}) || empty($data->{$this->variable})) return;
+        if (!isset($data->{$this->variable}) || empty($data->{$this->variable}) || trim($data->{$this->variable}) == FALSE) return;
         if ($this->variable == 'biblio_url') {
           $text = l($data->{$this->variable},  $data->{$this->variable});
         }
@@ -1200,7 +1200,7 @@ class csl_label extends csl_format {
     if (empty($text)) {
     foreach ($variables as $variable) {
       $t = (array)$data;
-      if (isset($t[$this->citeproc->map_field($variable)]) && ($term = $this->citeproc->get_locale('term', $variable, $form, $plural))) {
+      if (isset($t[$this->citeproc->map_field($variable)]) && trim($t[$this->citeproc->map_field($variable)]) != FALSE && ($term = $this->citeproc->get_locale('term', $variable, $form, $plural))) {
         $text = $term;
         break;
       }

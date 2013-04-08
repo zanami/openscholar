@@ -91,6 +91,8 @@ function imagefield_crop_field_update($entity_type, $entity, $field, $instance, 
   // deletion of previous file usages are necessary.
   $scale = NULL;
   if ($instance['widget']['settings']['resolution']) {
+    $context = array('entity' => $entity);//'form' => $form);
+    drupal_alter('imagefield_crop_instance', $instance, $context);    
     list($scale['width'], $scale['height']) = explode('x', $instance['widget']['settings']['resolution']);
   }
   // Create a bare-bones entity so that we can load its previous values.
@@ -830,6 +832,11 @@ function imagefield_crop_upload_validate($file, $field, $instance) {
         $errors[] = t('The image is too small; the minimum dimensions are %dimensions pixels.', array('%dimensions' => $widget_settings['resolution']));
       }
   }
+  
+  if ($instance['settings']['max_filesize'] && parse_size($instance['settings']['max_filesize']) < $file->filesize) {
+    $errors[] = t('This image is too large.  The maximum size is !max', array('!max' => $instance['settings']['max_filesize']));
+  }
+  
   return $errors;
 }
 

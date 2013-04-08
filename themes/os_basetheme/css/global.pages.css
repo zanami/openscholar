@@ -152,12 +152,16 @@ div.messages {
   .footer-left.footer.footer-right .region-footer-first,
   .footer-left.footer.footer-right .region-footer-third,
   .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first,
   .footer-left.footer-right .region-footer-first,
-  .footer-left.footer-right .region-footer-third {
+  .footer-left.footer-right .region-footer-third,
+  .footer-left .region-footer-first,
+  .footer-right .region-footer-third {
 	width: 25%;
 	}
 
-  .footer-left.footer-right .at-panel .region.region-footer-third {float: right;}
+  .footer-left.footer-right .at-panel .region.region-footer-third,
+  .footer-right .at-panel .region.region-footer-third {float: right;}
 /*
  * Branding
  */
@@ -441,6 +445,32 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     width: 48px;
 	position: absolute;
 }
+
+/* VIDEO ATTCHD TO A NODE  */
+
+.oembed {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-color: #ccc;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    color: #555555;
+    text-align:center;
+
+}
+
+.oembed .oembed-title {
+    color:#005C9C;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: left;
+    text-shadow: none;
+}
+
+.os-files-video-single {
+    max-width: none !important;
+}
 	
 
 .feed_item {margin-bottom:8px;}
@@ -464,7 +494,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 
 
 .block-boxes-os_sv_list_box .item-list ul li,
-.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:1em;}
+.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:.75em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
@@ -705,7 +735,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	
 /** OS LOGIN CONTAINER STYLES **/	
 /** SLIDER **/
-.slider {
+.os-slider {
   display: none;
   color: black;
   position: static;
@@ -720,7 +750,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	padding: 1px 0 3px 14px
 }
 
-.field-name-og-vocabulary .slider a {text-decoration:underline !important;}
+.field-name-og-vocabulary .os-slider a {text-decoration:underline !important;}
 
 
 .not-logged-in.page-user #columns {
@@ -875,7 +905,8 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.image-style-os-files-large, .image-style-os-files-xlarge {padding-right:10px;}
+.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-med
+{padding-right:10px;}
 
 /**
  * "News" node-type styles.
@@ -885,6 +916,8 @@ ul.recent-images-list li a:hover img {
  * The original CSS file intermittently failed to load:
  * @see /profiles/openscholar/modules/os_features/os_news/os_news.css
  */
+
+
 .node-news.node-teaser .field-name-field-photo {
   float: left;
   margin: 0 1.5em .5em 0;
@@ -893,6 +926,38 @@ ul.recent-images-list li a:hover img {
 .page-node.node-type-news .field-name-body .field-name-field-photo {
   float: right;
   margin-left: 1em;
+}
+
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+
+.block-boxes-os_sv_list_box h1.node-title {
+    margin-bottom: 0;
+}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+ 	float:left;
+     margin-right: 10px;
+}
+
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	display:block;
+	margin-left: 85px;
+}
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
+	 margin-left: 65px;
+	}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
+	 margin-left: 0;
 }
 
 

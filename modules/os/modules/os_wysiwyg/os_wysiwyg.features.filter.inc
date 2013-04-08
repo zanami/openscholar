@@ -18,15 +18,20 @@ function os_wysiwyg_filter_default_formats() {
     'status' => '1',
     'weight' => '0',
     'filters' => array(
+      'owl_filter' => array(
+        'weight' => '-50',
+        'status' => '1',
+        'settings' => array(),
+      ),
       'wysiwyg' => array(
-        'weight' => '-48',
+        'weight' => '-49',
         'status' => '1',
         'settings' => array(
           'valid_elements' => '@[id|style|class],
     a[!href|target<_blank|title|name],
     div[align<center?justify?left?right],
     p[align<center?justify?left?right],
-    br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],
+    br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height|alt|title],
     sup,sub,
     table[style|border|align<center?left?right|cellpadding|cellspacing|bgcolor],
     tr[align<center?justify?left?right|valign],
@@ -39,8 +44,8 @@ function os_wysiwyg_filter_default_formats() {
           'nofollow_domains' => array(),
           'style_color' => array(
             'color' => 'color',
-            'background' => 0,
             'background-color' => 'background-color',
+            'background' => 0,
             'background-image' => 0,
             'background-repeat' => 0,
             'background-attachment' => 0,
@@ -105,12 +110,12 @@ function os_wysiwyg_filter_default_formats() {
           ),
           'style_dimension' => array(
             'height' => 'height',
+            'width' => 'width',
             'line-height' => 0,
             'max-height' => 0,
             'max-width' => 0,
             'min-height' => 0,
             'min-width' => 0,
-            'width' => 'width',
           ),
           'style_positioning' => array(
             'bottom' => 0,
@@ -160,19 +165,19 @@ function os_wysiwyg_filter_default_formats() {
         ),
       ),
       'filter_url' => array(
-        'weight' => '-46',
+        'weight' => '-48',
         'status' => '1',
         'settings' => array(
           'filter_url_length' => '72',
         ),
       ),
       'media_filter' => array(
-        'weight' => '-45',
+        'weight' => '-47',
         'status' => '1',
         'settings' => array(),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => '-44',
+        'weight' => '-46',
         'status' => '1',
         'settings' => array(),
       ),

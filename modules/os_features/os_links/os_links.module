@@ -19,6 +19,9 @@ function os_links_os_app_info() {
   	'nodetypes' => array(
   	  'link',
     ),
+    'views tabs' => array(
+      'os_links' => array('page'),
+    ),
   );
 
   return $apps;
