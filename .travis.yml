@@ -22,10 +22,6 @@ before_script:
   - sudo sh -c "cat lincoln-virtula-host.txt > /etc/apache2/sites-available/lincoln"
   - sudo a2ensite lincoln
   - sudo service apache2 reload
-
-  # Verify the virtual hosts worked. Delete after it worked.
-  - curl lincoln.local
-
   - "mysql -e 'create database drupal;'"
   - pear channel-discover pear.drush.org
   - pear install drush/drush
@@ -41,6 +37,10 @@ before_script:
   # Install a multi-tanent, development site.
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
   - drush vset purl_base_domain http://127.0.0.1
+
+  # Verify the virtual hosts worked. Delete after it worked.
+  - curl lincoln.local
+
   - mkdir -p sites/default/files/private
   - chmod 777 -R sites/default/files
   - drush vset file_private_path sites/default/files/private
