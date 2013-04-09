@@ -1,6 +1,15 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * A virtual-site (VSite) is a node that is a "group".
+ */
+
+include_once ('vsite.features.inc');
+include_once ('includes/vsite.inc');
+
+//module_load_include('inc', 'spaces', 'spaces.overrides');
 
 /**
  * Implements hook_init().
@@ -23,11 +32,7 @@ function vsite_init() {
     }
     else {
       // Extract the files inside the ZIP archive file.
-      $folder_name = str_replace(array('.', '_'), '-', $file['filename']);
-      $files_folder = variable_get('file_public_path', conf_path() . '/files');
-
-      $file_path = $files_folder . '/' . $file['filename'];
-      $extract_path = $files_folder . '/' . $folder_name;
+      extract(_vsite_zip_file_info($file));
 
       if (!file_exists($extract_path)) {
         $zip = new ZipArchive;
@@ -64,15 +69,25 @@ function vsite_init() {
 }
 
 /**
- * @file
- * A virtual-site (VSite) is a node that is a "group".
+ * Return info for the intended folder path for a zip file.
+ *
+ * @param $file
+ *  The file data from the file field or from file load function.
+ *
+ * @return array
+ *  Array with the file path and the zip extract path folder.
+ *
+ * @see file_load()
  */
+function _vsite_zip_file_info($file) {
+  $folder_name = str_replace(array('.', '_'), '-', $file['filename']);
+  $files_folder = variable_get('file_public_path', conf_path() . '/files');
 
-include_once ('vsite.features.inc');
-include_once ('includes/vsite.inc');
-
-//module_load_include('inc', 'spaces', 'spaces.overrides');
-
+  return array(
+    'file_path' => $files_folder . '/' . $file['filename'],
+    'extract_path' => $files_folder . '/' . $folder_name,
+  );
+}
 
 /**
  * Returns the current vsite (space).
@@ -1211,11 +1226,53 @@ function vsite_node_insert($node){
 /**
  * Implements hook_node_update()
  */
-function vsite_node_update($node){
-  if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
+function vsite_node_update($node) {
+  if (in_array($node->type, variable_get('subsite_bundles',array('personal','project')))) {
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
   }
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+  if (in_array($wrapper->getBundle(), array('personal', 'project', 'department'))) {
+    $previous = entity_metadata_wrapper('node', $node->original);
+    $removed_files = array_diff($previous->field_css_files->value(), $wrapper->field_css_files->value());
+
+    if (!empty($removed_files)) {
+
+      foreach ($removed_files as $removed_file) {
+        if ($removed_file['filemime'] == 'text/css') {
+          continue;
+        }
+
+        extract(_vsite_zip_file_info($removed_file));
+        _vsite_remove_files_recursive($extract_path);
+      }
+    }
+  }
+}
+
+/**
+ * Remove a folder with files.
+ *
+ * @param $path
+ *  The path for the folder.
+ */
+function _vsite_remove_files_recursive($path) {
+  $dir = opendir($path);
+  
+  while(FALSE !== ( $file = readdir($dir)) ) {
+    if (( $file != '.' ) && ( $file != '..' )) {
+      if ( is_dir($path . '/' . $file) ) {
+        _vsite_remove_files_recursive($path . '/' . $file);
+      }
+      else {
+        unlink($path . '/' . $file);
+      }
+    }
+  }
+
+  rmdir($path);
+  closedir($dir);
 }
 
 /**
