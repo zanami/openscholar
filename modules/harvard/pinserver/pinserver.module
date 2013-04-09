@@ -83,10 +83,9 @@ function pinserver_user_logout($account) {
  * @see iqss_pinserver_register_form_access()
  */
 function pinserver_redirect($args = array()) {
-  $redirect_url = variable_get('pinserver_pin_url') . '?__authen_application=' . variable_get('pinserver_app_name');
-  if (isset($args['redirect_uri'])) {
-    $redirect_url .= '&redirect=' . urlencode($args['redirect_uri']);
-  }
+
+  $args['__authen_application'] = variable_get('pinserver_app_name');
+  $redirect_url = url(variable_get('pinserver_pin_url'),array('query' => $args));
 
   drupal_goto($redirect_url);
 }
@@ -106,7 +105,7 @@ function pinserver_check_user() {
   }
 
   if (isset($_GET['tk_forward'])) {
-    drupal_goto(ltrim($query_params['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
+    drupal_goto(ltrim($_GET['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
   }
 
   //Validate User

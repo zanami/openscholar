@@ -40,7 +40,7 @@ function _os_pinserver_auth_file_download($uri) {
     }
     // Otherwise, sends the user to Pinserver to log in.
     else if (function_exists('pinserver_redirect')) {
-      return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
+      return pinserver_redirect(array('redirect' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
     }
   }
 }

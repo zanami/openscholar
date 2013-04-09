@@ -11,7 +11,7 @@
 function pinserver_check_status($timeout = FALSE) {
 
   // Verifies that the current user has a valid token with reg_time & HUID.
-  if (pinserver_get_user_huid()) {
+  if ($user = pinserver_get_user_huid()) {
     // Immediately returns TRUE if there is no timeout set.
     if (!$timeout) {
       return TRUE;
@@ -70,7 +70,7 @@ function pinserver_get_user($user = false, $set_session = false) {
  */
 function pinserver_get_user_huid() {
 
-  if($user = pinserver_get_user() && isset($user['huid'])){
+  if(($user = pinserver_get_user()) && isset($user['huid'])){
     return $user['huid'];
   }
 
