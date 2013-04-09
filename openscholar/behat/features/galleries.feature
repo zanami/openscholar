@@ -17,13 +17,13 @@ Feature:
      Then I should print page
 
 
-  @api
+  @api @wip
   Scenario: Verfity that "galleries" tab shows all nodes.
     Given I visit "john/galleries/science/wind"
      Then I should see "Kittens gallery"
       And I should see "JFK"
 
-  @api
+  @api @wip
   Scenario: Verfity that "galleries" tab shows can filter nodes by term.
      Given I visit "john/galleries/science/fire"
       Then I should see "Kittens gallery"
