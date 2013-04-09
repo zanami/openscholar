@@ -8,10 +8,10 @@ function _os_pinserver_auth_register_menu_alter(&$items) {
 
   // Alters page callback
 	$items['site/register']['page callback'] = 'os_pinserver_auth_vsite_register_form_page';
-	$items['site/register']['module'] = 'os_pinserver';
+	$items['site/register']['module'] = 'os_pinserver_auth';
 	$items['site/register']['access callback'] = 'os_pinserver_auth_register_access';
 	$items['user/register']['page callback'] = 'os_pinserver_auth_vsite_register_form_page';
-	$items['user/register']['module'] = 'os_pinserver';
+	$items['user/register']['module'] = 'os_pinserver_auth';
 	$items['user/register']['access callback'] = 'os_pinserver_auth_register_access';
 
 	// Removes page arguments and adds file values.
@@ -260,7 +260,7 @@ function _os_pinserver_auth_huid_field(&$form) {
     '#required' => FALSE,
     '#description' => t('Enter the @huid of the web site owner', array('@huid' => 'Harvard ID')),
     '#ajax' => array(
-      'callback' => 'os_pinserver_register_ajax_validation',
+      'callback' => 'os_pinserver_auth_register_ajax_validation',
       'wrapper' => 'huid-errors',
     ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name' => 'huid')),

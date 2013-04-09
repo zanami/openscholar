@@ -32,10 +32,10 @@ function iqss_scholars_front_update_7002(&$sandbox) {
 }
 
 /**
- * Enable the os_pinserver module.
+ * Enable the os_pinserver_auth module.
  */
 function iqss_scholars_front_update_7003(&$sandbox) {
-  module_enable(array('os_pinserver'));
+  module_enable(array('os_pinserver_auth'));
 
   //Pinserver should take over registration
   variable_set('os_pinserver_registration', TRUE);

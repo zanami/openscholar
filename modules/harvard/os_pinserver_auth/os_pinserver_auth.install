@@ -3,7 +3,7 @@
 /**
  * Implementation of hook_schema().
  */
-function os_pinserver_schema(){
+function os_pinserver_auth_schema(){
   $schema['os_pinserver'] = array(
 	  'description' => t('Maps unique encrypted HUID identifier to Drupal User ID'),
 	  'fields' => array(
@@ -37,18 +37,18 @@ function os_pinserver_schema(){
 /**
  * Implementation of hook_install().
  */
-function os_pinserver_install(){
+function os_pinserver_auth_install(){
   if(! db_table_exists('os_pinserver')) {
 
     //Populate from existing iqss_pinserver_register
     if(db_table_exists('iqss_pinserver_register')){
       db_rename_table('iqss_pinserver_register', 'os_pinserver');
     }else{
-      drupal_install_schema('os_pinserver');
+      drupal_install_schema('os_pinserver_auth');
     }
 
     //set module weight
-    db_query("UPDATE {system} SET weight = %d WHERE name = '%s'", 80, 'os_pinserver');
+    db_query("UPDATE {system} SET weight = %d WHERE name = '%s'", 80, 'os_pinserver_auth');
     cache_clear_all('strongarm', 'cache');
   }
 }
@@ -56,17 +56,7 @@ function os_pinserver_install(){
 /**
 * Implementation of hook_uninstall()
 */
-function os_pinserver_uninstall() {
+function os_pinserver_auth_uninstall() {
   //drop pinserver table
-  drupal_uninstall_schema('os_pinserver');
-
-  //remove pinserver administrative system variables
-  variable_del('pinserver_pin_url');
-  variable_del('pinserver_app_name');
-  variable_del('pinserver_gpg_dir');
-  variable_del('pinserver_landing_path');
-  variable_del('pinserver_hash_huid');
-  variable_del('pinserver_support_contact');
-  variable_del('pinserver_enable_logging');
-  variable_del('pinserver_error_log');
+  drupal_uninstall_schema('os_pinserver_auth');
 }
