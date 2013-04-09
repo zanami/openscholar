@@ -3,34 +3,42 @@
 
 
 body {
-  font: 14px Arial,Verdana,sans-serif;
+  font: 12px "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
   background: #373737;
   color: #333;
   }
 
+body.front {
+  background:url('../images/body-front.png') repeat-y 50% 0 #373737;
+  }
 
 #page {
   background: #fff;
   }
 
+.front #page {
+  background:url('../images/wrapper-front.png') repeat-x 0 -98px transparent;
+  }
 
 #page-wrapper {
   background: url('../images/wrapper-inner.png') repeat-x 0 100% transparent;
   }
 
-
+.front #page-wrapper {
+  background:transparent;
+  }
   
 
 
 /*TYPOGRAPHY*/
 
 a {
-  color: #4273AB;
+  color: #3792a6;
   text-decoration: underline;
   }
 
 a:visited {
-color: #4273AB;
+color: #3792a6;
   text-decoration: underline;
   }
 
@@ -51,14 +59,8 @@ h2 {
 }
 
 h3 {
-	font-size: 1.8em;
- margin: 1em 0 0.8em;
+  margin:1.5em 0;
   }
-  
-  
-p {
-	line-height: 20px;
-}
 
 
 p.copy {
@@ -81,14 +83,10 @@ ul.grid {
 
 /* WRAPPER ELEMENTS */
 
-#header-container, #block-os-primary-menu, #columns .hg-container {
+#header-container, #block-os-primary-menu, #columns {
   width:1000px;
   margin: 0 auto;
   position: relative;
-  }
-
-#columns {
-  background:#EFEFEF;
   }
 
 
@@ -106,7 +104,6 @@ ul.grid {
 
 .front .at-panel .region.region-content-top {  
   background:#2D383B;
-  
 }
 
 .front #content-column {
@@ -206,11 +203,6 @@ ul.grid {
   line-height:59px;
   background:#3b484d;
   }
-  
-.front #menu-bar {
-    height: 375px;
-    line-height: 59px;
-}  
 
 #menu-bar #block-os-primary-menu ul.menu,
 .region-header-second #block-os-secondary-menu ul.menu
@@ -281,8 +273,13 @@ ul.grid {
 
 
 /* MAIN CONTENT */
-.not-front #content-column  {
-  background:#FFF;
+/*
+#columns .hg-container .column {
+  padding: 22px;
+  }
+*/
+#columns .hg-container .region-sidebar-second {
+  padding-left: 0;
   }
 
 #columns .hg-container .region-sidebar-first {
@@ -316,6 +313,9 @@ margin: 0 auto;
   width: 1000px;
   }
 
+.front #footer {
+  background:#000;
+  }
 
 #footer .wrap {
   padding: 0 22px;
@@ -337,6 +337,13 @@ p.copy a.poweredby {
 /* FRONT PAGE*/
 
 
+
+.front .region.region-content-first, 
+.front .region.region-content-second,
+.front .region.region-content-bottom {
+	color:#FFF;
+	font-size:14px;
+}
 .front .region.region-content-first .block, 
 .front .region.region-content-second .block,
 .front .region.region-content-bottom .block {
@@ -344,35 +351,15 @@ p.copy a.poweredby {
 }
 
 
-.front #content-panels .block  {
-    -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #DEDEDC;
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 1px 2px 0 #DEDEDC;
+.region-content-bottom .block-boxes-os_boxes_twitterfeed .tweet-authorphoto img {
+	display:none;
 }
 
-.front #content-panels .block-title, .sidebar .block-title {
-    background: none repeat scroll 0 0 #ddd;
-    border-bottom: 1px solid #DEDEDC;
-    color: #000000;
-    font-size: 16px;
-    font-weight: bold;
-    height: 32px;
-    line-height: 32px;
-    padding: 5px 15px 2px;
-    text-transform: capitalize;
+div.tweets-pulled-listing div.tweet-divider {
+    border-bottom: none;
+    clear: left;
+    margin: 5px 0 17px;
 }
-
-.front #content-panels .block-content, .sidebar .block-content {
-    padding: 5px 15px 15px;
-}
-
-#content-column .block-inner, .sidebar .block-inner {
-    margin-left: 0;
-    margin-right: 0;
-}
-
 
 .front #header-container {
   height: 58px;
@@ -384,34 +371,24 @@ p.copy a.poweredby {
   }
 
 
-.front #content-panels .region-content-first .block.block-boxes-os_boxes_html:first-child {
-    background: url('../images/harvardShieldBg.png') 240px 20px no-repeat #FFFFFF;
+.region-content-top .os-videolink {
+  float: right;
+    padding: 4px 0 0 15px;
+  }
+
+.region-content-top .os-topcontent {
+    color: #FFFFFF;
+    float: left;
+    margin-bottom: 0;
+    margin-left: 15px;
+    margin-top: 10px;
+    width: 288px;
 }
 
-.front #content-panels .region-content-bottom .block.block-boxes-os_boxes_html:first-child {
-    background: url('../images/globe.png') 230px 20px no-repeat #FFFFFF;
+.region-content-top .block-boxes-os_boxes_html {
+	float:left;display:inline;clear:none;
+    
 }
-
-.front #content-panels .region-content-bottom .block.block-boxes-os_boxes_html:nth-child(2) {
-   -moz-box-sizing: none;
-    background: none;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    margin: 0 0 -20px;
-}
-
-.front #content-panels li {
-   padding: 0 0 7px;
-}
-
-
-.front #content-panels .block-boxes-os_boxes_html li {
-   list-style-image: url('../images/orangebullet.gif');
-}
-
-
-
   
  .region-content-top .block-boxes-simple {
  	float:left;
@@ -463,6 +440,9 @@ p.copy a.poweredby {
   
 
 
+.region-content-bottom ul {margin: 0;}
+.region-content-first ul li,
+.region-content-bottom ul li {list-style-type:square;list-style-position: inside;}
 .region-content-bottom .block-boxes-os_boxes_twitterfeed ul li {list-style-type:none;}
 
 
@@ -481,10 +461,10 @@ p.copy a.poweredby {
 
  /* SLIDESHOW */
 
-.block-boxes-os_boxes_slideshow {width:648px;display:inline;clear:none; margin-left:10px;
+.block-boxes-os_boxes_slideshow {width:648px;float:left;display:inline;clear:none; margin-left:10px;
 }
 
-.view-os-image-gallery-slideshow {border:none;background:none;margin-top: -70px;}
+.view-os-image-gallery-slideshow {border:none;background:none;margin-top: -20px;}
 
 
 .view-os-image-gallery-slideshow .views-slideshow-controls-bottom {padding:3px 0 2px 5px;color:#333;}
@@ -508,7 +488,6 @@ p.copy a.poweredby {
     z-index:9;
     position:relative;
     width:950px;
-    margin: -26px auto 0;
 }
 
 .view-os-image-gallery-slideshow .views-field-uri {
@@ -520,7 +499,7 @@ p.copy a.poweredby {
 .views-slideshow-pager-field-item.active {color:#293352;background:#D9D9D9;}
 
 .views-content-counter {
-    font-size: 0;
+    font-size: 11px;
     padding-top: 2px;
     width: 11px;
     height: 13px;
@@ -609,10 +588,4 @@ p.copy a.poweredby {
 
 .section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
 	padding-left: 45px;
-}
-
-
-#powered-by a {
-    background-position: 0 -25px;
- 
 }
