@@ -164,15 +164,6 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Show number of posts tagged to a term next to the term.'),
     );
 
-    $form['add_childs'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Add tagged children to the count'),
-      '#description' => t('Should posts tagged to childeren of a term be added to the count.'),
-      '#dependency' => array(
-        'edit-show-count' => array(1),
-      ),
-    );
-
     return $form;
   }
 
@@ -189,15 +180,31 @@ class os_taxonomy_fbt extends os_boxes_default {
         return $block;
       }
     }
-    // For now - display the first vocabulary terms.
-    if (empty($this->options['behavior']) || $this->options['behavior'] == '--all--') {
+    ctools_include('layout', 'os');
+
+    if ($this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
     }
-
-    ctools_include('layout', 'os');
-    if (!empty($this->options['behavior']) && $this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
+    else if (!empty($this->options['behavior']) && $this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
       if (isset($feature->info['features']['node'])) {
-        $this->options['bundles'] = $feature->info['features']['node'];
+        // Building a list of the bundles in two ways:
+        // 1. Selected bundles from a list
+        // 2. If the widget defined as a "Determine for me" set the bundles
+        //    whcih related to the app.
+        $paths = os_get_app_path();
+        $menu = menu_get_item();
+
+        $this->options['bundles'] = array();
+        if ($menu['map'][0] == 'node') {
+          $this->options['bundles'] = array($menu['map'][1]->type);
+        }
+        else {
+          foreach ($paths as $bundle => $path) {
+            if ($path == $menu['original_map'][0]) {
+              $this->options['bundles'][] = $bundle;
+            }
+          }
+        }
       }
     }
 
@@ -206,15 +213,14 @@ class os_taxonomy_fbt extends os_boxes_default {
       $this->options['vocabulary'] = current($t);
     }
 
-    $attr = array();
     if ($this->options['as_nav']) {
       $this->options['additional_classes'] = 'navigation';
     }
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
-        'vid' => $this->options['vocabulary'],
-        'options' => $this->options,
-      ));
+      'vid' => $this->options['vocabulary'],
+      'options' => $this->options,
+    ));
 
     return $block;
   }
