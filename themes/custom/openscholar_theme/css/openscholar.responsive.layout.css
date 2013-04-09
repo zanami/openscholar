@@ -30,13 +30,13 @@
 .front .content-left.content-right .at-panel .region.region-content-first, 
 .front .content-left.content-right .at-panel .region.region-content-second {
   margin-right: 15px;
-  border-right: 1px solid #ABD407;
+
   }
   
   
  .front .content-left.content-right .at-panel .region.region-content-first  {
  padding-left:10px;
+ border-right: none;
   } 
-
 
 
