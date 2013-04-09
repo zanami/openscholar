@@ -291,7 +291,7 @@ class vsite extends space_og {
    * The parent exlcudes 'features' and 'features/*'
    * We want them back
    */
-  protected static function excluded_paths() {
+  protected function excluded_paths() {
     $excluded = parent::excluded_paths();
 
     unset($excluded[array_search('features', $excluded)]);
