@@ -111,6 +111,22 @@ a.advanced-help-link {
     background: url("../../../themes/os_basetheme/images/scholarbase-sprite.png") no-repeat 0 -170px;
 }
 
+
+.view-os-files-private ul {list-style-type: none !important;
+ list-style: none !important;}
+ 
+.view-os-files-private .cp-controls-wrapper .add_new {
+    background: url("/themes/seven/images/add.png") no-repeat scroll 0 center #FFF !important;
+    line-height: 30px;
+    padding:0 0 0 15px !important;
+    color:#4E84C4;
+     border-radius: 0;
+    display: inline;
+    float: none;
+    margin: 0;
+    text-decoration: none !important;
+}
+
 /* CTools MODAL OVERRIDES */
 
 #modalContent {
@@ -254,6 +270,8 @@ table.spaces td.option, table.spaces td.storage {
     padding:15px;
     border: 1px solid #CCC;
  }
+ 
+ .cp-add-new-user ul {list-style-type:none;}
 
 /* CP/BUILD MENU */ 
 .page-cp-build-menu table thead {
@@ -410,5 +428,3 @@ fieldset#edit-biblio-authors .fieldset-legend {
 	margin-top: 0;
 	text-transform: none;
 }
-
-  

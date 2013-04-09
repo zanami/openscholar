@@ -10,7 +10,7 @@ function os_pages_os_app_info() {
   $apps = array();
 
   $apps['os_pages'] = array(
-    'path' => 'pages',
+    'path' => '',
   	'nodetypes' => array(
   	  'page',
     ),
@@ -120,11 +120,37 @@ function os_pages_block_view_alter(&$render, $block) {
 function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path) {
   if ($root_path == 'os/widget/%/%' && $router_item['map'][3] == 'main_content') {
     $node = menu_get_object();
-    if(!is_object($node)) {
+    if(!is_object($node) || !node_access('update', $node)) {
       return;
     }
     $links['os_pages-edit'] = menu_get_item('os/pages/'.$node->nid.'/body');
     $links = array_reverse($links, true);
+  }
+}
+
+/**
+ * Implements hook os_layout_get_alter()
+ */
+function os_pages_os_layout_get_alter($context_name, &$blocks){
+  //Only allow the main-content block on os_pages contexts
+  @list($ctx_prefix, $level,) = explode('-', $context_name, 3);
+  if (($ctx_prefix != 'os_pages' || $level != 'page') && isset($blocks['os_pages-main_content'])) {
+    unset($blocks['os_pages-main_content']);
+  }
+  elseif (!isset($blocks['os_pages-main_content'])) {
+    $default_widgets = os_pages_os_widget();
+    $blocks['os_pages-main_content'] = $default_widgets['os_pages-main_content'];
+  }
+
+  if($ctx_prefix != 'os_pages'){
+    unset($blocks['boxes-os_pages_section_nav']);
+  }elseif ($level == 'section' && !isset($blocks['boxes-os_pages_section_nav'])){
+    module_load_include('box.inc', 'os_pages');
+    $default_boxes = os_pages_default_box();
+
+    $block = os_boxes_os_widget($default_boxes['os_pages_section_nav']);
+    $block['region'] = false;
+    $blocks['boxes-os_pages_section_nav'] = $block;
   }
 }
 
@@ -221,13 +247,15 @@ function os_pages_context_custom($name) {
  */
 function os_pages_node_view($node, $view_mode) {
   if ($node->type == 'page' && $view_mode == 'full') {
-    $ctx = context_load('os_pages-page-'.$node->nid);
-    if ($ctx) {
-      context_set('context', $ctx->name, $ctx);
-    }
-
-    if (isset($node->book['bid']) && $ctx = context_load('os_pages-section-'.$node->book['bid'])) {
-      context_set('context', $ctx->name, $ctx);
+    if (node_is_page($node)) {
+      $ctx = context_load('os_pages-page-'.$node->nid);
+      if ($ctx) {
+        context_set('context', $ctx->name, $ctx);
+      }
+  
+      if (isset($node->book['bid']) && $ctx = context_load('os_pages-section-'.$node->book['bid'])) {
+        context_set('context', $ctx->name, $ctx);
+      }
     }
 
     unset($node->content['book_navigation']);
@@ -278,6 +306,26 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
     ),
     '#disabled' => isset($form['#node']->nid)?true:false,
   );*/
+}
+
+function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
+  $continue = false;
+  foreach ($form['context']['#value'] as $c) {
+    if (strpos($c, 'os_pages-page-') !== FALSE) {
+      $continue = true;
+    }
+  }
+  if (!$continue) return;
+
+  if (isset($form['layout']['#attributes'])) {
+    $layout_attr = &$form['layout']['#attributes'];
+    if (!in_array('content-regions', $layout_attr['class'])) {
+      $layout_attr['class'][] = 'content-regions';
+    }
+  }
+  else {
+    $form['layout']['#attributes']['class'][] = 'content-regions';
+  }
 }
 
 /**

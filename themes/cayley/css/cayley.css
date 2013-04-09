@@ -295,6 +295,10 @@ body.one-sidebar .region-sidebar-first {
   position:relative;
   bottom: -42px;
   }
+  
+#powerby-login {
+    margin-top:40px;
+}  
 
 /* Nodes */
 

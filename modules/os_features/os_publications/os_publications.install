@@ -214,3 +214,126 @@ function os_publications_update_7004() {
 
   return t('Select Type... has been removed from the biblio_types table.');
 }
+
+/**
+ * Add more biblio years, separate existing one so there's room for more.
+ **/
+function os_publications_update_7005() {
+  $default_bibyears = array(9998 => 'In Press', 9999 => 'Submitted');
+  $scholar_bibyears = array(9999 => 'Submitted', 9998 => 'In Press', 10000 => 'Forthcoming');
+  $new_bibyears = array(10000=>'Forthcoming', 10010=>'Submitted', 10020=>'In Preparation', 10030=>'In Press', 10040=>'Working Paper');
+  $current_bibyears = variable_get('biblio_years_text', $default_bibyears);
+
+  ksort($current_bibyears);
+  ksort($scholar_bibyears);
+  ksort($default_bibyears);
+
+  //Only run this update for sites with the default configuration or our configuration
+  if (($current_bibyears != $default_bibyears) && ($current_bibyears != $scholar_bibyears)) {
+    return t('Biblio years/text settings have been modified.  Did not run update.');
+  }
+
+  $text_to_year = array_flip($new_bibyears);
+  foreach($current_bibyears as $year => $text) {
+    db_update('biblio')
+      ->condition('biblio_year', $year)
+      ->fields(array('biblio_year' => $text_to_year[$text]))
+      ->execute();
+  }
+
+  variable_set('biblio_years_text', $new_bibyears);
+
+  //people used to be able to override this.  those who have won't have the new options.  clear them out, that funcitonality is no longer supported.
+  db_delete('spaces_overrides')
+    ->condition('object_id', 'biblio_years_text')
+    ->condition('object_type', 'variable')
+    ->execute();
+
+  return t('Updated biblio years.');
+}
+
+/**
+ * Replace the newly patched chicago-author-date.csl file in the DB to correct a spacing issue in the citation.
+ */
+function os_publications_update_7006() {
+  if(!module_exists('biblio_citeproc')) {
+  	return;
+  }
+
+  $dir = drupal_get_path('module', 'biblio_citeproc') . '/style';
+  // Update only the chicago-author-date.csl file.
+  $file_name = '/chicago-author-date.csl';
+  $file = $dir . $file_name;
+  // Check for the chicago-author-date.csl.
+  if(!file_exists($file)) {
+    return;
+  }
+
+  $csl = file_get_contents($file);
+  $name = basename($file_name);
+  // Use citeproc's function to update the db.
+  biblio_citeproc_install_style($name, $csl);
+
+  return t('Chicago-author-date.csl file has been replaced');
+}
+
+/**
+ * Remove extra biblio contributors, only Author and Editor should be available to users.
+ */
+function os_publications_update_7007() {
+  if(!module_exists('biblio') || !db_table_exists('biblio_contributor_type_data')) {
+    return;
+  }
+  // Check for the # of contributor types in the DB.
+  $author_count = db_query('SELECT count(auth_type) AS author_count FROM {biblio_contributor_type_data}')->fetchField();
+  // For whatever reason if there are none, return.
+  if(!isset($author_count)) {
+    return;
+  }
+  // We should only have two, if we do, end the update.
+  if($author_count <= 2) {
+    return;
+  }
+  // We want to update the auth_type #2 to be the Editor rather than the Seconday Author.
+  $field_check = db_query('SELECT title FROM {biblio_contributor_type_data} WHERE auth_type = :auth_id', array(':auth_id' => 2))->fetchField();
+  if(!isset($field_check)) {
+    return;
+  }
+  // Update the text.
+  if($field_check != "Editor") {
+    // Update the field text to editor.
+    $field_update = db_update('biblio_contributor_type_data')
+      ->fields(array(
+        'title' => 'Editor',
+      ))
+      ->condition('auth_type', 2, '=')
+      ->execute();
+  }
+  // Before we wipe out all the other contributors, sanity check to make sure there are no rogue contributers attached to biblio nodes.
+  $auth_type_check = db_query('SELECT nid, vid, cid, auth_type FROM {biblio_contributor} WHERE auth_type > :auth_id', array('auth_id' => 2))->fetchAll();
+  if($auth_type_check) {
+  	// Set anything greater than 2 to 2 because they should be editors.
+  	foreach($auth_type_check as $auth => $type) {
+  	  $auth_type_update = db_update('biblio_contributor')
+  	    ->fields(array(
+  	      'auth_type' => 2,
+  	    ))
+  	    ->condition('nid', $type->nid, '=')
+  	    ->condition('vid', $type->vid, '=')
+  	    ->condition('cid', $type->cid, '=')
+  	    ->execute();
+  	}
+  }
+  // Delete all the other contributer types.
+  $contributor_select = db_query('SELECT auth_type FROM {biblio_contributor_type_data} WHERE auth_type > :auth_id', array(':auth_id' => 2))->fetchAll();
+  if(!$contributor_select) {
+    return;
+  }
+  foreach($contributor_select as $contributor => $type) {
+    $auth_delete = db_delete('biblio_contributor_type_data')
+      ->condition('auth_type', $type->auth_type)
+      ->execute();
+  }
+
+  return t('Extra biblio contributors have been removed.');
+}

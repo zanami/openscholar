@@ -18,12 +18,15 @@ function os_basetheme_preprocess_html(&$vars) {
   else {
     $vars['classes_array'][] = 'navbar-off';
   }
+
 }
 
 /**
  * Adds classes to the page element
  */
 function os_basetheme_preprocess_page(&$vars) {
+  $item = menu_get_item();
+
   //Adds OpenScholar header region awareness to body classes
   $header = array(
     'header-left' => $vars['page']['header_second'],
@@ -59,6 +62,20 @@ function os_basetheme_preprocess_page(&$vars) {
   if (!isset($vars['use_content_regions'])) {
     $vars['use_content_regions'] = false;
   }
+
+  // Do not show the login button on the following pages, redundant.
+  $login_pages = array(
+  'user',
+  'private_site',
+  'user/password'
+  );
+  if(isset($item) && !in_array($item['path'], $login_pages)) {
+    $vars['login_link'] = theme('openscholar_login');
+  }
+
+  //hide useless tabs - drupal uses $vars['tabs'], but adaptive loads primary and secondary menu local tasks.
+  $vars['primary_local_tasks'] = $vars['tabs']['#primary'];
+  $vars['secondary_local_tasks'] = $vars['tabs']['#secondary'];
 }
 
 /**
@@ -88,4 +105,71 @@ function os_basetheme_preprocess_status_messages(&$vars) {
 function os_basetheme_preprocess_overlay(&$vars) {
   // we never want these. They look awful
  $vars['tabs'] = false;
+}
+
+/**
+ * Returns HTML for a menu link and submenu.
+ *
+ * Adaptivetheme overrides this to insert extra classes including a depth
+ * class and a menu id class. It can also wrap menu items in span elements.
+ *
+ * @param $vars
+ *   An associative array containing:
+ *   - element: Structured array data for a menu link.
+ */
+function os_basetheme_menu_link(array $vars) {
+  $element = $vars['element'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    $sub_menu = drupal_render($element['#below']);
+  }
+
+  if (!empty($element['#original_link'])) {
+    if (!empty($element['#original_link']['depth'])) {
+      $element['#attributes']['class'][] = 'menu-depth-' . $element['#original_link']['depth'];
+    }
+    if (!empty($element['#original_link']['mlid'])) {
+      $element['#attributes']['class'][] = 'menu-item-' . $element['#original_link']['mlid'];
+    }
+  }
+
+  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
+    unset($element['#localized_options']['attributes']['title']);
+  }
+
+  $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
+}
+
+/**
+ * Preprocess variables for comment.tpl.php
+ */
+function os_basetheme_preprocess_node(&$vars) {
+
+  // Event nodes, inject variables for date month and day shield
+  if ($vars['node']->type == 'event' && !$vars['page']) {
+    $vars['event_start'] = array();
+    $delta = 0;
+    if (isset($vars['node']->date_id)) {
+      list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
+    }
+    if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
+ //     date_default_timezone_set($vars['field_date'][$delta]['timezone']);
+      $event_start_date = strtotime($vars['field_date'][$delta]['value']);
+      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
+      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
+      $vars['classes_array'][] = 'event-start';
+    }
+  }
+}
+
+/**
+ * Returns HTML for a link
+ *
+ * Only change from core is that this makes href optional for the <a> tag
+ */
+function os_basetheme_link(array $variables) {
+  $href = ($variables['path'] === false)?'':'href="' . check_plain(url($variables['path'], $variables['options'])) . '" ';
+  return '<a ' . $href . drupal_attributes($variables['options']['attributes']) . '>' . ($variables['options']['html'] ? $variables['text'] : check_plain($variables['text'])) . '</a>';
 }

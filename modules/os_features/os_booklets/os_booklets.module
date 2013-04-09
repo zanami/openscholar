@@ -20,6 +20,9 @@ function os_booklets_os_app_info() {
   	'nodetypes' => array(
   	  'book',
     ),
+    'views tabs' => array(
+      'os_booklets' => array('page'),
+    ),
   );
 
   return $apps;
@@ -253,7 +256,7 @@ function _os_booklets_option_filter_form_alter(&$form) {
   }
 
   // Includes class OSNodeFieldQuery (extends EntityFieldQuery)
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
 
   $query = new OSNodeFieldQuery('book');
   $result = $query->execute();

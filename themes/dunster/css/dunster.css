@@ -94,6 +94,12 @@ p.copy {
 	margin-top: 0;
 	}
 
+#powerby-login {
+
+    margin-bottom: -26px;
+
+}
+
 /* LAYOUT ELEMENTS */
 
 #page {
@@ -293,7 +299,6 @@ background:#EDEDED;
 
 #content-column h2 {
 	color:#DB6600;
-	font-size:20px;
 	padding-bottom:10px;
 	}
 

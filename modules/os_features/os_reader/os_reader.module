@@ -14,6 +14,9 @@ function os_reader_os_app_info() {
   	'nodetypes' => array(
   	  'feed',
     ),
+    'views tabs' => array(
+      'reader' => array('page'),
+    ),
   );
 
   return $apps;

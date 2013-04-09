@@ -62,7 +62,7 @@ function _os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_slideshow'] = array(
-    'title' => 'Slideshow',
+   'title' => 'Slideshow',
     'description' => 'Displays a slideshow of your uploaded pictures.',
     'module dependencies' => array('os_image_gallery'),
     'tags' => array('Media'),

@@ -106,7 +106,7 @@ class os_boxes_booktoc extends os_boxes_default {
       ),
     ), 'setting');
 
-    $block = os_books_build_toc($node, 'full') + $block;
+    $block = os_books_build_toc($book_nid, 'full') + $block;
 
     if ($this->options['as_nav']) {
       $this->options['additional_classes'] = 'navigation';

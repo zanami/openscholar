@@ -1,13 +1,26 @@
 <?php
 
 /**
- * API function - Checks if user has logged in through pinserver.
+ * Returns TRUE user has logged in through pinserver.
+ *
+ * @param int $timeout
+ * - Desired maximum session length, in seconds. Use FALSE for no timeout.
  *
  * @return bool
  */
-function pinserver_check_status() {
+function pinserver_check_status($timeout = FALSE) {
+  // Verifies that the current user has a valid token with reg_time & HUID.
   if (isset($_SESSION['pinserver']['reg_time']) && isset($_SESSION['pinserver']['huid'])) {
-    return TRUE;
+    // Immediately returns TRUE if there is no timeout set.
+    if (!$timeout) {
+      return TRUE;
+    }
+    // Otherwise, only returns TRUE if we are before the timeout time.
+    $current_time = time();
+    $timeout_time = $_SESSION['pinserver']['reg_time'] + $timeout;
+    if ($current_time < $timeout_time) {
+      return TRUE;
+    }
   }
   return FALSE;
 }

@@ -198,7 +198,7 @@ function iqss_scholars_front_default_box() {
         </li>
       </ul>
   <ul class="os-more-info os-wrap os-clearfix">
-    <li class="os-docs"><span><strong>Scholars at Harvard</strong> includes complete <strong>documentation</strong>.  <a href="http://scholar.havard.edu/help/os_help/User-Documentation" target="_blank">Go there now</a></span></li>
+    <li class="os-docs"><span><strong>Scholars at Harvard</strong> includes complete <strong>documentation</strong>.  <a href="http://scholar.harvard.edu/help/os_help/User-Documentation" target="_blank">Go there now</a></span></li>
     <li class="os-link"><span><strong>Scholars at Harvard</strong> is built on <strong>OpenScholar</strong>, an open-source web-creation tool developed right here at Harvard. <a href="http://openscholar.harvard.edu" target="_blank">Learn More</a></span></li>
   </ul>
   </div>

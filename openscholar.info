@@ -1,6 +1,8 @@
 name = OpenScholar
-description = Install OpenScholar
+description = A full-featured site-creation package designed for the academic community. A single OpenScholar installation can host thousands of personal or project sites.
 core = 7.15
+version = 7.x-3.4
+
 files[] = openscholar.profile
 files[] = openscholar.install
 files[] = tests/openscholar.test
@@ -64,6 +66,7 @@ dependencies[] = restws
 
 ; boxes
 dependencies[] = views_slideshow_cycle
+dependencies[] = os_mailchimp
 
 ; OS
 dependencies[] = os
@@ -79,6 +82,7 @@ dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
 dependencies[] = os_tasks
+dependencies[] = os_wysiwyg_link
 
 ; Control Panel
 dependencies[] = cp
@@ -90,22 +94,24 @@ dependencies[] = cp_content
 dependencies[] = cp_toolbar
 
 ; Features
+dependencies[] = os_biocv
+dependencies[] = os_blog
+dependencies[] = os_booklets
+dependencies[] = os_classes
+dependencies[] = os_dataverse
+dependencies[] = os_events
+dependencies[] = os_faq
+dependencies[] = os_image_gallery
 dependencies[] = os_links
 dependencies[] = os_news
-dependencies[] = os_image_gallery
-dependencies[] = os_publications
 dependencies[] = os_pages
-dependencies[] = os_events
-dependencies[] = os_reader
-dependencies[] = os_blog
-dependencies[] = os_classes
 dependencies[] = os_presentations
-dependencies[] = os_software
-dependencies[] = os_dataverse
-dependencies[] = os_booklets
 dependencies[] = os_profiles
+dependencies[] = os_publications
+dependencies[] = os_reader
+dependencies[] = os_software
+dependencies[] = os_stats
 dependencies[] = os_taxonomy
-dependencies[] = os_biocv
 
 ; other
 dependencies[] = diff

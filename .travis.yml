@@ -10,6 +10,7 @@ mysql:
 
 before_script:
   # Install apache
+  - sudo apt-get update
   - sudo apt-get install apache2
   - sudo a2enmod actions
   - sudo a2enmod rewrite
@@ -17,6 +18,10 @@ before_script:
   - echo "$(curl -fsSL https://raw.github.com/gist/16d751c979fdeb5a14e3/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
   - echo "$(curl -fsSL https://raw.github.com/gist/2eb301570ed4a1f4c33d/gistfile1.txt)" | sed -e "s,PATH,/home/travis/drupal,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
   - sudo service apache2 restart
+  - sudo sh -c "echo 127.0.1.1	lincoln.local >> /etc/hosts"
+  - sudo sh -c "cat lincoln-virtula-host.txt > /etc/apache2/sites-available/lincoln"
+  - sudo a2ensite lincoln
+  - sudo service apache2 reload
   - "mysql -e 'create database drupal;'"
   - pear channel-discover pear.drush.org
   - pear install drush/drush
@@ -26,20 +31,16 @@ before_script:
   - drush dl drupal-7.19
   - mv drupal-7.19 drupal
   - cd drupal
-  - mkdir -m 777 sites/default/files/private
-  - mv /home/travis/builds/openscholar/openscholar ./profiles
+  - mv /home/travis/build/openscholar/openscholar ./profiles
   - cd profiles/openscholar
   - bash scripts/setup
-  # Install a multi-tanent, developemnt site.
-  - pwd
-  # Download Migrate 2.5, so OG won't fail  
-  - drush dl migrate -y --destination=~/drupal/profiles/openscholar/modules/contrib
-  - drush vset migrate_disable_autoregistration 1  
+  # Install a multi-tanent, development site.
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
   - drush vset purl_base_domain http://127.0.0.1
+  - mkdir -p sites/default/files/private
+  - chmod 777 -R sites/default/files
   - drush vset file_private_path sites/default/files/private
-  - drush cc all --yes
-
+  # Import dummy content
   - drush en os_migrate_demo -y
   - drush mi --all --user=1
 
@@ -47,10 +48,6 @@ before_script:
   - cd behat
   - cp behat.local.yml.travis behat.local.yml
   - composer install
-  # Temporary fix until http://drupal.org/node/1868980 is fixed.
-  - cd vendor/drupal/drupal-extension/  
-  - curl http://drupal.org/files/1868980-fix-wsod.patch | git apply
-  - cd ../../..
 
 script:
     # Create display.

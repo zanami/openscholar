@@ -71,15 +71,30 @@ class vsite extends space_og {
   }
 
   /**
+   * Deactivate Space
+   */
+  function deactivate(){
+    // If variable controller had been init'ed reset it.
+    // This prevent overridden variables from interacting
+    // with the page.
+    if(isset($this->controllers->variable)){
+      global $conf;
+      $conf = $this->controllers->variable->get(NULL,'original');
+    }
+
+    parent::deactivate();
+  }
+
+  /**
    * Implements space->router().
    */
-  public function router($op, $object = NULL) {
+  public function router($op, $node = NULL) {
     global $user;
     switch ($op) {
       case 'node':
         // If we are viewing the group node
-        if (og_is_group_type('node', $object->type)) {
-          if (isset($object->nid) && (!(isset($this->active) && $this->active) || ($this->active && $this->id != $object->nid)) && $space = spaces_load('og', $object->nid)) {
+        if (og_is_group_type('node', $node->type)) {
+          if (isset($node->nid) && (!(isset($this->active) && $this->active) || ($this->active && $this->id != $node->nid)) && $space = spaces_load('og', $node->nid)) {
             // Sets up the correct purl provider
             $space->verify_purl();
             $current_url = url($_GET['q'], array(
@@ -97,15 +112,10 @@ class vsite extends space_og {
             }
           }
         }
-        else {
-          if ($object->nid && arg(0) == 'node' && arg(1) == $object->nid && !arg(2)) {
-            drupal_goto(drupal_get_path_alias(request_path()));
-          }
-        }
         break;
 
       case 'init':
-        // Additional check for private sites.
+        // Redirects away if the requested path is private from this user.
         if ($this->active && module_exists('vsite_access') && !vsite_access_user_access($this->group, $user)) {
           $provider = array('provider' => $this->purl_provider, 'id' => $this->id);
           purl_goto('private_site', array(
@@ -118,29 +128,77 @@ class vsite extends space_og {
             )
           );
         }
-        // Checks group content for extraneous purl on custom domain requests.
-        else if ($object = menu_get_object()) {
-          if (isset($object->nid) && !og_is_group_type('node', $object->type)) {
-            $items = field_get_items('node', $object, OG_AUDIENCE_FIELD);
-            // First, redirects if this node does not belong to this vsite.
-            if ($items[0]['target_id'] && ((int) $items[0]['target_id'] !== (int) $this->id) && !empty($this->purl_provider)) {
-              purl_goto(drupal_lookup_path('alias', "node/$object->nid"), array('purl' => $this->purl_provider), 301);
+
+        // Redirects to path without purl for vsites with custom domains.
+        if ($this->purl_provider == 'vsite_domain') {
+          $path = _purl_cache_q();
+          $path_parts = explode('/', $path);
+          $index = array_shift($path_parts);
+          if ($index == $this->group->purl) {
+            // Redirects to the path with the purl prefix removed.
+            if (!empty($path_parts)) {
+              $path_without_purl = implode('/', $path_parts);
+              purl_goto($path_without_purl, array(), 301);
             }
-            // Now, redirects to path without purl, if we are on a vsite with
-            // a custom domain and original path contains the purl.
-            else if ($items[0]['target_id'] && $this->purl_provider == 'vsite_domain') {
-              $request_path_args = explode('/', request_path());
-              $index = array_shift($request_path_args);
-              if (!empty($request_path_args) && ((string) $index === (string) $this->group->purl)) {
-                $path_without_purl = implode('/', $request_path_args);
-                purl_goto($path_without_purl, array(), 301);
+            // Redirects to vsite's home <front> page.
+            else {
+              purl_goto("<front>", array(
+                  'purl' => array(
+                      'provider' => $this->purl_provider,
+                      'id' => $this->id
+                  )
+              ));
+            }
+          }
+        }
+
+        // Redirects to a node alias.
+        if ($node = menu_get_object()) {
+          if (isset($node->nid) && !og_is_group_type('node', $node->type)) {
+            // First, redirects if this node does not belong to this vsite,
+            // or if the request URL did not specify a vsite
+            $wrapper = entity_metadata_wrapper('node', $node);
+            $sids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+            $sid = isset($sids[0]) ? $sids[0] : NULL;
+            // Handles both types of requests:
+            // "node/123" and "wrongsite/node/123"
+            if ((!$this->active && $sid) || ($sids && !in_array((int) $this->id, $sids))) {
+              // Redirects to the correctly aliased node in its own vsite.
+              spaces_load('og', $sid)->activate();
+            }
+            if (!$this->active) {
+              break;
+            }
+
+            // Preventing a redirect loop when a node don't have an alias.
+            if (!drupal_lookup_path('alias', $_GET['q'])) {
+              break;
+            }
+
+            // Then, looks to redirect to node aliases if they exist.
+            // This avoids a false redirect loop detection in purl_goto() when:
+            //  - the path we are going to has an alias
+            //  AND
+            //  - the current page we are on does not use that alias value,
+            $path = $_GET['q'];
+            $aliased_path = url($path);
+            $request_has_alias = (bool) ($path != $aliased_path);
+            $path_parts = explode('/', _purl_cache_q());
+            if ($request_has_alias && sizeof($path_parts) < 4) {
+              // Handles both types of requests:
+              // "mysite/node/123" AND "node/123" (on sites with custom domains)
+              if ((sizeof($path_parts) == 3 && $path_parts[1] == 'node' && $path_parts[2] == $node->nid)
+               || (sizeof($path_parts) == 2 && $path_parts[0] == 'node' && $path_parts[1] == $node->nid)) {
+                // Redirects to the aliased node path.
+                $path = $this->get_absolute_url("node/$node->nid");
+                drupal_goto($path);
               }
             }
           }
         }
         break;
     }
-    parent::router($op, $object);
+    parent::router($op, $node);
   }
 
   /**
@@ -233,7 +291,7 @@ class vsite extends space_og {
    * The parent exlcudes 'features' and 'features/*'
    * We want them back
    */
-  protected function excluded_paths() {
+  protected static function excluded_paths() {
     $excluded = parent::excluded_paths();
 
     unset($excluded[array_search('features', $excluded)]);
@@ -281,7 +339,7 @@ class vsite extends space_og {
       if ($this->purl_provider) {
         // Sets the provider to use for redirection
         $options = array(
-          'query' => drupal_http_build_query(drupal_get_query_parameters()),
+          'query' => drupal_get_query_parameters(),
           'purl' => array(
             'provider' => $this->purl_provider,
             'id' => $this->id,
@@ -289,15 +347,22 @@ class vsite extends space_og {
         );
         $path = $_GET['q'];
 
-        //        $aliased = url($path);
-        //        if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
-        //          // If the path we are going to has an alias, and the current page we are on does not use that
-        //          // that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
-        //          // in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
-        //          $path = $this->get_absolute_url($path);
-        //          drupal_goto($path);
-        //        }
+        // Redirects with drupal_goto() if requested path has an alias.
+        //
+        // This avoids a false redirect loop detection in purl_goto() when:
+        // * the path we are going to has an alias, AND
+        // * the current page we are on does not use that alias value,
+        // Example:
+        // $_purl_cache_q will be "node/123" for both the aliased and
+        // non-aliased paths
+        $aliased = url($path);
+        $_purl_cache_q = _purl_cache_q();
+        if ($path != $aliased && isset($_purl_cache_q) && $path == $_purl_cache_q) {
+          $path = $this->get_absolute_url($path);
+          drupal_goto($path);
+        }
 
+        // Otherwise, redirects with purl_goto.
         purl_goto($path, $options);
       }
     }

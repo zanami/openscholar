@@ -2,16 +2,36 @@
 /* Typography */
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 23px;
   min-height: inherit;
 }
 
-a {color: #4384C4;}
+.not-front #content-column {font-size: 16px;}
+
+a,
+a:visited {
+  color: #4384C4;
+}
+
+#columns .block ul {
+    list-style: disc;
+}
+
+#columns .block.block-boxes-os_taxonomy_fbt ul,
+#columns .block .item-list ul,
+#columns .block.block-boxes-os_boxes_twitterfeed ul,
+#columns .block.block-boxes-twitter ul
+ {list-style: none;}
 
 p:empty {
 	display: none;
 }
+
+.sidebar h1.node-title {
+    margin-bottom: 0;
+}
+
 
 table, th, td, tr {
   border-color: #CACACA;
@@ -23,12 +43,16 @@ table caption {
   text-align: left;
 }
 
+#powered-by a {
+    margin-right: 15px;
 
-#footer #block-os-login a {
+}
+
+#footer .footer-login {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
   color: #4384C4;
-  float: left;
+  float: right;
   font-size: 12px;
   font-style: normal;
   font-weight: bold;
@@ -37,6 +61,20 @@ table caption {
   text-decoration: none;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
   border-left:1px solid #ccc;
+}
+
+#powerby-login {
+    float:none;
+    margin-top: 20px;
+   width:100%;
+}
+
+
+
+.sub_title {
+    display: block;
+    font-size: 0.5em;
+    padding-top:5px;
 }
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
@@ -48,14 +86,24 @@ table caption {
   float: none;
 }
 
-
+.node-type-page .breadcrumb, 
 .breadcrumb,
 .breadcrumb a {
 	color:#4384C4;
 	text-transform:uppercase;
 	font-size:12px;
-	font-weight:bold;	
+	font-weight:bold;
 	letter-spacing:0.1em;
+	margin:0;
+	padding-bottom:0;
+}
+
+.node-type-page .breadcrumb {
+	padding-bottom:.5em;
+}
+
+.breadcrumb span {
+  color: #1e1e1e;
 }
 
 
@@ -69,6 +117,7 @@ table caption {
 .page-search input.form-text {
   width: auto;
   background: #F2F2EF;
+  padding-right: 50px;
 }
 
 ol.search-results li.search-result {
@@ -97,6 +146,10 @@ ol.search-results li.search-result:last-child {
   top: -45px; /* Shift into whitespace */
 }
 
+.node-type-page .region-content-top .contextual-links-region:first-child .contextual-links-wrapper {
+  right: 0px;
+}
+
 
 
 /* block-os-powered-by */
@@ -114,8 +167,22 @@ ol.search-results li.search-result:last-child {
 
 
 /* Calendar Pages */
+
+
 .view .date-nav-wrapper .date-prev {
-  right: 54px;
+    right: 590px;
+}
+
+
+.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 430px;
+}
+
+.view .date-nav-wrapper .date-prev a {
+    overflow: hidden;
+ 	text-indent: -99999999px;
+ 	font-size: 0;
+ 	display:inline-block;
 }
 
 .view .date-nav-wrapper .date-next {
@@ -227,17 +294,36 @@ ol.search-results li.search-result:last-child {
 
 .calendar-calendar .week-view .full div.single-day div.weekview,
 .calendar-calendar .day-view .full div.single-day div.dayview {
-  background-color: #a90000;
-  border-color: #a90000;
+  background-color: #F3F3F1;
+  border-color: #CCC;
   border-radius: 0;
   line-height: 1.4em;
-  color: #fff;
+  color: #1E1E1E;
 }
 
 .calendar-calendar .week-view .full div.single-day div.weekview a,
 .calendar-calendar .day-view .full div.single-day div.dayview a {
   text-decoration: underline;
-  color: #fff;
+  font-family:arial;
+}
+
+.calendar-calendar .week-view div.single-day .view-item, 
+.calendar-calendar .day-view div.single-day .view-item {
+     float: left;
+    height: 80px;
+    position: relative;
+    width: 120px;
+  }
+  
+.calendar-calendar .week-view div.single-day .view-item {
+    width: 100px;
+  }  
+
+.calendar-calendar .week-view .full div.calendar-agenda-hour, 
+.calendar-calendar .day-view .full div.calendar-agenda-hour, 
+.calendar-calendar .week-view .full div.calendar-agenda-items, 
+.calendar-calendar .day-view .full div.calendar-agenda-items {
+    height: 80px;
 }
 
 .calendar-calendar div.date-nav h3 {
@@ -261,11 +347,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* Views Node Lists */
-.view-os-links .node,
-.view-os-events .node,
-.view-os-news .node,
-.view-os-classes .node,
-.view-os-presentations .node {
+.view .node-teaser {
   margin: 0 0 20px;
   padding: 20px 0 40px;
   border-bottom: 1px solid #ebebeb;
@@ -309,7 +391,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-#event-content {
+.event-start #event-content {
   margin-left: 70px;
 }
 
@@ -322,7 +404,17 @@ ol.search-results li.search-result:last-child {
   float: left;
 }
 
+.node-event .field-name-field-date.field-label-above .field-label {
+	float: none;
+}
 
+.node-event .field-name-field-date .field-item div {
+	margin-bottom: 15px;
+}
+
+#event-content .node-header h1.node-title {
+	margin-bottom: 0;
+}
 
 /* Class nodes */
 .node-class .field-name-field-semester,
@@ -388,66 +480,121 @@ ol.search-results li.search-result:last-child {
 
 
 /* node person */
-.node-person h1.node-title {
-  margin-bottom: 0;
+ .node-type-person #content-column .node-person h1.node-title {
   font-size: 38px;
 }
 
-.node-person .field-name-field-professional-title {
-  padding-top: 10px;
+.node-type-person .node-person .field-name-field-professional-title {
+  padding: 10px 0 20px;
+  margin-top: -17px;
 }
 
-.node-person .pic-bio {
+ .node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
   margin-bottom: 60px;
 }
 
-.node-person .field-name-field-person-photo {
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+	margin-left: 6em;
+}
+
+.node-type-person .node-person .field-name-field-person-photo,
+.node-person.node-teaser .field-name-field-person-photo,
+.node-person.node-sidebar-teaser .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
 }
 
-#content .node-person .field-name-body {
+.node-type-person #content .node-person .field-name-body {
   margin: 0;
 }
 
-#content .node-person.with-person-photo .field-name-body {
-  margin-left: 210px;
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body {
+  margin-left: 0;
 }
 
-.node-person .block {
-  float: left;
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body ul li {
+  left: 15px;
+    position: relative;
+}
+
+.node-type-person #content .node-person.with-person-photo .field-name-body {
+    margin-left: 210px;
+}
+
+.node-type-person .node-person .block {
+  display: inline-block;
   width: 50%;
+  vertical-align: top;
+  margin-bottom: 15px;
+  padding-top: 15px;
 }
 
-#content-column .node-person .contact-details .block-inner {
-  margin-right: 30px;
-}
-
-#content-column .node-person website-details .block-inner {
-  margin-left: 30px;
-}
-
-#content .node-person .field-name-field-phone,
-#content .node-person .field-name-field-email {
+.node-type-person #content .node-person .field-name-field-phone,
+.node-type-person #content .node-person .field-name-field-email {
   float: none;
   margin-right: 0;
   overflow: hidden;
   display: block;
 }
 
-.node-person .field-name-field-professional-title .field-item {
+.node-person .field-name-field-professional-title .field-item,
+.node-person.node-teaser .field-name-field-website .field-item {
   display: inline;
   padding-right: 10px;
 }
 
-.node-person .field-name-field-email {
-  text-transform: capitalize; 
+#content .node-person .node-content > .block.even .block-inner {
+  margin-left: 30px;
+}
+
+#content .node-person .node-content > .block.odd .block-inner {
+  margin-right: 30px;
 }
 
 
+
+.node-teaser.node-person header h1 {
+  margin-bottom: 0;
+}
+
+.node-teaser.node-person {
+  padding: 15px 0 30px;
+}
+
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
+
+     margin-right: 0;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	 margin-left: 95px;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
+	margin-left: 95px;
+}
+
+/* Node FAQ */
+.node-teaser.node-faq {
+  line-height: 19px;
+  padding: 5px 0 30px;
+}
+
+.page-faq h1.node-title {
+	margin-bottom: 14px;
+}
+
+.page-faq .node-faq .field-name-body p {
+    margin: 0 0 0.5em;
+}
 
 /* Node Presentations */
 .node-presentation.node-teaser .date-display-single {
@@ -474,7 +621,18 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 15px;
 }
 
+/* NODE CLASSES */
 
+.node-type-class #content-column h2.field-label,
+.page-classes #content-column h2.field-label,
+.page-classes h1.node-title,
+.page-classes h2.field-label {
+    margin-bottom: 0;
+}
+
+.page-classes .node-class.node-teaser .field-name-body {
+    padding-top: 0;
+}
 
 
 /* Comments */
@@ -516,11 +674,115 @@ h2.comment-title.comment-form {
 
 
 /* General classes for nodes and comments etc */
+
+/* Date time */
 .author-datetime {
   margin-bottom: 15px;
   color: #7e7e7e;
 }
 
+/* Links */
+.links li a.os-add-comment {
+  background: none;
+  padding-left: 0;
+}
+
+.links li a {
+  border-bottom: 1px solid #4384C4;
+}
 
 
+/* Files tables, for attached files to nodes such as PDF's */
+table.os-files-other-list {
+  width: 100%;
+  border: 0 none;
+}
+.os-files-other-list tr,
+.os-files-other-list td {
+  background: #F3F3F1;
+  border: 0;
+}
+.os-files-other-list tr {
+  margin-bottom: 1px;
+}
+.os-files-other-list td.mime {
+  vertical-align: middle;
+  width: 16px;
+  padding-top: 6px;
+}
+.os-files-other-list td.size {
+  width: 80px;
+  font-size: 12px;
+}
+
+
+/* HWPI Custom message handling */
+div.messages {
+  border: 0 none;
+	margin: 0;
+  padding: 15px 0;
+}
+
+.messages h2 {
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+}
+
+.message-wrapper {
+  padding: 0 0 0 40px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+div.status,
+div.error,
+div.warning {
+  background-image: none;
+}
+
+div.status .message-wrapper {
+  background-image: url("../../../../../misc/message-24-ok.png");
+}
+div.error .message-wrapper {
+  background-image: url("../../../../../misc/message-24-error.png");
+}
+div.warning .message-wrapper {
+  background-image: url("../../../../../misc/message-24-warning.png");
+}
+
+
+
+/* Pagers */
+ul.pager li {
+  padding: 0;
+  margin: 0;
+}
+
+ul.pager li a {
+  padding: 4px;
+}
+
+
+ul.pager li.pager-item {
+  display: inline-block;
+  padding: 4px 8px;
+}
+
+
+ul.pager li.pager-previous {
+  margin-right: 20px;
+}
+
+
+ul.pager li.pager-next {
+  margin-left: 20px;
+}
+
+
+/* Custom Person node style for /people page */
+.node-person.node-teaser .field-name-field-email {
+  clear: both;
+  float: left;
+}
 

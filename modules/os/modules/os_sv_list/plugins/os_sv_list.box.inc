@@ -22,6 +22,9 @@ class os_sv_list_box extends os_boxes_default {
       'vocabs' => array(),
       'terms' => array(),
 
+      //Do not include subsites by default
+      'query_scope' => array('current'),
+
       'biblio_whitelist' => $biblio_whitelist,
     );
 
@@ -59,6 +62,10 @@ class os_sv_list_box extends os_boxes_default {
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
         ),
       ),
+      '#ajax' => array(
+        'callback' => 'os_sv_list_vocabs_content_type',
+        'wrapper' => 'query-details',
+      ),
     );
 
     $form['biblio_whitelist'] = array(
@@ -83,16 +90,44 @@ class os_sv_list_box extends os_boxes_default {
       )
     );
 
+    if(module_exists('vsite')){
+
+      ctools_include('subsite','vsite');
+
+      $form['query_scope'] = array(
+        '#title' => 'Include results from',
+        '#type' => 'checkboxes',
+        '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+        '#default_value' => $this->options['query_scope'],
+        '#access' => vsite_has_subsites(),
+        '#required' => TRUE,
+      );
+    }
+
     $form['display'] = array(
       '#type' => 'select',
       '#title' => 'Display style',
       '#default_value' => $this->options['display'],
       '#options' => array(
         'display_title' => t('Title'),
+        'display_sidebar_teaser' => t('Sidebar Teaser'),
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
-      )
+        'display_links' => t('Link'),
+      ),
+      // This #states rule limits use to when the $form['query_scope']
+      // 'subsites' checkbox is not checked."
+      '#states' => array(
+        'visible' => array(// action to take.
+          ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
+        ),
+      ),
     );
+    //defines which display types are content type specific
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
+      'display_sidebar_teaser' => array('news', 'event', 'person'),
+      'display_links' => array('link'),
+    ))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -180,23 +215,15 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
-    $content_map = array(
-      'all' => '',
-      'news' => 'news',
-      'biblio' => 'publications',
-      'event' => 'calendar',
-      'page' => 'pages',
-      'data' => 'data',
-      'blog' => 'blog',
-      'book' => 'documents',
-      'feed' => 'reader',
-      'media_gallery' => 'galleries',
-      'link' => 'links',
-      'presentation' => 'presentations',
-      'software_project' => 'software',
-      'software_release' => 'software',
-      'person' => 'people',
-    );
+    //populate list of content types => paths
+    ctools_include('os', 'os');
+    $content_map = os_get_app_path();
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
+    if (isset($content_types['image'])) {
+      $content_map['image'] = $content_map['media_gallery'];
+    }
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' '); //use blank path for unknown paths.
+
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -226,23 +253,7 @@ class os_sv_list_box extends os_boxes_default {
         'js' => array(
           array(
             'data' => array(
-              'more_link_defaults' => array(
-                'all' => '',
-                'news' => 'news',
-                'biblio' => 'publications',
-                'event' => 'calendar',
-                'page' => 'pages',
-                'data' => 'data',
-                'blog' => 'blog',
-                'book' => 'documents',
-                'feed' => 'reader',
-                'media_gallery' => 'galleries',
-                'link' => 'links',
-                'presentation' => 'presentations',
-                'software_project' => 'software',
-                'software_release' => 'software',
-                'person' => 'people',
-              ),
+              'more_link_defaults' => $content_map,
             ),
             'type' => 'setting',
           )
@@ -265,6 +276,20 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['pager']
     );
 
+    if(module_exists('vsite')){
+
+      ctools_include('subsite','vsite');
+
+	    $form['query_scope'] = array(
+	      '#title' => 'Include results from',
+	      '#type' => 'checkboxes',
+	      '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+	      '#default_value' => $this->options['query_scope'],
+	      '#access' => vsite_has_subsites(),
+	      '#required' => TRUE,
+	    );
+    }
+
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
       '#type' => 'select',
@@ -284,21 +309,41 @@ class os_sv_list_box extends os_boxes_default {
     $page = 0;
 
 
-    $nids = $this->get_nids($page_num, $page);
+    $data = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
-    if (count($nids)) {
-      if (count($nids) >= $options['number_of_items']) {
-        $nids = array_slice($nids, 0, $options['number_of_items']);
+    if (count($data)) {
+      if (count($data) >= $options['number_of_items']) {
+        $data = array_slice($data, 0, $options['number_of_items']);
         $more_link = TRUE;
       }
 
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
-      $nodes = node_load_multiple($nids);
 
       if ($options['content_type'] == 'image') {
         $display_func = 'display_image';
-        $nodes = file_load_multiple($nids);
+        $nodes = file_load_multiple($data);
+      }else{
+        $nids = array();
+        $extra = array();
+        foreach ($data as $n) {
+          $n = explode('|', $n);
+          $nids[] = $n[0];
+          if (isset($n[1])) {
+            $extra[] = explode('=', $n[1]);
+          }
+        }
+        if(count($extra)){
+	        foreach ($nids as $delta => $n) {
+	          $node = clone node_load($n);
+	          if(isset($extra[$delta])){
+	            $node->{$extra[$delta][0]} = $extra[$delta][1];
+	          }
+	          $nodes[] = $node;
+	        }
+        }else{
+          $nodes = node_load_multiple($nids);
+        }
       }
 
       $block['content'] = $this->$display_func($nodes);
@@ -339,22 +384,17 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
-    $bundles = os_get_bundles(array(1));
-    if (empty($bundles)) {
-      return FALSE;
+    //Only filter to public bundles if we are not including subsites
+    if (!isset($this->options['query_scope']) || !in_array('subsites', array_filter($this->options['query_scope']))){
+      $bundles = os_get_bundles(array(1));
+      if (empty($bundles)) {
+        return FALSE;
+      }
     }
 
     // defaults
-    $efq = new EntityFieldQuery();
-    $efq->entityCondition('entity_type', 'node');
-    $efq->propertyCondition('status', 1);
-    $efq->propertyCondition('type', array_keys($bundles), 'IN');
-
-    // vsite
-    if (module_exists('vsite') && $space = spaces_get_space()) {
-      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-    }
-
+    ctools_include('node', 'os');
+    $efq = new OSNodeFieldQuery(array_keys($bundles),FALSE);
     return $efq;
   }
 
@@ -366,45 +406,16 @@ class os_sv_list_box extends os_boxes_default {
    * @return multitype:
    */
   public function get_nids($page_num = FALSE, &$page = NULL) {
-    if (($efq = $this->get_default_query()) == FALSE) {
-      return array();
-    }
 
     $options = $this->options;
+    $entity_field = "n.nid";
 
-    $tagged_nodes = $this->tagged_nodes();
-
-    //exceptions
+    //Build the Query, EFQ or otherwise.
     switch ($options['content_type']) {
-      case 'book':
-        //limit book depth to 1.  not a field, so use a regular query
-        $query = db_select('menu_links', 'ml')
-        ->condition('module', 'book')
-        ->condition('depth', 1);
-        $query->addField('ml', 'link_path');
-        $book_nids = $query->execute()->fetchCol();
-        $book_nids = preg_replace('/node\//', '', $book_nids);
-        $book_nids = array_values($book_nids);
-
-        if (count($book_nids)) {
-          $efq->propertyCondition('nid', $book_nids, 'IN');
-        }
-        break;
-
       case 'biblio':
-        $page = 0; //add pager properly later
-        $items = $options['number_of_items'];
         $query = db_select('node', 'n')
           ->condition('n.type', 'biblio')
           ->condition('n.status', 1);
-
-        if (module_exists('vsite') && $space = spaces_get_space()) {
-          $query->join('og_membership', 'og', 'og.etid = n.nid');
-          $query->condition('og.gid', $space->id);
-          $query->condition('og.entity_type', 'node');
-          $query->condition('og.group_type', 'node');
-        }
-
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
         //check biblio show all...
@@ -420,93 +431,174 @@ class os_sv_list_box extends os_boxes_default {
           case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
         }
 
-        if ($page_num) {
-          $query->range($page_num*$items, $items);
-        }
         $query->fields('n', array('nid'));
-
-        if (!empty($this->options['vocabs'])) {
-          // If a vocabulary was selected and there were no tagged nodes then
-          // we don't need to return any node.
-          if (empty($tagged_nodes)) {
-            $query->condition('n.nid', 0);
-          }
-          else {
-            $query->condition('n.nid', $tagged_nodes, 'IN');
-          }
-        }
-
-        $biblio_nids = $query->execute()->fetchCol();
         break;
 
       case 'image':
-        $image_query = new EntityFieldQuery();
-        $image_query->entityCondition('entity_type', 'file');
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'file');
         // Add image as a condition, this will remove all media from showing up.
-        $image_query->propertyCondition('type', 'image');
-        if ($space = spaces_get_space()) {
-          $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-        }
+        $query->propertyCondition('type', 'image');
         $sorts = array(
           'sort_newest' => array('timestamp', 'DESC'),
           'sort_oldest' => array('timestamp', 'ASC'),
           'sort_alpha' => array('filename', 'ASC'),
         );
         $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
-        $image_query->propertyOrderBy($sort[0], $sort[1]);
+        $query->propertyOrderBy($sort[0], $sort[1]);
 
-        if ($options['pager']) {
-          $image_query->pager($options['number_of_items']);
-          $image_page = $image_query->pager['element'];
+      break;
+
+      case 'event':
+        //Only query the date field if they are sorting by it
+        if($options['sort_by'] == 'sort_event'){
+          $query = db_select('field_data_field_date', 'fd')
+          ->fields('fd', array('entity_id', 'delta'))
+          ->where('field_date_value > NOW()')
+          ->orderBy('field_date_value');
+          $query->join('node', 'n', 'n.vid = fd.revision_id');
+          $query->condition('n.status', 1);
+          $entity_field = "fd.entity_id";
+          break;
+        }
+      default:
+        if (($query = $this->get_default_query()) == FALSE) {
+          return array();
+        }
+
+        // content type
+        if ($options['content_type'] != 'all') {
+          $query->propertyCondition('type', $options['content_type']);
         }
         break;
     }
 
-    // content type
-    if ($options['content_type'] != 'all') {
-      $efq->propertyCondition('type', $options['content_type']);
+    //Filter based on site or subsite
+    $gids = array();
+    if(module_exists('vsite')){
+      if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))){
+        $options['query_scope'] = array('current');
+      }
+
+	    foreach (array_filter($options['query_scope']) as $scope){
+	      switch ($scope){
+	      	case 'current':
+	      	  $vsite = spaces_get_space();
+	      	  if (is_object($vsite) && is_numeric($vsite->id)) {
+	      	    $gids[$vsite->id] = $vsite->id;
+	      	  }
+	      	  break;
+	      	case 'subsites':
+	      	  ctools_include('subsite','vsite');
+	      	  $gids = array_merge($gids,vsite_get_subsites());
+	      	  break;
+	      }
+	    }
+
+	    if(count($gids)){
+		    $operator = (count($gids) == 1)? "=" : "IN";
+		    $gids = (count($gids) == 1)? current($gids) : $gids;
+
+		    if($query instanceof EntityFieldQuery){
+		      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
+		    }else{
+		      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
+		      $query->condition('og.gid', $gids, $operator);
+		      $query->condition('og.entity_type', 'node');
+		      $query->condition('og.group_type', 'node');
+		    }
+	    }
     }
 
-    // pager for efq
-    if ($options['pager'] && $options['content_type'] != 'biblio' && is_int($page)) {
-      $efq->pager($options['number_of_items']);
-      $page = $efq->pager['element'];
-    }
-    elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
-      //init the pager since we don't have efq doing that for us.
-      $total = count($biblio_nids);
-      $limit = $options['number_of_items'];
-      pager_default_initialize($total, $limit, $page);
+    //Filter Exceptions.
+    switch ($options['content_type']) {
+      case 'book':
+        //limit book depth to 1.  not a field, so use a regular query
+        $book_query = db_select('menu_links', 'ml')
+          ->condition('module', 'book')
+          ->condition('depth', 1);
+        $book_query->addField('ml', 'link_path');
+        $book_nids = $book_query->execute()->fetchCol();
+        $book_nids = preg_replace('/node\//', '', $book_nids);
+        $book_nids = array_values($book_nids);
+
+        if (count($book_nids)) {
+          $query->propertyCondition('nid', $book_nids, 'IN');
+        }
+        break;
     }
 
-    // sort
-    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
-    $this->$sort_func($efq);
+    //Init Pager.
+    if ($options['pager'] && is_int($page)) {
+      if($query instanceof EntityFieldQuery){
+        $query->pager($options['number_of_items']);
+        $page = $query->pager['element'];
+      }else{
+        $query = $query->extend('PagerDefault');
+        $query->limit($options['number_of_items']);
+        $page = PagerDefault::$maxElement++;
+        $query->element($page);
+      }
+    }else if (is_int($page)){
+      $query->range(0, $this->options['number_of_items']);
+    }
 
-    // display
+
+    //sorting exceptions
+    switch ($options['content_type']) {
+      case 'person':
+        //person lists sorting alphabetically should use last name, not first.
+        if ($this->options['sort_by'] == 'sort_alpha') {
+          $query->fieldOrderBy('field_last_name', 'value', 'ASC');
+        }
+      break;
+    }
+
+    // Sort the results.
+    if ($query instanceof EntityFieldQuery && $options['content_type'] != 'image') {
+      $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
+      $this->$sort_func($query);
+    }
+
+    //For all Queries but image, filter out based on vocab.
+    if ($options['content_type'] != 'image' && !empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
+      $tagged_nodes = $this->tagged_nodes();
+
+      // If a vocabulary was selected and there were no tagged nodes then
+      // we don't need to return any node.
+      $operator = (empty($tagged_nodes))? "=" : "IN";
+	    $tagged_nodes = (empty($tagged_nodes))? 0 : $tagged_nodes;
+
+	    if($query instanceof EntityFieldQuery){
+        $query->propertyCondition('nid', $tagged_nodes, $operator);
+      }else{
+        $query->condition($entity_field, $tagged_nodes, $operator);
+      }
+    }
+
+    // Execute the Query.
     switch ($options['content_type']) {
       case 'biblio':
-        $nids = $biblio_nids;
+        $nids = $query->execute()->fetchCol();
         break;
 
       case 'image':
-        $result = $image_query->execute();
+        $result = $query->execute();
         $nids = isset($result['file']) ? array_keys($result['file']) : array();
-        $page = (isset($image_page)) ? $image_page : NULL;
         break;
+      case 'event':
+        //Only get the date value if they are sorting by it
+        if($options['sort_by'] == 'sort_event'){
+          $query = $query->execute();
 
-      default:
-        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
-          // If a vocabulary was selected and there were no tagged nodes then
-          // we don't need to return any node.
-          if (empty($tagged_nodes)) {
-            $efq->propertyCondition('nid', 0, '=');
+          foreach ($query as $r) {
+            $nids[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;
           }
-          else {
-            $efq->propertyCondition('nid', $tagged_nodes, 'IN');
-          }
+          break;
         }
-        $result = $efq->execute();
+      default:
+
+        $result = $query->execute();
         $nids = isset($result['node']) ? array_keys($result['node']) : array();
         break;
     }
@@ -546,7 +638,7 @@ class os_sv_list_box extends os_boxes_default {
         $tids[] = $terms->tid;
       }
     }
-    
+
     $bundles = os_get_bundles(array(1));
     $content_types = ($this->options['content_type'] == 'all') ? array_keys($bundles) : $this->options['content_type'];
 
@@ -555,6 +647,7 @@ class os_sv_list_box extends os_boxes_default {
     $result = $query
       ->condition('t.tid', $tids, 'IN')
       ->condition('n.type', $content_types)
+      ->condition('n.status', 1)
       ->fields('t')
       ->execute();
 
@@ -579,38 +672,77 @@ class os_sv_list_box extends os_boxes_default {
     $efq->propertyOrderBy('title', 'ASC');
   }
 
-  function sort_event(&$efq) {
-    $efq->fieldOrderBy('field_date', 'value', 'ASC');
-    $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
-  }
-
   function sort_news(&$efq) {
     $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
   }
-  
+
   function sort_presentation(&$efq) {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
   }
+
   /**
-   * display functions
+   * Display functions
    */
+  function display_view_mode($nodes, $viewmode = 'full') {
+    $output = array();
+    foreach ($nodes as $n) {
+      $output[] = node_view($n, $viewmode);
+    }
+
+    return drupal_render($output);
+  }
+
   function display_body($nodes) {
-    $items = node_view_multiple($nodes, 'full');
-    return drupal_render($items);
+    return $this->display_view_mode($nodes, 'full');
   }
+
+  function display_sidebar_teaser($nodes) {
+    return $this->display_view_mode($nodes, 'sidebar_teaser');
+  }
+
   function display_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'teaser');
-    return drupal_render($items);
+    return $this->display_view_mode($nodes, 'teaser');
   }
+
   function display_title($nodes) {
-    foreach ( $nodes as $nid => $node ) {
-      $items[] = l($node->title, 'node/' . $nid);
+
+    $cross_site_links = FALSE;
+    if(module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))){
+      ctools_include('subsite','vsite');
+      $cross_site_links = TRUE;
+    }
+
+    foreach ( $nodes as $node ) {
+      $options = array();
+      if($cross_site_links){
+        vsite_subsite_node_url_options($node, $options);
+      }
+
+      $items[] = l($node->title, 'node/' . $node->nid, $options);
     }
 
     return theme('item_list', array(
       'items' => $items,
       'type' => 'ul'
+    ));
+  }
+
+  function display_links($nodes) {
+    $links = array();
+    foreach ($nodes as $node) {
+      $field_link = field_get_items('node', $node, 'field_links_link');
+      if(count($field_link) && strlen($field_link[0]['url'])){
+        $links[] = l($node->title, $field_link[0]['url']);
+      }
+    }
+
+    return theme('item_list', array(
+      'items' => $links,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'link-list',
+      ),
     ));
   }
 
@@ -622,8 +754,8 @@ class os_sv_list_box extends os_boxes_default {
       $variables = array(
         'style_name' => "os_square_50_50",
         'path' => $image->uri,
-        'height' => NULL,
-        'width' => NULL,
+        'width' => 50,
+        'height' => 50,
       );
       //$html .= theme('image', $variables);
       $img = theme_image_style($variables);
@@ -666,4 +798,11 @@ function os_sv_list_query_details_ajax($form, &$form_state) {
  */
 function os_sv_list_terms_details_ajax($form, &$form_state) {
   return $form['options']['query_details']['terms'];
+}
+
+/**
+ * AJAX callback for reload the vocabulary for the selected content type.
+ */
+function os_sv_list_vocabs_content_type($form, $form_state) {
+  return $form['options']['query_details'];
 }

@@ -16,7 +16,24 @@ class os_boxes_media extends os_boxes_default {
       '#title' => t('File or HTML'),
       '#type' => 'media',
       '#default_value' => array('fid' => $this->options['fid']),
-      '#description' => t('Choose, enter or link to the media you wish to embed.')
+      '#description' => t('Choose, enter or link to the media you wish to embed.'),
+      '#media_options' => array(
+        'global' => array(
+          'id' => 'media_embed_widget',
+          'types' => array(
+            'image',
+            'audio',
+            'video',
+            'html'
+          ),
+          // Example: array('http', 'ftp', 'flickr');
+          'schemes' => array(
+            'public' => 'public',
+            'oembed' => 'oembed',
+            'embed' => 'embed',
+          ),
+        ),
+      )
     );
 
     $form['maxwidth'] = array(

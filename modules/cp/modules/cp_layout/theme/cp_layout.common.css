@@ -19,24 +19,28 @@
   background-color: #F3F3F3;
 }
 
-.cp-region-header-first {
+.cp-region-header-first,
+.cp-region-footer-first {
   margin-right: 1%;
   width: 24%;
   min-height: 12em;
 }
 
-.cp-region-header-second {
+.cp-region-header-second,
+.cp-region-footer {
   width: 50%;
   min-height: 12em;
 }
 
-.cp-region-header-third {
+.cp-region-header-third,
+.cp-region-footer-third {
   margin-left: 1%;
   width: 24%;
   min-height: 12em;
 }
 
-.cp-region-menu-bar {
+.cp-region-menu-bar,
+.cp-region-footer-bottom {
   width: 100%;
   margin: 0.65em 0;
 }
@@ -45,6 +49,7 @@
   width: 24%;
   margin-right: 1%;
   min-height: 36em;
+  margin-bottom: 0.65em;
 }
 
 .cp-region-content {
@@ -56,11 +61,6 @@
   width: 24%;
   margin-left: 1%;
   min-height: 36em;
-}
-
-.cp-region-footer {
-  width: 100%;
-  margin: 0.65em 0;
 }
 
 .cp-region-content-top {
@@ -299,7 +299,7 @@
   height: 11px;
   left: 82px;
   position: absolute;
-  text-indent: -999em;
+  text-indent: -9999em;
   top: 20px;
   width: 10px;
 }
@@ -336,6 +336,7 @@
   margin-bottom: 1px;
   margin-top: 0.1em;
   font-family: helvetica,Arial,Verdana,sans-serif;
+
 }
 
 #widget-categories ul {
@@ -388,7 +389,7 @@
   width: 99px;
   background: url('images/websiteLayoutBarLabel.png') no-repeat;
 }
-    
+ 
     
 /** ADD NEW WIDGET DROPDOWN **/
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
@@ -398,6 +399,7 @@
  margin: 21px -21px 0;
   padding: 1px 8px 0 5px !important;
   background:#52854C;
+
 }
 
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {

@@ -83,6 +83,14 @@
           .addClass('aor-processed');
       }
       
+      // Moves messages (i.e. error messages) underneath main menu.
+      if ($('.front #messages').length) {
+    	  $('.front #messages').prependTo('#header-container');
+      }
+      // Handles non-front pages a little differently from front page.
+      else if ($('#messages').length) {
+    	  $('#messages').prependTo('#columns');
+      }
       /**
        * Scrolls to the top of the page when you click the sort links
        */

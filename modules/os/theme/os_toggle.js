@@ -10,15 +10,15 @@ Drupal.behaviors.os_toggle = {
       $(this).toggleClass("expanded")
 
       if (!$.browser.msie) {
-        $(this).nextAll('.slider').slideToggle("fast");
+        $(this).nextAll('.os-slider').slideToggle("fast");
       }
       else {
         // IE8 Does not work with the slider.
         if ($(this).hasClass('expanded')) {
-          $(this).nextAll('.slider').show();
+          $(this).nextAll('.os-slider').show();
         }
         else {
-          $(this).nextAll('.slider').hide();
+          $(this).nextAll('.os-slider').hide();
         }
       }
       return false;

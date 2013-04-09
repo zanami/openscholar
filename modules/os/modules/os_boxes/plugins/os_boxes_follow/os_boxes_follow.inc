@@ -5,6 +5,7 @@ class os_boxes_follow extends os_boxes_default {
   public function options_defaults() {
     return array(
       'links' => array(),
+      'display_service_name' => 1,
     );
   }
 
@@ -88,6 +89,15 @@ class os_boxes_follow extends os_boxes_default {
       $links[$k] = $n;
     }
 
+    // Add an option to display the service name.
+    $form['display_service_name'] = array(
+      '#type' => 'radios',
+      '#title' => t('Display Social Media Service Name?'),
+      '#description' => t('This will display the icons vertically and the name of the social media service next to each icon.'),
+      '#default_value' => isset($this->options['display_service_name']) ? $this->options['display_service_name'] : 1,
+      '#options' => array(t('Yes'), t('No')),
+    );
+
     $form['count'] = array(
       '#type' => 'hidden',
       '#default_value' => count($this->options['links'])-1,
@@ -102,19 +112,51 @@ class os_boxes_follow extends os_boxes_default {
     $domains = os_follow_default_networks();
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_follow/misc/os_follow.css');
     $links = array();
+    $list_class = 'follow-me-links';
+    if(!$this->options['links']) {
+      $block['content'] = '';
+      return $block;
+    }
     foreach ($this->options['links'] as $n) {
-      $l = array(
-        'href' => $n['title'],
-        'title' => $n['title'],
+      // Build the image link.
+      $l = l($n['title'], $n['title'], array(
         'attributes' => array(
           'class' => 'follow-icon',
           'style' => 'background-position: -'.$domains[$n['domain']]['offset'].'px 0px',
-        ),
+        ))
       );
-      $links[$n['weight']] = $l;
+      // Build the service name link.
+      $b = "<span class='service-name-span'>" . l(($this->options['display_service_name'] == 0) ? $domains[$n['domain']]['title'] : $n['title'], $n['title'], array(
+        'attributes' => array(
+          'class' => 'follow-icon-service-name'
+        ))
+      ) . "</span>";
+      // If the option is selected to show the service name, concatenate the two.
+      if($this->options['display_service_name'] == 0) {
+        $links[$n['weight']] = $l . $b;
+      }else {
+        $links[$n['weight']] = $l;
+      }
     }
     ksort($links);
-    $block['content'] = theme('links', array('links' => $links, 'attributes' => array('class' => 'follow-me-links')));
+    // Add the links to an array for the item_list.
+    foreach($links as $social_link) {
+      $items[] = array('data' => $social_link);
+    }
+    // Change the class of the ul depending on the option selected.
+    if($this->options['display_service_name'] == 0) {
+      $list_class = 'follow-me-links-vertical';
+    }
+    // Add the links to theme item_list funciton.
+    $block['content'] = theme('item_list', array(
+      'items' => $items,
+      'title' => '',
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => $list_class
+        )
+      )
+    );
     return $block;
   }
 }

@@ -1,5 +1,11 @@
 
-.container {width:100%}
+#page {
+  margin-bottom: 0;
+}
+
+.container {
+  width: 100%;
+}
 
 #columns {
   margin-top: 40px;
@@ -16,12 +22,13 @@
 }
 
 #footer {
-  padding: 70px 0 50px;
+  padding: 50px 0 50px;
 }
 
 #header-container {
-  padding: 0 0 10px;
+  padding: 0;
 }
+
 
 #header-panels .block-inner {
   margin: 0;
@@ -37,10 +44,8 @@
 
 
 
-
-
-/* bigscreen three_col_grail */
-@media only screen and (min-width:1025px) {
+/* bigscreen three_col_grail - TEMPORARILY COMMENTING OUT BREAKPOINT (PER HWPIs REQUEST)
+@media only screen and (min-width:1025px) { */
 
   #content-column,
   .content-column,
@@ -49,17 +54,65 @@
     clear: none;
   }
 
+  #branding-container,
   #header-container,
   #columns,
-  #block-os-primary-menu,
+  #menu-bar #block-os-primary-menu,
   #footer .gpanel,
   .region-footer,
-  #messages .messages {
+  .message-inner,
+  #powerby-login {
     margin-left: auto;
     margin-right: auto;
     width:980px;
   }
+  
+  .mobile #branding-container,
+  .mobile #header-container,
+  .mobile #columns,
+  .mobile #menu-bar #block-os-primary-menu,
+  .mobile #footer .gpanel,
+  .mobile .region-footer,
+  .mobile .message-inner,
+  .mobile #powerby-login,
+  .ipad #branding-container,
+  .ipad #header-container,
+  .ipad #columns,
+  .ipad #menu-bar #block-os-primary-menu,
+  .ipad #footer .gpanel,
+  .ipad .region-footer,
+  .ipad .message-inner,
+  .ipad #powerby-login {
+    width:100%;
+  }
+  
 
+  /* Branding */
+  #branding_header #branding-container {
+    height: 38px;
+  }
+  .branding-left {
+    float: left;
+    width: 235px;
+    margin: 10px 0 0 -30px;
+  }
+  
+  .ipad .branding-left,
+   .mobile .branding-left {
+    margin: 10px 0 0 0;
+  }
+  
+  .branding-right {
+    float: right;
+    line-height: 38px;
+    margin: 0;
+  }
+  #branding_footer #branding-container {
+    height: 45px;
+    line-height: 45px;
+  }
+
+  /* Sidebars */
   .two-sidebars .content-inner {
     margin-left: 235px;
     margin-right: 235px;
@@ -146,8 +199,9 @@
     text-align: right;
   }
 
+
   .region-header-third .region-inner {
-    padding-top: 40px;
+    padding-top:15px;
   }
 
   .region-header-second {
@@ -166,15 +220,11 @@
   }
 
   .content-left.content-right #content-panels .region-content-first,
-  .content-left.content-right #content-panels .region-content-second,
-  .content-left.content-bottom #content-panels .region-content-first,
-  .content-left.content-bottom #content-panels .region-content-bottom,
-  .content-right.content-bottom #content-panels .region-content-second,
-  .content-right.content-bottom #content-panels .region-content-bottom {
+  .content-left.content-right #content-panels .region-content-second {
     width: 50%;
   }
 
-  .content-left.content-right.content-bottom #content-panels .region {
+  .front .content-left.content-right.content-bottom #content-panels .region {
     width: 33.333333%;
   }
 
@@ -182,27 +232,32 @@
   .content-left.content-bottom .region-content-first .region-inner,
   .content-right.content-bottom .region-content-second .region-inner,
   .content-left.content-right.content-bottom .region-content-second .region-inner {
-    padding-right: 15px;
     border-right: 1px solid #e7e7e7;
   }
 
-  .content-left.content-right .region-content-second .region-inner,
-  .content-left.content-bottom .region-content-bottom .region-inner,
-  .content-right.content-bottom .region-content-bottom .region-inner,
-  .content-left.content-right.content-bottom .region-content-bottom .region-inner {
+
+  .front .content-left.content-right.content-bottom .region-content-bottom .region-inner,
+  .content-left.content-right.content-bottom .region-content-second .region-inner,
+  .content-left.content-right .region-content-second .region-inner {
     padding-left: 15px;
   }
-
+  
+   .front .content-left.content-right.content-bottom .region-content-first .region-inner,
+   .front .content-left.content-right.content-bottom .region-content-second .region-inner,
+    .content-left.content-right .region-content-first .region-inner {
+    padding-right: 15px;
+  }
+  
   .two-sidebars #content-panels,
   .one-sidebar.sidebar-first #content-panels {
     border-left: 1px solid #e7e7e7;
-    padding-left: 15px;
+    /*padding-left: 15px; Added 10px padding to content-inner in OS base. Will leave in, commented out, until convinced it isnt necessary*/
   }
 
   .two-sidebars #content-panels,
   .one-sidebar.sidebar-second #content-panels {
     border-right: 1px solid #e7e7e7;
-    padding-right: 15px;
+    /*padding-right: 15px;Added 10px padding to content-inner in OS base. Will leave in, commented out, until convinced it isnt necessary*/
   }
 
   .not-front.two-sidebars #content-panels,
@@ -211,6 +266,35 @@
   .not-front.one-sidebar.sidebar-second #content-panels {
     border: 0 none;
   }
+
+  #content-panels .region-content-top {
+    width: 100% !important; /* force the width no matter what */
+  }
+
+
+
+  /* Footer panels */
+
+  .footer.footer-right .region-footer,
+  .footer-left.footer .region-footer {
+    	width: 52%;
+  	}
+  
+  .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first {width: 48%;}
+
+  .footer-left.footer.footer-right .region-footer-first,
+  .footer-left.footer.footer-right .region-footer-third,
+  .footer-left.footer.footer-right .region-footer,
+  .footer-left.footer-right .region-footer-first,
+  .footer-left.footer-right .region-footer-third,
+  .footer-left .region-footer-first,
+  .footer-right .region-footer-third
+   {
+	width: 33%;
+	}
+
+
 
 
   /*
@@ -246,9 +330,9 @@
   .three-inset-right .region,
   .three-inset-right .inset-wrapper {float:right}
   .two-brick .panel-row {float:none}
-  */
+  
 
-}
+}*/
 
 
 

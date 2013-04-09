@@ -20,6 +20,9 @@ function os_classes_os_app_info() {
   	  'class',
   		'class_material',
     ),
+    'views tabs' => array(
+      'os_classes' => array('page'),
+    ),
   );
 
   return $apps;
@@ -122,7 +125,7 @@ function os_classes_os_add_new_links_alter(&$links) {
  * @todo not working because group ref field is missing
  */
 function _os_classes_delete_children($nid) {
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
   $query = new OSNodeFieldQuery('class_material');
   $query->fieldCondition('field_class', 'target_id', $nid);
   $result = $query->execute();
@@ -151,3 +154,4 @@ function os_classes_process_node(&$vars) {
     unset($vars['content']['os_classes_entity_view_1']);
   }
 }
+

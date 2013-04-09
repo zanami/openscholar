@@ -205,10 +205,10 @@ function os_links_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'file',
+          'label' => 'hidden',
+          'module' => 'os_files',
           'settings' => array(),
-          'type' => 'file_default',
+          'type' => 'os_files_image_list',
           'weight' => 4,
         ),
         'teaser' => array(

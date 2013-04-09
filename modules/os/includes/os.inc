@@ -60,6 +60,9 @@ function os_get_bundles($include_status = array(1), $space_type = 'og', $reset =
   // Sort the bundles in alphabetical order.
   asort($bundles);
 
+  //Allow other modules to alter the os bundle list
+  drupal_alter('os_get_bundles', $bundles);
+
   return $bundles;
 }
 
@@ -94,24 +97,32 @@ function os_get_active_feature() {
 }
 
 /**
+ * @function os_get_app_path
+ *
  * Gets the base context path for a feature.  This is the path that will match
  * to this features context.
  *
- * @param string $app_name
- *   The machine name of the app (a feature module)
+ * @param string $app_name (optional)
+ *   The machine name of the app (a feature module).  If left blank, all app paths will be returned.
+ *   Providing $app_name will return that app's path, or FALSE if none.
  *
  * @return string $path
  */
-function os_get_app_path($app_name) {
-  $app_info = os_app_info($app_name);
+function os_get_app_path($app_name = NULL) {
+  $app_info = ($app_name) ? os_app_info($app_name) : os_app_info();
 
   if (isset($app_info['path'])) {
-    $path = $app_info['path'];
-    if (strlen($path) > 0) {
-      return $path;
+    return (isset($app_info['path']) && strlen($app_info['path'])) ? $app_info['path'] : FALSE;
+  }
+
+  //return multiple type => path
+  $apps = array();
+  foreach ($app_info as $app) {
+    if (isset($app['nodetypes']) && $app['nodetypes'] && isset($app['path']) && $app['path']) {
+      $apps += array_fill_keys($app['nodetypes'], $app['path']);
     }
   }
 
-  return FALSE;
+  return ($apps) ? $apps : FALSE;
 }
 

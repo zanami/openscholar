@@ -80,6 +80,22 @@ function iqss_scholars_front_context_default_contexts_alter(&$contexts){
 }
 
 /**
+ * Implements hook_os_widget_alter().
+ */
+function iqss_scholars_front_os_widget_alter(&$widget) {
+  //Keep the default box instances that this module provides from getting used sitewide
+  if($widget['module'] == 'boxes' && function_exists('iqss_scholars_front_default_box')){
+    static $fp_boxes;
+    //Front Page Boxes
+    if(!isset($fp_boxes)) $fp_boxes =  iqss_scholars_front_default_box();
+
+		if(isset($fp_boxes[$widget['delta']])){
+		  $widget['hidden'] = true;
+		}
+  }
+}
+
+/**
  * Implement hook_strongarm
  * Strongarm hook for configuration variables
  * for the os_stats block
@@ -98,14 +114,14 @@ function iqss_scholars_front_strongarm() {
   	$strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   	$strongarm->api_version = 1;
   	$strongarm->name = 'os_stats_enabled';
-  	$strongarm->value = serialize(array(
-  		'Publications'=>(bool)1,
-  		'Vsites'=>(bool)1,
-  		'Nodes'=>(bool)1,
-  		'Files'=>(bool)1,
-  		'Filesize'=>(bool)0,
-  		'Users'=>(bool)0,
-  	));
+  	$strongarm->value = array(
+  		'filesize' => 0,
+  		'users' => 0,
+  		'websites' => 1,
+  		'posts' => 1,
+  		'publications' => 1,
+  		'files' => 1,
+  	);
   	$export['os_stats_enabled'] = $strongarm;
 
   	return $export;

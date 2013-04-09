@@ -34,7 +34,7 @@ function os_menu() {
   );
 
   $items['admin/config/openscholar'] = $items['admin/config/openscholar/openscholar'] = array(
-    'title' => 'Openscholar Settings',
+    'title' => 'OpenScholar Settings',
     'description' => 'Administer OpenScholar specific settings.',
     'position' => 'left',
     'weight' => -5,
@@ -95,22 +95,23 @@ function os_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_entity_info_alter().
+ *
+ * Adds a view mode to nodes for use in sidebar widgets
+ */
+function os_entity_info_alter(&$info) {
+  $info['node']['view modes']['sidebar_teaser'] = array(
+    'label' => 'Sidebar Teaser',
+    'custom settings' => TRUE,
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function os_block_info() {
   ctools_include('menu', 'os');
 
-  $blocks['powered-by'] = array(
-    'info' => t('Powered by Openscholar'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-
-  $blocks['login'] = array(
-    'info' => t('Login Button'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
   $blocks['get-started'] = array(
     'info' => t('Get Started - A block to help site admins setup thier site.'),
     'weight' => '-10',
@@ -145,15 +146,6 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-    case 'powered-by':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_powered_by');
-      return $block;
-
-    case 'login':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_login');
-      return $block;
 
     case 'get-started':
       if (user_access('manage group space')) {
@@ -189,12 +181,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar menus only.
-  	if(strpos($data->region, 'sidebar') !== FALSE) {
-	  $theme = '';
-  	}else {
-  	  $theme = 'os_nice_menus';
-  	}
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer_first', 'footer_third', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -319,12 +307,6 @@ function os_os_widget_alter(&$widget) {
       'tags' => array('Other'),
       'class' => array('menu'),
     );
-
-    switch ($widget['delta']){
-    	case 'powered-by':
-    	case 'login':
-    	  $widget['hidden'] = true;
-    }
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
@@ -348,7 +330,7 @@ function os_os_widget_alter(&$widget) {
 
     if(isset($spaces_features[$module]) && empty($features[$module])){
       //This is provided by a disabled og feature
-      $hidden = true;
+      $hidden = TRUE;
     }
   }
 
@@ -369,7 +351,9 @@ function os_theme() {
       'variables' => array(
         'link_text' => 'Admin Login',
         'attributes' => array(
-          'class' => 'footer-login',
+          'class' => array(
+          	'footer-login'
+          ),
         ),
       ),
     ),
@@ -438,6 +422,9 @@ function os_process_node(&$vars) {
   // Adds a CSS class to the comment-add link.
   _os_process_node_links_comment_add_class($vars);
 
+  // adds theme hook suggestion to load this template if it exists
+  $vars['theme_hook_suggestions'][] = 'node__'.$vars['type'].'__'.$vars['view_mode'];
+
   // Only proceeds if we have a "Read more" link.
   if (!isset($vars['content']['links']['node']['#links']['node-readmore'])) {
     return;
@@ -476,7 +463,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
@@ -496,6 +483,15 @@ function _os_process_node_links_comment_add_class(&$vars) {
  */
 function os_preprocess_page(&$vars) {
 
+  //hide useless tabs
+  if (is_array($vars['tabs']['#primary'])) {
+    foreach ($vars['tabs']['#primary'] as $delta => $tab) {
+      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/outline','node/%/log' ))) {
+        unset($vars['tabs']['#primary'][$delta]);
+      }
+    }
+  }
+
   $types = os_get_bundles();
 
   $links = array();
@@ -506,7 +502,7 @@ function os_preprocess_page(&$vars) {
   }
 
   // Sets page title to match the menu link title
-  if ($view = views_get_current_view()) {
+  if ($view = views_get_page_view()) {
     ctools_include('menu', 'os');
     $menu_item = os_menu_load_link_path($_GET['q']);
     drupal_set_title($menu_item['title']);
@@ -637,11 +633,35 @@ function os_preprocess_page(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_menu_link
+ * @param array $variables
+ */
+function os_preprocess_menu_link(&$variables) {
+  //Remove "menu-path-" and 'active' class from menu items without links.
+  if($variables['element']['#href'] === FALSE && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
+    unset($variables['element']['#attributes']['class'][$path]);
+
+    //Remove active class.
+    if(isset($variables['element']['#localized_options']['attributes']['class'])){
+      $variables['element']['#localized_options']['attributes']['class'] = array_diff($variables['element']['#localized_options']['attributes']['class'], array('active'));
+    }
+  }
+}
+
+/**
  * Implements hook_form_alter().
  */
-function os_form_alter(&$form, $form_state, $form_id) {
+function os_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
+  }
+
+  // After deleting a node, we need to redirect the user to the app path.
+  // i.e. if the user deleted a node people object, they need to return to
+  // /people
+  if ($form_id == 'node_delete_confirm') {
+    $paths = os_get_app_path();
+    $_GET['destination'] = $paths[$form['#node']->type];
   }
 }
 
@@ -651,7 +671,7 @@ function os_form_alter(&$form, $form_state, $form_id) {
  * @see os_form_alter()
  */
 function os_entity_form_after_build($form, $form_state) {
-  $node = isset($form['#node'])?$form['#node']:null;
+  $node = isset($form['#node'])?$form['#node']:NULL;
   if (!isset($node) && isset($form['#entity']) && !isset($form['#entity']->comment)) {
      // dummy node
     $node = (object)array('type' => 'page');
@@ -688,9 +708,16 @@ function os_settings_form($form_state) {
     $form['#redirect'] = '';
   }
 
-  $form['os_use_dropdowns'] = array(
+  $form['os_general'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#weight' => 0,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Use Dropdowns'),
+    '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
   );
@@ -713,6 +740,37 @@ function os_ctools_plugin_type() {
       'cache' => TRUE,
     ),
   );
+}
+
+/**
+ * Implements hook_date_formats
+ *
+ * Provides formats for time, date, and abbreviated date types
+ */
+function os_date_formats() {
+  return array(
+    array(
+      'type' => 'os_time',
+      'format' => 'g:ia',
+    ),
+    array(
+      'type' => 'os_date_abbreviated',
+      'format' => 'M d, g:ia',
+    ),
+    array(
+      'type' => 'os_date',
+      'format' => 'Y-m-d',
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types
+ *
+ * Provides three new types of date formats.
+ */
+function os_date_format_types() {
+  return array('os_time' => t('Time'), 'os_date' => t('Date'), 'os_date_abbreviated' => t('Abbreviated'));
 }
 
 /**
@@ -834,7 +892,7 @@ function theme_openscholar_get_started() {
   $result = <<<MESSAGE
       <div id="message_welcome_message">
         <div class="toggle">$short_message</div>
-        <div id="welcome_wrapper" class="slider">
+        <div id="welcome_wrapper" class="os-slider">
           <h3>{$welcome_message}</h3>
           <p>Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.</p>
           {$links}
@@ -891,6 +949,18 @@ function os_context_registry() {
   return $registry;
 }
 
+
+
+/**
+ * Implements hook_cron().
+ *
+ * Allows another method for cleaning out the page_cache for non-memcache entries
+ */
+function os_cron() {
+  //Clear expired Items from page cache
+  cache_clear_all(NULL, 'cache_page');
+}
+
 /**
  * Implements hook_context_registry_alter().
  */
@@ -938,6 +1008,10 @@ function os_system_info_alter(&$info, $file, $type) {
   // If the base theme for this theme is 'os_basetheme' or if the is a 'vsite'
   // theme add the default regions.
   if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
+    if (!file_exists(dirname($file->filename) . '/favicon.ico')) {
+      $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
+      $info['settings']['default_favicon'] = 0;
+    }
 
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
@@ -971,7 +1045,21 @@ function os_system_info_alter(&$info, $file, $type) {
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
 
-  // Pages to add a destination return to their links.
+  // Check if the user asked for any RESTWS services.
+  if (module_exists('restws')) {
+    foreach (array_keys(restws_get_format_info()) as $format) {
+      if (strpos($_GET['q'], $format) !== FALSE) {
+        // When accessing to any address the spaces module use purl_goto(). The
+        // purl_goto() use url() for knowing the path of the URL we accessing.
+        // url() will return eventually the path.
+        // This section alter the $path to the $_GET['q'] which is node/%.json
+        // which will convert by the url() to foo/bar.
+        $path = $_GET['q'];
+        return;
+      }
+    }
+  }
+
   $loop_back_pages = array(
     'user',
     'user/logout',
@@ -1129,7 +1217,7 @@ function os_get_region($module, $delta, $contexts = array()) {
     $plugin = context_get_plugin('reaction', 'block');
 
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(null, $c) as $block) {
+      foreach ($plugin->get_blocks(NULL, $c) as $block) {
         if (isset($block->region) && $block->region) {
           $blocks[$block->module.'-'.$block->delta] = $block->region;
         }
@@ -1220,6 +1308,10 @@ function _os_get_install_status() {
   // get the install time
   $install = variable_get('install_time', 0);
 
+  if (!isset($branch)) {
+    $branch = variable_get('os_status_branch', NULL);
+  }
+
   $date = 'D d M, g:i a';
   $output .= '<strong>Drupal Version:</strong> ' . VERSION . '<br>';
   if (isset($branch)) {
@@ -1279,7 +1371,7 @@ function os_app_info($app_name = NULL) {
  * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
  */
 function os_form_user_login_alter(&$form, $form_state) {
-  if (variable_get('os_login_with_email', true)) {
+  if (variable_get('os_login_with_email', TRUE)) {
     // Replace 'username' with 'Username or e-mail'.
     $form['name']['#title'] = t('Username or e-mail');
     // Replace the description of the user/email login field.
@@ -1320,4 +1412,19 @@ function os_library() {
 
 function os_library_alter(&$l) {
   $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
+}
+
+/**
+ * Customize what resources will be avalible for RestWS to use
+ **/
+function os_restws_resource_info_alter(&$info){
+
+//   //Remove entity types except those listed
+//   $enabled_entities = variable_get('os_restws_entities',array('node'));
+//   foreach (entity_get_info() as $entity_type => $info) {
+//     if(isset($info[$entity_type]) && !in_array($entity_type, $enabled_entities)){
+//       unset($info[$entity_type]);
+//     }
+//   }
+
 }

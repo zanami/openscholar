@@ -1,8 +1,21 @@
 <?php
 
 function hwpi_preprocess_page(&$vars) {
-  //$vars['page']['branding_header'] += _hwpi_branding_header();
-  //$vars['page']['branding_footer'] += _hwpi_branding_footer();
+  if (_is_hwpi_theme()) {
+    $vars['page']['branding_header']['hwpi'] = _hwpi_branding_header();
+    $vars['page']['branding_footer']['hwpi'] = _hwpi_branding_footer();
+  }
+}
+
+function _is_hwpi_theme() {
+  $themes = list_themes();
+  if (isset($themes[$GLOBALS['theme']])) {
+    $t = $themes[$GLOBALS['theme']];
+    if (isset($t->base_themes) && isset($t->base_themes['hwpi_basetheme'])) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function _hwpi_branding_header() {
@@ -11,32 +24,82 @@ function _hwpi_branding_header() {
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
-        'branding',
-        'left',
+        'branding-left',
       )
     ),
     'img' => array(
-      '#theme' => 'image',
-      '#path' => 'http://portfolio.guneva.net/projects/3d/walker_tank/image/walker_tank_07.jpg',
-      '#width' => 43,
-      '#height' => 274,
-    )
+      '#theme' => 'link',
+      '#path' => 'http://www.harvard.edu',
+      '#text' => theme('image', array('path' => drupal_get_path('theme', 'hwpi_basetheme') . '/images/harvard-logo.png', 'width' => 259, 'height' => 35)),
+      '#options' => array(
+        'external' => TRUE,
+        'html' => TRUE,
+        'attributes' => array(),
+      )
+    ),
   );
+  $sites = _hwpi_get_ancestry();
+  $links = array();
+  foreach ($sites as $path => $title) {
+    $links[] = l($title, $path);
+  }
   $header['right_container'] = array(
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
-        'branding',
-        'right',
+        'branding-right',
       )
     ),
     'sitecrumbs' => array(
       '#type' => 'markup',
-      '#markup' => '<a href="test1">subsite 1</a> | <a href="test2">subsite 2</a> | <a href="http://www.harvard.edu">Harvard.edu</a>'
+      '#markup' => implode(' | ', $links)
     ),
   );
 
-  return array('hwpi' => $header);
+  return $header;
+}
+
+function _hwpi_get_ancestry() {
+  $sites = array();
+  if ($vsite = spaces_get_space()) {
+    // First, looks for parent vsites and adds them to hierarchy.
+    $vsite_original = $vsite;
+    $group = $vsite->group;
+    while (isset($group->field_group_parent) && $group->field_group_parent) {
+      $items = field_get_items('node', $group, 'field_group_parent');
+      $vsite = vsite_get_vsite($items[0]['target_id']);
+      $group = $vsite->group;
+      $sites[$vsite->get_absolute_url()] = $group->title;
+    }
+
+    // Then, looks for site organization terms and adds them to hierarchy.
+    $items = field_get_items('node', $vsite_original->group, 'field_organization');
+    if (is_array($items) && !empty($items)) {
+      $tid = $items[0]['tid'];
+      $items = field_get_items('taxonomy_term', taxonomy_term_load($tid), 'field_site_url');
+      if (isset($items[0])) {
+        $site_url = $items[0];
+        while ($site_url) {
+          $sites[$site_url['url']] = $site_url['title'];
+          $parents = taxonomy_get_parents($tid);
+          if (empty($parents)) {
+            break;
+          }
+          $tid = array_shift(array_keys($parents));
+          $items = field_get_items('taxonomy_term', taxonomy_term_load($tid), 'field_site_url');
+          if (isset($items[0])) {
+            $site_url = $items[0];
+          }
+          else {
+            $site_url = FALSE;
+          }
+        }
+      }
+    }
+  }
+
+  $sites['http://www.harvard.edu'] = 'HARVARD.EDU';
+  return $sites;
 }
 
 function _hwpi_branding_footer() {
@@ -49,13 +112,18 @@ function _hwpi_branding_footer() {
       )
     ),
     'copyright' => array(
-      '#markup' => t('Copyright � 2013 The President and Fellows of Harvard College | @privacy | @access', array(
-        '@privacy' => l('Privacy', 'http://www.harvard.edu/privacy.html'),
-        '@access' => l('Accessibility', 'http://www.harvard.edu/accessibility.html')
+      '#markup' => t('<span class="harvard-copyright">Copyright &copy; 2013 The President and Fellows of Harvard College</span> | !privacy | !access', array(
+        '!privacy' => l('Privacy', 'http://www.harvard.edu/privacy-statement'),
+        '!access' => l('Accessibility', 'http://accessibility.harvard.edu/')
       ))
     )
   );
 
-  return array('hwpi' => $footer);
+  return $footer;
 }
 
+function hwpi_block_view_alter(&$render, $block) {
+  if ($block->delta == 'site-search' && _is_hwpi_theme()) {
+    unset($render['content']['search_block_form']['#title_display']);
+  }
+}

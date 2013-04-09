@@ -10,15 +10,9 @@
   margin: 0;
 }
 
-#content .node-person .field-name-body {
-  margin-top: 1em;
-}
 
-#content .node-person .field-name-body.view-mode-teaser {
-  clear: left;
-}
 
-.page-node.node-type-person header h1 {
+.page-node.node-type-person #content-column header h1 {
   display: none;
 }
 

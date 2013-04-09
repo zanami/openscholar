@@ -336,3 +336,9 @@ function _os_books_get_cache_key($bid, $root) {
 function os_books_preprocess_book_export_html(&$vars) {
   $vars['head'] .=     '<link type="text/css" rel="stylesheet" href="'.$GLOBALS['base_url'].'/'.drupal_get_path('module', 'os_books').'/os_books.print.css'.'"/>'."\r\n";
 }
+
+function os_books_preprocess_menu_link(&$vars) {
+  if (empty($vars['element']['#below'])) {
+    $vars['element']['#attributes']['class'] = array_diff($vars['element']['#attributes']['class'], array('collapsed', 'expanded'));
+  }
+}

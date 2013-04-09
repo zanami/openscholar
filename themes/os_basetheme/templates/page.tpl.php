@@ -2,7 +2,9 @@
 <!--FLEXIBLE ADMIN HEADER FOR USE BY SELECT GROUPS USING OS-->
 <?php if ($branding_header = render($page['branding_header'])): ?>
 	<div id="branding_header">
-		<?php print $branding_header; ?>
+		<div id="branding-container" class="clearfix">
+		  <?php print $branding_header; ?>
+		</div>
 	</div>
 <?php endif; ?>
 
@@ -53,6 +55,13 @@
 
 						<?php if ($is_front || $use_content_regions): ?>
 							<?php print render($title_prefix); ?>
+							<?php if (!$is_front && $title): ?>
+								<header id="main-content-header">
+      									<h1 id="page-title"<?php print $attributes; ?>>
+      									        <?php print $title; ?>
+      									</h1>
+      								</header>
+							<?php endif; ?>
 							<?php print render($title_suffix); ?>
 
 							<?php if (
@@ -125,28 +134,34 @@
 
 			</div>
 		</div>
-
-                      <!-- Three column 3x33 Gpanel -->
-                      <?php if (
-                        $page['footer_top'] ||
-                        $page['footer_first'] ||
-                        $page['footer'] ||
-                        $page['footer_third'] ||
-                        $page['footer_bottom']
-                        ): ?>
-	  <!--footer region beg-->
+		<!--footer region beg-->
 		<footer id="footer" class="clearfix" role="contentinfo">
-                        <div class="at-panel gpanel panel-display footer clearfix">
-                          <?php print render($page['footer_top']); ?>
-                          <?php print render($page['footer_first']); ?>
-                          <?php print render($page['footer']); ?>
-                          <?php print render($page['footer_third']); ?>
-                          <?php print render($page['footer_bottom']); ?>
-                        </div>
-		</footer>
+		<!-- Three column 3x33 Gpanel -->
+		<?php if (
+			$page['footer_top'] ||
+			$page['footer_first'] ||
+			$page['footer'] ||
+			$page['footer_third'] ||
+			$page['footer_bottom']
+			): ?>
+	  
+			<div class="at-panel gpanel panel-display footer clearfix">
+				<?php print render($page['footer_top']); ?>
+				<?php print render($page['footer_first']); ?>
+				<?php print render($page['footer']); ?>
+				<?php print render($page['footer_third']); ?>
+				<?php print render($page['footer_bottom']); ?>
+			</div>
+		
 		<!--footer region end-->
-                      <?php endif; ?>
-
+  <?php endif; ?>
+  <div id="powerby-login">
+  	<?php if (isset($login_link)) {
+    print render($login_link); 
+  } ?>
+  	<div id="powered-by"><a href="http://openscholar.harvard.edu">OpenScholar</a></div>
+    </div>
+  </footer>
   </div>
 </div><!--page area ends-->
 
@@ -155,6 +170,8 @@
 <?php if ($branding_footer = render($page['branding_footer'])): ?>
   <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
   <div id="branding_footer">
-	  <?php print $branding_footer; ?>
+		<div id="branding-container">
+	    <?php print $branding_footer; ?>
+		</div>
   </div>
 <?php endif; ?>

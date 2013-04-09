@@ -40,6 +40,10 @@ body {
 	 position: relative;
 }
 
+.page-node #content-column .content-inner /* Adds a little padding to page node when main-content div is not present */ {
+	 padding: 10px;
+}
+
 
 #main-content /* Wraps the main-content-header, the content region and feed-icons. */ {
 	 padding-top: 20px;
@@ -63,13 +67,14 @@ body {
 	 padding-top: 15px;
 }
 
-.region-footer .region-inner /* By default this sets up 20px gutters i.e. margin: 0 10px. */ {
+.region-footer .region-inner, /* By default this sets up 20px gutters i.e. margin: 0 10px. */ 
+.region-page-top .region-inner /* Remove ugly space between branding region and toolbar */{
 	 padding-top: 0;
 }
 
 
 
-.region-inner .region-inner /* Strip nested region-inner margins by default. */ {
+.region-inner .region-inner /* Strip nested region-inner margins by default. */{
   margin: 0;
 }
 
@@ -131,11 +136,45 @@ div.messages {
 }
 
 
+  /* Footer panels */
+
+ .footer .region-footer {
+    	width: 100%;
+  	}
+ 
+  .footer.footer-right .region-footer,
+  .footer-left.footer .region-footer {
+    	width: 75%;
+  	}
+  
+  .footer-left.footer.footer-right .region-footer {width: 50%;}
+
+  .footer-left.footer.footer-right .region-footer-first,
+  .footer-left.footer.footer-right .region-footer-third,
+  .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first,
+  .footer-left.footer-right .region-footer-first,
+  .footer-left.footer-right .region-footer-third,
+  .footer-left .region-footer-first,
+  .footer-right .region-footer-third {
+	width: 25%;
+	}
+
+  .footer-left.footer-right .at-panel .region.region-footer-third,
+  .footer-right .at-panel .region.region-footer-third {float: right;}
 /*
  * Branding
  */
+
+#powerby-login {
+	float:right;
+	clear:both;
+	margin-right:10px;
+	min-width:165px;
+}
+
 .os-powered-link,
-#block-os-powered-by {
+#os-powered-by {
     float: right;
     bottom:-48px;
     position:relative;
@@ -152,8 +191,7 @@ logged-in.page-cp #block-os-powered-by {
    
 }
 
-#block-os-powered-by span a,
-.os-powered-link a.os-poweredby {
+#powered-by a {
     background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
     border: medium none !important;
     display: block;
@@ -162,7 +200,9 @@ logged-in.page-cp #block-os-powered-by {
     text-decoration: none !important;
     text-indent: -999em;
     width: 85px;
-    margin-top:-25px;
+    margin-right:8px;
+    float:right;
+    display:inline;
   }
 
 
@@ -389,6 +429,49 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     padding-left: 17px;
    }
 
+.media-gallery-collection a.media-gallery-thumb, .media-gallery-media a.media-gallery-thumb, .media-gallery-thumb img {
+    display: block;
+    overflow: hidden;
+    position: relative;
+}
+
+.video-indicator {
+	background: url("../images/movie_file_icon.png") no-repeat;
+ 	bottom: 5px;
+    display: block;
+    height: 13%;
+    left: 5px;
+    height: 48px;
+    width: 48px;
+	position: absolute;
+}
+
+/* VIDEO ATTCHD TO A NODE  */
+
+.oembed {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-color: #ccc;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    color: #555555;
+    text-align:center;
+
+}
+
+.oembed .oembed-title {
+    color:#005C9C;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: left;
+    text-shadow: none;
+}
+
+.os-files-video-single {
+    max-width: none !important;
+}
+	
 
 .feed_item {margin-bottom:8px;}
 .feed_item span {font-style:italic;margin-right:4px;}
@@ -411,7 +494,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 
 
 .block-boxes-os_sv_list_box .item-list ul li,
-.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:1em;}
+.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:.75em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
@@ -575,6 +658,13 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   display: block;
 }
 
+.region-content-top .contextual-links-region:first-child .contextual-links-wrapper{
+  right: 35px;
+}
+
+.node-type-page .region-content-top .contextual-links-region:first-child .contextual-links-wrapper {
+  right: 150px;
+}
 
 /** OVERLAY MODAL OVERRIDES **/
 	
@@ -645,7 +735,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	
 /** OS LOGIN CONTAINER STYLES **/	
 /** SLIDER **/
-.slider {
+.os-slider {
   display: none;
   color: black;
   position: static;
@@ -660,7 +750,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	padding: 1px 0 3px 14px
 }
 
-.field-name-og-vocabulary .slider a {text-decoration:underline !important;}
+.field-name-og-vocabulary .os-slider a {text-decoration:underline !important;}
 
 
 .not-logged-in.page-user #columns {
@@ -682,6 +772,11 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	padding:5px 0 0 10px;
 	border-top-left-radius:5px;
 	border-top-right-radius:5px;
+}
+
+.not-logged-in.page-user #footer {
+	width:540px;
+	margin: 0 auto;
 }
 
 
@@ -810,7 +905,8 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.image-style-os-files-large, .image-style-os-files-xlarge {padding-right:10px;}
+.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-med
+{padding-right:10px;}
 
 /**
  * "News" node-type styles.
@@ -820,6 +916,8 @@ ul.recent-images-list li a:hover img {
  * The original CSS file intermittently failed to load:
  * @see /profiles/openscholar/modules/os_features/os_news/os_news.css
  */
+
+
 .node-news.node-teaser .field-name-field-photo {
   float: left;
   margin: 0 1.5em .5em 0;
@@ -829,3 +927,37 @@ ul.recent-images-list li a:hover img {
   float: right;
   margin-left: 1em;
 }
+
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+
+.block-boxes-os_sv_list_box h1.node-title {
+    margin-bottom: 0;
+}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+ 	float:left;
+     margin-right: 10px;
+}
+
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	display:block;
+	margin-left: 85px;
+}
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
+	 margin-left: 65px;
+	}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
+	 margin-left: 0;
+}
+
+

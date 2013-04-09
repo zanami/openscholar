@@ -7,6 +7,10 @@ function os_publications_overview() {
   if (count($args) == 0) {
     // get default types the user has selected
     $defaults = variable_get('os_publications_filter_publication_types', array());
+
+    //Filter out bad data
+    unset($defaults[-1]);
+
     if (count(array_filter($defaults))) {
       $args = array('type', array_filter($defaults));
     }
@@ -31,6 +35,11 @@ function os_publications_overview() {
 
   // handle caching
   //cache_set($ckey, $output, 'cache_biblio_lists');
+  
+  // change the page title to match the menu entry
+  ctools_include('menu', 'os');
+  $menu_item = os_menu_load_link_path($_GET['q']);
+  drupal_set_title($menu_item['title']);
 
   return $output;
 }
@@ -209,14 +218,6 @@ function os_publications_settings() {
     '#description' => t('If this is checked and you add a note to a publication then it will show as part of a publications teaser.'),
   );
 
-  $form['left']['biblio_rowsperpage'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Publications per page'),
-    '#size' => 5,
-    '#default_value' => variable_get('biblio_rowsperpage', 25),
-    '#description' => t('Select the number of publication to be displayed on each page.'),
-  );
-
   $form['left']['biblio_sort'] = array(
     '#type' => 'radios',
     '#title' => t('By default, sort publications by which category'),
@@ -298,5 +299,5 @@ function os_publications_reset(&$form, &$form_state) {
 }
 
 function os_publications_reset_submit($form, $form_state) {
-  dpm($form_state['values']);
+  //dpm($form_state['values']);
 }

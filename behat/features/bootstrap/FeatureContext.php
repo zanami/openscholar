@@ -3,6 +3,7 @@
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\PyStringNode;
 use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
@@ -10,6 +11,11 @@ use Behat\Behat\Context\Step\When;
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
+
+  /**
+   * Variable for storing the random string we used in the text.
+   */
+  private $randomText;
 
   /**
    * Variable to pass into the last xPath expression.
@@ -126,12 +132,45 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    $page = $this->getSession()->getPage();
+    $comapre_string = $string->getRaw();
+    $page_string = $page->getContent();
+
+    if (strpos($comapre_string, '{{*}}')) {
+      // Attributes that may changed in different environments.
+      foreach (array('sourceUrl', 'id', 'value', 'href', 'os_version') as $attribute) {
+        $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
+
+        // Dealing with JSON.
+        $page_string = preg_replace('/"'. $attribute . '":".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/"'. $attribute . '":".+?"/', '', $comapre_string);
+      }
+
+      if ($page_string != $comapre_string) {
+        $output = "The strings are not matching.\n";
+        $output .= "Page: {$page_string}\n";
+        $output .= "Search: {$comapre_string}\n";
+        throw new Exception($output);
+      }
+    }
+    else {
+      // Normal compare.
+      if (strpos($page_string, $comapre_string) === FALSE) {
+        throw new Exception("Text not found.");
+      }
+    }
+  }
+
+  /**
    * @When /^I clear the cache$/
    */
   public function iClearTheCache() {
     $this->getDriver()->drush('cc all');
   }
-
 
   /**
    * @Then /^I should print page$/
@@ -139,13 +178,6 @@ class FeatureContext extends DrupalContext {
   public function iShouldPrintPage() {
     $element = $this->getSession()->getPage();
     print_r($element->getContent());
-  }
-
-  /**
-   * @Then /^I should get:$/
-   */
-  public function iShouldGet(PyStringNode $string) {
-    throw new PendingException();
   }
 
   /**
@@ -215,6 +247,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^a node of type "([^"]*)" with the title "([^"]*)" exists in site "([^"]*)"$/
+   */
+  public function assertNodeTypeTitleVsite($type, $title, $site = 'john') {
+    return array(
+      new Step\When('I visit "' . $site . '/node/add/' . $type . '"'),
+      new Step\When('I fill in "Title" with "'. $title . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
    * @Given /^I create a new publication$/
    */
   public function iCreateANewPublication() {
@@ -250,7 +293,7 @@ class FeatureContext extends DrupalContext {
 
     $metasteps = array();
     // @TODO: Don't use the hard coded address - remove john from the address.
-    $metasteps[] = new Step\When('I visit "john/os/widget/boxes/' . $delta . '/edit"');
+    $this->visit('john/os/widget/boxes/' . $delta . '/edit');
 
     // @TODO: Use XPath to fill the form instead of giving the type of the in
     // the scenario input.
@@ -272,7 +315,6 @@ class FeatureContext extends DrupalContext {
     }
 
     $metasteps[] = new Step\When('I press "Save"');
-    $metasteps[] = new Step\When('I clear the cache');
 
     return $metasteps;
   }
@@ -283,7 +325,6 @@ class FeatureContext extends DrupalContext {
   public function theWidgetIsSetInThePage($page, $widget) {
     $code = "os_migrate_demo_set_box_in_region({$this->nid}, '$page', '$widget');";
     $this->box[] = $this->getDriver()->drush("php-eval \"{$code}\"");
-    $this->getDriver()->drush("cc all");
   }
 
   /**
@@ -293,6 +334,15 @@ class FeatureContext extends DrupalContext {
     $code = "os_migrate_demo_assign_node_to_term('$node', '$term');";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
+
+  /**
+   * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
+   */
+  public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
+    $code = "os_migrate_demo_assign_node_to_term('$node', '$term', '$type');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
 
   /**
    * Hide the boxes we added during the scenario.
@@ -308,6 +358,9 @@ class FeatureContext extends DrupalContext {
     // them.
     foreach ($this->box as $box_handler) {
       $data = explode(',', $box_handler);
+      foreach ($data as &$value) {
+        $value = trim($value);
+      }
       $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
       $this->getDriver()->drush("php-eval \"{$code}\"");
     }
@@ -366,5 +419,310 @@ class FeatureContext extends DrupalContext {
    */
   public function iSleepFor($sec) {
     sleep($sec);
+  }
+
+  /**
+   * @Then /^I should see the following <json>:$/
+   */
+  public function iShouldSeeTheFollowingJson(TableNode $table) {
+    // Get the json output and decode it.
+    $json_output = $this->getSession()->getPage()->getContent();
+    $json = json_decode($json_output);
+
+
+    // Hasing table, and define variables for later.
+    $hash = $table->getRows();
+    $errors = array();
+
+    // Run over the tale and start matching between the values of the JSON and
+    // the user input.
+    foreach ($hash as $i => $table_row) {
+      if (isset($json->{$table_row[0]})) {
+        if ($json->{$table_row[0]} != $table_row[1]) {
+          $error['values'][$table_row[0]] = ' Not equal to ' . $table_row[1];
+        }
+      }
+      else {
+        $error['not_found'][$table_row[0]] = " Dosen't exists.";
+      }
+    }
+
+    // Build the error string if needed.
+    if (!empty($error)) {
+      $string = array();
+
+      if (!empty($error['values'])) {
+        foreach ($error['values'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      if (!empty($error['not_found'])) {
+        foreach ($error['not_found'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      throw new Exception("Some errors were found:\n" . implode("\n", $string));
+    }
+  }
+
+  /**
+   * Generate random text.
+   */
+  private function randomizeMe($length = 10) {
+    return $this->randomText = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+  }
+
+  /**
+   * @Given /^I fill "([^"]*)" with random text$/
+   */
+  public function iFillWithRandomText($elementId) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$elementId}']");
+
+    if (!$element) {
+      throw new Exception(sprintf("Could not find the element with the id %s", $elementId));
+    }
+
+    $element->setValue($this->randomizeMe());
+  }
+
+
+  /**
+   * @Given /^I visit the site "([^"]*)"$/
+   */
+  public function iVisitTheSite($site) {
+    if ($site == "random") {
+      $this->visit("/" . $this->randomText);
+    }
+    else {
+      $this->visit("/" . $site);
+    }
+  }
+
+  /**
+   * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
+   */
+  public function iSetTheVariableTo($variable, $value) {
+    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Then /^I should see a pager$/
+   */
+  public function iShouldSeeAPager() {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[@class='item-list']");
+
+    if (!$element) {
+      throw new Exception("The pager wasn't found.");
+    }
+  }
+
+  /**
+   * @Given /^I set courses to import$/
+   */
+  public function iSetCoursesToImport() {
+    $metasteps = array();
+    $this->getDriver()->drush("php-eval \"drupal_flush_all_caches();\"");
+    $this->getDriver()->drush("cc all");
+    $metasteps[] = new Step\When('I visit "admin"');
+    $metasteps[] = new Step\When('I visit "admin/structure/feeds/course/settings/HarvardFetcher"');
+    $metasteps[] = new Step\When('I check the box "Debug mode"');
+    $metasteps[] = new Step\When('I press "Save"');
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I fill in "Department ID" with "Architecture"');
+    $metasteps[] = new Step\When('I select "Harvard Graduate School of Design" from "School name"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @When /^I enable harvard courses$/
+   */
+  public function iEnableHarvardCourses() {
+    $code = "os_migrate_demo_define_harvard_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I refresh courses$/
+   */
+  public function iRefreshCourses() {
+    $code = "os_migrate_demo_import_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I remove harvard courses$/
+   */
+  public function iRemoveHarvardCourses() {
+    $metasteps = array();
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I press "Remove"');
+    $metasteps[] = new Step\When('I sleep for "2"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I invalidate cache$/
+   */
+  public function iInvalidateCache() {
+    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I expect for a behavior according the next <statements>:$/
+   */
+  public function iExpectForABehaviorAccordingTheNextStatements(TableNode $table) {
+    $rows = $table->getRows();
+    $baseUrl = $this->locatePath('');
+
+    if (count(reset($rows)) == 3) {
+      foreach ($rows as $row) {
+        $this->visit($row[0]);
+        $url = $this->getSession()->getCurrentUrl();
+
+        if ($url != $baseUrl . $row[2] && $url != 'http://lincoln.local/' . $row[2]) {
+          throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+        }
+
+        $john_response_code = $this->responseCode($baseUrl . $row[0]);
+        $lincoln_response_code = $this->responseCode('http://lincoln.local/' . $row[0]);
+        if ($john_response_code != $row[1] && $lincoln_response_code != $row[1]) {
+          throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$john_response_code}/{$lincoln_response_code} reponse code.");
+        }
+      }
+    }
+    else {
+      foreach ($rows as $row) {
+        $code = "os_migrate_demo_get_node_nid('$row[1]');";
+        $nid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+
+        if ($row[2] == 'No') {
+          $VisitUrl = 'node/' . $nid;
+        }
+        else {
+          $code = "print drupal_get_path_alias('node/{$nid}');";
+          $VisitUrl = $this->getDriver()->drush("php-eval \"{$code}\"");
+        }
+
+        if (!empty($row[0])) {
+          $VisitUrl = $row[0] . $VisitUrl;
+        }
+
+        $this->visit($VisitUrl);
+        $url = $this->getSession()->getCurrentUrl();
+
+        if ($url != $baseUrl . $row[4]) {
+          throw new Exception("When visiting {$VisitUrl} we did not redirected to {$row[4]} but to {$url}.");
+        }
+
+        $response_code = $this->responseCode($baseUrl . $VisitUrl);
+        if ($response_code != $row[3]) {
+          throw new Exception("When visiting {$VisitUrl} we did not get a {$row[3]} reponse code but the {$response_code} reponse code.");
+        }
+      }
+    }
+  }
+
+  /**
+   * Get the response code for a URL.
+   *
+   *  @param $address
+   *    The URL address.
+   *
+   *  @return
+   *    The response code for the URL address.
+   */
+  function responseCode($address) {
+    $ch = curl_init($address);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1); // Return header.
+    curl_setopt($ch, CURLOPT_NOBODY, 1); // Will not return the body.
+
+    $linkHeaders = curl_exec($ch);
+    $curlInfo = curl_getinfo($ch);
+    curl_close($ch);
+
+    return $curlInfo['http_code'];
+  }
+
+  /**
+   * @Then /^I should see the random string$/
+   */
+  public function iShouldSeeTheRandomString() {
+    $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+  /**
+   * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (empty($element)) {
+      throw new exception("The term {$term} did not link to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I verify the "([^"]*)" term link doesn\'t redirect to the original page$/
+   */
+  public function iVerifyTheTermLinkDoesnTRedirectToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (!empty($element)) {
+      throw new exception("The term {$term} linked us to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeUnder($text, $id) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
+    if ($element) {
+      throw new Exception("The text {$text} found under #{$id}");
+    }
+  }
+
+  /**
+   * @Then /^I should verify i am at "([^"]*)"$/
+   */
+  public function iShouldVerifyIAmAt($given_url) {
+    $url = $this->getSession()->getCurrentUrl();
+    $base_url = $startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
+
+    $path = str_replace($base_url, '', $url);
+
+    if ($path != $given_url) {
+      throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
+    }
   }
 }

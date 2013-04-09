@@ -21,21 +21,24 @@ class views_handler_filter_scehma_type extends views_handler_filter {
    */
   public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
+
+    // Collect the available schema types.
+    $options = array();
+    foreach (file_get_stream_wrappers() as $type => $info) {
+      $options[$type] = $info['name'];
+    }
+
     $form['schema_type'] = array(
       '#type' => 'select',
       '#title' => t('Schema type'),
-      '#description' => t('Display files by the schema type.'),
+      '#description' => t('Display files by the Schema type.'),
       '#default_value' => $this->options['schema_type'],
-      '#options' => array(
-        'private' => t('Private'),
-        'public' => t('Public'),
-      ),
+      '#options' => $options,
     );
   }
 
   /**
-   * Add to the query conditions the file schema type.
-   */
+   * Add to the query conditions the file schema type.   */
   function query($group_by = FALSE) {
     $this->query->add_where($group_by, 'uri', $this->options['schema_type'] . "://%", 'LIKE');
   }
