@@ -57,6 +57,47 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter() for node_form.
+ *
+ * Allow adding the Drush path to later process on group deletion.
+ *
+ * @see vstite_node_delete().
+ */
+function vsite_form_og_ui_admin_settings_alter(&$form, &$form_state, $form_id){
+  $form['os_drush_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Drush path'),
+    '#description' => t('Enter the full path for Drush, if you want the queue to be processed as soon as a group is deleted. If empty, then it is up tp you to invokde <code>drush queue-run og_membership_orphans</code>'),
+    '#default_value' => variable_get('os_drush_path', FALSE),
+  );
+
+  $form['os_drush_path']['#attributes'] = $form['og_orphans_delete']['#attributes'];
+  $form['os_drush_path']['#states'] = $form['og_orphans_delete']['#states'];
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function vstite_node_delete($node) {
+  if (!og_is_group('node', $node)) {
+    // Not a group node.
+    return;
+  }
+
+  if (!variable_get('og_use_queue', FALSE)) {
+    // Queue isn't used.
+    return;
+  }
+
+  if (!$drush_path = variable_get('os_drush_path', FALSE)) {
+    // No Drush path provided.
+    return;
+  }
+
+  shell_exec($drush_path . ' queue-run og_membership_orphans');
+}
+
+/**
  * Implements hook_form_BASE_FORM_ID_alter() for OS Settings form.
  *
  * Adds vsite related settings

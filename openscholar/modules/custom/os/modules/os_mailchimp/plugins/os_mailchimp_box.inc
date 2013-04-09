@@ -41,7 +41,7 @@ class os_boxes_mailchimp extends os_boxes_default {
 	
 	if (!$api) {
 		$form['subscribe']['api_warning'] = array(
-	    	'#markup' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$space->group->purl.'/cp/settings" target="_new">site settings</a>.</div>',
+	    	'#markup' => '<div class="error messages">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$space->group->purl.'/cp/settings" target="_new">site settings</a>.</div>',
 	    	'#type' => 'markup',
 		);
 	      

@@ -330,7 +330,7 @@ function os_os_widget_alter(&$widget) {
 
     if(isset($spaces_features[$module]) && empty($features[$module])){
       //This is provided by a disabled og feature
-      $hidden = true;
+      $hidden = TRUE;
     }
   }
 
@@ -502,7 +502,7 @@ function os_preprocess_page(&$vars) {
   }
 
   // Sets page title to match the menu link title
-  if ($view = views_get_current_view()) {
+  if ($view = views_get_page_view()) {
     ctools_include('menu', 'os');
     $menu_item = os_menu_load_link_path($_GET['q']);
     drupal_set_title($menu_item['title']);
@@ -638,7 +638,7 @@ function os_preprocess_page(&$vars) {
  */
 function os_preprocess_menu_link(&$variables) {
   //Remove "menu-path-" and 'active' class from menu items without links.
-  if($variables['element']['#href'] === false && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
+  if($variables['element']['#href'] === FALSE && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
     unset($variables['element']['#attributes']['class'][$path]);
 
     //Remove active class.
@@ -651,7 +651,7 @@ function os_preprocess_menu_link(&$variables) {
 /**
  * Implements hook_form_alter().
  */
-function os_form_alter(&$form, $form_state, $form_id) {
+function os_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
@@ -671,7 +671,7 @@ function os_form_alter(&$form, $form_state, $form_id) {
  * @see os_form_alter()
  */
 function os_entity_form_after_build($form, $form_state) {
-  $node = isset($form['#node'])?$form['#node']:null;
+  $node = isset($form['#node'])?$form['#node']:NULL;
   if (!isset($node) && isset($form['#entity']) && !isset($form['#entity']->comment)) {
      // dummy node
     $node = (object)array('type' => 'page');
@@ -949,6 +949,18 @@ function os_context_registry() {
   return $registry;
 }
 
+
+
+/**
+ * Implements hook_cron().
+ *
+ * Allows another method for cleaning out the page_cache for non-memcache entries
+ */
+function os_cron() {
+  //Clear expired Items from page cache
+  cache_clear_all(NULL, 'cache_page');
+}
+
 /**
  * Implements hook_context_registry_alter().
  */
@@ -1000,7 +1012,7 @@ function os_system_info_alter(&$info, $file, $type) {
       $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
       $info['settings']['default_favicon'] = 0;
     }
-    
+
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
       'branding_footer' => 'Branding Footer',
@@ -1205,7 +1217,7 @@ function os_get_region($module, $delta, $contexts = array()) {
     $plugin = context_get_plugin('reaction', 'block');
 
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(null, $c) as $block) {
+      foreach ($plugin->get_blocks(NULL, $c) as $block) {
         if (isset($block->region) && $block->region) {
           $blocks[$block->module.'-'.$block->delta] = $block->region;
         }
@@ -1296,6 +1308,10 @@ function _os_get_install_status() {
   // get the install time
   $install = variable_get('install_time', 0);
 
+  if (!isset($branch)) {
+    $branch = variable_get('os_status_branch', NULL);
+  }
+
   $date = 'D d M, g:i a';
   $output .= '<strong>Drupal Version:</strong> ' . VERSION . '<br>';
   if (isset($branch)) {
@@ -1355,7 +1371,7 @@ function os_app_info($app_name = NULL) {
  * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
  */
 function os_form_user_login_alter(&$form, $form_state) {
-  if (variable_get('os_login_with_email', true)) {
+  if (variable_get('os_login_with_email', TRUE)) {
     // Replace 'username' with 'Username or e-mail'.
     $form['name']['#title'] = t('Username or e-mail');
     // Replace the description of the user/email login field.

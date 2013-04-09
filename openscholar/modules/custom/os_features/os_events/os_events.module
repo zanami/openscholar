@@ -118,7 +118,7 @@ function os_events_preprocess_calendar_datebox(&$vars) {
  * Implements hook_views_pre_view().
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
-  if (empty($view->display_handler->display->display_options['pager']['options']['date_id']) || !empty($view->display_handler->display->display_options['style_options']['mini'])) {
+  if (empty($view->display_handler->display->display_options['pager']['options']['date_id'])) {
     // Not a calendar view, or a mini-calendar
     return;
   }
@@ -127,6 +127,22 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
     return;
   }
   $handler = &$view->display_handler;
+
+  if (!empty($view->display_handler->display->display_options['style_options']['mini'])) {
+    // Set the default date of the mini calendar to the date the user watching.
+    $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
+
+    if ($_GET['type'] == 'year') {
+      // The user watch a year, return him the current time.
+      $time = time();
+    }
+    else {
+      $time = strtotime($_GET[$_GET['type']]);
+    }
+
+    $view->args[0] = date($format['month'], $time);
+    return;
+  }
 
   if ($_GET['type'] != 'month') {
     $handler->set_option('style_plugin', 'calendar_style');
@@ -205,10 +221,11 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     'calendar/year',
   );
 
-  if (!in_array($original_path, $view_modes)) {
+  if (!in_array($original_path, $view_modes) && strpos($path, 'calendar/month/') === FALSE) {
     return;
   }
 
+  $mini_calendar = strpos($path, 'calendar/month/') !== FALSE;
   $data = explode('/', $original_path);
   $path = $data[0];
 
@@ -233,8 +250,17 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     $date = date_format($date_format, $format[$data[1]]);
   }
 
-  $options['query']['type'] = $data[1];
-  $options['query'][$data[1]] = $date;
+  $type = $data[1];
+
+  if ($mini_calendar) {
+    $type = 'month';
+    $date = $data[2];
+  }
+
+  $options['query'] = array(
+    'type' => $type,
+    $data[1] => $date,
+  );
 }
 
 /**

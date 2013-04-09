@@ -456,6 +456,8 @@ class os_sv_list_box extends os_boxes_default {
           ->fields('fd', array('entity_id', 'delta'))
           ->where('field_date_value > NOW()')
           ->orderBy('field_date_value');
+          $query->join('node', 'n', 'n.vid = fd.revision_id');
+          $query->condition('n.status', 1);
           $entity_field = "fd.entity_id";
           break;
         }
@@ -645,6 +647,7 @@ class os_sv_list_box extends os_boxes_default {
     $result = $query
       ->condition('t.tid', $tids, 'IN')
       ->condition('n.type', $content_types)
+      ->condition('n.status', 1)
       ->fields('t')
       ->execute();
 
