@@ -13,6 +13,9 @@ function os_pinserver_auth_private_file_download(){
   $target = implode('/', $path);
   $uri = $scheme . '://' . $target;
 
+  //Use Pinserver Tokens to load user
+  pinserver_authenticate_user();
+
   $headers = os_pinserver_auth_file_download($uri);
   if (count($headers)) {
     file_transfer($uri, $headers);
@@ -25,9 +28,6 @@ function os_pinserver_auth_private_file_download(){
  * Checks for pinserver and serves file headers if all rules pass.
  */
 function _os_pinserver_auth_file_download($uri) {
-
-  // Next: Checks if pinserver is enabled.
-  $use_pinserver = variable_get('os_files_private_pinserver', 0);
 
   //Serves private files to users who can login via Harvard Pinserver.
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
@@ -57,6 +57,18 @@ function _os_pinserver_auth_pinserver_private_file_settings(&$form, $form_state)
     '#title' => t('Should Pinserver control access to site and user registration?'),
     '#required' => FALSE,
     '#default_value' => variable_get('os_pinserver_registration', FALSE),
+  );
+
+  $htaccess = '# Rewrite OS Fast callback URLs of the form js.php?q=os_pinserver_auth/FOO.' . PHP_EOL;
+  $htaccess .= 'RewriteCond %{REQUEST_FILENAME} !-f' . PHP_EOL;
+  $htaccess .= 'RewriteCond %{REQUEST_FILENAME} !-d' . PHP_EOL;
+  $htaccess .= 'RewriteCond %{REQUEST_URI} ^\/os_fast\/.*' . PHP_EOL;
+  $htaccess .= 'RewriteRule ^os_fast\/(.*)$ js.php?q=os_pinserver_auth/$1 [L,QSA]';
+
+  $form['pinserver']['os_fast_htaccess'] = array(
+    '#type'        => 'textarea',
+    '#title'       => t('Add the following lines in front of the existing RewriteRules in your .htaccess.'),
+    '#value'       => $htaccess
   );
 }
 

@@ -92,9 +92,11 @@ function pinserver_redirect($args = array()) {
 }
 
 /**
- * First function called after user has authenticated via pinserver and returned to site
+ * Menu callback called when returning from pinserver
+ *
+ * This will either forward the request to the correct page, or authenticate and create a user session.
  */
-function pinserver_check_user($use_session = FALSE) {
+function pinserver_check_user() {
 
   // First, verifies the pinserver settings.
   if ($error = pinserver_check_system_settings()) {
@@ -107,17 +109,11 @@ function pinserver_check_user($use_session = FALSE) {
     drupal_goto(ltrim($query_params['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
   }
 
-  // Parses and validates the PIN token.
-  $token_data = pinserver_check_token();
-
-  // Redirects to error page if any errors are returned.
-  if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
-    $errors = implode(',', array_unique($token_data['errors']));
+  //Validate User
+  if(!pinserver_authenticate_user(TRUE)){
+    $errors = implode(',', pinserver_get_errors());
     drupal_goto("pinserver/error/token/$errors");
   }
-
-  // Success! Code beyond this point handles a successful PIN authentication.
-  pinserver_add_user_from_token($token_data, $use_session);
 
   // Invokes hook_pinserver().
   module_invoke_all('pinserver');
@@ -129,6 +125,47 @@ function pinserver_check_user($use_session = FALSE) {
 
   // Redirects user to landing page set in pinserver configuration page
   drupal_goto(variable_get('pinserver_landing_path'));
+}
+
+/**
+ * Use the avalible tokens to authenticate and login a user.
+ *
+ * @param boolean $use_session
+ */
+function pinserver_authenticate_user($use_session = FALSE){
+
+  // First, verifies the pinserver settings.
+  if ($error = pinserver_check_system_settings()) {
+    return false;
+  }
+
+  // Parses and validates the PIN token.
+  $token_data = pinserver_check_token();
+
+  // Redirects to error page if any errors are returned.
+  if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
+    pinserver_get_errors(array_unique($token_data['errors']));
+  }
+
+  // Success! Code beyond this point handles a successful PIN authentication.
+  pinserver_add_user_from_token($token_data, $use_session);
+
+  return true;
+}
+
+/**
+ * Store any errors logged during pin authentication.
+ *
+ * @param array $errors
+ */
+function pinserver_get_errors($errors = false){
+  $pin_errors = &drupal_static(__FUNCTION__,array());
+
+  if($errors){
+    $pin_errors = $errors;
+  }
+
+  return $pin_errors;
 }
 
 /**
@@ -273,13 +310,10 @@ function pinserver_prepare_azp_token($gpg_output) {
  * @return array $values
  *   If the detached signature is deemed good, it returns
  *
- *     pinserver_check_user($user_id)
- *
  *   Otherwise it prohibits the user from logging in.
  */
 function pinserver_check_token() {
   // Initialize the return values.
-  $return = array('errors' => array());
   $command = variable_get('pinserver_gpg_bin') . ' --homedir "' . variable_get('pinserver_gpg_dir') . '" --verify';
   $azp = FALSE;  // AuthZProxy mode
 
@@ -303,7 +337,8 @@ function pinserver_check_token() {
     $command = variable_get('pinserver_gpg_bin') . ' --no-mdc-warning --no-tty --batch --passphrase-file "' . variable_get('pinserver_azp_passphrase') . '" --homedir "' . variable_get('pinserver_gpg_dir') . '" --decrypt';
   }
   else {
-    drupal_goto("pinserver/error/token/unrecognized-url");
+    $values['errors'][] = 'unrecognized-url';
+    return $values;
   }
 
   $pgp_message = '';
@@ -340,8 +375,7 @@ function pinserver_check_token() {
 
   if (!is_resource($process)) {
     $values['errors'][] = 'signature-gpg';
-    $values = implode(',', array_unique($values['errors']));
-    drupal_goto("pinserver/error/token/$values");
+    return $values;
   }
 
   fwrite($pipes[0], $pgp_message);
