@@ -61,8 +61,8 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
-    if (isset($output['tabs'][$k]['form']['upload']['#file']) && $output['tabs'][$k]['form']['upload']['#file']) {
-      $entity = $output['tabs'][$k]['form']['upload']['#file'];
+    if (isset($output['tabs'][$k]['page']['upload']['upload']['#file']) && $output['tabs'][$k]['page']['upload']['upload']['#file']) {
+      $entity = $output['tabs'][$k]['page']['upload']['upload']['#file'];
       $commands = array();
       if (isset($entity->fid)) {
         media_browser_build_media_item($entity);
