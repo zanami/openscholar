@@ -92,6 +92,9 @@ projects[entityreference_prepopulate][download][revision] = f7b7168
 ; projects[entity_dependency][version] = 1.x-dev
 ; projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
+projects[elysia_cron][subdir] = "contrib"
+projects[elysia_cron][version] = 2.1
+
 projects[eva][subdir] = "contrib"
 projects[eva][version] = 1.2
 projects[eva][revision] = "6d92c27"
