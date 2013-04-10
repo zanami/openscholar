@@ -110,8 +110,10 @@ function _os_pinserver_auth_pinserver_private_file_settings(&$form, $form_state)
     '#required' => FALSE,
     '#default_value' => variable_get('os_pinserver_registration', FALSE),
   );
-
-  $htaccess = '# Rewrite OS Fast callback URLs of the form js.php?q=os_pinserver_auth/FOO.' . PHP_EOL;
+  $htaccess = '# (uncomment to) Rewrite pin auth to fastpath'. PHP_EOL;
+  $htaccess .= '#RewriteCond %{REQUEST_URI} ^\/pinserver\/auth\/?$'. PHP_EOL;
+  $htaccess .= '#RewriteRule ^ js.php?q=os_pinserver_auth/auth [L,QSA]'. PHP_EOL. PHP_EOL;
+  $htaccess .= '# Rewrite OS Fast callback URLs of the form js.php?q=os_pinserver_auth/FOO.' . PHP_EOL;
   $htaccess .= 'RewriteCond %{REQUEST_FILENAME} !-f' . PHP_EOL;
   $htaccess .= 'RewriteCond %{REQUEST_FILENAME} !-d' . PHP_EOL;
   $htaccess .= 'RewriteCond %{REQUEST_URI} ^\/os_fast\/.*' . PHP_EOL;
