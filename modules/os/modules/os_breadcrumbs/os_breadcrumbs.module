@@ -166,7 +166,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
     if(isset($map) && count($map) > 1) {
       // Rebuild the breadcrumbs.
       $links = array();
-      $links[] = l(t('Home'),'<front>');
+      $links[] = l(t('HOME'),'<front>');
       switch($item['original_map'][0]) {
       	case 'blog':
           foreach($map as $key => $blog_archive) {
