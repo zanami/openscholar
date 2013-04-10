@@ -919,22 +919,29 @@ function vsite_menu_alter(&$items){
  * Returns an array of all sites a user owns.
  */
 function vsite_load_user_sites($user_id){
-  $sites = array();
   $sites_array = array();
   // Grab their sites.
-
-
   $vsites_owner = vsite_get_vsite_by_owner($user_id);
   // Create each site as a link.
-  foreach ( $vsites_owner as $site ) {
-    $sites = array(
-      '#title' => $site->group->title,
+  foreach ($vsites_owner as $site ) {
+    $node = node_load($site->group->nid);
+    $items = array();
+    $items[] = array(
       '#type' => 'link',
-      '#href' => $site->get_absolute_url()
+      '#title' => check_plain($node->title),
+      '#href' => url('node/' . $node->nid),
     );
+
+    if (node_access('delete', $node)) {
+      $items[] = array(
+        '#type' => 'link',
+        '#title' => t('Delete site'),
+        '#href' => url('node/' . $node->nid . '/delete'),
+      );
+    }
     // Prepare them for theme_list_item.
     $sites_array[] = array(
-      'data' => drupal_render($sites)
+      'data' => theme('item_list', array('items' => $items)),
     );
   }
 
