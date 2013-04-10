@@ -21,6 +21,8 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['effect'] = 'fade';
     $options['style'] = 'dark';
     $options['size'] = 600;
+    $options['timeout'] = 5000;
+    $options['speed'] = 700;
     return $options;
   }
 
@@ -29,6 +31,8 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $private = os_get_bundles(array(0));
+    $this->options += $this->options_defaults();
+    
     if (isset($private['media_gallery'])) {
       return array(
         '#type' => 'markup',
@@ -122,13 +126,27 @@ class os_boxes_slideshow extends os_boxes_default {
       //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
       '#options' => array('none' => t('No'), 'top' => t('Yes')),
       '#default_value' => $this->options['show_image_titles'],
-      );
+    );
 
     $form['display']['items_per_page'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of items'),
       '#description' => t('Limit to this many images per slideshow.  Use 0 for no limit.'),
       '#default_value' => (int) $this->options['items_per_page'],
+    );
+
+    $form['display']['timeout'] = array(
+      '#type' => 'select',
+      '#title' => t('Duration'),
+      '#options' => $this->_transition_speed_opts(1, 10, .5),  
+      '#default_value' => $this->options['timeout'],
+    );
+
+    $form['display']['speed'] = array(
+      '#type' => 'select',
+      '#title' => t('Transition Speed'),
+      '#options' => $this->_transition_speed_opts(0, 1, .1),
+      '#default_value' => $this->options['speed'],
     );
 
     //get jquery effects from view (include file hsould arleady be loaded)
@@ -150,6 +168,7 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    $this->options += $this->options_defaults();
     
     //no slideshow when media gallery is disabled
     $private = os_get_bundles(array(0));
@@ -194,6 +213,8 @@ class os_boxes_slideshow extends os_boxes_default {
 
       //effects
       $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
+      $style_options['views_slideshow_cycle']['timeout'] = $this->options['timeout'];
+      $style_options['views_slideshow_cycle']['speed'] = $this->options['speed'];
       $handler->set_option('style_options', $style_options);
 
       //title
@@ -271,6 +292,24 @@ class os_boxes_slideshow extends os_boxes_default {
   //    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
   }
 
+  
+  /**
+   * @function _transition_speed_opts()
+   *
+   * Helper function for making for time selects.  All args are seconds.
+   *
+   * @returns array( $milliseconds => $seconds . 's')
+   */
+  private function _transition_speed_opts($min, $max, $increment) {
+    $precision = explode('.', $increment);
+    $decimals = (count($precision)>1) ? strlen($precision[1]) : 0;
+  
+    $return = array();
+    for ($i = $min; $i <= $max; $i += $increment) {
+      $return[$i*1000] = number_format($i, $decimals) . ' sec';
+    }
+    return $return;
+  }
 }
 
 /**

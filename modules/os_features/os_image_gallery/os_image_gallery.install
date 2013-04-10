@@ -1,2 +1,23 @@
 <?php 
 
+/*
+ * media_gallery renamed one of its fields.  FR needed.
+ */
+function os_image_gallery_update_7000() {
+  features_revert(array('os_image_gallery' => array('field')));
+}
+
+/**
+ * os_files error corrupted format info on media_descriptions.  Restore format.  
+ * https://github.com/openscholar/openscholar/issues/2192
+ */
+function os_image_gallery_update_7001() {
+  foreach (array('field_data_media_description', 'field_revision_media_description') as $table) {
+    db_update($table)
+      ->fields(array('media_description_format' => 'filtered_html'))
+      ->condition('media_description_format', 'filtered_html', '!=')
+      ->execute();
+  }
+  
+  return t('Fixed media_gallery descriptions'); 
+}

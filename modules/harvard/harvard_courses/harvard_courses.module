@@ -326,6 +326,47 @@ function harvard_courses_node_insert($node) {
 }
 
 /**
+ * Implements hook_node_presave().
+ *
+ * Needed to ensure that course node titles don't contain entity codes.
+ */
+function harvard_courses_node_presave($node) {
+  if ($node->type != 'harvard_course') {
+    return;
+  }
+
+  // Replaces raw values with HTML entities decoded.
+  $node->title = _harvard_courses_filter_html_entities($node->title);
+
+  include_once(drupal_get_path('module', 'harvard_courses') . '/harvard_courses.features.field.inc');
+  $fields = harvard_courses_field_default_fields();
+  $text = array('text', 'text_with_summary');
+  foreach ($fields as $field => $info) {
+    if (!in_array($info['field_config']['type'], $text) || $info['field_instance']['bundle'] != 'harvard_course') {
+      continue;
+    }
+
+    if (isset($node->{$field}[LANGUAGE_NONE][0]['value'])) {
+      // Replaces raw values with HTML entities decoded.
+      $original = $node->{$field}[LANGUAGE_NONE][0]['value'];
+      $new = _harvard_courses_filter_html_entities($original);
+      $node->{$field}[LANGUAGE_NONE][0]['value'] = $new;
+    }
+  }
+}
+
+/**
+ * Returns a decoded, filtered version of the text, replacing "&apos;" with "'".
+ *
+ * First, Replaces HTML entities in node titles with their actual characters.
+ * Handles &apos, which is only supported by html_entity_decode() in php =>5.4
+ * @see https://bugs.php.net/bug.php?id=63806
+ */
+function _harvard_courses_filter_html_entities($text) {
+  return str_replace('&apos;', '\'', filter_xss(decode_entities($text)));
+}
+
+/**
  * Implement hook_preprocess_page().
  */
 function harvard_courses_preprocess_page(&$variables) {

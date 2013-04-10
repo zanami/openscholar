@@ -45,7 +45,7 @@ function os_migrate_demo_spaces_overrides($type, $id, $domain) {
       // This is the same value, return early.
       return;
     }
-    db_update('spaces_overrides') // Table name no longer needs {}
+    db_update('spaces_overrides')
     ->fields(array(
       'value' => serialize($domain),
     ))
@@ -123,7 +123,7 @@ function os_migrate_demo_migrate_api() {
  *
  *  @param $nid
  *    The node id of the site.
- *  @param @box
+ *  @param $box
  *    The human name of the widget.
  *  @param $page
  *    The human name for the page for attaching the widget to.
@@ -267,23 +267,16 @@ function os_migrate_demo_hide_box($nid, $plugin, $delta, $page) {
  *    The type of the node. Optional, default is class.
  */
 function os_migrate_demo_assign_node_to_term($title, $name, $type = 'class') {
-  $query = new entityFieldQuery();
+  $nid = reset(entity_load('node', NULL, array('title' => $title, 'type' => $type)))->nid;
 
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('title', $title)
-    ->propertyCondition('type', $type)
-    ->execute();
-
-  $nid = reset($result['node'])->nid;
-
+  $names = explode(",", $name);
   $query = new entityFieldQuery();
   $result = $query
     ->entityCondition('entity_type', 'taxonomy_term')
-    ->propertyCondition('name', $name)
+    ->propertyCondition('name', $names, is_array($names) ? 'IN' : '=')
     ->execute();
 
-  $tid = reset($result['taxonomy_term'])->tid;
+  $tid = reset($result['taxonomy_term']);
 
   $wrapper = entity_metadata_wrapper('node', $nid);
   $wrapper->{OG_VOCAB_FIELD}[] = $tid;

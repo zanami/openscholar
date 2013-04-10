@@ -5,23 +5,20 @@ Feature:
   @api
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I expect for a behavior according the next <statements>:
-      | john                      | 200  | john                       |
-      | node/1                    | 302  | john                       |
-      | book/all-about-nodes      | 302  | john/book/all-about-nodes  |
-      | als/book/all-about-nodes  | 302  | john/book/all-about-nodes  |
+   #  | Address                                 | Code  | Expected URL                  |
+      | john                                    | 200   | john                          |
+      | node/1                                  | 302   | john                          |
+      | book/all-about-nodes                    | 302   | john/book/all-about-nodes     |
+      | als/book/all-about-nodes                | 302   | john/book/all-about-nodes     |
+      | john/blog/me-against-labor              | 302   | lincoln/blog/me-against-labor |
 
   @api @wip
-  Scenario Outline: Non-aliased node paths redirect on sites with domains.
-    Given I am on a site with a custom domain "custom.com"
-     When I visit <request-url>
-     Then I should get a <code> HTTP response
-      And I should be on <final-url>
-
-    Examples:
-      | request-url         | code | final-url      |
-      | "node/123"          | 301  | "news/my-news" |
-      | "john/node/123"     | 301  | "news/my-news" |
-      | "john/news/my-news" | 200  | "news/my-news" |
+  Scenario: Non-aliased node paths redirect on sites with domains.
+    Given I expect for a behavior according the next <statements>:
+    # |   Prefix  | Title                   | Path? | Code  | Expected URL                        |
+      |           | John Fitzgerald Kennedy | No    | 302   | john/people/john-fitzgerald-kennedy |
+      | john/     | John Fitzgerald Kennedy | No    | 302   | john/people/john-fitzgerald-kennedy |
+      | john/     | John Fitzgerald Kennedy | Yes   | 200   | john/people/john-fitzgerald-kennedy |
 
   @api @wip
   Scenario Outline: Non-aliased system paths redirect on sites with domains.

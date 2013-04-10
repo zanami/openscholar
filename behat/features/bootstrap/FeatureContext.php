@@ -159,8 +159,10 @@ class FeatureContext extends DrupalContext {
     }
     else {
       // Normal compare.
-      if (strpos($page_string, $comapre_string) === FALSE) {
-        throw new Exception("Text not found.");
+      foreach (explode("\n", $comapre_string) as $text) {
+        if (strpos($page_string, $text) === FALSE) {
+          throw new Exception(sprintf('The text "%s" was not found.', $text));
+        }
       }
     }
   }
@@ -331,8 +333,7 @@ class FeatureContext extends DrupalContext {
    * @When /^I assign the node "([^"]*)" to the term "([^"]*)"$/
    */
   public function iAssignTheNodeToTheTerm($node, $term) {
-    $code = "os_migrate_demo_assign_node_to_term('$node', '$term');";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
+    $this->invoke_code('os_migrate_demo_assign_node_to_term', array("'$node'","'$term'"));
   }
 
   /**
@@ -358,6 +359,9 @@ class FeatureContext extends DrupalContext {
     // them.
     foreach ($this->box as $box_handler) {
       $data = explode(',', $box_handler);
+      foreach ($data as &$value) {
+        $value = trim($value);
+      }
       $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
       $this->getDriver()->drush("php-eval \"{$code}\"");
     }
@@ -416,6 +420,25 @@ class FeatureContext extends DrupalContext {
    */
   public function iSleepFor($sec) {
     sleep($sec);
+  }
+
+  /**
+   * Invoking a php code with drush.
+   *
+   *  @param $function
+   *    The function name to invoke.
+   *  @param $arguments
+   *    Array contain the arguments for function.
+   *  @param $debug
+   *    Set as TRUE/FALSE to diplay the output the function print on the screen.
+   */
+  private function invoke_code($function, $arguments, $debug = FALSE) {
+    $code = "$function(" . implode(',', $arguments) . ");";
+    $output = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    if ($debug) {
+      print_r($output);
+    }
   }
 
   /**
@@ -485,7 +508,6 @@ class FeatureContext extends DrupalContext {
     $element->setValue($this->randomizeMe());
   }
 
-
   /**
    * @Given /^I visit the site "([^"]*)"$/
    */
@@ -499,11 +521,19 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $function = 'os_migrate_demo_set_term_under_term';
+    $this->invoke_code($function, array("'$child'", "'$parent'"));
+  }
+
+  /**
    * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
    */
   public function iSetTheVariableTo($variable, $value) {
-    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
+    $function = 'os_migrate_demo_variable_set';
+    $this->invoke_code($function, array($variable, $value));
   }
 
   /**
@@ -581,17 +611,51 @@ class FeatureContext extends DrupalContext {
     $rows = $table->getRows();
     $baseUrl = $this->locatePath('');
 
-    foreach ($rows as $row) {
-      $this->visit($row[0]);
-      $url = $this->getSession()->getCurrentUrl();
+    if (count(reset($rows)) == 3) {
+      foreach ($rows as $row) {
+        $this->visit($row[0]);
+        $url = $this->getSession()->getCurrentUrl();
 
-      if ($url != $baseUrl . $row[2]) {
-        throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+        if ($url != $baseUrl . $row[2] && $url != 'http://lincoln.local/' . $row[2]) {
+          throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+        }
+
+        $john_response_code = $this->responseCode($baseUrl . $row[0]);
+        $lincoln_response_code = $this->responseCode('http://lincoln.local/' . $row[0]);
+        if ($john_response_code != $row[1] && $lincoln_response_code != $row[1]) {
+          throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$john_response_code}/{$lincoln_response_code} reponse code.");
+        }
       }
+    }
+    else {
+      foreach ($rows as $row) {
+        $code = "os_migrate_demo_get_node_nid('$row[1]');";
+        $nid = $this->getDriver()->drush("php-eval \"{$code}\"");
 
-      $response_code = $this->responseCode($baseUrl . $row[0]);
-      if ($response_code != $row[1]) {
-        throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$response_code} reponse code.");
+
+        if ($row[2] == 'No') {
+          $VisitUrl = 'node/' . $nid;
+        }
+        else {
+          $code = "print drupal_get_path_alias('node/{$nid}');";
+          $VisitUrl = $this->getDriver()->drush("php-eval \"{$code}\"");
+        }
+
+        if (!empty($row[0])) {
+          $VisitUrl = $row[0] . $VisitUrl;
+        }
+
+        $this->visit($VisitUrl);
+        $url = $this->getSession()->getCurrentUrl();
+
+        if ($url != $baseUrl . $row[4]) {
+          throw new Exception("When visiting {$VisitUrl} we did not redirected to {$row[4]} but to {$url}.");
+        }
+
+        $response_code = $this->responseCode($baseUrl . $VisitUrl);
+        if ($response_code != $row[3]) {
+          throw new Exception("When visiting {$VisitUrl} we did not get a {$row[3]} reponse code but the {$response_code} reponse code.");
+        }
       }
     }
   }
@@ -627,13 +691,6 @@ class FeatureContext extends DrupalContext {
     return $metasteps;
   }
 
-  /**
-   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
-   */
-  public function iSetTheTermUnderTheTerm($child, $parent) {
-    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
-  }
   /**
    * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
    */
@@ -672,6 +729,20 @@ class FeatureContext extends DrupalContext {
     $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
     if ($element) {
       throw new Exception("The text {$text} found under #{$id}");
+    }
+  }
+
+  /**
+   * @Then /^I should verify i am at "([^"]*)"$/
+   */
+  public function iShouldVerifyIAmAt($given_url) {
+    $url = $this->getSession()->getCurrentUrl();
+    $base_url = $startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
+
+    $path = str_replace($base_url, '', $url);
+
+    if ($path != $given_url) {
+      throw new Exception("The given url: '{$given_url}' is not equal to the current path {$path}");
     }
   }
 }

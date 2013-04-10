@@ -15,5 +15,4 @@ behat/vendor
 behat/bin
 behat.local.yml
 composer.phar
-composer.lock
 
