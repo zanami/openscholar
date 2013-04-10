@@ -926,23 +926,14 @@ function vsite_load_user_sites($user_id){
   foreach ($vsites_owner as $site ) {
     $node = node_load($site->group->nid);
     $items = array();
-    $items[] = array(
-      '#type' => 'link',
-      '#title' => check_plain($node->title),
-      '#href' => url('node/' . $node->nid),
-    );
+    $items[] = l($node->title, 'node/' . $node->nid);
+
 
     if (node_access('delete', $node)) {
-      $items[] = array(
-        '#type' => 'link',
-        '#title' => t('Delete site'),
-        '#href' => url('node/' . $node->nid . '/delete'),
-      );
+      $items[] = l(t('Delete site'), 'node/' . $node->nid . '/delete');
     }
     // Prepare them for theme_list_item.
-    $sites_array[] = array(
-      'data' => theme('item_list', array('items' => $items)),
-    );
+    $sites_array[] = theme('item_list', array('items' => $items, 'attributes' => array('class' => array('inline'))));
   }
 
   return $sites_array;
@@ -1026,7 +1017,7 @@ function vsite_user_view_alter(&$build){
         );
         $website_title = t('My Website:');
       }
-      $vsites_list .= theme_item_list(array(
+      $vsites_list .= theme('item_list', array(
         'items' => $owner_sites,
         'title' => $website_title,
         'type' => 'ul',
