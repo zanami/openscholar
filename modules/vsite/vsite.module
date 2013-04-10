@@ -926,11 +926,10 @@ function vsite_load_user_sites($user_id){
   foreach ($vsites_owner as $site ) {
     $node = node_load($site->group->nid);
     $items = array();
-    $items[] = l($node->title, 'node/' . $node->nid);
-
+    $items[] = l($node->title, $site->get_absolute_url());
 
     if (node_access('delete', $node)) {
-      $items[] = l(t('Delete site'), 'node/' . $node->nid . '/delete');
+      $items[] = l(t('Delete site'), $site->get_absolute_url('node/' . $node->nid . '/delete'));
     }
     // Prepare them for theme_list_item.
     $sites_array[] = theme('item_list', array('items' => $items, 'attributes' => array('class' => array('inline'))));
