@@ -35,8 +35,8 @@ div.vertical-tabs .vertical-tabs-list {
 
 #file-entity-add-upload {
 	position: absolute;
-	top: -19px;
-	right: 250px;
+	top: -17px;
+	right: 232px;
 	z-index: 5;
 }
 
@@ -51,6 +51,10 @@ div.vertical-tabs .vertical-tabs-list {
 #file-entity-add-upload .form-help,
 #file-entity-add-upload .description {
 	display: none;
+}
+
+#file-entity-add-upload #edit-upload label {
+	padding: 2px 13px;
 }
 
 .insert-buttons {
