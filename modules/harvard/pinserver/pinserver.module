@@ -104,7 +104,7 @@ function pinserver_check_user() {
     drupal_goto();
   }
 
-  if (isset($_GET['tk_forward'])) {
+  if (isset($_GET['tk_forward']) && isset($_GET['redirect'])) {
     drupal_goto(ltrim($_GET['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
   }
 
@@ -123,7 +123,7 @@ function pinserver_check_user() {
   }
 
   // Redirects user to landing page set in pinserver configuration page
-  drupal_goto(variable_get('pinserver_landing_path'));
+  drupal_goto(variable_get('pinserver_landing_path','site/register'));
 }
 
 /**
@@ -144,6 +144,7 @@ function pinserver_authenticate_user($use_session = FALSE){
   // Redirects to error page if any errors are returned.
   if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
     pinserver_get_errors(array_unique($token_data['errors']));
+    return FALSE;
   }
 
   // Success! Code beyond this point handles a successful PIN authentication.

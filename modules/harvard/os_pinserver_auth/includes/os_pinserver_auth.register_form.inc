@@ -30,7 +30,7 @@ function os_pinserver_auth_vsite_register_form_page() {
 
     // Sends user to pinserver if not logged-in locally or via the pinserver
     if (!pinserver_check_status()) {
-      return pinserver_redirect();
+      return pinserver_redirect(array('redirect' => 'site/register'));
     }
 
     // Redirects pinserver-logged-in user if they don't own a vsite.
@@ -44,7 +44,7 @@ function os_pinserver_auth_vsite_register_form_page() {
 
   //This will redirect the user to their site or return TRUE if they can create a site
   if(_os_pinserver_auth_create_vsite_redirect()){
-    drupal_get_form('vsite_register_form');
+    return drupal_get_form('vsite_register_form');
   }
 }
 

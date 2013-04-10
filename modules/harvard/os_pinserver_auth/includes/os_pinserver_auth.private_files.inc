@@ -58,6 +58,25 @@ function os_pinserver_auth_private_file_download(){
 }
 
 /**
+ * Fastpath entry point for:
+ * pinserver_check_user()
+ *
+ *  @see pinserver_check_user()
+ */
+function os_pinserver_auth_pinserver_check_user(){
+
+  if(!isset($_GET['tk_forward']) || !isset($_GET['redirect'])){
+    //Save the session since this request will not be forwareded on
+    drupal_register_shutdown_function('drupal_session_commit');
+  }
+
+  //Call standard pinserver user check
+  pinserver_check_user();
+
+
+}
+
+/**
  * Checks for pinserver and serves file headers if all rules pass.
  */
 function _os_pinserver_auth_file_download($uri) {

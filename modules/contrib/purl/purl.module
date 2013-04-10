@@ -1,15 +1,6 @@
 <?php
 
 /**
- * Implements hook_boot().
- * This hook is declared simply to ensure that PURL is loaded early enough for
- * url_alter detect its presence. (http://drupal.org/node/729862).
- */
-function purl_boot() {
-  _purl_cache_q($_GET['q']);
-}
-
-/**
  * Implements hook_theme().
  */
 function purl_theme($existing, $type, $theme, $path) {
@@ -184,6 +175,15 @@ function purl_inited($set = NULL) {
  * Rewrites an incoming drupal path (&$path) removing PURL modifiers.
  */
 function purl_url_inbound_alter(&$path, $original_path, $path_language) {
+
+  /**
+   * Eensures that PURL is loaded early enough for
+   * url_alter detect its presence. (http://drupal.org/node/729862).
+   */
+  if(!purl_inited()){
+    _purl_cache_q($original_path);
+  }
+
   $path = purl_inited() ? purl_get_normal_path($path) : $path;
 }
 

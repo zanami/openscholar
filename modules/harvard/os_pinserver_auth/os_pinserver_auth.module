@@ -45,30 +45,24 @@ function os_pinserver_auth_node_access($node, $op, $account) {
 
 /**
  * Register a "JS" callback.
- *
- * @return array
- *   An array of callbacks with the following possible keys for each callback:
- *   - callback: (required) The function to call to display the results when an ajax call occurs on this path
- *   - includes: (optional) Load aditional files from the /includes directory, without the extension
- *   - dependencies: (optional) Load additional modules for this callback
- *   - bootstrap: (optional) The bootstrap level Drupal should boot to, defaults
- *                to DATABASE or SESSION if an access argument/callback is defined
- *   - file: (optional) In which file the callback function is defined
- *   - access arguments: (optional) Arguments for the access callback
- *   - access callback: (optional) Callback for the access check, default to
- *                      user_access if there is an acces argument defined
- *
  */
 function os_pinserver_auth_js() {
   // Ensure the stream wrappers are available
-  drupal_load('module', 'system');
-  _os_pinserver_auth_init_variables();
+//   drupal_load('module', 'system');
+//   _os_pinserver_auth_init_variables();
 
   return array(
     'files' => array(
       'callback' => 'os_pinserver_auth_private_file_download',
-      'dependencies' => array('pinserver','file_entity','syslog','system','file'),
+      'dependencies' => array('pinserver','file_entity', 'user', 'syslog','system','file'),
       'includes' => array('path'),
+      'bootstrap' => DRUPAL_BOOTSTRAP_VARIABLES,
+    ),
+    'auth' => array(
+      'callback' => 'os_pinserver_auth_pinserver_check_user',
+      'dependencies' => array('pinserver','file_entity', 'user', 'syslog','system','file'),
+      'includes' => array('path'),
+      'bootstrap' => DRUPAL_BOOTSTRAP_SESSION,
     ),
   );
 }
