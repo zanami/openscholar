@@ -33,6 +33,26 @@ div.vertical-tabs .vertical-tabs-list {
 	margin-right: 8px;
 }
 
+#file-entity-add-upload {
+	position: absolute;
+	top: -19px;
+	right: 250px;
+	z-index: 5;
+}
+
+#file-entity-add-upload .form-item-upload {
+	margin: 0;
+}
+
+#file-entity-add-upload label[for="edit-upload"] {
+	display: none;
+}
+
+#file-entity-add-upload .form-help,
+#file-entity-add-upload .description {
+	display: none;
+}
+
 .insert-buttons {
 	position: fixed;
 	bottom: 0;
@@ -45,6 +65,7 @@ div.vertical-tabs .vertical-tabs-list {
 .insert-buttons .form-submit {
 	margin-top: 0.5em;
 	margin-bottom: 0;
+	float: right;
 }
 
 .insert-buttons input[value="Cancel"] {

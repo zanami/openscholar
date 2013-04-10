@@ -5,30 +5,22 @@ function os_wysiwyg_link_insert() {
   
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
-    'file' => array(
-      'title' => 'Library',
-      'page' => '_os_link_get_view',
-      'params' => array(),
-    ),
-    'upload' => array(
-      'title' => 'Upload',
-      'form' => 'file_entity_add_upload',
-      'params' => array(
-        'file_directory' => os_files_get_save_path(),
-        'no_redirect' => TRUE
-      ),
-    ),
     'external' => array(
       'title' => 'Webpage',
     	'form' => '_os_link_external_form',
     ),
-    'page' => array(
-      'title' => 'Page',
-      'form' => '_os_link_internal_form',
-    ),
     'email' => array(
       'title' => 'E-mail',
       'form' => '_os_link_email_form',
+    ),
+    'file' => array(
+      'title' => 'Files',
+      'page' => '_os_link_get_view',
+      'params' => array(),
+    ),
+    'page' => array(
+      'title' => 'Page',
+      'form' => '_os_link_internal_form',
     ),
   );
   
@@ -185,6 +177,10 @@ function _os_link_get_view($params) {
       }
       
       $output = array(
+        'upload' => drupal_get_form('file_entity_add_upload', array(
+          'file_directory' => os_files_get_save_path(),
+          'no_redirect' => TRUE
+        )),
       	'library' => $build,
         'actions' => array(
           '#type' => 'actions',
