@@ -248,28 +248,23 @@ class os_boxes_slideshow extends os_boxes_default {
 
       foreach ($data as $width => $dim) {
         if ($this->options['size'] <= $width) {
-          $ratio = $dim['height']/$dim['width'];
           $preset = $prefix.$width;
+          $perc = intval(100 * $this->options['size'] / $width);
           break;
         }
       }
 
-      $width = $this->options['size'];
-      $height = $width * $ratio;
-
-      // swap out the dimenions of the preset with the dimenions the user wants
-      $patt_w = '/(<img [^>]* width=")([^"]*)("[^>]*>)/';
-      $patt_h = '/(<img [^>]* height=")([^"]*)("[^>]*>)/';
+      //swap in pre-scaled image
       $patt_url = '/<img [^>]*src="([^"]*)"[^>]*>/';
-
-      $output = preg_replace($patt_w, '${1}'.($width).'px'.'${3}', $output);
-      $output = preg_replace($patt_h, '${1}'.($height).'px'.'${3}', $output);
       $matches = array();
       preg_match_all($patt_url, $output, $matches, PREG_SET_ORDER);
       foreach ($matches as $m) {
         $output = str_replace($m[1], image_style_url($preset, $m[1]), $output);
       }
-
+      
+      // shrink the image down to specific size
+      $output = str_replace('100%', $perc.'%', $output);
+          
       $block['content'] = $output;
     }
 
