@@ -3,5 +3,6 @@ description = "This module uses the pinserver module to modify site creation, us
 dependencies[] = "vsite_register"
 dependencies[] = "vsite"
 dependencies[] = "pinserver"
+files[] = includes/os_pinserver_auth_stream_wrapper.inc
 package = "OpenScholar Harvard"
 core = 7.x

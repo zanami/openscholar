@@ -1,12 +1,41 @@
 <?php
 
 /**
+ * Register menu_alter
+ */
+function _os_pinserver_auth_private_files_menu(&$items) {
+
+  $fast_path = variable_get('os_pinserver_auth_fast_path','os_fast');
+
+  $items["{$fast_path}/files"] = array(
+    'title' => 'File Download',
+    'page callback' => 'os_pinserver_auth_private_file_download',
+    'weight' => 10,
+    'description' => t('Backup menu callback for serving pinserver files.')
+  );
+
+  $items["{$fast_path}/auth"] = array(
+    'title' => 'Pin Authentication Handler',
+    'page callback' => 'pinserver_check_user',
+    'weight' => 10,
+    'description' => t('Backup menu callback for auth via pinserver.'),
+  );
+}
+
+/**
  * Process a file download authenticated via pinserver.
  * @return string
  */
 function os_pinserver_auth_private_file_download(){
 
   $path = func_get_args();
+
+  //If this is called from drupal core's hook_menu strip off arg's that are not part of the path.
+  if(!empty($path[0]) && $path[0] == variable_get('os_pinserver_auth_fast_path','os_fast')){
+    array_shift($path);
+    array_shift($path);
+  }
+
   //For now lets restrict this to private files
   $scheme = "private";
 

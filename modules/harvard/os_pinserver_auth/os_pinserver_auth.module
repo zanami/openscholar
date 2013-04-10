@@ -14,6 +14,18 @@ function os_pinserver_auth_menu_alter(&$items) {
   if(variable_get('os_pinserver_registration', FALSE)){
     _os_pinserver_auth_register_menu_alter($items);
   }
+
+  _os_pinserver_auth_private_files_menu_alter($items);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function os_pinserver_auth_menu_alter() {
+  //Add file menu callbacks
+  $items = _os_pinserver_auth_private_files_menu();
+
+  return $items;
 }
 
 /**
@@ -73,6 +85,21 @@ function os_pinserver_auth_file_download($uri) {
   //Checks if pinserver file protection is enabled.
   if(variable_get('os_files_private_pinserver', 0)){
     return _os_pinserver_auth_file_download($uri);
+  }
+}
+
+/**
+ * Implements hook_stream_wrappers_alter().
+ *
+ * Used to extend the private stream wrapper.
+ *
+ * @param array $wrappers
+ */
+function os_files_stream_wrappers_alter(&$wrappers){
+
+  // Use OS Pinserver Auth Stream Wrapper.
+  if (variable_get('os_files_private_pinserver', 0) && isset($wrappers['private'])) {
+    $wrappers['private']['class'] = 'OSPinserverPrivateStreamWrapper';
   }
 }
 
