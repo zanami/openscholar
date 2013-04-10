@@ -75,6 +75,10 @@ textarea:focus {
    border: 1px solid #ccc;
 }
 
+.sidebar .form-type-select .form-select {
+max-width: 160px;
+}
+
 #cp-appearance-theme-picker-form .form-type-select .form-select {
     min-width: 50px !important;
     max-width: 90px !important;
