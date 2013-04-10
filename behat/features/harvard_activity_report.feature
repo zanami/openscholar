@@ -37,9 +37,6 @@ Feature:
           <citation>. The Little Prince. </citation>
           <linkToArticle></linkToArticle>
           <yearOfPublication>1943</yearOfPublication>
-        </publication>
-      </person>
-    </response>
     """
 
   @api

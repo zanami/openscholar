@@ -456,6 +456,8 @@ class os_sv_list_box extends os_boxes_default {
           ->fields('fd', array('entity_id', 'delta'))
           ->where('field_date_value > NOW()')
           ->orderBy('field_date_value');
+          $query->join('node', 'n', 'n.vid = fd.revision_id');
+          $query->condition('n.status', 1);
           $entity_field = "fd.entity_id";
           break;
         }
@@ -493,16 +495,18 @@ class os_sv_list_box extends os_boxes_default {
 	      }
 	    }
 
-	    $operator = (count($gids) == 1)? "=" : "IN";
-	    $gids = (count($gids) == 1)? current($gids) : $gids;
+	    if(count($gids)){
+		    $operator = (count($gids) == 1)? "=" : "IN";
+		    $gids = (count($gids) == 1)? current($gids) : $gids;
 
-	    if($query instanceof EntityFieldQuery){
-	      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
-	    }else{
-	      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
-	      $query->condition('og.gid', $gids, $operator);
-	      $query->condition('og.entity_type', 'node');
-	      $query->condition('og.group_type', 'node');
+		    if($query instanceof EntityFieldQuery){
+		      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
+		    }else{
+		      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
+		      $query->condition('og.gid', $gids, $operator);
+		      $query->condition('og.entity_type', 'node');
+		      $query->condition('og.group_type', 'node');
+		    }
 	    }
     }
 
@@ -643,6 +647,7 @@ class os_sv_list_box extends os_boxes_default {
     $result = $query
       ->condition('t.tid', $tids, 'IN')
       ->condition('n.type', $content_types)
+      ->condition('n.status', 1)
       ->fields('t')
       ->execute();
 

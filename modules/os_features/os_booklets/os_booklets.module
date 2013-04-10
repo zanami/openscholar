@@ -53,10 +53,14 @@ function os_booklets_menu() {
 function os_booklets_menu_alter(&$items) {
 
   if (isset($items['node/%node/outline'])) {
-    $items['node/%node/outline']['page callback'] = 'os_booklets_book_root_outline';
-    $items['node/%node/outline']['page arguments'] = array(1);
-    $items['node/%node/outline']['file'] = 'book.admin.inc';
-    $items['node/%node/outline']['file path'] = drupal_get_path('module', 'book');
+    $item = &$items['node/%node/outline'];
+    $item['page callback'] = 'os_booklets_book_root_outline';
+    $item['page arguments'] = array(1);
+    $item['file'] = 'book.admin.inc';
+    $item['file path'] = drupal_get_path('module', 'book');
+    $item['type'] = MENU_LOCAL_TASK;
+    $item['context'] = MENU_CONTEXT_INLINE;
+    $item['weight'] = 0;
   }
 
   if (isset($items['book'])) {

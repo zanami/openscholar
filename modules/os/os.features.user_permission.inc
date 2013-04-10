@@ -443,6 +443,18 @@ function os_user_default_permissions() {
     'module' => 'media',
   );
 
+  // Exported permission: insert link into wysiwyg.
+  $permissions['insert link into wysiwyg'] = array(
+    'name' => 'insert link into wysiwyg',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'os_wysiwyg_link',
+  );
+
   // Exported permission: manage features.
   $permissions['manage features'] = array(
     'name' => 'manage features',

@@ -20,7 +20,8 @@ a:visited {
 
 #columns .block.block-boxes-os_taxonomy_fbt ul,
 #columns .block .item-list ul,
-#columns .block.block-boxes-os_boxes_twitterfeed ul
+#columns .block.block-boxes-os_boxes_twitterfeed ul,
+#columns .block.block-boxes-twitter ul
  {list-style: none;}
 
 p:empty {
@@ -116,6 +117,7 @@ table caption {
 .page-search input.form-text {
   width: auto;
   background: #F2F2EF;
+  padding-right: 50px;
 }
 
 ol.search-results li.search-result {
@@ -303,6 +305,25 @@ ol.search-results li.search-result:last-child {
 .calendar-calendar .day-view .full div.single-day div.dayview a {
   text-decoration: underline;
   font-family:arial;
+}
+
+.calendar-calendar .week-view div.single-day .view-item, 
+.calendar-calendar .day-view div.single-day .view-item {
+     float: left;
+    height: 80px;
+    position: relative;
+    width: 120px;
+  }
+  
+.calendar-calendar .week-view div.single-day .view-item {
+    width: 100px;
+  }  
+
+.calendar-calendar .week-view .full div.calendar-agenda-hour, 
+.calendar-calendar .day-view .full div.calendar-agenda-hour, 
+.calendar-calendar .week-view .full div.calendar-agenda-items, 
+.calendar-calendar .day-view .full div.calendar-agenda-items {
+    height: 80px;
 }
 
 .calendar-calendar div.date-nav h3 {
