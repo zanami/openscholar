@@ -3,7 +3,7 @@
 /**
  * Register menu_alter
  */
-function _os_pinserver_auth_private_files_menu(&$items) {
+function _os_pinserver_auth_private_files_menu() {
 
   $fast_path = variable_get('os_pinserver_auth_fast_path','os_fast');
 
@@ -11,6 +11,7 @@ function _os_pinserver_auth_private_files_menu(&$items) {
     'title' => 'File Download',
     'page callback' => 'os_pinserver_auth_private_file_download',
     'weight' => 10,
+    'access callback' => TRUE,
     'description' => t('Backup menu callback for serving pinserver files.')
   );
 
@@ -18,8 +19,11 @@ function _os_pinserver_auth_private_files_menu(&$items) {
     'title' => 'Pin Authentication Handler',
     'page callback' => 'pinserver_check_user',
     'weight' => 10,
+    'access callback' => TRUE,
     'description' => t('Backup menu callback for auth via pinserver.'),
   );
+
+  return $items;
 }
 
 /**

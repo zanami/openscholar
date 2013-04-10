@@ -14,14 +14,12 @@ function os_pinserver_auth_menu_alter(&$items) {
   if(variable_get('os_pinserver_registration', FALSE)){
     _os_pinserver_auth_register_menu_alter($items);
   }
-
-  _os_pinserver_auth_private_files_menu_alter($items);
 }
 
 /**
  * Implements hook_menu().
  */
-function os_pinserver_auth_menu_alter() {
+function os_pinserver_auth_menu() {
   //Add file menu callbacks
   $items = _os_pinserver_auth_private_files_menu();
 
@@ -95,7 +93,7 @@ function os_pinserver_auth_file_download($uri) {
  *
  * @param array $wrappers
  */
-function os_files_stream_wrappers_alter(&$wrappers){
+function os_pinserver_auth_stream_wrappers_alter(&$wrappers){
 
   // Use OS Pinserver Auth Stream Wrapper.
   if (variable_get('os_files_private_pinserver', 0) && isset($wrappers['private'])) {
