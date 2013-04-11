@@ -271,8 +271,6 @@ function os_publications_update_7006() {
 
   $csl = file_get_contents($file);
   $name = basename($file_name);
-  // Remove the hanging indent.
-  $csl = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl);
   // Use citeproc's function to update the db.
   biblio_citeproc_install_style($name, $csl);
 
