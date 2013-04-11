@@ -306,7 +306,6 @@ class vsite extends space_og {
       'site/register',
       'welcome',
       'contact',
-      'node',
       'admin',
       'admin/*',
       // 'files/*', Need files menu entry to be loaded in a space so that the purl can be used to serve old file pats. -RB

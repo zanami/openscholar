@@ -13,6 +13,7 @@ function pinserver_menu() {
   $items['pinserver/auth'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'pinserver_check_user',
+    'page arguments' => array(TRUE),
     'access callback' => TRUE,
   );
 
@@ -23,7 +24,7 @@ function pinserver_menu() {
     'access callback' => TRUE,
   );
 
-  $items['admin/settings/pinserver'] = array(
+  $items['admin/config/openscholar/pinserver'] = array(
     'title' => t('Pinserver'),
     'description' => t('Modify Harvard Pinserver configuration, access, and logging'),
     'type' => MENU_NORMAL_ITEM,
@@ -82,60 +83,89 @@ function pinserver_user_logout($account) {
  * @see iqss_pinserver_register_form_access()
  */
 function pinserver_redirect($args = array()) {
-  $redirect_url = variable_get('pinserver_pin_url') . '?__authen_application=' . variable_get('pinserver_app_name');
-  if (isset($args['redirect_uri'])) {
-    $redirect_url .= '&redirect=' . urlencode($args['redirect_uri']);
-  }
+
+  $args['__authen_application'] = variable_get('pinserver_app_name');
+  $redirect_url = url(variable_get('pinserver_pin_url'),array('query' => $args));
 
   drupal_goto($redirect_url);
 }
 
 /**
- * First function called after user has authenticated via pinserver and returned to site
+ * Menu callback called when returning from pinserver
+ *
+ * This will either forward the request to the correct page, or authenticate and create a user session.
  */
 function pinserver_check_user() {
 
   // First, verifies the pinserver settings.
   if ($error = pinserver_check_system_settings()) {
     error_log($error);
-    drupal_set_message(t("New web sites are not available at this time but should be available shortly. Please check back within the hour or email us at !support_mail.", array('!support_mail' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . variable_get('pinserver_support_contact') . '</a>')));
+    drupal_set_message(t("Harvard PIN service is not available at this time but should be available shortly. Please check back later or email us at !support_mail.", array('!support_mail' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . variable_get('pinserver_support_contact') . '</a>')));
     drupal_goto();
   }
 
-  // Parses and validates the PIN token.
-  $token_data = pinserver_check_token();
-
-  // FOR DEVELOPING: Uncomment to fake auth locally
-  //unset($token_data['errors']);
-
-  // Redirects to error page if any errors are returned.
-  if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
-    $errors = implode(',', array_unique($token_data['errors']));
-    drupal_goto("pinserver/error/token/$errors");
+  if (isset($_GET['tk_forward']) && isset($_GET['redirect'])) {
+    drupal_goto(ltrim($_GET['redirect'], '/'),array('query' => drupal_get_query_parameters(NULL,array('q','tk_forward','redirect'))));
   }
 
-  // Success! Code beyond this point handles a successful PIN authentication.
-
-  // Places encrypted harvard uid into session array.
-  $_SESSION['pinserver']['huid'] = $token_data['user_id'];
-  $_SESSION['pinserver']['reg_time'] = time();
-
-  if(isset($token_data['department']) && !empty($token_data['department'])) {
-    $_SESSION['pinserver']['harvard_employee'] = $token_data['department'];
+  //Validate User
+  if(!pinserver_authenticate_user(TRUE)){
+    $errors = implode(',', pinserver_get_errors());
+    drupal_goto("pinserver/error/token/$errors");
   }
 
   // Invokes hook_pinserver().
   module_invoke_all('pinserver');
 
   // Redirects user to redirect URL if specified (probably a private file)
-  $query_params = array();
   if (isset($_GET['redirect'])) {
-    $query_params['redirect'] = $_GET['redirect'];
-    drupal_goto(ltrim($query_params['redirect'], '/'));
+    drupal_goto(ltrim($_GET['redirect'], '/'));
   }
 
   // Redirects user to landing page set in pinserver configuration page
-  drupal_goto(variable_get('pinserver_landing_path'), array('query' => $query_params));
+  drupal_goto(variable_get('pinserver_landing_path','site/register'));
+}
+
+/**
+ * Use the avalible tokens to authenticate and login a user.
+ *
+ * @param boolean $use_session
+ */
+function pinserver_authenticate_user($use_session = FALSE){
+
+  // First, verifies the pinserver settings.
+  if ($error = pinserver_check_system_settings()) {
+    return false;
+  }
+
+  // Parses and validates the PIN token.
+  $token_data = pinserver_check_token();
+
+  // Redirects to error page if any errors are returned.
+  if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
+    pinserver_get_errors(array_unique($token_data['errors']));
+    return FALSE;
+  }
+
+  // Success! Code beyond this point handles a successful PIN authentication.
+  pinserver_add_user_from_token($token_data, $use_session);
+
+  return true;
+}
+
+/**
+ * Store any errors logged during pin authentication.
+ *
+ * @param array $errors
+ */
+function pinserver_get_errors($errors = false){
+  $pin_errors = &drupal_static(__FUNCTION__,array());
+
+  if($errors){
+    $pin_errors = $errors;
+  }
+
+  return $pin_errors;
 }
 
 /**
@@ -280,13 +310,10 @@ function pinserver_prepare_azp_token($gpg_output) {
  * @return array $values
  *   If the detached signature is deemed good, it returns
  *
- *     pinserver_check_user($user_id)
- *
  *   Otherwise it prohibits the user from logging in.
  */
 function pinserver_check_token() {
   // Initialize the return values.
-  $return = array('errors' => array());
   $command = variable_get('pinserver_gpg_bin') . ' --homedir "' . variable_get('pinserver_gpg_dir') . '" --verify';
   $azp = FALSE;  // AuthZProxy mode
 
@@ -310,7 +337,8 @@ function pinserver_check_token() {
     $command = variable_get('pinserver_gpg_bin') . ' --no-mdc-warning --no-tty --batch --passphrase-file "' . variable_get('pinserver_azp_passphrase') . '" --homedir "' . variable_get('pinserver_gpg_dir') . '" --decrypt';
   }
   else {
-    drupal_goto("pinserver/error/token/unrecognized-url");
+    $values['errors'][] = 'unrecognized-url';
+    return $values;
   }
 
   $pgp_message = '';
@@ -347,8 +375,7 @@ function pinserver_check_token() {
 
   if (!is_resource($process)) {
     $values['errors'][] = 'signature-gpg';
-    $values = implode(',', array_unique($values['errors']));
-    drupal_goto("pinserver/error/token/$values");
+    return $values;
   }
 
   fwrite($pipes[0], $pgp_message);
@@ -403,7 +430,6 @@ function pinserver_check_token() {
   2) __authen_ip / "Ip Address" must match the IP address of the current user
   3) __authen_time / "Timestamp" is valid and not more than a few minutes old
   */
-
 
   // Verify application name.
   if ($values['app'] != variable_get('pinserver_app_name')) {
