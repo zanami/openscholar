@@ -152,6 +152,11 @@ div.contextual-links-wrapper a,
   list-style: none;
 }
 
+.block-boxes-os_boxes_html .block-content li,
+.block-content .field-name-body li {
+  list-style: disc;
+}
+
 
 /* Header */
 #header {

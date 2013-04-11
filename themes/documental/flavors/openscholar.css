@@ -1,0 +1,40 @@
+#header-container ul.menu li.first a {
+  background:url('images/download.png') no-repeat 0 12px transparent;
+  padding-left: 44px;
+  }
+  
+
+#header-container h1 {
+  width:285px;
+  height: 50px;
+  text-indent: -999em;
+  background: url('images/logo.png') no-repeat 0 0 transparent;
+  margin: 0 0 0 5px;
+  }
+  
+#header-container h1 a, #header-container h1 a:visited {
+  display:block;
+  width:279px;
+  height: 31px;
+  }
+
+#header-container h2, #header-container p {
+  display:none;
+  }  
+
+.front #content-panels .region-content-first .block.block-boxes-os_boxes_html:first-child {
+    background: url('images/harvardShieldBg.png') 240px 20px no-repeat #FFFFFF;
+}
+
+.front #content-panels .region-content-bottom .block.block-boxes-os_boxes_html:first-child {
+    background: url('images/globe.png') 230px 20px no-repeat #FFFFFF;
+}
+
+.front #content-panels .region-content-bottom .block.block-boxes-os_boxes_html:nth-child(2) {
+   -moz-box-sizing: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0 0 -20px;
+}
