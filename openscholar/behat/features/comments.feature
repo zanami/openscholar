@@ -1,7 +1,7 @@
 Feature:
   Testing the comment publishing for a blog entry.
 
-  @api @wip
+  @api
   Scenario: Check that a user can create a new blog post
     Given I am logged in as a user with the "administrator" role
      When I visit "john/blog"
