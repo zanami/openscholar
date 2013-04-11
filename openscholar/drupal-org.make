@@ -83,10 +83,7 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][download][type] = git
-projects[entityreference_prepopulate][download][branch] = 7.x-1.1
-projects[entityreference_prepopulate][download][revision] = f7b7168
-;projects[entityreference_prepopulate][version] = 1.1+2-dev
+projects[entityreference_prepopulate][download][branch] = 7.x-1.2
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
