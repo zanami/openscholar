@@ -405,7 +405,7 @@
          </group>
       </layout>
    </citation>
-   <bibliography hanging-indent="true" et-al-min="11" et-al-use-first="7" subsequent-author-substitute="———" entry-spacing="0">
+   <bibliography hanging-indent="false" et-al-min="11" et-al-use-first="7" subsequent-author-substitute="———" entry-spacing="0">
       <sort>
          <key macro="contributors"/>
          <key macro="anon"/>
