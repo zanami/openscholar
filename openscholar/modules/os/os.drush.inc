@@ -19,69 +19,179 @@ remove, deletes from files, rebuild, ac domain remove.
  */
 
 function os_drush_command() {
-  return array(
-    'os-domain-config' => array(
-      'description' => dt('Update Drupal configurations for a custom domain.'),
+  return array(      
+    'os-domain-check' => array(
+      'description' => dt('Checks that files exist and permissions are correct for running drush os-domain-* scripts.'),
       'options' => array(
         'path-to-htaccess' => dt('Not implemented'),
         ''
       ),
-      'arguments' => array(
-        'domain' => dt('The domain to enable.  Do not include http://.'),
-        'required' =>  TRUE,
-          
-      ),
+      'arguments' => array(),
       'examples' => array(
-        'drush @prod odc example.com' => dt('Enable production site to use example.com domain.  The owner of example.com will still have to add that domain to her or her vsite.'),
-        'drush @prod odc example.com --ac=yes' => dt('Also enables example.com domain.  When the ac option is enabled, the domain will be added to Acquia\'s configuration by way of the acquia cloud API.'),
+        'drush @prod os-dc' => dt('Enable production site to use example.com domain.  The owner of example.com will still have to add that domain to her or her vsite.'),
       ),
-        
-      'aliases' => array('odc'),
-    )
+      'aliases' => array('os-dc'),
+    ),
+      
+
+    'os-domain-build' => array(
+      'description' => dt('Build\'s os-domains sites.php, .htaccess, and (optionally) acquia cloud based on current lists of domains.'),
+      'options' => array(
+        'path-to-htaccess' => dt('Not implemented'),
+        ''
+      ),
+      'arguments' => array(),
+      'examples' => array(
+        'drush @prod os-db' => dt('Builds new copise of sites.php and .htaccess.  If acquia cloud API is available, also update their registry of domains.'),
+      ),
+      'aliases' => array('os-db'),
+    ),
+      
+
+    'os-domain-add' => array(
+      'description' => dt('Add a domain to a site.'),
+      'options' => array(
+        'path-to-htaccess' => dt('Not implemented'),
+        'www' => dt('Add domain and www.domain'),
+      ),
+      'arguments' => array(),
+      'examples' => array(
+        'drush @prod os-da -www example.com' => dt('Sets up @prod site to serve example.com and www.example.com.'),
+      ),
+      'aliases' => array('os-da'),
+    ),
+      
+    'os-domain-remove' => array(
+      'description' => dt('Remove a domain from a site.'),
+      'options' => array(
+        'path-to-htaccess' => dt('Not implemented'),
+        'www' => dt('Remove both domain and www.domain'),
+      ),
+      'arguments' => array(),
+      'examples' => array(
+        'drush @prod os-dr -www example.com' => dt('Sets up @prod site to stop serving example.com and www.example.com.'),
+      ),
+      'aliases' => array('os-dr'),
+    ),
+    'os-domain-help' => array(),
+    'os-domain-list' => array(),
   );
 }
 
 /**
- * @function drush_os_domain_config
- *
- * Command callback for os-domain-config
+ * @function _drush_os_domain_get_server_conf() 
+ * 
+ * Gets common vars used in os-domain drush commands
  */
-function drush_os_domain_config() {
-  $args = func_get_args();
-  
-  if (!count($args)) {
-    drush_die('drush os-domain-config requires a domain.  See drush odc --help');
-  }
-  
-  $domain = str_replace('http://', '', $args[0]);
+function _drush_os_domain_get_server_conf() {
   $status = drush_sitealias_get_record('@self');
   $root = $status['root'];
   $context = drush_get_context();
-  $base_path = $root . '/' . $context[DRUSH_DRUPAL_SITE_ROOT];
-  $files_path = $root . '/files';
   
-  //should this live elsewhere?  not sure acquia will let us keep the file where it is now.
-  $domains_list = $base_path . '/' . 'domains.list';
+  return array(
+    'root' => $root,
+    'base_path' => $root . '/' . $context[DRUSH_DRUPAL_SITE_ROOT],
+    'files_path' => $root . '/files',
+    'domains_list' => $root . '/' . $context[DRUSH_DRUPAL_SITE_ROOT] . '/' . 'domains.list',
+    'sitesphp' => $root . '/sites/sites.php',
+    'acquia-cloud-api' => (isset($context[DRUSH_COMMANDS]['ac-domain-add'])),
+  );
+}
 
+/**
+ * @function drush_os_domain_build
+ * 
+ * Service hook for os-domain-build
+ * 
+ * Parses domains.list files into .htaccess, sites.php.inc, and (optionally) acquia cloud domain config
+ */
+function drush_os_domain_build() {
+  $srv_conf = _drush_os_domain_get_server_conf();
+  drush_invoke('os-domain-check');
+  
+  //build list of multisites and their domains
+  $sites = $srv_conf['root'] . '/sites/';
+  $multisites = array();
+  foreach (scandir($sites) as $site) {
+    if (is_dir($sites.$site) && file_exists($sites.$site.'/domains.list')) {
+      $domains = file($sites.$site.'/domains.list');
+      $domains = array_unique($domains);
+      $domains = array_map('trim', $domains);
+      $domains = preg_grep('/^[^#].*$/', $domains); //strip out comments
+      $multisites[$site] = $domains;
+    }
+  }
+  
+  //flatten the multisites array for sites.php
+  $a_sites = array();
+  foreach ($multisites as $site => $domains) {
+    $a_sites += array_fill_keys($domains, $site);
+  }
+  $inc_file= $srv_conf['root'] . '/sites/sites.php.inc';
+  $export = "<?php\n\n\$sites = " . var_export($a_sites, TRUE) . ";\n";
+  _os_drush_confirm_file_overwrite($export, $inc_file);
+  
+  // htaccess
+  $htaccess = _os_drush_domain_htaccess($multisites);
+  _os_drush_confirm_file_overwrite($htaccess, $srv_conf['files_path'] . '/.htaccess');
+  
+  
+  // try acquia cloud api
+//   if ($srv_conf['acquia-cloud-api']) {
+//     // drush @hwpi1.dev ac-domain-list --format export
+  
+//     drush_invoke('ac-domain-add', array($domain));
+//     drush_invoke('ac-domain-purge', array($domain));
+//   }
+}
+
+/**
+ * @function drush_os_domain_add
+ *
+ * Service hook for os-domain-add
+ *
+ * Adds domain(s) to domain listings, then calls rebuild.
+ */
+function drush_os_domain_add() {
+  $args = func_get_args();
+  $domain = (count($args)) ? str_replace('http://', '', $args[0]) : drush_die('drush os-domain-config requires a domain.  See drush odc --help'); 
+  $srv_conf = _drush_os_domain_get_server_conf();
+  drush_invoke('os-domain-check');
+  
   //make sure domain is valid and correct
   if (drush_prompt("Are you sure you want to add '$domain'? (y/n)", 'n') != 'y') {
     drush_die('User bailed out');
   }
   
+  //append domain to list
+  drush_file_append_data($srv_conf['domains_list'], "\n".$domain);
+  
+  drush_invoke('os-domain-build');
+}
+
+/**
+ * @function drush_os_domain_check
+ *
+ * Command callback for os-domain-check
+ * 
+ * Checks configuration and bails out if drush os-domain commands aren't going to work
+ */
+function drush_os_domain_check() {
+  $srv_conf = _drush_os_domain_get_server_conf();
+  
   //check for domains.list
-  if (!file_exists($domains_list)) {
-    file_put_contents($domains_list, "# This file created automatically by drush os-domain-config.  Do not delete.\n") || drush_die('Error creating domains.list.  Check your permissions.');
-    file_put_contents($domains_list, $status['uri'], FILE_APPEND);
+  if (!file_exists($srv_conf['domains_list'])) {
+    file_put_contents($srv_conf['domains_list'], "# This file created automatically by drush os-domain-config.  Do not delete.\n") || drush_die('Error creating domains.list.  Check your permissions.');
+    file_put_contents($srv_conf['domains_list'], $srv_conf['uri'], FILE_APPEND);
   }
   
   //do we have sites.php?
-  $sitesphp = $root . '/sites/sites.php';
-  if (!file_exists($sitesphp)) {
+  if (!file_exists($srv_conf['sitesphp'])) {
     drush_die('sites.php is missing.  Please create a sites.php file to use os-domain-config.');
   }
   
   //check if sites.php has our include line
-  $contents = file_get_contents($sitesphp);
+  $contents = file_get_contents($srv_conf['sitesphp']);
   if (!preg_match('/require_once.*sites\.php\.inc/', $contents)) {
     $required = <<<EOF
     
@@ -93,81 +203,55 @@ if (file_exists(\$dir . '/sites.php.inc')) {
     
 EOF;
     drush_die('sites.php exists, but is not configured to include our domain overrides.  Please add the following code before $sites is initalized.' . $required);
-  
   }
   
   //can we use our files dirs' .htaccess?
-  if (!is_dir($files_path)) {
-    drush_die("Path to .htaccess does not exist.  Create it or provide another path.\n$files_path");
+  if (!is_dir($srv_conf['files_path'])) {
+    drush_die(dt("Path to .htaccess does not exist.  Create it or provide another path.\n @path", array('@path' => $srv_conf['files_path'])));
   }
   
-  //append domain to list
-  drush_file_append_data($domains_list, "\n".$domain); 
+}
+
+/**
+ * @function _os_drush_confirm_file_overwrite($contents, $destination) {
+ * 
+ * Copies contents to a temp file.  Prompts user to preview, copy, or quit.  Only overwrites after user confirmation.
+ */
+function _os_drush_confirm_file_overwrite($contents, $destination) {
+  list($filename) = array_reverse(explode('/', $destination));
+  $temp = tempnam('/tmp', 'drush-odc-'.$filename.'-');
+  file_put_contents($temp, $contents);
   
   
-  //now lets build the files from out domains lists.
-  
-  //build list of multisites and their domains
-  $sites = $root . '/sites/';
-  $multisites = array();
-  foreach (scandir($sites) as $site) {
-    if (is_dir($sites.$site) && file_exists($sites.$site.'/domains.list')) {
-      $domains = file($sites.$site.'/domains.list');
-      $domains = array_unique($domains);
-      $domains = array_map('trim', $domains);
-      $domains = preg_grep('/^[^#].*$/', $domains); //strip out comments
-      $multisites[$site] = $domains; 
-    }
-  }
-  
-  //flatten the multisites array for sites.php
-  $a_sites = array();
-  foreach ($multisites as $site => $domains) {
-    $a_sites += array_fill_keys($domains, $site);
-  }
-  $inc_file= $root . '/sites/sites.php.inc';
-  file_put_contents($inc_file, "<?php\n\n\$sites = " . var_export($a_sites, TRUE) . ";\n");
-  
-  // htaccess
-  $htaccess = _os_drush_domain_htaccess($multisites);
-  $temp = tempnam('/tmp', 'drush-odc-');
-  file_put_contents($temp, $htaccess);
-  
-  
-  //would it make sense to diff the files and ask the user to confirm?
-  $htaccess_file = "$files_path/.htaccess";
   $prompt_loop = TRUE;
   while ($prompt_loop) {
-    $action = drush_prompt('Created .htaccess file.  [v]iew, [d]iff, [c]opy, or [a]bandon it?');
-    drush_print($action);
+    $action = drush_prompt(dt('Created @filename file.  [v]iew, [d]iff, [c]opy, [s]skip it, or [q]uit?', array('@filename' => $filename)));
     switch ($action) {
       case 'v':
         drush_shell_exec_interactive('less ' . $temp);
         break;
-        
+  
       case 'd':
-        drush_shell_exec_interactive("diff $htaccess_file $temp");
+        drush_shell_exec_interactive("diff $destination $temp");
         break;
-        
+  
       case 'c':
         $prompt_loop = FALSE;
-        break;  
-      
-      case 'a': case 'q':
-        drush_die('User bailed out.'); 
         break;
+  
+      case 'q':
+        drush_die('User bailed out.');
+        break;
+
+      case 's':
+        unlink($temp);
+        return;
     }
   }
   // copy the .htaccess file.
-  rename($htaccess_file, $htaccess_file . date('-ymd.U'));
-  drush_print("copying $temp to $htaccess_file");
-  copy($temp, $htaccess_file);
-  
-  // try acquia cloud api
-  if (isset($context[DRUSH_COMMANDS]['ac-domain-add'])) {
-    drush_invoke('ac-domain-add', array($domain));
-    drush_invoke('ac-domain-purge', array($domain));    
-  } 
+  rename($destination, $destination . date('-old-U'));
+  drush_print("copying $temp to $destination");
+  copy($temp, $destination);
 }
 
 /**
@@ -243,11 +327,8 @@ EOF;
  */
 function _os_drush_domain_htaccess_rewrite_condition($domains) {
   foreach ($domains as $n => $domain) {
-    //$condition = '  RewriteCond %{HTTP_POST} (www.)?' . $domain;
-    //begins with.  we have one for scholar.harvard, so it won't match openscholar.harvard.  shouldn't this always be the case?
-    $condition = '  RewriteCond %{HTTP_POST} ^(www.)?' . $domain;
+    $condition = '  RewriteCond %{HTTP_POST} ^' . $domain;
     $domains[$n] = str_replace('.', '\.', $condition);
   }
-  
   return "\n" . implode(" [OR]\n", $domains) . "\n";
 }
