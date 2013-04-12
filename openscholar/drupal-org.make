@@ -181,10 +181,10 @@ projects[media][revision] = "c49692b"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 2.x-dev
-projects[media_gallery][revision] = "2fcf98e"
-; Unable to apply patch 1333674, not sure it;s still required.
-;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
-projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-113.patch"
+projects[media_gallery][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.7
