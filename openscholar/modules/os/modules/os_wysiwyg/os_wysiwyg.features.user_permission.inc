@@ -27,7 +27,9 @@ function os_wysiwyg_user_default_permissions() {
   // Exported permission: use text format full_html.
   $permissions['use text format full_html'] = array(
     'name' => 'use text format full_html',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'vsite admin',
+    ),
     'module' => 'filter',
   );
 
