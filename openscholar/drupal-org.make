@@ -135,11 +135,11 @@ projects[field_redirection][subdir] = "contrib"
 projects[field_redirection][version] = 2.5
 
 projects[file_entity][subdir] = "contrib"
-;projects[file_entity][version] = 2.0-unstable7+35-dev
-; projects[file_entity][revision] = "11894c1"
 projects[file_entity][download][type] = git
-projects[file_entity][download][branch] = 7.x-4.x
-projects[file_entity][download][revision] = 337f470
+projects[file_entity][download][branch] = 7.x-2.x
+projects[file_entity][download][revision] = 68ab8ed52f9bb993e8f3c541b89420637e440609
+projects[file_entity][patch][] = "http://drupal.org/files/file_entity.1834902-3.dimension_overrides.patch"
+projects[file_entity][patch][] = "https://raw.github.com/openscholar/openscholar/df247fa777218727ca3fb34266e5b52416a087c9/patches/file_entity.private_files_view_filter.patch"
 
 projects[filefield_paths][subdir] = "contrib"
 ;projects[filefield_paths][version] = 1.0-beta3+2-dev

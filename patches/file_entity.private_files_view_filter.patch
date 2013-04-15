@@ -1,0 +1,20 @@
+diff --git a/file_entity.views.inc b/file_entity.views.inc
+index b1a556a..211f94f 100644
+--- a/file_entity.views.inc
++++ b/file_entity.views.inc
+@@ -80,6 +80,15 @@ function file_entity_views_data() {
+     ),
+   );
+ 
++  // File schema type.
++  $data['file_managed']['schema_type'] = array(
++    'title' => t('Schema type'),
++    'help' => t('Filter files by private/public schema.'),
++    'filter' => array(
++      'handler' => 'views_handler_filter_scehma_type',
++    ),
++  );
++
+   // Download link.
+   $data['file_managed']['download'] = array(
+     'title' => t('Download link'),
