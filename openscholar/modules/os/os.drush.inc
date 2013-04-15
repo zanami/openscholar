@@ -74,7 +74,16 @@ function os_drush_command() {
       'aliases' => array('os-dr'),
     ),
     'os-domain-help' => array(),
-    'os-domain-list' => array(),
+    'os-domain-list' => array(
+      'description' => dt('Lists domains managed by drush os-domain.'),
+      'options' => array(),
+      'arguments' => array(),
+      'examples' => array(
+        'drush @prod os-dl' => dt('Lists @prod\s domains.'),
+      ),
+      'aliases' => array('os-dl'),
+    ),
+ 
   );
 }
 
@@ -179,7 +188,49 @@ function drush_os_domain_add() {
     drush_file_append_data($srv_conf['domains_list'], "\n".$domain);
   }
   
+  drush_invoke('os-domain-build'); //@todo - prevent --www from causing superfluous unknown optoin error.
+}
+
+/**
+ * @function drush_os_domain_remove
+ *
+ * Command callback for os-domain-remove
+ *
+ * Removes domains from domain list, then rebuilds
+ */
+
+function drush_os_domain_remove() {
+  $args = func_get_args();
+  $srv_conf = _drush_os_domain_get_server_conf();
+  $www = drush_get_option('www', FALSE);
+  $self = drush_sitealias_get_record('@self');
+  
+  $check = drush_invoke_process($self, 'os-domain-check');
+  if ($check['error_status']) {
+    drush_die();
+  }
+  
+  // read current domains
+  $domains = file($srv_conf['domains_list']);
+  $domains = array_map(create_function('$s', 'return trim($s);'), $domains);
+  
+  //prepend www. 
+  if ($www) {
+    $args = array_merge($args, array_map(create_function('$s', 'return "www.".$s;'),$args));
+  }
+  
+  //diff and write
+  $keep_domains = array_diff($domains, $args);
+  file_put_contents($srv_conf['domains_list'], implode("\n", $keep_domains));
+  
   drush_invoke('os-domain-build');
+}
+
+function drush_os_domain_list() {
+  $args = func_get_args();
+  $srv_conf = _drush_os_domain_get_server_conf();
+  $file = file($srv_conf['domains_list']);
+  drush_print(implode('', preg_grep('/^[^#]/', $file)));
 }
 
 /**
