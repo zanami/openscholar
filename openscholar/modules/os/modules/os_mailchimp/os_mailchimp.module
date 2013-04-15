@@ -28,7 +28,7 @@ function os_mailchimp_menu() {
     'title' => t('Subscribe to mailing list'),
     'page callback' => 'os_mailchimp_subscribe_page',
     'page arguments' => array(1,3),
-    //'type' => MENU_CALLBACK,
+    'type' => MENU_NORMAL_ITEM,
     'access callback' => TRUE,
   );
 
@@ -87,15 +87,16 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
   ctools_include('modal');
   ctools_include('ajax');
   $form_state = array(
-    'title' => t('Title of my form'),
+    'title' => t(' '),
     'ajax' => $js,
     'delta' => $delta,
     'use_ctools' => TRUE,
   );
 
   $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
-
-  ctools_modal_render('Mailing List Subscription', $output);
+  $output = ctools_modal_form_render($form_state, $output);
+  print ajax_render($output);
+  exit; 
 }
 
 /**
@@ -112,7 +113,7 @@ function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
   $MC = new MCAPI($api);
 
-  if ($MC->listSubscribe($listid, $email)) {
+  if ($MC->listSubscribe($listid, $email, array('FNAME'=>$fn, 'LNAME'=>$ln))) {
     return array('success'=>TRUE);
   } else {
   	return array('success'=>FALSE,'msg'=>$MC->errorMessage);
@@ -210,35 +211,35 @@ function os_mailchimp_form($state, $args=array()) {
 
   $form['subscribe']['email'] = array(
     '#type' =>  'textfield',
-	'#title' => 'Email Address',
-	'#weight' => -10,
-	'#required' => TRUE,
-	'#default_value' => $mail,
+  	'#title' => 'Email Address',
+  	'#weight' => -10,
+  	'#required' => TRUE,
+  	'#default_value' => $mail,
   );
 
   $form['subscribe']['fn'] = array(
     '#type' =>  'textfield',
-	'#title' => 'First Name',
-	'#weight' => -8,
-	'#default_value' => $fn,
+  	'#title' => 'First Name',
+  	'#weight' => -8,
+  	'#default_value' => $fn,
   );
 
   $form['subscribe']['ln'] = array(
     '#type' =>  'textfield',
-	'#title' => 'Last Name',
-	'#weight' => -6,
-	'#default_value' => $ln,
+  	'#title' => 'Last Name',
+  	'#weight' => -6,
+  	'#default_value' => $ln,
   );
 
   $form['subscribe']['submit'] = array(
     '#type' => 'submit',
-	'#value' => 'Subscribe',
-	'#weight' => -4,
+  	'#value' => 'Subscribe',
+  	'#weight' => -4,
   );
 
   $form['subscribe']['list'] = array(
     '#type' => 'value',
-	'#value' => $box->options['list'],
+	  '#value' => $box->options['list'],
   );
 
   return $form;
