@@ -73,7 +73,14 @@ function os_drush_command() {
       ),
       'aliases' => array('os-dr'),
     ),
-    'os-domain-help' => array(),
+      
+    'os-domain-help' => array(
+      'description' => dt('Lists domains managed by drush os-domain.'),
+      'options' => array(),
+      'arguments' => array(),
+      'aliases' => array('os-dh'),
+    ),
+      
     'os-domain-list' => array(
       'description' => dt('Lists domains managed by drush os-domain.'),
       'options' => array(),
@@ -146,12 +153,21 @@ function drush_os_domain_build() {
   
   
   // try acquia cloud api
-//   if ($srv_conf['acquia-cloud-api']) {
-//     // drush @hwpi1.dev ac-domain-list --format export
-  
-//     drush_invoke('ac-domain-add', array($domain));
-//     drush_invoke('ac-domain-purge', array($domain));
-//   }
+  if ($srv_conf['acquia-cloud-api']) {
+    
+    $self = drush_sitealias_get_record('@self');
+    $cloud = drush_invoke_process(drush_sitealias_get_record('@hwpi1.dev'), 'status', array(), array());
+    print_r($cloud);
+    
+    /* 
+     * todo - make this work with cloud api.  hwpi1.dev doesn't have os.drush.inc yet and it isn't willing to auth in drush_invoke_process remotely.
+     * 
+     * "ac-domain-list --format export"   get list of currently enabled domains
+     * array_diff                         figure out what domains need to be added/removed.
+     * ac-domain-add, ac-domain-remove    sync up domains with our current status
+     * ac-domain-purge                    clear varnish on domain
+     */
+  }
 }
 
 /**
@@ -277,6 +293,37 @@ EOF;
 }
 
 /**
+ * @function os_drush_domain_help() 
+ * 
+ * Some text describing drush os-domains
+ */
+function drush_os_domain_help() {
+  $output = <<<EOF
+  
+drush os-domains-*
+------------------
+
+These drush scripts manage OpenScholar's domain configuration.  Users that add their
+own domains to cp/settings need drupal to recognize those domains.  This script modifies:
+  * `domains.list` stores lists of domains per installation
+  * `sites.php` tell each drupal installation which domains it uses
+  * `files/.htaccess` rewrite file urls
+  * (when available) `Acquia's Cloud API`.  Configures acquia hosted virtual sites to use a given domain.  
+    Sites hosted elsewhere will need to manage their own apache configurations.
+
+Using os-domains* consists of:
+  * `os-domains-list` Get the list of domains managed by these scripts
+  * `os-domains-add` Appends a domain to the list, rebuilds config files 
+  * `os-domains-remove` Removes a domain from the list, rebuilds config files 
+  * `os-domains-build` Builds config files from list without modifying it 
+  * `os-domains-check` Confirms that config files are accessible and set up for these scripts
+  * `os-domains-help` This documentation
+        
+EOF;
+  drush_print($output);
+}
+
+/**
  * @function _os_drush_confirm_file_overwrite($contents, $destination) {
  * 
  * Copies contents to a temp file.  Prompts user to preview, copy, or quit.  Only overwrites after user confirmation.
@@ -312,8 +359,8 @@ function _os_drush_confirm_file_overwrite($contents, $destination) {
         return;
     }
   }
-  // copy the .htaccess file.
-  rename($destination, $destination . date('-old-U'));
+  // copy the file.
+  rename($destination, $destination . date('-\o\l\d-U'));
   drush_print("copying $temp to $destination");
   copy($temp, $destination);
 }
