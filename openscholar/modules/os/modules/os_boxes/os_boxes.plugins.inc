@@ -27,7 +27,7 @@ function _os_boxes_boxes_plugins() {
 
   $info['os_boxes_bio'] = array(
     'title' => 'Bio',
-    'description' => 'Teaser of your personal Bio',
+    'description' => 'Your personal bio',
     'tags' => array('Social'),
     'handler' => array(
       'class' => 'os_boxes_bio',

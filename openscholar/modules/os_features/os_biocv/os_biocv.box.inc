@@ -20,7 +20,7 @@ function os_biocv_default_box() {
   $box->delta       = 'bio_teaser';
   $box->plugin_key  = 'os_boxes_bio';
   $box->title       = '';
-  $box->description = 'Bio Teaser';
+  $box->description = 'Bio';
   $box->options     = array(
     'additional_classes' => '',
     'show_title'     => 0,
