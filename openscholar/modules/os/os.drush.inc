@@ -154,17 +154,30 @@ function drush_os_domain_build() {
  */
 function drush_os_domain_add() {
   $args = func_get_args();
-  $domain = (count($args)) ? str_replace('http://', '', $args[0]) : drush_die('drush os-domain-config requires a domain.  See drush odc --help'); 
   $srv_conf = _drush_os_domain_get_server_conf();
-  drush_invoke('os-domain-check');
+  $www = drush_get_option('www', FALSE);
+  $self = drush_sitealias_get_record('@self');
   
-  //make sure domain is valid and correct
-  if (drush_prompt("Are you sure you want to add '$domain'? (y/n)", 'n') != 'y') {
-    drush_die('User bailed out');
+  $check = drush_invoke_process($self, 'os-domain-check');
+  if ($check['error_status']) {
+    drush_die();
   }
   
-  //append domain to list
-  drush_file_append_data($srv_conf['domains_list'], "\n".$domain);
+  foreach ($args as $domain) {
+    $domain = (count($args)) ? str_replace('http://', '', $args[0]) : drush_die('drush os-domain-config requires a domain.  See drush odc --help');
+    
+    //make sure domain is valid and correct
+    if (drush_prompt("Are you sure you want to add '$domain'? (y/n)", 'n') != 'y') {
+      drush_die('User bailed out');
+    }
+    
+    if ($www) {
+      $domain = $domain . "\nwww.".$domain;
+    }
+    
+    //append domain to list
+    drush_file_append_data($srv_conf['domains_list'], "\n".$domain);
+  }
   
   drush_invoke('os-domain-build');
 }
