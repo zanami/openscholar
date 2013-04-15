@@ -918,24 +918,25 @@ function vsite_menu_alter(&$items){
 /**
  * Returns an array of all sites a user owns.
  */
-function vsite_load_user_sites($user_id){
-  $sites = array();
+function vsite_load_user_sites($user_id) {
+  drupal_add_css(drupal_get_path('module', 'vsite') . '/css/vsite.css');
+
   $sites_array = array();
   // Grab their sites.
-
-
   $vsites_owner = vsite_get_vsite_by_owner($user_id);
   // Create each site as a link.
-  foreach ( $vsites_owner as $site ) {
-    $sites = array(
-      '#title' => $site->group->title,
-      '#type' => 'link',
-      '#href' => $site->get_absolute_url()
-    );
+  foreach ($vsites_owner as $site ) {
+    $node = node_load($site->group->nid);
+    $items = array();
+    $items[] = l($node->title, $site->get_absolute_url());
+    if (node_access('delete', $node)) {
+      $items[] = array(
+        'data' => l(t('Delete site'), $site->get_absolute_url('node/' . $node->nid . '/delete')),
+        'class' => 'delete-link',
+      );
+    }
     // Prepare them for theme_list_item.
-    $sites_array[] = array(
-      'data' => drupal_render($sites)
-    );
+    $sites_array[] = theme('item_list', array('items' => $items, 'attributes' => array('class' => array('inline'))));
   }
 
   return $sites_array;
@@ -1040,7 +1041,7 @@ function vsite_user_view_alter(&$build){
         $membership_title = t('Website I am a member of:');
       }
       // end if
-      $vsites_list .= theme_item_list(array(
+      $vsites_list .= theme('item_list', (array(
         'items' => $member_sites,
         'title' => $membership_title,
         'type' => 'ul',
