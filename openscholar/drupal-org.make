@@ -191,7 +191,9 @@ projects[media][revision] = "c49692b"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 2.x-dev
-projects[media_gallery][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
+projects[media_gallery]download][type] = git
+projects[media_gallery]download][branch] = 7.x-2.x
+projects[media_gallery]download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
