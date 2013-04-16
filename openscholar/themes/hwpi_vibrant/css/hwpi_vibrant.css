@@ -300,6 +300,10 @@ div.contextual-links-wrapper a,
   border-radius: 0 !important;
 }
 
+#menu-bar ul.menu ul ul {
+    background: #282828;
+}
+
 ul.nice-menu-down li ul li ul {
   left: 12em;
 }
