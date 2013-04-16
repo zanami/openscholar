@@ -6,6 +6,7 @@
 # Don't track temporary files or Mac OS system files.
 *~
 *.DS_store
+*.swp
 
 # Dont's track coder module backups
 *.coder.orig
