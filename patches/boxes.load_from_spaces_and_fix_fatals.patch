@@ -1,7 +1,7 @@
-diff --git a/boxes.module b/boxes.module
+diff --git boxes.module boxes.module
 index 1d4921d..2da51d7 100644
---- a/boxes.module
-+++ b/boxes.module
+--- boxes.module
++++ boxes.module
 @@ -100,7 +100,9 @@ function boxes_block_info() {
      // Let context group the instances together
      $blocks[$box->delta]['context_group'] = t('Boxes for @plugin', array('@plugin' => $plugins[$box->plugin_key]['title']));
