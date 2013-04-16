@@ -157,6 +157,7 @@ projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
 projects[imagefield_crop][download][type] = git
 projects[imagefield_crop][download][branch] = 7.x-2.x
+projects[imagefield_crop][download][revision] = 4a5302
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-hook_imagefield_crop_instance_alter-1915510-2.patch"
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-max_filesize-1923934-1.patch"
 
