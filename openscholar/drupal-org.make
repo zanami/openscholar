@@ -63,6 +63,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
+projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
