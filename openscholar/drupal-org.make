@@ -63,6 +63,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
+projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -135,11 +136,11 @@ projects[field_redirection][subdir] = "contrib"
 projects[field_redirection][version] = 2.5
 
 projects[file_entity][subdir] = "contrib"
-;projects[file_entity][version] = 2.0-unstable7+35-dev
-; projects[file_entity][revision] = "11894c1"
 projects[file_entity][download][type] = git
-projects[file_entity][download][branch] = 7.x-4.x
-projects[file_entity][download][revision] = 337f470
+projects[file_entity][download][branch] = 7.x-2.x
+projects[file_entity][download][revision] = 68ab8ed52f9bb993e8f3c541b89420637e440609
+projects[file_entity][patch][] = "http://drupal.org/files/file_entity.1834902-3.dimension_overrides.patch"
+projects[file_entity][patch][] = "https://raw.github.com/openscholar/openscholar/df247fa777218727ca3fb34266e5b52416a087c9/patches/file_entity.private_files_view_filter.patch"
 
 projects[filefield_paths][subdir] = "contrib"
 ;projects[filefield_paths][version] = 1.0-beta3+2-dev
@@ -181,16 +182,19 @@ projects[media][revision] = "c49692b"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 2.x-dev
-projects[media_gallery][revision] = "2fcf98e"
-; Unable to apply patch 1333674, not sure it;s still required.
-;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
-projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-113.patch"
+projects[media_gallery][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.7
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
+
+projects[memcache][subdir] = "contrib"
+projects[memcache][version] = 1.0
 
 projects[migrate][subdir] = "contrib"
 projects[migrate][version] = 2.5
@@ -241,6 +245,8 @@ projects[og_vocab][version] = 1.x-dev
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
+projects[olark][patch][] = "http://drupal.org/files/olark-ignore-role-1858372-2.patch"
+projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-4.patch"
 
 projects[password_hustle][subdir] = "contrib"
 projects[password_hustle][version] = 1.0
@@ -336,10 +342,6 @@ libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cy
 libraries[tinymce][type] = "libraries"
 libraries[tinymce][download][type] = "file"
 libraries[tinymce][download][url] = "http://github.com/downloads/tinymce/tinymce/tinymce_3.5.7.zip"
-
-libraries[spyc][type] = "libraries"
-libraries[spyc][download][type] = "file"
-libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
 
 libraries[spyc][type] = "libraries"
 libraries[spyc][download][type] = "file"
