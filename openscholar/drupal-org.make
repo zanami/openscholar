@@ -18,6 +18,10 @@ projects[apachesolr_attachments][version] = 1.2
 projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][version] = 1.x-dev
 
+projects[boxes][subdir] = "contrib"
+projects[boxes][version] = 1.0-beta7
+projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919350643c8b26a3f639e935c1c6e802c6dd7/patches/boxes.load_from_spaces_and_fix_fatals.patch"
+
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 
@@ -63,6 +67,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
+projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -154,7 +159,12 @@ projects[google_feedapi][subdir] = "contrib"
 projects[google_feedapi][version] = 1.0-beta1
 
 projects[imagefield_crop][subdir] = "contrib"
-projects[imagefield_crop][version] = 2.0
+;projects[imagefield_crop][version] = 2.0
+projects[imagefield_crop][download][type] = git
+projects[imagefield_crop][download][branch] = 7.x-2.x
+projects[imagefield_crop][download][revision] = 4a5302
+projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-hook_imagefield_crop_instance_alter-1915510-2.patch"
+projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-max_filesize-1923934-1.patch"
 
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
@@ -275,7 +285,9 @@ projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
 
 projects[services][subdir] = "contrib"
-projects[services][version] = 3.x-dev
+;projects[services][version] = 3.3+42-dev
+projects[services][download][branch] = 7.x-3.x
+projects[services][download][revision] = 761e620
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
