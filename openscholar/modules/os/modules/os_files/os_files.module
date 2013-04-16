@@ -886,9 +886,9 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
       $other = array();
       foreach ( $items as $i ) {
         if ($i['type'] == 'image') {
-          $title = field_get_items('file', ( object ) $i, 'media_title');
+          $title = field_get_items('file', ( object ) $i, 'field_file_image_title_text');
           $title = isset($title[0]) ? $title[0]['value'] : '';
-          $alt = field_get_items('file', ( object ) $i, 'media_description');
+          $alt = field_get_items('file', ( object ) $i, 'field_file_image_alt_text');
           $alt = isset($alt[0]) ? $alt[0]['value'] : '';
           $image_info = image_get_info($i['uri']);
           $images[] = array(
