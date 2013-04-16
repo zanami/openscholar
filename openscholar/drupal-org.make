@@ -273,7 +273,9 @@ projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
 
 projects[services][subdir] = "contrib"
-projects[services][version] = 3.x-dev
+;projects[services][version] = 3.3+42-dev
+projects[services][download][branch] = 7.x-3.x
+projects[services][download][revision] = 761e620
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
