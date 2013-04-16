@@ -13,6 +13,8 @@ html,body {
 
 body {
 font-family: helvetica, arial, serif;
+font-size: 13px;
+line-height: 1.5;
   }
   
 .logged-in .region-page-top .region-inner {
@@ -42,12 +44,6 @@ font-family: helvetica, arial, serif;
   margin-top:-20px;
    font-size: 1.5em;
   }
-  
-  
-.page-help-os-help #content-column h1#page-title {
-margin-top:2em;
-  }
-  
 
 #footer {
   padding-top: 5px;
