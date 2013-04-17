@@ -910,7 +910,6 @@ function _vsite_purl_init(){
  * Implements hook_menu_alter().
  *
  * Remove the "Groups" link from the users 'edit' form.
- * Addes a page callback for the spaces-access-denied menu item.
  */
 function vsite_menu_alter(&$items){
   $items['user/%user/edit/groups']['access callback'] = FALSE;
