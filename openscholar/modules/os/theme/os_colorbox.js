@@ -4,7 +4,9 @@
 Drupal.behaviors.osColorbox = {
   attach: function (ctx) {
     jQuery(document).bind('drupalOverlayOpen', function () {
-      jQuery.colorbox.close();
+      if ('colorbox' in jQuery) {
+        jQuery.colorbox.close();
+      }
     });
   }
 };
