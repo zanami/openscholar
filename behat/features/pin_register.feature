@@ -16,7 +16,7 @@ Feature:
      When I visit "site/register"
      Then I should get a "301" HTTP response
      
-  Scenario: Cannot create a new site via native node add menu items.
+  Scenario Outline: Cannot create a new site via native node add menu items.
     Given the module "iqss_pinserver_register" is enabled 
       And I am an anonymous user
      When I visit <request-url>
