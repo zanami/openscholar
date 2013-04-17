@@ -98,13 +98,8 @@ ul.nice-menu ul {
 	list-style: none;
 	background-color: #F3F3F1;
 	text-align: left;
-	border-left: 4px solid #ccc;
 }
 
-.sidebar #block-os-primary-menu ul.menu li li, 
-.sidebar #block-os-secondary-menu ul.menu li li {
-	border-left: none;
-}
 
 .sidebar #block-os-primary-menu ul.menu li a, 
 .sidebar #block-os-secondary-menu ul.menu li a {
@@ -112,7 +107,7 @@ ul.nice-menu ul {
 	text-decoration: none !important;
 	padding: 8px 15px;
 	border-bottom: 2px solid #fff;
-	
+	font-size:15px;
 }
 
 .sidebar #block-os-primary-menu ul.menu li li a, 
