@@ -153,7 +153,7 @@ projects[flag][subdir] = "contrib"
 projects[flag][version] = 2.0
 
 projects[google_feedapi][subdir] = "contrib"
-projects[google_feedapi][version] = 1.0-beta1
+projects[google_feedapi][version] = 1.0-beta2
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
