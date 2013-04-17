@@ -101,6 +101,11 @@ ul.nice-menu ul {
 	border-left: 4px solid #ccc;
 }
 
+.sidebar #block-os-primary-menu ul.menu li li, 
+.sidebar #block-os-secondary-menu ul.menu li li {
+	border-left: none;
+}
+
 .sidebar #block-os-primary-menu ul.menu li a, 
 .sidebar #block-os-secondary-menu ul.menu li a {
 	display: block;
@@ -110,11 +115,30 @@ ul.nice-menu ul {
 	
 }
 
+.sidebar #block-os-primary-menu ul.menu li li a, 
+.sidebar #block-os-secondary-menu ul.menu li li a {
+	padding: 8px 25px;
+}
+
+.sidebar #block-os-primary-menu ul.menu li ul.menu, 
+.sidebar #block-os-secondary-menu ul.menu li ul.menu {
+    margin: 0 0 0 0;
+}
+
+
+
 .sidebar #block-os-primary-menu ul.menu li.last a, 
 .sidebar #block-os-secondary-menu ul.menu li.last a {
 	border-bottom: none;
 	
 }
+
+.sidebar #block-os-primary-menu ul.menu li li.last a, 
+.sidebar #block-os-secondary-menu ul.menu li li.last a {
+	border-bottom: 2px solid #fff;
+	
+}
+
 
 
 .sidebar #block-os-primary-menu a:hover, 
