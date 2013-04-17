@@ -350,7 +350,9 @@ libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/arch
 
 libraries[jquery.cycle][type] = "libraries"
 libraries[jquery.cycle][download][type] = "file"
-libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cycle/jquery.cycle.all.2.88.js"
+; libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cycle/jquery.cycle.all.2.88.js"
+; get 2.88 blob from github so it keeps default filename.
+libraries[jquery.cycle][download][url] = "https://raw.github.com/malsup/cycle/c2b85942513801befea2ddf407eb7d2a17e441e8/jquery.cycle.all.js"
 
 libraries[tinymce][type] = "libraries"
 libraries[tinymce][download][type] = "file"
