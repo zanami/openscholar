@@ -56,6 +56,39 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
   }
 }
 
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Prevent accidental delete of VSites, by hardening the confirmation page.
+ */
+function vsite_form_node_delete_confirm_alter(&$form, $form_state) {
+  $node = $form['#node'];
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (!in_array($node->type, $group_types)) {
+    // Not a group node.
+    return;
+  }
+
+  $form['vsite_name'] = array(
+    '#title' => t('Warning! You are about to delete your VSITE!'),
+    '#description' => t('Enter the VSite name.'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#element_validate' => array('vsite_delete_vsite_confirm_title'),
+  );
+}
+
+/**
+ * Validate handler; Verify the node title is like the user entered.
+ */
+function vsite_delete_vsite_confirm_title($element, &$form_state) {
+  $node = node_load($form_state['values']['nid']);
+  if (trim($node->title) != trim($form_state['values']['vsite_name'])) {
+    form_error($element, t('Title does not match.'));
+  }
+}
+
 /**
  * Implements hook_form_FORM_ID_alter() for node_form.
  *
