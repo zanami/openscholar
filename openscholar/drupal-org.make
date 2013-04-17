@@ -175,10 +175,14 @@ projects[job_scheduler][version] = 2.0-alpha3
 projects[libraries][subdir] = "contrib"
 projects[libraries][version] = 2.0
 
-projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-54.patch"
+; projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-54.patch"
+projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-61.patch"
+projects[link][patch][] = "http://drupal.org/files/link-7.x-1.x-required_fields-1368616-11.patch"
 projects[link][subdir] = "contrib"
-projects[link][version] = 1.x-dev
-projects[link][revision] = "799bca2"
+projects[link][download][branch] = 7.x-1.x
+projects[link][download][type] = git
+;projects[link][revision] = "799bca2"
+projects[link][download][revision] = "ff518b60113f29885a8f358e8b0fa4499b0c608d"
 
 projects[linkchecker][subdir] = "contrib"
 projects[linkchecker][version] = 1.0-beta1
