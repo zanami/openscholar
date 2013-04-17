@@ -229,7 +229,7 @@ projects[oembed][subdir] = "contrib"
 ;projects[oembed][version] = 0.x-dev
 projects[oembed][download][type] = git
 projects[oembed][download][branch] = 7.x-0.x
-projects[oembed][download][revision] = "baefb69"
+projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
 
 projects[og][subdir] = "contrib"
