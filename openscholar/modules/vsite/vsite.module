@@ -78,7 +78,7 @@ function vsite_form_og_ui_admin_settings_alter(&$form, &$form_state, $form_id){
 /**
  * Implements hook_node_delete().
  */
-function vstite_node_delete($node) {
+function vsite_node_delete($node) {
   if (!og_is_group('node', $node)) {
     // Not a group node.
     return;
