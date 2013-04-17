@@ -914,10 +914,6 @@ function _vsite_purl_init(){
  */
 function vsite_menu_alter(&$items){
   $items['user/%user/edit/groups']['access callback'] = FALSE;
-  // Menu alter for spaces-access-denied.
-  $items['spaces-access-denied']['page callback'] = 'vsite_private_site_login';
-  $items['spaces-access-denied']['access callback'] = TRUE;
-  $items['spaces-access-denied']['access aguments'] = array('access content');
 }
 
 /**
@@ -1330,19 +1326,6 @@ function vsite_menu(){
 }
 
 /**
- * Renders the private site login page.
- */
-function vsite_private_site_login(){
-  if (! user_is_logged_in()) {
-    $login_form = drupal_render(drupal_get_form('user_login'));
-  }
-  else {
-    $login_form = '';
-  }
-  return t("This site is private, you must be logged in and be a site member to view.") . $login_form;
-}
-
-/**
  * Page callback; Contact form that contacts the site owner.
  *
  * @return contact_page
@@ -1751,32 +1734,4 @@ function vsite_user_autocomplete($string = '') {
     }
   }
   drupal_json_output($matches);
-}
-
-/**
- * Implements hook_form_BASE_ID_alter().
- * Alter the user login form to append a destination onto the action url.
- */
-function vsite_form_user_login_alter(&$form, &$form_state) {
-  $vsite = vsite_get_vsite();
-  $item = menu_get_item();
-  // We only want to edit the login form for private sites.
-  if(!isset($item) || $item['path'] != 'spaces-access-denied') {
-    return;
-  }
-  // os_url_outbound_alter alters the login path to redirect to /user
-  // We can prevent that by adding a destination onto the form "action".
-  if(!isset($form['#action'])) {
-    return;
-  }
-  // Get the original path of the form.
-  $form_path = $form['#action'];
-  // We want to keep them on their original path.
-  // Remove the vsite name to get the path.
-  $replace_path = '/' . $vsite->group->purl . '/';
-  $replace_destination = str_replace($replace_path, '', $form_path);
-  // If for some reason there is no "path" send them to the vsite homepage.
-  $destination = !empty($replace_destination) ? $replace_destination : 'home';
-  // Replace the form's original action with a destination.
-  $form['#action'] = $form_path . '?destination=' . $destination;
 }
