@@ -85,13 +85,10 @@ projects[entityreference][subdir] = "contrib"
 projects[entityreference][download][type] = git
 projects[entityreference][download][branch] = 7.x-1.0
 projects[entityreference][download][revision] = 5b1c289
-projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
+projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][download][type] = git
-projects[entityreference_prepopulate][download][branch] = 7.x-1.1
-projects[entityreference_prepopulate][download][revision] = f7b7168
-;projects[entityreference_prepopulate][version] = 1.1+2-dev
+projects[entityreference_prepopulate][version] = 1.2
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -235,8 +232,7 @@ projects[oembed][version] = 0.x-dev
 ; projects[oembed][revision] = "baefb69"
 
 projects[og][subdir] = "contrib"
-; projects[og][version] = 2.0-rc2+6-dev
-projects[og][version] = 2.0-rc3
+projects[og][version] = 2.1
 
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
@@ -255,7 +251,6 @@ projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
-; projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
