@@ -107,4 +107,4 @@ Feature:
   Scenario: Verify the terms links direct us to the correct path.
     Given I assign the node "Me and michelle obama" with the type "blog" to the term "Barack Hussein Obama"
      When I visit the original page for the term "Barack Hussein Obama"
-     Then I should get a "404" HTTP response
+     Then I should not get a "200" HTTP response
