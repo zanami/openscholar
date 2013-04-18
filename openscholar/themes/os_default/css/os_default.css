@@ -1,0 +1,87 @@
+body {
+  font: 13px/17px 'helvetica neue', helvetica, arial,sans-serif;
+  padding-bottom:30px;
+  background:#e1e1e1;
+  }
+
+#columns {
+  background: #fff;
+}
+
+
+
+h2 {
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0 0 .5em 0;
+  }
+
+#menu-bar {
+	margin-bottom:10px;
+}
+
+#menu-bar ul li a {
+	font-size:15px;
+}
+
+/* HEADER ELEMENTS */
+
+
+#header-container h1 a,
+#header-container h1 a:visited {
+    color:#282828;
+    font-size: 35px;
+    }
+
+
+#header-container h2 {
+  margin: 0;
+  }
+  
+
+
+/* LOG IN PAGE */
+
+body.not-logged-in.page-user  {
+	background:#fff;
+}
+
+.not-logged-in.page-user #columns {
+	width:540px;
+	 margin: 100px auto 0;
+	border:1px solid #ccc;
+	background:#f1f1f1;
+}
+
+.not-logged-in.page-user #columns h1 {
+	font-size:1.5em;
+}
+
+
+.not-logged-in.page-user #powerby-login {
+    clear: both;
+    float: right;
+    margin: -280px 5px;
+    min-width: 165px;
+}
+
+.not-logged-in.page-user #edit-actions #edit-submit {
+    background: #666;
+    color: #FFF;
+    display: inline;
+    font-family: arial;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 18px;
+    padding: 5px 10px;
+    border:none;
+    border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+
+}
+
+
+
+
