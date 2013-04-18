@@ -58,7 +58,7 @@ body.not-logged-in.page-user  {
 }
 
 
-#powerby-login {
+.not-logged-in.page-user #powerby-login {
     clear: both;
     float: right;
     margin: -280px 5px;
