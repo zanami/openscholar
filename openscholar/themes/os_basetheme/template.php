@@ -79,6 +79,7 @@ function os_basetheme_preprocess_page(&$vars) {
 
   $theme_name = $GLOBALS['theme_key'];
   
+  // Adds skip link var to page template
   $vars['skip_link'] = 'main-content';
   if (at_get_setting('skip_link_target', $theme_name)) {
     $skip_link_target = at_get_setting('skip_link_target', $theme_name);

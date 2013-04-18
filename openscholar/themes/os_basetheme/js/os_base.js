@@ -8,6 +8,7 @@ document.createElement('hgroup');
 document.createElement('figure');
 
 
+// Fixes tab behavior after using the skip link in IE or Chrome
 Drupal.behaviors.osBase_skipLinkFocus = {
   attach: function (ctx) {
     var $ = jQuery,
