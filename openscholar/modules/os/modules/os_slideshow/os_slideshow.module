@@ -303,8 +303,9 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
 
   $img = ($node->field_image) ? $node->field_image[$lang][0]['uri'] : '';
   $img_vars = array('path' => $img, 'style_name' => $vars['style_name']);
-  $vars['image'] = theme('image_style', $img_vars);
+  $img_vars['alt'] = (count($node->field_image[$lang][0]['field_file_image_alt_text'])) ? $node->field_image[$lang][0]['field_file_image_alt_text'] : $node->field_image[$lang][0]['filename'];
 
+  $vars['image'] = theme('image_style', $img_vars);
   $url = ($node->field_link) ? $node->field_link[$lang][0]['url'] : '';
   if ($url) {
     foreach (array('headline', 'description', 'image') as $elem) {
