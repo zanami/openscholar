@@ -153,19 +153,31 @@ function drush_os_domain_build() {
   
   // try acquia cloud api
   if ($srv_conf['acquia-cloud-api']) {
+    $domains = $multisites[$srv_conf['uri']];
+  
+    ob_start();
+    $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); //how to silence...
+    ob_get_clean();
     
-    $self = drush_sitealias_get_record('@self');
-    $cloud = drush_invoke_process(drush_sitealias_get_record('@hwpi1.dev'), 'status', array(), array());
-    print_r($cloud);
+    if ($ac_domain_list['error_status']) {
+      drush_die('Could not connect to acquia cloud api');
+    }
+  
+    $ac_domain_list = array_map(create_function('$a', 'return $a["name"];'), $ac_domain_list['object'][1]);
+    $add = array_diff($domains, $ac_domain_list);
+    $del = array_diff($ac_domain_list, $domains);
     
-    /* 
-     * todo - make this work with cloud api.  hwpi1.dev doesn't have os.drush.inc yet and it isn't willing to auth in drush_invoke_process remotely.
-     * 
-     * "ac-domain-list --format export"   get list of currently enabled domains
-     * array_diff                         figure out what domains need to be added/removed.
-     * ac-domain-add, ac-domain-remove    sync up domains with our current status
-     * ac-domain-purge                    clear varnish on domain
-     */
+    if ($add && (drush_prompt('Add domains to acquia config: ' . implode(', ', $add) . '? (y/n) [n] ', FALSE))) {
+      foreach ($add as $domain) {
+        drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-add', array($domain));
+      }
+    }
+    
+    if ($remove && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $remove) . '? (y/n) [n] ', FALSE))) {
+      foreach ($remove as $domain) {
+        drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-remove', array($domain));
+      }
+    }
   }
 }
 
