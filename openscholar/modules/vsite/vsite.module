@@ -1324,15 +1324,6 @@ function vsite_cp_settings_node_submit($form, &$form_state){
 function vsite_menu(){
   $items = array();
 
-  $items['private_site'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => 'Private Site',
-    'page callback' => 'vsite_private_site_login',
-    'access arguments' => array(
-      'access content'
-    )
-  );
-
   $items['contact_owner'] = array(
     'title' => 'Contact',
     'page callback' => 'vsite_site_contact',
@@ -1365,19 +1356,6 @@ function vsite_menu(){
   );
 
   return $items;
-}
-
-/**
- * Renders the private site login page.
- */
-function vsite_private_site_login(){
-  if (! user_is_logged_in()) {
-    $login_form = drupal_render(drupal_get_form('user_login'));
-  }
-  else {
-    $login_form = '';
-  }
-  return t("This site is private, you must be logged in and be a site member to view.") . $login_form;
 }
 
 /**

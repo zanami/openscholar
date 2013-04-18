@@ -115,18 +115,8 @@ class vsite extends space_og {
         break;
 
       case 'init':
-        // Redirects away if the requested path is private from this user.
-        if ($this->active && module_exists('vsite_access') && !vsite_access_user_access($this->group, $user)) {
-          $provider = array('provider' => $this->purl_provider, 'id' => $this->id);
-          purl_goto('private_site', array(
-              'purl' => $provider,
-              'query' => array(
-                'destination' => url('home', array(
-                    'purl' => $provider,
-                  )),
-              ),
-            )
-          );
+        if(!$this->active) {
+          break;
         }
 
         // Redirects to path without purl for vsites with custom domains.
