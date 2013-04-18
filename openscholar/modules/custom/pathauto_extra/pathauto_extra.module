@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * @file
+ * Enhances node path alias entry with automatic preview on forms.
+ */
+
+/**
+ * Implements hook_menu().
+ *
+ * Provides a page for ajax to call so we can retrieve info from drupal.
+ */
+function pathauto_extra_menu() {
+  $items['pathauto_extra/alias_js'] = array(
+    'title' => 'Pathauto preview',
+    'page callback' => 'pathauto_extra_alias_js',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form().
+ *
+ * Attaches javascript to node edit forms.
+ */
+function pathauto_extra_form_node_form_alter(&$form, $form_state, $form_id) {
+  $form['#after_build'][] = 'pathauto_extra_node_form_after_build';
+
+  drupal_add_js(drupal_get_path('module', 'pathauto_extra') . '/pathauto_extra.js');
+}
+
+/**
+ * After build callback for node_form().
+ *
+ * Moves the path alias field to the top of the form, after title.
+ */
+function pathauto_extra_node_form_after_build($form) {
+  $form['path']['#weight'] = -4;
+  $form['path']['#collapsible'] = FALSE;
+  $form['path']['#collapsed'] = FALSE;
+  unset($form['path']['#group']);
+  return $form;
+}
+
+/**
+ * Page callback; provides ajax callback to generate preview.
+ *
+ * Gets the pattern for formatting urls for this node type,
+ * then tries to apply it and returns expected url alias.
+ */
+function pathauto_extra_alias_js() {
+  $path = _pathauto_extra_make_alias($_GET['gid'], $_GET['type'], $_GET['title']);
+  if ($path) {
+    $json = array('status' => TRUE, 'data' => $path);
+  }
+  else {
+    $json = array('status' => FALSE, 'data' => NULL);
+  }
+
+  drupal_json_output($json);
+}
+
+/**
+ * Generates the path for this node before saving.
+ */
+function _pathauto_extra_make_alias($gid, $type, $title) {
+  // Gets the pattern variable for this node type.
+  $pattern = trim(variable_get('pathauto_node_' . $type . '_pattern', FALSE));
+  if (empty($pattern)) {
+    $pattern = trim(variable_get('pathauto_node_pattern', FALSE));
+  }
+
+  // If applicable, processes this pattern for tokens.
+  if (isset($pattern) && strlen($pattern) > 0) {
+    // Makes a bare-minimum simple node object to pass to pathauto function.
+    $pattern = "[site:url]/$pattern";
+    $node = (object) array(
+      'title' => $title,
+      'type' => $type,
+      'spaces_og' => array('gid' => $gid),
+    );
+
+    module_load_include('inc', 'node', 'node.pages');
+    node_object_prepare($node);
+    if ($gid && module_exists('vsite')) {
+      $purl = vsite_get_purl(vsite_get_vsite($gid));
+    }
+    $fake_nid = 12341234;
+    $source = $purl ? "$purl/node/$fake_nid" : "node/$fake_nid";
+    // Lets pathauto apply tokens to path given our fake node.
+    module_load_include('inc', 'pathauto');
+    $alias = pathauto_create_alias('node', 'return', $source, array('node' => $node), $node->type, $node->language);
+    pathauto_alias_uniquify($alias, $source, $node->language);
+  }
+  return $alias;
+}
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ * Adds token-friendly variables to page for pathauto_ajax.js to use.
+ */
+function pathauto_extra_preprocess_page(&$variables) {
+  if (arg(0) == 'node' && arg(1) == 'add' && arg(2)) {
+    $vsite = vsite_get_vsite();
+    $data = array('pathauto_extra' => array(
+        'type' => arg(2),
+        'gid' => $vsite->id,
+        'make_alias' => TRUE,
+      ));
+
+    drupal_add_js($data, 'setting');
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+//function pathauto_extra_module_implements_alter(&$implementations, $hook) {
+//  $module = 'pathauto_extra';
+//  switch ($hook) {
+//    case 'form_alter':
+//      $group = $implementations[$module];
+//      $implementations = array_reverse($implementations, TRUE);
+//      $implementations[$module] = $group;
+//      $implementations = array_reverse($implementations, TRUE);
+//      break;
+//  }
+//}
