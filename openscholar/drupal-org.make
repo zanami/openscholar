@@ -370,3 +370,11 @@ libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
 libraries[respondjs][type] = "libraries"
 libraries[respondjs][download][type] = "file"
 libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.tar.gz"
+
+libraries[responsiveslides][type] = "libraries"
+libraries[responsiveslides][download][type] = "file"
+libraries[responsiveslides][download][url] = "https://github.com/viljamis/ResponsiveSlides.js/archive/v1.53.tar.gz"
+
+libraries[flexslider][type] = "libraries"
+libraries[flexslider][download][type] = "file"
+libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/archive/flexslider1.zip"
