@@ -235,3 +235,24 @@ function os_search_solr_apachesolr_process_results(&$arg) {
   	$arg[$i]['date'] = '';
   }
 }
+
+/**
+ * Implements hook_facetapi_facet_info().
+ */
+function os_search_solr_facetapi_facet_info($searcher_info) {
+  $facets = array();
+
+  if (isset($searcher_info['types']['node'])){
+    $facets['biblio_contributor'] = array(
+      'label' => t('Publication Contributor'),
+      'description' => t('Filter by contributor.'),
+      'field' => 'biblio_contributor',
+      'map callback' => 'os_search_solr_map_contributor',
+      'values callback' => 'os_search_solr_callback_contributor_values',
+      'facet mincount allowed' => TRUE,
+      'dependency plugins' => array('bundle'),
+    );
+  }
+
+  return $facets;
+}
