@@ -42,17 +42,46 @@ h2 {
 
 /* LOG IN PAGE */
 
-.page-user #block-os-powered-by {
-    margin-right: 220px;
-    bottom: -30px;
+body.not-logged-in.page-user  {
+	background:#fff;
+}
+
+.not-logged-in.page-user #columns {
+	width:540px;
+	 margin: 100px auto 0;
+	border:1px solid #ccc;
+	background:#f1f1f1;
 }
 
 .not-logged-in.page-user #columns h1 {
-    margin: -50px 0 0 -45px;
-    padding: 8px 0 0 10px;
-   height: 30px;
+	font-size:1.5em;
 }
-  
+
+
+#powerby-login {
+    clear: both;
+    float: right;
+    margin: -280px 5px;
+    min-width: 165px;
+}
+
+.not-logged-in.page-user #edit-actions #edit-submit {
+    background: #666;
+    color: #FFF;
+    display: inline;
+    font-family: arial;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 18px;
+    padding: 5px 10px;
+    border:none;
+    border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+
+}
+
 
 
 

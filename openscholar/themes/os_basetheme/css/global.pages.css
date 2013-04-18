@@ -753,26 +753,6 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 .field-name-og-vocabulary .os-slider a {text-decoration:underline !important;}
 
 
-.not-logged-in.page-user #columns {
-	width:540px;
-	border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
-	 margin: 100px auto 0;
-	border:1px solid #8996A0;
-	background:#F7F7F7;
-}
-
-.not-logged-in.page-user #columns h1 {
-	width:530px;
-	background:#555;
-	color:#FFF;
-	height:35px;
-	margin:-20px 0 0 -15px;
-	padding:5px 0 0 10px;
-	border-top-left-radius:5px;
-	border-top-right-radius:5px;
-}
 
 .not-logged-in.page-user #footer {
 	width:540px;
