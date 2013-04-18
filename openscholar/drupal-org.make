@@ -26,7 +26,8 @@ projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 
 projects[colorbox][subdir] = "contrib"
-projects[colorbox][version] = 1.3
+; projects[colorbox][version] = 1.3
+projects[colorbox][version] = 2.4
 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
@@ -170,7 +171,8 @@ projects[job_scheduler][subdir] = "contrib"
 projects[job_scheduler][version] = 2.0-alpha3
 
 projects[libraries][subdir] = "contrib"
-projects[libraries][version] = 2.0
+projects[libraries][version] = 2.1
+projects[libraries][patch][] = "http://drupal.org/files/0001-Fix-1938638-by-coredumperror-Fix-typo.patch"
 
 ; projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-54.patch"
 projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-61.patch"
@@ -348,7 +350,8 @@ libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/ma
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
-libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/master.tar.gz"
+; libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/master.tar.gz"
+libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
 
 libraries[jquery.cycle][type] = "libraries"
 libraries[jquery.cycle][download][type] = "file"
