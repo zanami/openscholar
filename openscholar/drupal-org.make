@@ -155,6 +155,9 @@ projects[flag][version] = 2.0
 projects[google_feedapi][subdir] = "contrib"
 projects[google_feedapi][version] = 1.0-beta1
 
+projects[hierarchical_taxonomy][subdir] = "contrib"
+projects[hierarchical_taxonomy][version] = 7.x-1.x-dev
+
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
 projects[imagefield_crop][download][type] = git
@@ -165,6 +168,9 @@ projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-ma
 
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
+
+projects[js][subdir] = "contrib"
+projects[js][version] = 1.0-beta2
 
 projects[job_scheduler][subdir] = "contrib"
 projects[job_scheduler][version] = 2.0-alpha3
@@ -337,6 +343,8 @@ projects[views_slideshow][version] = 3.0
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
+projects[wysiwyg][patch][] = "http://drupal.org/files/wysiwyg-remove-breaks-1964806-2.patch"
+projects[wysiwyg][patch][] = "http://drupal.org/files/wysiwyg-table-format.patch"
 
 projects[wysiwyg_filter][subdir] = "contrib"
 projects[wysiwyg_filter][version] = 1.6-rc2
