@@ -13,8 +13,11 @@ Drupal.behaviors.os_upload_form = {
     	$file_select.addClass('focus');
     });
     $input.bind('mousedown', function (e) {$file_select.show(); $input.addClass('focus');})
-          .bind('mouseup', function(e) {$file_select.hide(); $input.removeClass('focus');})
-          .click(function(e) {$file_select.click();});
+          .bind('mouseup', function(e) {$file_select.hide(); $input.removeClass('focus');});
+    
+    if (!$.browser.msie) {
+      $input.click(function(e) {$file_select.click();});
+    }
     
     function changeHandler (e) {
       if (!('result' in e) || e.result) {
