@@ -38,6 +38,7 @@ projects[comment_sources][type] = module
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
 projects[context][patch][] = "http://drupal.org/files/os-custom-beta4.patch"
+projects[context][patch][] = "http://drupal.org/files/1855004.context.float_block_weights.patch"
 
 projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
