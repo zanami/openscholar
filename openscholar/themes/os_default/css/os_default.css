@@ -1,3 +1,7 @@
+html {
+  background: none !important;
+  }
+
 body {
   font: 13px/17px 'helvetica neue', helvetica, arial,sans-serif;
   padding-bottom:30px;
@@ -43,7 +47,8 @@ h2 {
 /* LOG IN PAGE */
 
 body.not-logged-in.page-user  {
-	background:#fff;
+	background: #fff;
+	background-image:none #fff !important;
 }
 
 .not-logged-in.page-user #columns {
@@ -55,13 +60,14 @@ body.not-logged-in.page-user  {
 
 .not-logged-in.page-user #columns h1 {
 	font-size:1.5em;
+	margin:0 !important;
 }
 
 
 .not-logged-in.page-user #powerby-login {
     clear: both;
     float: right;
-    margin: -280px 5px;
+    margin-right: -220px;
     min-width: 165px;
 }
 

@@ -31,10 +31,6 @@ line-height: 1.5;
   position: relative;
   }
 
-.not-logged-in.page-user .container {
-    width: 540px;
-}
-
 
 #content-column h1#page-title {
   margin-top:1em;
@@ -48,14 +44,6 @@ line-height: 1.5;
 #footer {
   padding-top: 5px;
   }
-
-p.copy a.poweredby {
-  background-position: 0 -54px;
-  }
-  
-.not-logged-in.page-user #powered-by a {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
-}  
 
 .section-node-edit #columns,
 .section-websites #columns {
