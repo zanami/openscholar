@@ -10,8 +10,11 @@
  * Implements hook_drush_command().
  */
 function vsite_drush_command() {
+  $vrd_help = "Disable a vsite custom url(VRD - vsite redirect disable).\n";
+  $vrd_help .= "After disabling the custom URLs you'll need to set the variable purl_base_domain to your local machine address. ";
+  $vrd_help .= "You can use use the 'drush vset' command for that.";
   $items['vsite-redirect-disable'] = array(
-    'description' => dt('Disable a vsite custom url.'),
+    'description' => dt($vrd_help),
     'options' => array(
       'nid' => dt('The nid of the vsite.'),
     ),
@@ -30,6 +33,9 @@ function vsite_drush_command() {
   return $items;
 }
 
+/**
+ * Return a list of custom vsite URLs
+ */
 function drush_vsite_redirect_list() {
   $query = db_select('purl')
     ->fields('purl', array('value', 'id'))
@@ -39,7 +45,11 @@ function drush_vsite_redirect_list() {
   $results = $query->execute();
 
   foreach ($results->fetchAllAssoc('id') as $result) {
-    drush_print(dt('@id: @domain -> @title', array('@title'=>$result->title, '@id'=>$result->id, '@domain' => $result->value)));
+    drush_print(dt('@id: @domain -> @title', array(
+      '@title' => $result->title,
+      '@id' => $result->id,
+      '@domain' => $result->value,
+    )));
   }
 }
 
