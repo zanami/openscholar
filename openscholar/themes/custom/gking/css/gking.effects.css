@@ -31,8 +31,8 @@
   bottom: -560px;
 }  
    
-.front #header .node.node-type-bio {
-  position:static;
+.front #header .node-bio {
+  position: relative;
 }
 
 #header .node-type-bio p {
