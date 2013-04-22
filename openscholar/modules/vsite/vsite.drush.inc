@@ -84,6 +84,12 @@ function drush_vsite_redirect_disable() {
       ->fetchAssoc();
   }
 
+  // Asking the user if he would like to change the purl_base_domain variable.
+  if (drush_confirm(dt('Would you like to change the purl base domain variable value?'))) {
+    $purl_base_domain = drush_prompt(dt('Please enter the new purl base domain of your OS installation'));
+    variable_set('purl_base_domain', $purl_base_domain);
+    drush_log(dt("The variable 'purl_base_domain' has changed to @domain", array('@domain' => $purl_base_domain)), 'success');
+  }
 
   // Clearing the cache for the change to take place.
   drupal_flush_all_caches();
