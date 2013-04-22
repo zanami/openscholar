@@ -161,7 +161,12 @@ function os_pages_os_layout_get_alter($context_name, &$blocks){
   }
   elseif (($ctx_prefix == 'os_pages' && $level == 'page') && !isset($blocks['os_pages-main_content'])) {
     $default_widgets = os_pages_os_widget();
-    $blocks['os_pages-main_content'] = $default_widgets['os_pages-main_content'];
+    $blocks['os_pages-main_content'] = $default_widgets['os_pages-main_content'] + array(
+      'region' => FALSE,
+      'status' => 0,
+      'title' => '',
+      'weight' => 0,
+    );
   }
 
   if ($ctx_prefix != 'os_pages') {
