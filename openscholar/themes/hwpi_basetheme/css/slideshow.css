@@ -369,8 +369,7 @@ a.rslides_nav.prev {
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 transparent;
     border-radius: 0 0 0 0;
-    float: right;
-    width: ;
+    left: 555px;
 }
 
 

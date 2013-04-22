@@ -13,6 +13,8 @@ html,body {
 
 body {
 font-family: helvetica, arial, serif;
+font-size: 13px;
+line-height: 1.5;
   }
   
 .logged-in .region-page-top .region-inner {
@@ -29,37 +31,19 @@ font-family: helvetica, arial, serif;
   position: relative;
   }
 
-.not-logged-in.page-user .container {
-    width: 540px;
-}
-
 
 #content-column h1#page-title {
   margin-top:1em;
   }
   
-.page-user #content-column h1#page-title {
+.logged-in.page-user #content-column h1#page-title {
   margin-top:-20px;
    font-size: 1.5em;
   }
-  
-  
-.page-help-os-help #content-column h1#page-title {
-margin-top:2em;
-  }
-  
 
 #footer {
   padding-top: 5px;
   }
-
-p.copy a.poweredby {
-  background-position: 0 -54px;
-  }
-  
-.not-logged-in.page-user #powered-by a {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
-}  
 
 .section-node-edit #columns,
 .section-websites #columns {
