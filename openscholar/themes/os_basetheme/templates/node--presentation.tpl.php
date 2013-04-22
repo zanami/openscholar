@@ -27,7 +27,7 @@ if (!$page) {
 
 ?>
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-  <?php if (!$page): // begin teaser ?>
+  <?php if ($teaser): // begin teaser ?>
   <div class="node-inner">
   <?php print render($title_prefix); ?>
     <span class="title">
@@ -50,9 +50,10 @@ if (!$page) {
       <?php print $file_value; ?>
     <?php endif; ?>
   <?php endif; // end teaser ?>
-  <?php if ($page): // begin default adaptivetheme full page node tpl ?>
+  
+  <?php if (!$teaser): // begin default adaptivetheme full page node tpl ?>
   <?php print render($title_prefix); ?>
-  <?php if ($title && !$page): ?>
+  <?php if ($title && !$page): //widgets can display content on its own page?>
     <header<?php print $header_attributes; ?>>
       <?php if ($title): ?>
         <h1<?php print $title_attributes; ?>>
