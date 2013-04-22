@@ -1,0 +1,4 @@
+/* Overrides normal full-width text input to account for URL field prefix */
+.vertical-tabs .form-item-path-alia .form-type-textfield input {
+    width: auto;
+}

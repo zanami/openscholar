@@ -198,3 +198,17 @@ function vsite_get_user_vsites($uid = NULL) {
   // Filter out any spaces that were not loaded.
   return array_filter($vsites);
 }
+
+function vsite_get_group_path($vsite = NULL) {
+  if (!$vsite) {
+    $vsite = vsite_get_vsite();
+  }
+  else if (is_numeric($vsite)) {
+    $vsite = vsite_get_vsite($vsite);
+  }
+  if (isset($vsite->group->nid)) {
+    $items = field_get_items('node', $vsite->group, 'field_group_path');
+    return token_replace($items[0]['url']);
+  }
+  return FALSE;
+}
