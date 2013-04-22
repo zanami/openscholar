@@ -207,10 +207,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $ordered_terms[] = array(
           'term' => $term,
           'weight' => $vocabulary->weight,
+          'vid' => $vocabulary->vid,
         );
       }
-
-      uasort($ordered_terms, 'drupal_sort_weight');
+      uasort($ordered_terms, 'og_vocab_sort_weight');
       foreach ($ordered_terms as $info) {
         $t = $info['term'];
         $v = taxonomy_vocabulary_load($t->vid);
