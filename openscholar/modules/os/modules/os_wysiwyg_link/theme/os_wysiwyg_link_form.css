@@ -1,6 +1,9 @@
+#media-browser-page fieldset .fieldset-wrapper {
+	padding-left: 5px;
+}
 
 div.form-item-link-text {
-	margin: 0 0 -100px 160px ;
+	margin: 10px;
 	position: relative;
 	z-index: 2;
 }
@@ -10,8 +13,7 @@ div.vertical-tabs {
 }
 
 div.vertical-tabs .vertical-tabs-panes {
-	margin-top: 75px;
-	margin-left: 145px;
+	margin-left: 130px;
 }
 
 .vertical-tabs-pane input[type=submit] {
@@ -20,6 +22,54 @@ div.vertical-tabs .vertical-tabs-panes {
 
 div.vertical-tabs .vertical-tabs-list {
 	width: 120px;
+}
+
+.views-exposed-widget .form-item {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+#media-browser-library-list li {
+	margin-right: 8px;
+}
+
+#file-entity-add-upload {
+	position: absolute;
+	top: -17px;
+	right: 232px;
+	z-index: 5;
+}
+
+#file-entity-add-upload .form-item-upload {
+	margin: 0;
+}
+
+#file-entity-add-upload label[for="edit-upload"] {
+	display: none;
+}
+
+#file-entity-add-upload .form-help,
+#file-entity-add-upload .description {
+	display: none;
+}
+
+#file-entity-add-upload #edit-upload label {
+	padding: 2px 13px;
+}
+
+.insert-buttons {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: white;
+	border-top: 1px solid lightgray;
+	text-align: right;
+}
+
+.insert-buttons .form-submit {
+	margin-top: 0.5em;
+	margin-bottom: 0;
 }
 
 /* 
