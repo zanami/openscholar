@@ -56,6 +56,7 @@ function os_booklets_menu_alter(&$items) {
     $item = &$items['node/%node/outline'];
     $item['page callback'] = 'os_booklets_book_root_outline';
     $item['page arguments'] = array(1);
+    $item['access callback'] = '_os_booklets_outline_access';
     $item['file'] = 'book.admin.inc';
     $item['file path'] = drupal_get_path('module', 'book');
     $item['type'] = MENU_LOCAL_TASK;
@@ -69,6 +70,13 @@ function os_booklets_menu_alter(&$items) {
     // restrict access to this page
     $items['book']['access arguments'] = array('administer book outlines');
   }
+}
+
+/** 
+ * Checks that node is book before allowing access to outline
+ */
+function _os_booklets_outline_access($node) {
+  return _book_outline_access($node) && book_type_is_allowed($node->type);
 }
 
 /**
