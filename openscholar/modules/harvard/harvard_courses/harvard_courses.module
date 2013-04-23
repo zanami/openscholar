@@ -323,21 +323,29 @@ function harvard_courses_node_insert($node) {
 
   // Change description field format to full html.
   $node->field_course_description[LANGUAGE_NONE][0]['format'] = 'full_html';
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Needed to ensure that course node titles don't contain entity codes.
+ */
+function harvard_courses_node_presave($node) {
+  if ($node->type != 'harvard_course') {
+    return;
+  }
 
   // Replaces raw values with HTML entities decoded.
-  // Handles title...
   $node->title = _harvard_courses_filter_html_entities($node->title);
-  // Handles every "text" and "text_with_summary" field...
+
   include_once(drupal_get_path('module', 'harvard_courses') . '/harvard_courses.features.field.inc');
   $fields = harvard_courses_field_default_fields();
   $text = array('text', 'text_with_summary');
   foreach ($fields as $field => $info) {
-    // Skips this field if it's not a text field.
     if (!in_array($info['field_config']['type'], $text) || $info['field_instance']['bundle'] != 'harvard_course') {
       continue;
     }
 
-    // Otherwise, escapes HTML entities & replaces '&apos'.
     if (isset($node->{$field}[$node->language][0]['value'])) {
       // Replaces raw values with HTML entities decoded.
       $original = $node->{$field}[$node->language][0]['value'];
@@ -345,8 +353,6 @@ function harvard_courses_node_insert($node) {
       $node->{$field}[$node->language][0]['value'] = $new;
     }
   }
-  // Needed in order to actually save the modified field values.
-  field_attach_update('node', $node);
 }
 
 /**
