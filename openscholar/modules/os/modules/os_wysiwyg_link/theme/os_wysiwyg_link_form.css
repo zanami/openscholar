@@ -13,8 +13,23 @@ div.form-item-link-text {
 	z-index: 2;
 }
 
+div.form-item-link-text input {
+	float: right;
+	margin-top: -1em;
+	margin-right: 5em;
+}
+
 div.vertical-tabs {
 	background-position: -120px 0;
+	margin-top: 3em;
+}
+
+div.vertical-tabs:before {
+	content: 'Link To:';
+	font-weight: bold;
+	position: relative;
+	top: -2em;
+	left: 10px;
 }
 
 div.vertical-tabs .vertical-tabs-panes {
