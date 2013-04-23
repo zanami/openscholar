@@ -91,7 +91,7 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.2
+projects[entityreference_prepopulate][version] = 1.3
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -159,7 +159,10 @@ projects[google_feedapi][subdir] = "contrib"
 projects[google_feedapi][version] = 1.0-beta2
 
 projects[hierarchical_taxonomy][subdir] = "contrib"
-projects[hierarchical_taxonomy][version] = 7.x-1.x-dev
+projects[hierarchical_taxonomy][download][type] = git
+projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
+projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
+projects[hierarchical_taxonomy][download][revision] = 5bbe344
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -209,7 +212,7 @@ projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
 
 projects[message][subdir] = "contrib"
-projects[message][version] = 1.7
+projects[message][version] = 1.8
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7

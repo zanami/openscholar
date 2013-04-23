@@ -1,20 +1,11 @@
 /* D6 retro css for older themes */
 #columns {padding:0 10px;}
 
-@import url('http://fonts.googleapis.com/css?family=PT+Sans');
-@import url('http://fonts.googleapis.com/css?family=Radley');
-
-html,body {
-  background: url('../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
-  }
-  
-
-
-
 body {
 font-family: helvetica, arial, serif;
 font-size: 13px;
 line-height: 1.5;
+background: #698da2;
   }
   
 .logged-in .region-page-top .region-inner {
@@ -36,7 +27,7 @@ line-height: 1.5;
   margin-top:1em;
   }
   
-.page-user #content-column h1#page-title {
+.logged-in.page-user #content-column h1#page-title {
   margin-top:-20px;
    font-size: 1.5em;
   }
@@ -247,7 +238,7 @@ p.os-leadin {
 
 body.front  {
 overflow: hidden;
-background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
+background: url('../images/startpage-bg.png') no-repeat 50% 0 #698da2 ;
   }
   
  body.front.logged-in {
