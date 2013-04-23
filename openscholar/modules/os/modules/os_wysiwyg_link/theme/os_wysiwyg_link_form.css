@@ -8,7 +8,7 @@
 }
 
 div.form-item-link-text {
-	margin: 10px;
+	margin-left: 10px;
 	position: relative;
 	z-index: 2;
 }
@@ -34,6 +34,7 @@ div.vertical-tabs:before {
 
 div.vertical-tabs .vertical-tabs-panes {
 	margin-left: 130px;
+	margin-top: -25px
 }
 
 .vertical-tabs-pane input[type=submit] {
@@ -55,13 +56,17 @@ div.vertical-tabs .vertical-tabs-list {
 
 #file-entity-add-upload {
 	position: absolute;
-	top: -17px;
-	right: 232px;
+	right: 0px;
 	z-index: 5;
 }
 
 #file-entity-add-upload .form-item-upload {
 	margin: 0;
+}
+
+#file-entity-add-upload .form-actions,
+#file-entity-add-upload .description {
+	display: none;
 }
 
 #file-entity-add-upload label[for="edit-upload"] {
@@ -75,6 +80,10 @@ div.vertical-tabs .vertical-tabs-list {
 
 #file-entity-add-upload #edit-upload label {
 	padding: 2px 13px;
+}
+
+#file-entity-add-upload .form-item-upload .form-file {
+	left: -500px;
 }
 
 .insert-buttons {
