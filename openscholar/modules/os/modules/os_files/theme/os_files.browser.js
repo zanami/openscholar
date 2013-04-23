@@ -5,6 +5,8 @@
 (function ($, undefined) {
   Drupal.behaviors.osFilesMediaBrowser = {
     attach: function (ctx, s) {
+      if (!$('#file-edit-section', ctx).length) return;
+      
       var $items = $('.media-item:not(.os-files-processed)', ctx),
           forms = {};
       
