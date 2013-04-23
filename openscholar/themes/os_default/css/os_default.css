@@ -41,21 +41,30 @@ h2 {
   margin: 0;
   }
   
+  
+/*  Search PAGE */  
+  
+.page-search .search-form {width:400px; padding:0 8px;background:#F1F0F0;}
+  
 
 
 /* LOG IN PAGE */
 
+.not-logged-in.page-private-site #footer,
 .not-logged-in.page-user #footer {
 	float:none;
 }
 
+body.not-logged-in.page-private-site,
 body.not-logged-in.page-user {
 	background: #f6f5ed;
-	background-image:none #f6f5ed !important;
+	/*background-image:none #f6f5ed !important;*/
+	background-image:none #fff !important;
 	font-family: 'Helvetica neue','Roboto Condensed', sans-serif;
 	line-height:1em;
 }
 
+.not-logged-in.page-private-site #columns,
 .not-logged-in.page-user #columns {
 	width:540px;
 	margin: 100px auto 7px;
@@ -70,11 +79,12 @@ body.not-logged-in.page-user {
   box-shadow: none;
 }
 
-
+body.not-logged-in.page-private-site #content-column,
 body.not-logged-in.page-user.no-sidebars #content-column {
     padding: 0;
 }
 
+.not-logged-in.page-private-site #columns h1,
 .not-logged-in.page-user #columns h1 {
 	font-size:1.7em;
 	margin:0 !important;
@@ -82,7 +92,7 @@ body.not-logged-in.page-user.no-sidebars #content-column {
 	color:#555;
 }
 
-
+.not-logged-in.page-private-site #powerby-login,
 .not-logged-in.page-user #powerby-login {
     clear: both;
     float: right;
@@ -90,10 +100,13 @@ body.not-logged-in.page-user.no-sidebars #content-column {
     min-width: 165px;
 }
 
+.not-logged-in.page-private-site .description,
 .not-logged-in.page-user .description {
 font-size: .9em;
 }
 
+
+.not-logged-in.page-private-site #edit-actions #edit-submit,
 .not-logged-in.page-user #edit-actions #edit-submit {
     background: #3A72AB;
    /* background: #666;*/
@@ -112,6 +125,7 @@ font-size: .9em;
 
 }
 
+.not-logged-in.page-private-site #content,
 .not-logged-in.page-user #content {
 	background:#f1f0f0;
 	padding:1px 12px;
