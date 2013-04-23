@@ -245,7 +245,7 @@ projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.1
+projects[og][version] = 2.2
 
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
