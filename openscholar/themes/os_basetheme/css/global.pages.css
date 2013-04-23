@@ -443,7 +443,8 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     left: 5px;
     height: 48px;
     width: 48px;
-	position: absolute;
+	position: relative;
+    margin-top: -48px;
 }
 
 /* VIDEO ATTACHED TO A NODE  */

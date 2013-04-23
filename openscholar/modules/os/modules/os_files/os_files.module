@@ -1186,32 +1186,45 @@ function _os_files_video_thumb($file) {
   if (!module_exists('colorbox')) {
     return FALSE;
   }
-  
+
   $url = urldecode(file_uri_target($file['uri']));
-  $id = 'filebox-' . $file['fid'];
-//   $oembed = oembedcore_oembed_data($url);
-//   $h = $oembed->height;
-//   $w = $oembed->width;
+  $id = 'embed-colorbox-' . $file['fid'];
+
+  //get dimensions.  scale down to preset max size if needed.
+  $data = oembedcore_oembed_data($url);
+  $w = $data->width;
+  $h = $data->height;
+  $w_max = 500;
+  $h_max = 500;
+  
+  if ($w > $w_max) {
+    $w = $w_max;
+    $ratio = $w/$data->width;
+    $h = $ratio * $h;
+  }
+  
+  if ($h > $h_max) {
+    $h = $h_max;
+    $ratio = $h/$data->height;
+    $w = $ratio * $data->height;
+  }
   
   $filebox = array(
-    '#prefix' => '<div style="display:none">',
-    '#suffix' => '</div>',
-    '#type' => 'oembed_bare',
+    '#type' => 'oembed',
     '#url' => $url,
-    '#attributes' => array('id' => array($id)),
-    '#options' => array('maxwidth' => 430),
+    '#options' => array('maxwidth' => $w),
   );
   
   $box_html = drupal_render($filebox); //oembed_bare doesn't do anything useful with prefix, suffix, or attributes...
-  $box_html = '<div style="display:none"><div id="'.$id.'">' . $box_html . '</div></div>';
+  $box_html = '<div style="display:none;"><div id="'.$id.'" style="overflow: hidden !important">' . $box_html . '</div></div>';
   
   $video = array(
     '#type' => 'oembed_thumbnail',
-    '#prefix' => '<a href="?width=500&height=500&iframe=false&inline=true#' . $id . '" class="colorbox-inline">',
-    '#suffix' => '<span class="video-indicator"> </span></a>' . $box_html,// <div style="display:none"><div id="filebox' . $fid . '"><img src="http://i4.ytimg.com/vi/78D00dYOBrM/hqdefault.jpg">im in a filebox, I think</div></div>',
+    '#prefix' => '<div class="oembed"><a href="?innerWidth='.$w.'&innerHeight='.$h.'&inline=true#' . $id . '" class="colorbox-inline">',
+    '#suffix' => '<span class="video-indicator"> </span></a></div>' . $box_html,
     '#url' => $url,
-    '#attributes' => array('width' => '150px'    ),
+    '#attributes' => array('width' => '250px'),
   );
-        
+
   return $video;
 }
