@@ -968,7 +968,8 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
         }
         elseif (file_uri_scheme($i['uri']) == 'oembed') {
           $url = urldecode(file_uri_target($i['uri']));
-          $videos[] = array(
+          $video_thumb = _os_files_video_thumb($i);          
+          $videos[] = ($video_thumb) ? $video_thumb : array(
             '#type' => 'oembed_bare',
             '#url' => $url,
             '#options' => array(
@@ -1174,4 +1175,43 @@ function os_files_stream_wrappers_alter(&$wrappers){
   if (isset($wrappers['public'])) {
     $wrappers['public']['class'] = 'OSPublicStreamWrapper';
   }
+}
+
+/**
+ * @function _os_files_video_thumb
+ * 
+ * When colorbox is present, wraps thumbnail of video, with link to colorbox of embedded player
+ */
+function _os_files_video_thumb($file) {
+  if (!module_exists('colorbox')) {
+    return FALSE;
+  }
+  
+  $url = urldecode(file_uri_target($file['uri']));
+  $id = 'filebox-' . $file['fid'];
+//   $oembed = oembedcore_oembed_data($url);
+//   $h = $oembed->height;
+//   $w = $oembed->width;
+  
+  $filebox = array(
+    '#prefix' => '<div style="display:none">',
+    '#suffix' => '</div>',
+    '#type' => 'oembed_bare',
+    '#url' => $url,
+    '#attributes' => array('id' => array($id)),
+    '#options' => array('maxwidth' => 430),
+  );
+  
+  $box_html = drupal_render($filebox); //oembed_bare doesn't do anything useful with prefix, suffix, or attributes...
+  $box_html = '<div style="display:none"><div id="'.$id.'">' . $box_html . '</div></div>';
+  
+  $video = array(
+    '#type' => 'oembed_thumbnail',
+    '#prefix' => '<a href="?width=500&height=500&iframe=false&inline=true#' . $id . '" class="colorbox-inline">',
+    '#suffix' => '<span class="video-indicator"> </span></a>' . $box_html,// <div style="display:none"><div id="filebox' . $fid . '"><img src="http://i4.ytimg.com/vi/78D00dYOBrM/hqdefault.jpg">im in a filebox, I think</div></div>',
+    '#url' => $url,
+    '#attributes' => array('width' => '150px'    ),
+  );
+        
+  return $video;
 }

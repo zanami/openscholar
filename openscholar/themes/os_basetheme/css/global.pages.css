@@ -446,7 +446,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 	position: absolute;
 }
 
-/* VIDEO ATTCHD TO A NODE  */
+/* VIDEO ATTACHED TO A NODE  */
 
 .oembed {
     background: none repeat scroll 0 0 #EEEEEE;
@@ -472,6 +472,12 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     max-width: none !important;
 }
 	
+#cboxContent .oembed {
+  float: none !important;
+  text-align: center !important;
+  border: 0;
+  background-color: transparent;
+}
 
 .feed_item {margin-bottom:8px;}
 .feed_item span {font-style:italic;margin-right:4px;}
