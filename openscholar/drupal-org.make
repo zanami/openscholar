@@ -209,6 +209,7 @@ projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd45
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-lightbox_double_file-1977822-1.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.8
