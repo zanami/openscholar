@@ -90,7 +90,7 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.2
+projects[entityreference_prepopulate][version] = 1.3
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -211,7 +211,7 @@ projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
 
 projects[message][subdir] = "contrib"
-projects[message][version] = 1.7
+projects[message][version] = 1.8
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
