@@ -6,7 +6,7 @@ function os_wysiwyg_link_insert() {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
     'external' => array(
-      'title' => 'Webpage',
+      'title' => 'Web Address',
     	'form' => '_os_link_external_form',
     ),
     'email' => array(
@@ -32,11 +32,12 @@ function os_wysiwyg_link_insert() {
   $output = array(
     'text' => array(
       '#type' => 'textfield',
-      '#title' => t('Link Text'),
+      '#title' => t('Text To Display'),
       '#description' => t('The text of the link. Leave blank to use the url of the link itself.'),
       '#name' => 'link-text',
     ),
     'tabs' => array(
+      '#title' => t('Link To'),
       '#type' => 'vertical_tabs',
       'tabs__active_tab' => array(
         '#type' => 'hidden',
@@ -121,7 +122,7 @@ function _os_link_external_form($form, $form_state, $params) {
   $form['external'] = array(
     '#type' => 'textfield',
     '#title' => t('Website URL'),
-    '#description' => t('The URL of the external website.'),
+    '#description' => t('The URL of the web page. Can be a link to one of your own pages.'),
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
   
@@ -190,20 +191,6 @@ function _os_link_get_view($params) {
           'insert' => array(
             '#type' => 'submit',
             '#value' => t('Insert'),
-          )
-        ),
-        'edit' => array(
-          '#type' => 'container',
-          '#id' => 'file-edit-section',
-          '#attributes' => array(
-            'id' => 'file-edit-section',
-          ),
-          'no_selection' => array(
-            '#type' => 'container',
-            '#id' => 'file-edit-no-selection',
-            '#attributes' => array(
-              'id' => 'file-edit-no-selection',
-            )
           )
         )
       );
