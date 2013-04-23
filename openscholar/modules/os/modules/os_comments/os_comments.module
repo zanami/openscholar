@@ -381,7 +381,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
     '#weight' => 10,
   );
 
-  if ($source == 'comment' && isset($form['comment_settings']['comment']['#type'])) {
-    $form['comment_settings']['comment']['#title'] = t('Private comments');
+  if ($source == 'comment' && isset($form['comment_settings']['comment_status']['#title'])) {
+    $form['comment_settings']['comment_status']['#title'] = t('Private comments');
   }
 }
