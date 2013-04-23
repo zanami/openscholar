@@ -2,6 +2,11 @@
 	padding-left: 5px;
 }
 
+.view-media-default {
+	margin-right: 0;
+	border-right: 0;
+}
+
 div.form-item-link-text {
 	margin: 10px;
 	position: relative;
