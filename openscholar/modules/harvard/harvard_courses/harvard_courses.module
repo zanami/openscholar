@@ -346,7 +346,7 @@ function harvard_courses_node_insert($node) {
     }
   }
   // Needed in order to actually save the modified field values.
-  //field_attach_update('node', $node);
+  field_attach_update('node', $node);
 }
 
 /**
