@@ -34,6 +34,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[field][] = node-biblio-field_biblio_extra
 features[field][] = node-biblio-field_biblio_image
+features[field][] = node-biblio-field_cached_biblio
 features[field][] = node-biblio-field_upload
 features[image][] = book_cover
 features[image][] = book_cover_thumb
