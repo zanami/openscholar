@@ -96,7 +96,7 @@ Drupal.wysiwyg.plugins.os_link = {
               : false,
             text = $('.form-item-link-text input', doc).val(); 
         
-        if (text == select) {
+        if (text == selected) {
           text = selection.content;
         }
         else if (text = '') {
