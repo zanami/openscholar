@@ -16,7 +16,7 @@ projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.2
 
 projects[apachesolr_og][subdir] = "contrib"
-projects[apachesolr_og][version] = 1.x-dev
+projects[apachesolr_og][revision] = 5fda19fc208bd62713be99a839aed0528d9d3db7
 
 projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
