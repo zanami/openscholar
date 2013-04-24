@@ -169,7 +169,9 @@ function _os_link_get_view($params) {
   }
   
   if ($view = views_get_view($name)) {
+    $view->set_items_per_page(12);
     if ($view->set_display($display)) {
+      $view->display_handler->options['items_per_page'] = 12;
       $build['#markup'] = $view->preview();
 
       // Allow the View title to override the plugin title.
