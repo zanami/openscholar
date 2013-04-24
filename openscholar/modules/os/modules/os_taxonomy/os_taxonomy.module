@@ -278,6 +278,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   if (!$terms = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE)) {
     return;
   }
+  uasort($terms, 'os_taxonomy_sort_by_weight');
 
   // Arrange term in an array with information about inner tree.
   $path_prefix = '';
@@ -619,6 +620,8 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
  */
 function os_taxonomy_build_child_item($items, $parent, $options) {
   $content = array();
+
+  uasort($items, 'os_taxonomy_sort_by_weight');
 
   foreach ($items as $item) {
     $number = NULL;
@@ -1018,4 +1021,14 @@ function _os_taxonomy_remove_term_heading_link($markup, $element) {
   $output = preg_replace($link_pattern, "<h2>$1", $markup);
 
   return $output;
+}
+
+/**
+ * Sort terms by weight.
+ *
+ * The hierarchical taxonomy order the terms by their depth and not by their
+ * weight.
+ */
+function os_taxonomy_sort_by_weight($a, $b) {
+  return ($a->weight < $b->weight) ? -1 : 1;
 }
