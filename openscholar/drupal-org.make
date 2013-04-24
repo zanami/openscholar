@@ -78,6 +78,7 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
+projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
@@ -90,7 +91,7 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.2
+projects[entityreference_prepopulate][version] = 1.3
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -158,7 +159,10 @@ projects[google_feedapi][subdir] = "contrib"
 projects[google_feedapi][version] = 1.0-beta2
 
 projects[hierarchical_taxonomy][subdir] = "contrib"
-projects[hierarchical_taxonomy][version] = 7.x-1.x-dev
+projects[hierarchical_taxonomy][download][type] = git
+projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
+projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
+projects[hierarchical_taxonomy][download][revision] = 5bbe344
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -206,9 +210,10 @@ projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd45
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-lightbox_double_file-1977822-1.patch"
 
 projects[message][subdir] = "contrib"
-projects[message][version] = 1.7
+projects[message][version] = 1.8
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
@@ -245,7 +250,7 @@ projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.1
+projects[og][version] = 2.2
 
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
@@ -383,6 +388,7 @@ libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/arch
 libraries[responsiveslides][type] = "libraries"
 libraries[responsiveslides][download][type] = "file"
 libraries[responsiveslides][download][url] = "https://github.com/viljamis/ResponsiveSlides.js/archive/v1.53.tar.gz"
+libraries[responsiveslides][patch][] = "https://raw.github.com/openscholar/openscholar/c5b00de5f1c79a679446467296ab16ebff6c19e0/patches/responsiveslides-hc_changes.patch"
 
 libraries[flexslider][type] = "libraries"
 libraries[flexslider][download][type] = "file"

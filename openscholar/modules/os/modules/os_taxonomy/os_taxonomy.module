@@ -313,8 +313,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-      $term_name = $term->term_name;
-      $data[$tid] = $term_name;
+      $data[$tid] = $term->name;
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
@@ -353,7 +352,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     // Calling to a generic form ID.
-    $form = drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']);
+    $form = drupal_get_form('os_taxonomy_select_list_' . $variables['vid'], $data, $options['path_prefix']);
     return render($form);
   }
   else {

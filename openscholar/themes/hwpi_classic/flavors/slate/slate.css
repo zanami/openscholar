@@ -1,0 +1,56 @@
+#header {
+    background: #EFEFEF;
+}
+
+#menu-bar {
+    background: #8996A0;
+}
+
+#menu-bar ul.nice-menu a {
+    color: #FFFFFF;
+}
+
+#menu-bar ul.menu ul ul {
+    background: #8996A0;
+}
+
+#menu-bar ul.nice-menu .menuparent a {
+    background: url('/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif') right center no-repeat;
+}
+
+#menu-bar ul.nice-menu .menuparent ul li a:hover,
+#menu-bar ul.nice-menu .menuparent ul li a.active {
+     color:#FFF;
+}
+
+
+.sidebar .block, .front #content-column .block, .node-person .block-inner, .comment-wrapper {
+    border-top: none;
+}
+
+.front .region-content-top .block.block-boxes-os_slideshow_box {
+    border-top: 3px solid #D16103;
+}
+
+#content h2.block-title {
+    background:#EFEFEF;
+    font-size: 11px;
+
+    padding: 3px;
+ 
+}
+
+a.rslides_nav.prev {
+    background: url('/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png') repeat scroll 2px 2px #D16103;
+}
+
+
+a.rslides_nav.next {
+    background: url('/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png') repeat scroll -20px 2px #D16103;
+}
+
+
+#footer {
+    background: #EFEFEF;
+    border-top: 3px solid #CCCCCC;
+}

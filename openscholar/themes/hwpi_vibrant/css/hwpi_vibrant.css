@@ -157,6 +157,10 @@ div.contextual-links-wrapper a,
   list-style: disc;
 }
 
+.block-boxes-os_boxes_html .block-content ol li,
+.block-content .field-name-body ol li {
+  list-style: decimal;
+}
 
 /* Header */
 #header {
