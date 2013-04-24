@@ -51,7 +51,21 @@ h2 {
     width: 250px;
 }
   
+.page-search .search-results li {
+    border-bottom: 1px solid #EEE;
+    margin-bottom: 2em;
+}  
 
+
+.page-search  #content-column h1#page-title {
+    margin-top: 0;
+}
+
+.page-search h2 {
+    background: none repeat scroll 0 0 #F1F0F0;
+    font-size: 15px;
+    padding: 6px;
+}
 
 /* LOG IN PAGE */
 
