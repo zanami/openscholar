@@ -45,6 +45,11 @@ h2 {
 /*  Search PAGE */  
   
 .page-search .search-form {width:400px; padding:0 8px;background:#F1F0F0;}
+
+.page-search .search-form input.form-text {
+    padding: 8px !important;
+    width: 250px;
+}
   
 
 
@@ -57,7 +62,7 @@ h2 {
 
 body.not-logged-in.page-private-site,
 body.not-logged-in.page-user {
-	background: #f6f5ed;
+	background: #fff;
 	/*background-image:none #f6f5ed !important;*/
 	background-image:none #fff !important;
 	font-family: 'Helvetica neue','Roboto Condensed', sans-serif;
