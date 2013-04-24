@@ -61,8 +61,9 @@ div.vertical-tabs .vertical-tabs-list {
 }
 
 .view-content {
-	padding-top: 0.75px;
-	border: 1px solid lightgray;
+	padding-top: 0.75em;
+	border-top: 1px solid lightgray;
+	margin-top: 0.5em;
 }
 
 #media-browser-library-list li {
@@ -80,7 +81,7 @@ div.vertical-tabs .vertical-tabs-list {
 	content: 'Or';
 	position: absolute;
 	top: 1em;
-	left: 100px;
+	left: 115px;
 }
 
 #file-entity-add-upload .form-item-upload {

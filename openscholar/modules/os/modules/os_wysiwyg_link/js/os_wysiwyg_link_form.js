@@ -74,6 +74,14 @@ Drupal.behaviors.osLinkUpload = {
     $('#file-entity-add-upload input[value="Next"]').addClass('use-ajax-submit');
     Drupal.behaviors.AJAX.attach(ctx, settings);
   }
-}
+};
+
+Drupal.behaviors.osLinkTweaks = {
+  attach: function (ctx, settings) {
+    $('label[for="edit-upload-upload"]', ctx).each(function () {
+      $(this).addClass('add-new').html('Add New');
+    });
+  }  
+};
 
 })(jQuery, undefined);
