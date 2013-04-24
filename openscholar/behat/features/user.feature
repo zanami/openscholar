@@ -6,11 +6,11 @@ Feature: User page access
   @api
   Scenario: User pages are inaccessible to anonymous users.
     Given I am not logged in
-     When I visit "/users/john"
+     When I visit "/users/admin"
      Then I should see "Access Denied"
 
   Scenario: User pages are accessible to the logged in user.
-    Given I am logged in as a user with the "vsite user" role
+    Given I am logged in as a user with the "administrator" role
      When I visit "/user"
      Then I should see "View"
       And I should see "Edit"
