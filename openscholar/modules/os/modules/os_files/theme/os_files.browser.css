@@ -22,7 +22,7 @@
 	position: absolute;
 	width: 205px;
 	top: 22px;
-	bottom: 22px;
+	bottom: 42px;
 	right: 18px;
 	overflow: auto;
 	-webkit-transition: right 0.25s linear;
@@ -75,4 +75,14 @@
 .views-exposed-form .views-widget-filter-filename {
 	float: right;
 	padding-top: 0.5em;
+}
+
+.form-actions {
+	text-align: right;
+}
+
+.view-id-media_default + .form-actions {
+  border-top: 1px solid lightgray;
+  padding-top: 10px;
+  margin-bottom: 0;
 }
