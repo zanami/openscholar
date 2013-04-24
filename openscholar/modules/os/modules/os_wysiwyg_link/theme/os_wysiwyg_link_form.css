@@ -72,7 +72,7 @@ div.vertical-tabs .vertical-tabs-list {
 
 #file-entity-add-upload {
 	position: absolute;
-	top: 0.5em;
+	top: -2px;
 	z-index: 5;
 	height: 40px;
 }
@@ -80,7 +80,7 @@ div.vertical-tabs .vertical-tabs-list {
 #file-entity-add-upload:after {
 	content: 'Or';
 	position: absolute;
-	top: 1em;
+	top: 1.7em;
 	left: 115px;
 }
 
@@ -103,7 +103,14 @@ div.vertical-tabs .vertical-tabs-list {
 }
 
 #file-entity-add-upload #edit-upload label {
-	padding: 2px 13px;
+	padding: 13px 13px;
+}
+
+#file-entity-add-upload #edit-upload .add-new {
+  background: #A1D4A1;
+  border-radius: 5px;
+  border: 1px solid #8B8;
+  color: #293552;
 }
 
 #file-entity-add-upload .form-item-upload .form-file {
