@@ -752,6 +752,14 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   padding: 1em;
 }
 
+.page-faq .os-slider {
+  border:none;
+  padding: 0;
+}
+
+
+
+
 .field-name-og-vocabulary a.toggle {
 	background:url('../images/scholarbase-sprite.png') -12px -197px no-repeat;
 	padding: 1px 0 3px 14px
