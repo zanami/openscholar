@@ -78,6 +78,7 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
+projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
