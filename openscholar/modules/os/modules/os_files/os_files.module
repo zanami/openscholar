@@ -1191,22 +1191,25 @@ function _os_files_video_thumb($file) {
   $id = 'embed-colorbox-' . $file['fid'];
 
   //get dimensions.  scale down to preset max size if needed.
-  $data = oembedcore_oembed_data($url);
-  $w = $data->width;
-  $h = $data->height;
-  $w_max = 500;
-  $h_max = 500;
-  
-  if ($w > $w_max) {
-    $w = $w_max;
-    $ratio = $w/$data->width;
-    $h = $ratio * $h;
-  }
-  
-  if ($h > $h_max) {
-    $h = $h_max;
-    $ratio = $h/$data->height;
-    $w = $ratio * $data->height;
+  if ($data = oembedcore_oembed_data($url)) {
+    $w = $data->width;
+    $h = $data->height;
+    $w_max = 500;
+    $h_max = 500;
+    
+    if ($w > $w_max) {
+      $w = $w_max;
+      $ratio = $w/$data->width;
+      $h = $ratio * $h;
+    }
+    
+    if ($h > $h_max) {
+      $h = $h_max;
+      $ratio = $h/$data->height;
+      $w = $ratio * $data->height;
+    }
+  } else {
+    $w = $h = 500;
   }
   
   $filebox = array(
@@ -1224,6 +1227,7 @@ function _os_files_video_thumb($file) {
     '#suffix' => '<span class="video-indicator"> </span></a></div>' . $box_html,
     '#url' => $url,
     '#attributes' => array('width' => '250px'),
+    '#options' => array(),
   );
 
   return $video;
