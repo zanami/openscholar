@@ -413,7 +413,9 @@ ul.primary {
  
 }
 
-.breadcrumb a {
+.breadcrumb a,
+.breadcrumb
+ {
     color:#FFF;
 }
 
