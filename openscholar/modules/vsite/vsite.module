@@ -1011,6 +1011,7 @@ function vsite_load_user_membership($user_id){
  */
 function vsite_user_view_alter(&$build){
   global $user;
+
   // Removal section.
   // Remove the "history" and "member for" info if it's there.
   if (isset($build['summary'])) {
@@ -1046,6 +1047,18 @@ function vsite_user_view_alter(&$build){
   if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
     $title = $first_name . ' ' . $last_name;
     drupal_set_title($title);
+  }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
+    // Let's add a link to inform them to add their full name.
+    $edit_path = 'user/'.$user->uid.'/edit';
+    $add_full_name_link = l(t('Add Full Name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
+    $build['add_full_name'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-name-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $add_full_name_link,
+      '#weight' => '5',
+    );
   }
 
 
