@@ -16,7 +16,7 @@ projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.2
 
 projects[apachesolr_og][subdir] = "contrib"
-projects[apachesolr_og][version] = 1.x-dev
+projects[apachesolr_og][revision] = 5fda19fc208bd62713be99a839aed0528d9d3db7
 
 projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
@@ -78,6 +78,7 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
+projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
@@ -209,6 +210,7 @@ projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd45
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-double_browser-1939186-3.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-9.patch"
 projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-rename_field-1940036-3.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-lightbox_double_file-1977822-1.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.8
@@ -248,7 +250,7 @@ projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.1
+projects[og][version] = 2.2
 
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
@@ -386,6 +388,7 @@ libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/arch
 libraries[responsiveslides][type] = "libraries"
 libraries[responsiveslides][download][type] = "file"
 libraries[responsiveslides][download][url] = "https://github.com/viljamis/ResponsiveSlides.js/archive/v1.53.tar.gz"
+libraries[responsiveslides][patch][] = "https://raw.github.com/openscholar/openscholar/c5b00de5f1c79a679446467296ab16ebff6c19e0/patches/responsiveslides-hc_changes.patch"
 
 libraries[flexslider][type] = "libraries"
 libraries[flexslider][download][type] = "file"

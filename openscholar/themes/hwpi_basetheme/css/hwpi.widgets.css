@@ -69,6 +69,8 @@ input[type="search"] {
 }
 */
 
+.lt-ie9 .form-item-search-block-form {display:table;}
+
 #search-block-form .container-inline {
   height: auto;
   line-height: normal;
@@ -93,6 +95,10 @@ input[type="search"] {
   width: 305px;
 }
 
+.lt-ie9 #search-block-form .container-inline .form-item .form-text {
+ display:table-cell;
+}
+
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
@@ -104,6 +110,11 @@ input[type="search"] {
 	display: inline;
 	font-weight:normal;
 	color:#6A6A6A;
+}
+
+.lt-ie9 #search-block-form .form-item label {
+	display: table-cell;
+	vertical-align:middle;
 }
 
 .sidebar #search-block-form .form-item label {

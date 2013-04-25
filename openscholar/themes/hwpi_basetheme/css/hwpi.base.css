@@ -588,6 +588,10 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
   padding: 5px 0 30px;
 }
 
+.sidebar .node-teaser.node-faq {
+  padding: 5px 0 5px;
+}
+
 .page-faq h1.node-title {
 	margin-bottom: 14px;
 }
