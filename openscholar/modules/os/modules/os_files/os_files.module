@@ -195,6 +195,11 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $args = $form_state['build_info']['args'];
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
+    $extensions = array();
+    foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
+      $extensions = array_merge($extensions, _os_files_extentions_from_type($type));
+    }
+    $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
   }
     
   array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
@@ -1231,4 +1236,48 @@ function _os_files_video_thumb($file) {
   );
 
   return $video;
+}
+
+function _os_files_extentions_from_type($type) {
+  $types = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($types)) {
+    $types['audio'] = array(
+      'mp3',
+      'oga',
+      'm4a',
+    );
+    $types['video'] = array(
+      'mov',
+      'mp4', 
+      'm4v',
+      'avi',
+      'ogg',
+      'ogv',
+      'wmv',
+    );
+    $types['image'] = array(
+      'jpg',
+      'jpeg',
+      'gif',
+      'png',
+      'ico',
+    );
+    $types['document'] = array(
+      'txt',
+    	'doc',
+      'docx',
+      'xls',
+      'xlsx',
+      'ppt',
+      'pptx',
+      'pps',
+      'ppsx',
+      'odt',
+      'ods',
+      'odp',
+    );
+  }
+  
+  return isset($types[$type])?$types[$type]:array();
 }
