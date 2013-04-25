@@ -59,20 +59,12 @@
 	margin-right: 5px;
 }
 
-.views-exposed-form .views-exposed-widgets:before {
-	font-size: 1.2em;
-	font-weight: bold;
-	content: "Filter";
-	display: block;
-	border-bottom: 1px solid lightgray;
-}
-
 .views-exposed-form .views-exposed-widget {
-	display: inline-block;
+	display: none;
 	padding-right: 0.2em;
 }
 
 .views-exposed-form .views-widget-filter-filename {
-	float: right;
+	display: block;
 	padding-top: 0.5em;
 }

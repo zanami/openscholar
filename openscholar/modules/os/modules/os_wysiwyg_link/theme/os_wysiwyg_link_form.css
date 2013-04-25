@@ -2,18 +2,43 @@
 	padding-left: 5px;
 }
 
+.view-media-default {
+	margin-right: 0;
+	border-right: 0;
+}
+
 div.form-item-link-text {
-	margin: 10px;
+	margin-left: 10px;
 	position: relative;
 	z-index: 2;
 }
 
+div.form-item-link-text {
+	margin-top: 0.3em;
+	margin-left: 10.5em;
+}
+
+div.form-item-link-text label {
+	float: left;
+	margin-left: -10em;
+}
+
 div.vertical-tabs {
 	background-position: -120px 0;
+	margin-top: 2em;
+}
+
+div.vertical-tabs:before {
+	content: 'Link To';
+	font-weight: bold;
+	position: relative;
+	top: -2em;
+	left: 10px;
 }
 
 div.vertical-tabs .vertical-tabs-panes {
 	margin-left: 130px;
+	margin-top: -25px
 }
 
 .vertical-tabs-pane input[type=submit] {
@@ -24,9 +49,21 @@ div.vertical-tabs .vertical-tabs-list {
 	width: 120px;
 }
 
+.views-exposed-form .views-exposed-widgets {
+	margin-bottom: 0;
+	border: 0;
+	padding-bottom: 0;
+}
+
 .views-exposed-widget .form-item {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+.view-content {
+	padding-top: 0.75em;
+	border-top: 1px solid lightgray;
+	margin-top: 0.5em;
 }
 
 #media-browser-library-list li {
@@ -35,13 +72,25 @@ div.vertical-tabs .vertical-tabs-list {
 
 #file-entity-add-upload {
 	position: absolute;
-	top: -17px;
-	right: 232px;
+	top: -2px;
 	z-index: 5;
+	height: 40px;
+}
+
+#file-entity-add-upload:after {
+	content: 'Or';
+	position: absolute;
+	top: 1.7em;
+	left: 115px;
 }
 
 #file-entity-add-upload .form-item-upload {
 	margin: 0;
+}
+
+#file-entity-add-upload .form-actions,
+#file-entity-add-upload .description {
+	display: none;
 }
 
 #file-entity-add-upload label[for="edit-upload"] {
@@ -54,7 +103,22 @@ div.vertical-tabs .vertical-tabs-list {
 }
 
 #file-entity-add-upload #edit-upload label {
-	padding: 2px 13px;
+	padding: 13px 13px;
+}
+
+#file-entity-add-upload #edit-upload .add-new {
+  background: #A1D4A1;
+  border-radius: 5px;
+  border: 1px solid #8B8;
+  color: #293552;
+}
+
+#file-entity-add-upload .form-item-upload .form-file {
+	left: -500px;
+}
+
+.ctools-auto-submit-full-form {
+	margin-left: 150px
 }
 
 .insert-buttons {

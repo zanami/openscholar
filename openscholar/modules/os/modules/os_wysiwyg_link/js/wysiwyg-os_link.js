@@ -96,7 +96,7 @@ Drupal.wysiwyg.plugins.os_link = {
               : false,
             text = $('.form-item-link-text input', doc).val(); 
         
-        if (text == select) {
+        if (text == selected) {
           text = selection.content;
         }
         else if (text = '') {
@@ -139,7 +139,8 @@ Drupal.wysiwyg.plugins.os_link = {
       var home = Drupal.settings.basePath + (typeof Drupal.settings.pathPrefix != 'undefined'?Drupal.settings.pathPrefix:''),
           dummy = document.createElement('a');
       dummy.href = home;
-      if (dummy.hostname == a.hostname && a.pathname.indexOf(dummy.pathname) != -1) {
+   // TODO: Remove the 0 when internal is implemented
+      if (0 && dummy.hostname == a.hostname && a.pathname.indexOf(dummy.pathname) != -1) {  
         // internal link
         ret.url = a.pathname.replace(home, '');
         ret.type = 'internal';
