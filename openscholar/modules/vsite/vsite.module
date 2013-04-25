@@ -1050,7 +1050,7 @@ function vsite_user_view_alter(&$build){
   }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
     // Let's add a link to inform them to add their full name.
     $edit_path = 'user/'.$user->uid.'/edit';
-    $add_full_name_link = l(t('Add Full Name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
+    $add_full_name_link = l(t('Add full name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
     $build['add_full_name'] = array(
       '#title' => '',
       '#prefix' => '<div class="user-add-name-block">',
@@ -1078,13 +1078,13 @@ function vsite_user_view_alter(&$build){
         $css_selector = array(
           'class' => 'plural'
         );
-        $website_title = t('My Websites:');
+        $website_title = t('My websites:');
       }
       else {
         $css_selector = array(
           'class' => 'single'
         );
-        $website_title = t('My Website:');
+        $website_title = t('My website:');
       }
       $vsites_list .= theme_item_list(array(
         'items' => $owner_sites,
