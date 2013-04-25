@@ -328,12 +328,6 @@ projects[transliteration][version] = 3.1
 projects[twitter_pull][subdir] = "contrib"
 projects[twitter_pull][version] = 1.0-rc4
 
-projects[uuid][subdir] = "contrib"
-projects[uuid][version] = 1.x-dev
-; Patches for og_deploy
-projects[uuid][patch][] = "http://drupal.org/files/uuid-file_entity_fail_deployment-1694972-6.patch"
-projects[uuid][patch][] = "http://drupal.org/files/uuid_validate_error.patch"
-
 projects[views][subdir] = "contrib"
 ; projects[views][version] = 3.5+29-dev
 projects[views][download][type] = git
