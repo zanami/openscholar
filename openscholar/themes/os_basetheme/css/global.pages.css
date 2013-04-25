@@ -755,9 +755,9 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 .page-faq .os-slider {
   border:none;
   padding: 0;
+  background: none !important;
+  
 }
-
-
 
 
 .field-name-og-vocabulary a.toggle {
