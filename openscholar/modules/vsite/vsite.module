@@ -1063,6 +1063,19 @@ function vsite_user_view_alter(&$build){
 
 
   // Additions section.
+  // Add in an "Add website" link if user has permissions to create vsites.
+  if (vsite_vsite_exists_access()) {
+    $create_new_link = l(t('Add a new site'), 'site/register', array());
+    $build['add_new_site'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-site-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $create_new_link,
+      '#weight' => '10',
+    );
+  }
+
   // Load data of their sites.
   $owner_sites = vsite_load_user_sites($build['#account']->uid);
   $member_sites = vsite_load_user_membership($build['#account']->uid);
