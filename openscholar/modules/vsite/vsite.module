@@ -1029,6 +1029,26 @@ function vsite_user_view_alter(&$build){
     $build['og_user_node']['#access'] = FALSE;
   }
 
+  // Reorganize the name display.
+  // Remove firstname/lastname display and group it into one line.
+  if(isset($build['field_first_name'])) {
+    $first_name = $build['field_first_name']['#items'][0]['value'];
+    // Remove display.
+    $build['field_first_name']['#access'] = FALSE;
+  }
+  if(isset($build['field_last_name'])) {
+    $last_name = $build['field_last_name']['#items'][0]['value'];
+    // Remove the display.
+    $build['field_last_name']['#access'] = FALSE;
+  }
+
+  // If both first and last name are set, change the page title to be their full name.
+  if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
+    $title = $first_name . ' ' . $last_name;
+    drupal_set_title($title);
+  }
+
+
   // Additions section.
   // Load data of their sites.
   $owner_sites = vsite_load_user_sites($build['#account']->uid);
@@ -1081,12 +1101,13 @@ function vsite_user_view_alter(&$build){
         'attributes' => $css_selector
       ));
     }
+
     // Set a new field.
     $build['web_sites'] = array(
-      '#title' => t('Website Membership Summary:'),
+      '#title' => '',
       '#type' => 'user_profile_item',
       '#markup' => $vsites_list,
-      '#weight' => '10'
+      '#weight' => '10',
     );
   }
 }
