@@ -301,13 +301,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
     $term_path = taxonomy_term_uri($term);
     os_taxonomy_term_alias($term_path['path'], $options);
-    // Don't process terms that are in not in level 0.
-
-    // The attached number to the term name.
-    $number = NULL;
-    if ($options['show_count'] && !empty($term->below)) {
-      $number = os_taxonomy_count_term_tagged_items($term->below, $options['bundles']);
-    }
 
     if (!empty($path_prefix) && strpos($term_path, 'taxonomy/') === 0) {
       $term->path = str_replace('taxonomy/', $path_prefix, $term_path);
