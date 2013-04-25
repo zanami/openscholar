@@ -8,13 +8,11 @@
   release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
-  flavor_name = "Standard"
-  plugins[os][flavor] = flavors
 
 ;----------// OpenScholar
 
 os[theme_type]   = "vsite"
-os[theme_access] = "public"
+os[theme_access] = "private"
 
 ;----------// Stylesheets
   stylesheets[screen][] = css/openscholar.responsive.layout.css
