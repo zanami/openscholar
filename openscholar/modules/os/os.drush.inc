@@ -23,6 +23,7 @@ function os_drush_command() {
     'htaccess-file' => dt('Override path to .htaccess file.'),
     'domains-file' => dt('Override path to domains.list file.'),
     'sites-inc-file' => dt('Override path to sites.php.inc file.'),
+    'domains-file-root' => dt('If your domains.list files are outside of your Drupal root path, use this option to specify their parent folder.')
   );
   
   return array(      
@@ -42,7 +43,7 @@ function os_drush_command() {
       'arguments' => array(),
       'examples' => array(
         'drush @prod os-db' => dt('Builds new copise of sites.php and .htaccess.  If acquia cloud API is available, also update their registry of domains.'),
-        'drush @prod os-db --domains-file=/var/www/alt/path/mysite/domains.list' => dt('As os-db, but uses the file specified instead of the domains.list found in the sites directory.  File must be "domains.list" but path can be anywhere.'),   
+        'drush @prod os-db --domains-file=/var/www/alt/path/mysite/domains.list --domains-file-root=/var/www/alt/path/' => dt('As os-db, but uses the file specified instead of the domains.list found in the sites directory.  File must be "domains.list" but path can be anywhere.  The domains-file-path instructs drush that other sites in a multisite setup may live in /var/www/alt/path and it should be searched for domains.list files.'),           
       ),
       'aliases' => array('os-db'),
     ),   
@@ -108,6 +109,7 @@ function _drush_os_domain_get_server_conf() {
     'htaccess_file' => drush_get_option('htaccess-file', "$root/files/.htaccess"),
     'domains_list' => drush_get_option('domains-file', "$root/{$context[DRUSH_DRUPAL_SITE_ROOT]}/domains.list"),
     'sites_inc' => drush_get_option('sites-inc-file', "$root/sites/sites.php.inc"),
+    'domains_root' => drush_get_option('domains-file-root', "$root/sites/"),
   );
     
   return $server_conf;
@@ -125,7 +127,7 @@ function drush_os_domain_build() {
   drush_invoke('os-domain-check');
   
   //build list of multisites and their domains
-  $sites = $srv_conf['root'] . '/sites/';
+  $sites = $srv_conf['domains_root'];
   $multisites = array();
   foreach (scandir($sites) as $site) {
     if (is_dir($sites.$site) && file_exists($sites.$site.'/domains.list')) {
@@ -370,7 +372,9 @@ Using os-domains* consists of:
       
 To override the location of the files mentioned above, use the --{domains,htaccess,sites}-file= option
 to point to another location.  These options can be added to a drush alias file so you don't have to
-type them each time.  Be careful not to use the same domains.list for different sites!
+type them each time.  Be careful not to use the same domains.list for different sites!  Also note that if 
+--domains-file is pointing to a location outside of your Drupal root's sites directory, --domains-file-root
+must be used so your multisites can be found.
         
 EOF;
   drush_print($output);
