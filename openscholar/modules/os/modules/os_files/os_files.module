@@ -731,12 +731,6 @@ function os_files_form_node_form_alter(&$form, &$form_state) {
     $form['field_upload'][LANGUAGE_NONE]['add_more']['#value'] = t('Add Another');
   }
 }
-/*
-function os_files_preprocess_field_multiple_value_form(&$vars) {
-  if ($vars['element']['#field_name'] == 'field_upload') {
-    $vars['element']['add_more']['#value'] = t('Add Another');
-  }
-}
 
 /**
  * Alters the titles of the Media Browser tabs to more friendly terms
