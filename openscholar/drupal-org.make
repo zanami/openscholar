@@ -269,6 +269,9 @@ projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
+projects[og_vocab][download][type] = git
+projects[og_vocab][download][branch] = 7.x-1.x-dev
+projects[og_vocab][download][revision] = 61a6b9f
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
