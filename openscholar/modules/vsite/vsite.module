@@ -1011,6 +1011,7 @@ function vsite_load_user_membership($user_id){
  */
 function vsite_user_view_alter(&$build){
   global $user;
+
   // Removal section.
   // Remove the "history" and "member for" info if it's there.
   if (isset($build['summary'])) {
@@ -1029,6 +1030,38 @@ function vsite_user_view_alter(&$build){
     $build['og_user_node']['#access'] = FALSE;
   }
 
+  // Reorganize the name display.
+  // Remove firstname/lastname display and group it into one line.
+  if(isset($build['field_first_name'])) {
+    $first_name = $build['field_first_name']['#items'][0]['value'];
+    // Remove display.
+    $build['field_first_name']['#access'] = FALSE;
+  }
+  if(isset($build['field_last_name'])) {
+    $last_name = $build['field_last_name']['#items'][0]['value'];
+    // Remove the display.
+    $build['field_last_name']['#access'] = FALSE;
+  }
+
+  // If both first and last name are set, change the page title to be their full name.
+  if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
+    $title = $first_name . ' ' . $last_name;
+    drupal_set_title($title);
+  }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
+    // Let's add a link to inform them to add their full name.
+    $edit_path = 'user/'.$user->uid.'/edit';
+    $add_full_name_link = l(t('Add full name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
+    $build['add_full_name'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-name-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $add_full_name_link,
+      '#weight' => '5',
+    );
+  }
+
+
   // Additions section.
   // Load data of their sites.
   $owner_sites = vsite_load_user_sites($build['#account']->uid);
@@ -1045,13 +1078,13 @@ function vsite_user_view_alter(&$build){
         $css_selector = array(
           'class' => 'plural'
         );
-        $website_title = t('My Websites:');
+        $website_title = t('My websites:');
       }
       else {
         $css_selector = array(
           'class' => 'single'
         );
-        $website_title = t('My Website:');
+        $website_title = t('My website:');
       }
       $vsites_list .= theme_item_list(array(
         'items' => $owner_sites,
@@ -1081,12 +1114,15 @@ function vsite_user_view_alter(&$build){
         'attributes' => $css_selector
       ));
     }
+
     // Set a new field.
     $build['web_sites'] = array(
-      '#title' => t('Website Membership Summary:'),
+      '#title' => '',
+      '#prefix' => '<div class="user-websites-block">',
+      '#suffix' => '</div>',
       '#type' => 'user_profile_item',
       '#markup' => $vsites_list,
-      '#weight' => '10'
+      '#weight' => '10',
     );
   }
 }
