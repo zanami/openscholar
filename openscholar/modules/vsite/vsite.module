@@ -196,7 +196,8 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 function vsite_custom_theme(){
   _vsite_purl_init();
 
-  if ($space = spaces_get_space() && (! module_exists('cp') || ! cp_use_cp_theme())) {
+  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
+    //If the space is enabled correctly then set the custom theme
     ctools_include('themes', 'os');
     $theme = os_theme_get();
     return $theme;

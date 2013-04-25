@@ -50,6 +50,13 @@ class vsite extends space_og {
    * Overrides activate().
    */
   function activate() {
+
+    //Check if the current user has access to activate this space.
+    if(!$this->access_space()){
+      drupal_access_denied();
+      drupal_exit();
+    }
+
     // Test purl paths
     $this->activate_purl_modifier();
 
