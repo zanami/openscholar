@@ -295,10 +295,8 @@ function drush_os_domain_check() {
   //check if sites.php has our include line
   $contents = file_get_contents($srv_conf['sitesphp']);
   $inc_file = array_pop(explode('/', $srv_conf['sites_inc']));
-  $inc_file = preg_quote($inc_file, '/');
-  $re = '/require_once.*' . $inc_file . '/';
   
-  if (!preg_match($re, $contents)) {
+  if (!(strpos($contents, 'require_once') && strpos($contents, $inc_file))) {
     if ($srv_conf['sites_inc'] == "{$srv_conf['root']}/sites/sites.php.inc") {
       //lets default to not hardcoding the path...    
       $required = <<<EOF
@@ -323,7 +321,7 @@ if (file_exists("$path")) {
 EOF;
       
     }
-    drush_die("sites.php exists, but is not configured to include our domain overrides.  Please add the following code before $sites is initalized.\n" . $required);
+    drush_die("sites.php exists, but is not configured to include our domain overrides.  Please add the following code (or something vaguely resembling it) before \$sites is initalized.\n" . $required);
   }
   
   //can we use our files dirs' .htaccess?
