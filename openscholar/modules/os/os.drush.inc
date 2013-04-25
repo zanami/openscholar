@@ -21,7 +21,7 @@ remove, deletes from files, rebuild, ac domain remove.
 function os_drush_command() {
   $path_options = array(
     'htaccess-file' => dt('Override path to .htaccess file.'),
-    'domains-file' => dt('Override path to domains file.'),
+    'domains-file' => dt('Override path to domains.list file.'),
     'sites-inc-file' => dt('Override path to sites.php.inc file.'),
   );
   
@@ -42,7 +42,7 @@ function os_drush_command() {
       'arguments' => array(),
       'examples' => array(
         'drush @prod os-db' => dt('Builds new copise of sites.php and .htaccess.  If acquia cloud API is available, also update their registry of domains.'),
-        'drush @prod os-db --domains-file=/var/www/alt/path/mysite/domains.list' => dt('As os-db, but uses the file specified instead of the domains.list found in the sites directory'),   
+        'drush @prod os-db --domains-file=/var/www/alt/path/mysite/domains.list' => dt('As os-db, but uses the file specified instead of the domains.list found in the sites directory.  File must be "domains.list" but path can be anywhere.'),   
       ),
       'aliases' => array('os-db'),
     ),   
@@ -212,7 +212,12 @@ function drush_os_domain_add() {
     }
     
     //append domain to list
-    drush_file_append_data($srv_conf['domains_list'], "\n".$domain);
+    if (!$fd = fopen($srv_conf['domains_list'], 'a+')) {
+      drush_die(dt("ERROR: fopen(@file, 'ab') failed", array('@file' => $srv_conf['domains_list'])));
+    }
+    if (!fwrite($fd, "\n".$domain)) {
+      drush_die(dt("ERROR: fwrite(@file) failed", array('@file' => $srv_conf['domains_list'])) . '<pre>' . $domain);
+    }
   }
   
   drush_invoke('os-domain-build'); //@todo - prevent --www from causing superfluous unknown optoin error.
@@ -275,6 +280,11 @@ function drush_os_domain_list() {
  */
 function drush_os_domain_check() {
   $srv_conf = _drush_os_domain_get_server_conf();
+  
+  //check that domains.list has filename=domains.list 
+  if (end(explode('/', $srv_conf['domains_list'])) != 'domains.list') {
+    drush_die('--domains-file option must point to a domains.list file');
+  }
   
   //check for domains.list
   if (!file_exists($srv_conf['domains_list'])) {
