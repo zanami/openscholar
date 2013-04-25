@@ -1105,6 +1105,8 @@ function vsite_user_view_alter(&$build){
     // Set a new field.
     $build['web_sites'] = array(
       '#title' => '',
+      '#prefix' => '<div class="user-websites-block">',
+      '#suffix' => '</div>',
       '#type' => 'user_profile_item',
       '#markup' => $vsites_list,
       '#weight' => '10',
