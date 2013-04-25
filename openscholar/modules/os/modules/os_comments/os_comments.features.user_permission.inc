@@ -44,7 +44,8 @@ function os_comments_user_default_permissions() {
   $permissions['post comments'] = array(
     'name' => 'post comments',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'vsite admin',
+      1 => 'vsite user',
     ),
     'module' => 'comment',
   );

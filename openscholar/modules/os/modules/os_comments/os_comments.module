@@ -236,7 +236,7 @@ function os_comments_cp_settings() {
 }
 
 /**
- * Implements hook_preprocess_HOOK for node.tpl.php.
+ * Implements hook_node_view().
  *
  * Shows the "Add new comment" link on node teasers with a non-drupal comment
  * source.
@@ -246,6 +246,7 @@ function os_comments_node_view($node, $view_mode) {
   if ($view_mode !== 'teaser') {
     return;
   }
+
   // Does nothing if the node type is a group bundle.
   $group_bundles = og_get_all_group_bundle();
   if (in_array($node->type, $group_bundles['node'])) {
@@ -255,8 +256,10 @@ function os_comments_node_view($node, $view_mode) {
   if ($node->comment == COMMENT_NODE_OPEN) {
     return;
   }
-
+  // Gets the current comment source for this node type.
   $source = comment_sources_get_source($node->type);
+
+  // Otherwise, makes some changes if we are using a 3rd party comment source.
   if ($source) {
     // Tells comment_node_view() to build an "Add new comment" link.
     $node->comment = COMMENT_NODE_OPEN;
@@ -264,6 +267,15 @@ function os_comments_node_view($node, $view_mode) {
     // @see os_comments_preprocess_node()
     $node->os_comments = $source;
   }
+}
+
+/**
+ * Implementation of hook_link_alter()
+ *
+ * Removes "login to post comment" links.
+ */
+function os_comments_node_view_alter(&$build) {
+  unset($build['links']['comment']['#links']['comment_forbidden']);
 }
 
 /**
