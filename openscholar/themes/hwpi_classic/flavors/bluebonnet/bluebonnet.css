@@ -3,15 +3,15 @@
 }
 
 #menu-bar {
-    background: #8996A0;
+    background: #2769AC;
 }
 
 #menu-bar ul.nice-menu a {
-    color: #FFFFFF;
+    color: #fff;
 }
 
 #menu-bar ul.menu ul ul {
-    background: #8996A0;
+    background: #2769AC;
 }
 
 #menu-bar ul.nice-menu .menuparent a {

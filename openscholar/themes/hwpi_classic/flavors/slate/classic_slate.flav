@@ -1,5 +1,0 @@
-name = Slate
-description = A slate grey nav bar version of the Classic theme
-screenshot = screenshot.png
-
-css[] = slate.css
