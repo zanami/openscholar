@@ -1267,6 +1267,20 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
   if (isset($form['contact'])) {
     $form['contact']['#access'] = FALSE;
   }
+
+  // Change the page title to be firstname lastname if entered.
+  if(isset($form['#user']) && is_object($form['#user'])) {
+    // Load the user.
+    $user = $form['#user'];
+    // Get the first and last name.
+    $first_name = field_get_items('user',$user,'field_first_name');
+    $last_name = field_get_items('user',$user,'field_last_name');
+    if(isset($first_name) && isset($last_name) && is_array($first_name) && is_array($last_name)) {
+      $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
+      drupal_set_title($print_name);
+    }
+
+  }
 }
 
 /**
