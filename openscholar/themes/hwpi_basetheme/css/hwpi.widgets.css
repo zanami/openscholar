@@ -114,7 +114,7 @@ input[type="search"] {
 
 .lt-ie9 #search-block-form .form-item label {
 	display: table-cell;
-	padding-top:0;
+	vertical-align:middle;
 }
 
 .sidebar #search-block-form .form-item label {
