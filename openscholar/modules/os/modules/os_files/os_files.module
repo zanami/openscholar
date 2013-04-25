@@ -726,9 +726,9 @@ function os_files_media_widget_process($element, $form_state, $form) {
 /**
  * Alters text of Add Another button for media generic widgets
  */
-function os_files_preprocess_field_multiple_value_form(&$vars) {
-  if ($vars['element']['#field_name'] == 'field_upload') {
-    $vars['element']['add_more']['#value'] = t('Add Another');
+function os_files_form_node_form_alter(&$form, &$form_state) {
+  if (isset($form['field_upload'])) {
+    $form['field_upload'][LANGUAGE_NONE]['add_more']['#value'] = t('Add Another');
   }
 }
 
