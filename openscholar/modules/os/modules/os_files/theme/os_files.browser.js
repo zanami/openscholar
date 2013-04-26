@@ -47,9 +47,10 @@
       
       if ('hasClass' in ctx && ctx.hasClass('ctools-auto-submit-full-form')) {
         // set the focus to the search field 
-        var $val = $('.views-exposed-form .views-exposed-widget input[type="text"]').focus();
-        // and move the cursor to the end of the text
-        $val[0].selectionStart = $val[0].selectionEnd = $val[0].value.length;
+        var $val = $('.views-exposed-form .views-exposed-widget input[type="text"]').focus().each(function () {
+          // and move the cursor to the end of the text
+          this.selectionStart = this.selectionEnd = this.value.length;
+        });
       }
     }
   };
