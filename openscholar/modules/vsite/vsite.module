@@ -1064,7 +1064,8 @@ function vsite_user_view_alter(&$build){
 
   // Additions section.
   // Add in an "Add website" link if user has permissions to create vsites.
-  if (vsite_vsite_exists_access()) {
+  // Make sure they're logged in and it's their user page theyre viewing.
+  if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
     $create_new_link = l(t('Add a new site'), 'site/register', array());
     $build['add_new_site'] = array(
       '#title' => '',
