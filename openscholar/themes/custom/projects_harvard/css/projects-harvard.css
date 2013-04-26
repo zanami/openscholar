@@ -88,6 +88,9 @@ a, a:visited {
     height: 110px;
     }
 
+.page-site-register #header {
+    display: none;
+    }
   
 #header-container h1 {
   width: 233px;
