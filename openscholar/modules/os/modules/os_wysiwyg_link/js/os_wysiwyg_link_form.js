@@ -30,7 +30,13 @@ Drupal.behaviors.osLinkEmail = {
   attach: function (ctx) {
     $('#-os-link-email-form').submit(function (e) {
       if ($(this).filter(':visible').length > 0) {
-        Drupal.settings.osWysiwygLinkResult = 'mailto:'+$('#edit-email', this).val();
+        var val = $('#edit-email', this).val();
+        if (val) {
+          Drupal.settings.osWysiwygLinkResult = 'mailto:'+val;
+        }
+        else {
+          Drupal.settings.osWysiwygLinkResult = '';
+        }
         e.preventDefault();
       }
     });
