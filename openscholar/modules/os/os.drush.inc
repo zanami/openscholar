@@ -126,7 +126,8 @@ function drush_os_domain_build() {
   $srv_conf = _drush_os_domain_get_server_conf();
   drush_invoke('os-domain-check');
   
-  //build list of multisites and their domains
+  
+  /* build list of multisites and their domains */
   $sites = $srv_conf['domains_root'];
   $multisites = array();
   foreach (scandir($sites) as $site) {
@@ -139,7 +140,8 @@ function drush_os_domain_build() {
     }
   }
   
-  //flatten the multisites array for sites.php
+  
+  /* flatten the multisites array for sites.php */  
   $a_sites = array();
   foreach ($multisites as $site => $domains) {
     $a_sites += array_fill_keys($domains, $site);
@@ -148,12 +150,13 @@ function drush_os_domain_build() {
   $export = "<?php\n\n\$sites = " . var_export($a_sites, TRUE) . ";\n";
   _os_drush_confirm_file_overwrite($export, $inc_file);
   
-  // htaccess
+  
+  /* build .htaccess files */
   $htaccess = _os_drush_domain_htaccess($multisites);
   _os_drush_confirm_file_overwrite($htaccess, $srv_conf['htaccess_file']);
   
   
-  // try acquia cloud api.  
+  /* try acquia cloud api. */  
   if ($srv_conf['acquia-cloud-api']) {
     $domains = $multisites[$srv_conf['uri']];
     
@@ -161,7 +164,7 @@ function drush_os_domain_build() {
     $all_domains = array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
 
     ob_start();
-    $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); //how to silence...
+    $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); 
     ob_get_clean();
     
     if ($ac_domain_list['error_status']) {
@@ -172,15 +175,15 @@ function drush_os_domain_build() {
     $add = array_diff($all_domains, $ac_domain_list);
     $del = array_diff($ac_domain_list, $all_domains);
     
-    if ($add && (drush_prompt('Add domains to acquia config: ' . implode(', ', $add) . '? (y/n) [n] ', FALSE))) {
+    if ($add && (drush_confirm('Add domains to acquia config: ' . implode(', ', $add) . '?'))) {
       foreach ($add as $domain) {
         drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-add', array($domain));
       }
     }
     
-    if ($del && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $del) . '? (y/n) [n] ', FALSE))) {
+    if ($del && (drush_confirm('Remove domains from acquia config: ' . implode(', ', $del) . '? '))) {
       foreach ($del as $domain) {
-        drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-remove', array($domain));
+        drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-delete', array($domain));
       }
     }
   }
