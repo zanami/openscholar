@@ -198,11 +198,15 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
    * Only display extensions for file types that are allowed
    * Limit the results of the popup file browser to allowed mimetypes
    */
+  if (!isset($args[0]['types'])) {
+    $args[0]['types'] = array_keys(file_type_get_enabled_types());
+  }
+  
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $extensions = array();
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
-      $extensions = array_merge($extensions, _os_files_extentions_from_type($type));
+      $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
     }
     $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     
@@ -1187,6 +1191,10 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
+    // These should be a separate type, executable or compressed or something
+    // TODO: Make a proper type for them
+    'application/x-msdos-program',
+    'application/zip',
     'application/octet-stream'
   ));
 }
@@ -1262,7 +1270,7 @@ function _os_files_video_thumb($file) {
   return $video;
 }
 
-function _os_files_extentions_from_type($type) {
+function _os_files_extensions_from_type($type) {
   $types = &drupal_static(__FUNCTION__, array());
   
   if (empty($types)) {
@@ -1273,6 +1281,7 @@ function _os_files_extentions_from_type($type) {
     );
     $types['video'] = array(
       'mov',
+      'mpeg',
       'mp4', 
       'm4v',
       'avi',
@@ -1289,6 +1298,7 @@ function _os_files_extentions_from_type($type) {
     );
     $types['document'] = array(
       'txt',
+      'pdf',
     	'doc',
       'docx',
       'xls',
@@ -1300,6 +1310,13 @@ function _os_files_extentions_from_type($type) {
       'odt',
       'ods',
       'odp',
+      'xml',
+      'tex',
+      // TODO: put these in their own file type
+      'zip',
+      'tgz',
+      'gz',
+      'exe',
     );
   }
   
