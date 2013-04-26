@@ -158,8 +158,6 @@ function drush_os_domain_build() {
   
   /* try acquia cloud api. */  
   if ($srv_conf['acquia-cloud-api']) {
-    $domains = $multisites[$srv_conf['uri']];
-    
     //acquia doesn't differentiate multisites.  this list is all or nothing.
     $all_domains = array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
 
@@ -296,8 +294,10 @@ function drush_os_domain_check() {
   
   //check for domains.list
   if (!file_exists($srv_conf['domains_list'])) {
+    $url = str_replace('http://', '', $srv_conf['uri']);
+    $url = trim($url, '/');
     file_put_contents($srv_conf['domains_list'], "# This file created automatically by drush os-domain-config.  Do not delete.\n") || drush_die('Error creating domains.list.  Check your permissions.');
-    file_put_contents($srv_conf['domains_list'], str_replace('http://', '', $srv_conf['uri']), FILE_APPEND);
+    file_put_contents($srv_conf['domains_list'], $url, FILE_APPEND);
   }
   
   //do we have sites.php?
