@@ -193,6 +193,11 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $form['#step'] = 3;
 
   $args = $form_state['build_info']['args'];
+  /*
+   * Set a validator to check that uploaded files are the right type
+   * Only display extensions for file types that are allowed
+   * Limit the results of the popup file browser to allowed mimetypes
+   */
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $extensions = array();
@@ -200,9 +205,28 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
       $extensions = array_merge($extensions, _os_files_extentions_from_type($type));
     }
     $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
+    
+    $types = file_type_get_all_types();
+    $mimetypes = array();
+    foreach ($types as $type => $t) {
+      if (in_array($type, $args[0]['types'])) {
+        $mimetypes = array_merge($mimetypes, $t->mimetypes);
+      }
+    }
+    if (!empty($mimetypes)) {
+      $form['upload']['#attributes'] = array(
+        'accept' => implode(',', $mimetypes),
+      );
+      $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
+    }
   }
     
   array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
+}
+
+function os_files_upload_attributes($element) {
+  $element['upload']['#attributes'] = $element['#attributes'];
+  return $element;
 }
 
 function os_files_upload_validate_file_type(stdclass $file, $types) {
