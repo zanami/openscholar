@@ -73,7 +73,7 @@ function vsite_vocab_term_page_access($term) {
   // Check if user has access to the group.
   $group = entity_load_single($relation->group_type, $relation->gid);
 
-  //If we are in a vsite make sure this vocab belongs to this site
+  // If we are in a vsite make sure this vocab belongs to the active site.
   if($relation->group_type == 'node' && ($space = spaces_get_space()) && $space->id != $relation->gid){
 		return FALSE;
   }
