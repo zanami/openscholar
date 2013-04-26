@@ -1060,11 +1060,6 @@ function os_url_outbound_alter(&$path, &$options, $original) {
     }
   }
 
-  // Array to hold various pages we want to redirect back to vsite home.
-  $redirect_pages = array(
-    'spaces-access-denied',
-  );
-
   $loop_back_pages = array(
     'user',
     'user/logout',
@@ -1085,12 +1080,6 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   }
   else {
     $dest_path = '';
-  }
-
-  // Check for a private site => spaces-access-denied path.
-  // We want to redirect them back to the home of the private site.
-  if(in_array($dest_path, $redirect_pages)) {
-    $dest_path = 'home';
   }
 
   // Prevent possibility of infinate loops.
@@ -1114,13 +1103,13 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   }
 
   // Add the existing query string if it exists.
-  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q')));
+  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q','destination')));
   // Don't append a destination if it matches one of the pages we want redirected to home.
-  if ($query != '' && !in_array($_GET['q'], $redirect_pages)) {
+  if ($query != '') {
     $dest_path .= '?' . $query;
   }
 
-  $options['query']['destination'] = drupal_encode_path($dest_path);
+  $options['query']['destination'] = $dest_path;
 }
 
 /**
