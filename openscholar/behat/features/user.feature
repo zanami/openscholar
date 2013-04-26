@@ -6,8 +6,9 @@ Feature: User page access
   @api
   Scenario: User pages are inaccessible to anonymous users.
     Given I am not logged in
-     When I visit "/users/admin"
-     Then I should get a "403" HTTP response
+     Then I should be redirected in the following <cases>:
+  #  | Request                    | Response Code | Final URL   |
+     | users/admin                | 403           | users/admin |
 
   @api
   Scenario: User pages are accessible to the logged in user.
