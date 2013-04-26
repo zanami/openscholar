@@ -99,7 +99,12 @@ Feature:
   | Vocabularies           | authors   | select list |
   | Show empty terms       | check     | checkbox    |
   # We should set those terms upon migrate, instead of here.
-    #And I set the term "Antoine de Saint-Exupéry" under the term "Stephen William Hawking"
     When I visit "john/classes"
     And I verify the "Stephen William Hawking" term link redirect to the original page
     Then I verify the "Antoine de Saint-Exupéry" term link doesn't redirect to the original page
+
+  @api
+  Scenario: Verify the terms links direct us to the correct path.
+    Given I assign the node "Me and michelle obama" with the type "blog" to the term "Barack Hussein Obama"
+     When I visit the original page for the term "Barack Hussein Obama"
+     Then I should not get a "200" HTTP response

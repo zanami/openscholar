@@ -273,6 +273,32 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I create a new "([^"]*)" entry with the name "([^"]*)"$/
+   */
+  public function iCreateANewEntryWithTheName($type, $name) {
+    return array(
+      new Step\When('I visit "john/node/add/' . $type . '"'),
+      new Step\When('I fill in "Title" with "'. $name . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Then /^I should verify the node "([^"]*)" not exists$/
+   */
+  public function iShouldVerifyTheNodeNotExists($title) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$title'"));
+
+    $this->invoke_code('os_migrate_demo_delete_node', array("'$title'"));
+
+    $this->Visit('I visit "john/node/' . $nid . '"');
+
+    return array(
+      new Step\When('I should not get a "200" HTTP response'),
+    );
+  }
+
+  /**
    * @Given /^I publish a new blog entry$/
    */
   public function iPublishANewBlogEntry() {
@@ -281,7 +307,6 @@ class FeatureContext extends DrupalContext {
       new Step\When('I press "Save"'),
     );
   }
-
 
   /**
    * @Given /^the widget "([^"]*)" is set in the "([^"]*)" page with the following <settings>:$/
@@ -439,6 +464,8 @@ class FeatureContext extends DrupalContext {
     if ($debug) {
       print_r($output);
     }
+
+    return $output;
   }
 
   /**
@@ -746,4 +773,12 @@ class FeatureContext extends DrupalContext {
     }
   }
 
+  /**
+   * @When /^I visit the original page for the term "([^"]*)"$/
+   */
+  public function iVisitTheOriginalPageForTheTerm($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+    $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
+  }
 }

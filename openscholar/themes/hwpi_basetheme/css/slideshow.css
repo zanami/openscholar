@@ -288,7 +288,7 @@ a.rslides_nav.prev {
     clear: both;
     color: #FFFFFF;
     padding: 12px 30px;
-    text-align: center;
+  
 }
 #layout_16_9_side .hero-copy {
     background: none repeat scroll 0 0 transparent;
@@ -369,8 +369,7 @@ a.rslides_nav.prev {
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 transparent;
     border-radius: 0 0 0 0;
-    float: right;
-    width: ;
+    left: 550px;
 }
 
 

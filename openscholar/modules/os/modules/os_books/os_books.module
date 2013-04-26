@@ -208,6 +208,15 @@ function os_books_node_view($node, $view_mode) {
   }
 }
 
+function os_books_contextual_links_view_alter(&$element, &$items) {
+  if (isset($items['node-outline'])) {
+    $destination = str_replace('/edit', '', $element['#links']['node-edit']['href']);
+    foreach ($element['#links'] as $k => $v) {
+      $element['#links'][$k]['query']['destination'] = $destination;
+    } 
+  }
+}
+
 function os_books_context_custom($name) {
   if (strpos($name, 'os_books-book') !== FALSE) {
     $nid = str_replace('os_books-book-', '', $name);

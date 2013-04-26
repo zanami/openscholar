@@ -80,13 +80,18 @@ ul.nice-menu ul {
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a,
-#menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
  color:#FFF;
  font-family:arial;
  font-size:13px;
  font-weight:bold;
 }
+
+
+#menu-bar ul.nice-menu .menuparent ul li a:hover {
+ color:#BAC5C6;
+}
+
 
 #menu-bar ul.menu ul ul {
     background:#7B272B;

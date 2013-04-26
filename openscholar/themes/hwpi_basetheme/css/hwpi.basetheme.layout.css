@@ -91,11 +91,17 @@
   #branding_header #branding-container {
     height: 38px;
   }
+  
+
   .branding-left {
     float: left;
     width: 235px;
     margin: 10px 0 0 -30px;
-  }
+   }
+  
+  @media (max-width: 1000px) {
+  .branding-left {
+    margin: 10px 0 0 0;} }
   
   .ipad .branding-left,
    .mobile .branding-left {

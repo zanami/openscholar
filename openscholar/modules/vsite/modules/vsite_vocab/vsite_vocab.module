@@ -46,6 +46,33 @@ function vsite_vocab_menu_alter(&$items) {
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name'];
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name/add'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name/add'];
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name/edit'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name/edit'];
+
+  if (variable_get('og_vocab_term_page_access', FALSE)) {
+    $items['taxonomy/term/%taxonomy_term']['access callback'] = 'vsite_vocab_term_page_access';
+    $items['taxonomy/term/%taxonomy_term']['access arguments'] = array(2);
+
+    $items['taxonomy/term/%taxonomy_term/feed']['access callback'] = 'vsite_vocab_term_page_access';
+    $items['taxonomy/term/%taxonomy_term/feed']['access arguments'] = array(2);
+  }
+}
+
+/**
+ * Menu access callback - implementing a custom taxonomy term access,
+ */
+function vsite_vocab_term_page_access($term) {
+  if (!user_access('access content')) {
+    return;
+  }
+
+
+  if (!$relation = og_vocab_relation_get($term->vid)) {
+    // Term doesn't belong to OG-vocab
+    return TRUE;
+  }
+
+  // Check if user has access to the group.
+  $group = entity_load_single($relation->group_type, $relation->gid);
+  return vsite_access_user_access($group);
 }
 
 /**

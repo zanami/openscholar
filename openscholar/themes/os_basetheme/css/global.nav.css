@@ -748,9 +748,13 @@ ul.nice-menu-down li li.menuparent:hover {
 
 }
 
+.navigation ul li:hover,
+.navigation ul.menu li:hover { background-color: #fff; }
+
+
 .navigation ul.menu li a,
 .navigation ul li a {
-  display: block;
+  display: inline-block;
   text-decoration: none !important;
   padding: .5em;
   color:inherit;
@@ -763,7 +767,6 @@ ul.nice-menu-down li li.menuparent:hover {
 
 .navigation a:link, .navigation a:visited { color: inherit; }
 .navigation a:hover, .navigation a:active { color: inherit; } 
-.navigation a:hover { background-color: #fff; }
 
 /* Section Nav */
 #boxes-box-os_pages_section_nav {

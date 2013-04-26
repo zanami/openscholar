@@ -57,6 +57,7 @@
 							<?php print render($title_prefix); ?>
 							<?php if (!$is_front && $title): ?>
 								<header id="main-content-header">
+									<a name="<?php echo $skip_link; ?>"></a>
       									<h1 id="page-title"<?php print $attributes; ?>>
       									        <?php print $title; ?>
       									</h1>
@@ -83,7 +84,7 @@
 
 						<?php if (!$is_front && !$use_content_regions): ?>
 							<<?php print $tag; ?> id="main-content">
-
+								<a name="<?php echo $skip_link; ?>"></a>
 								<?php print render($title_prefix); ?>
 								<?php if ($title || $primary_local_tasks || $secondary_local_tasks || $action_links = render($action_links)): ?>
 									<header id="main-content-header">

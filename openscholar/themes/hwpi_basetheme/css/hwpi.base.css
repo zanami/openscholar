@@ -11,7 +11,7 @@ body {
 
 a,
 a:visited {
-  color: #3A72AB;
+  color: #2769AC;
 }
 
 #columns .block ul {
@@ -51,7 +51,7 @@ table caption {
 #footer .footer-login {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
-  color: #3A72AB;
+  color: #2769AC;
   float: right;
   font-size: 12px;
   font-style: normal;
@@ -89,7 +89,7 @@ table caption {
 .node-type-page .breadcrumb, 
 .breadcrumb,
 .breadcrumb a {
-	color:#3A72AB;
+	color:#2769AC;
 	text-transform:uppercase;
 	font-size:12px;
 	font-weight:bold;
@@ -210,7 +210,7 @@ ol.search-results li.search-result:last-child {
 .calendar-calendar .month-view .full td.multi-day div.monthview,
 .calendar-calendar .week-view .full td.multi-day div.weekview,
 .calendar-calendar .day-view .full td.multi-day div.dayview {
-  background-color: #3A72AB;
+  background-color: #2769AC;
   border-radius: 0;
   height: 25px;
   line-height: 25px;
@@ -331,7 +331,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .calendar-calendar div.date-nav a {
-  color: #3A72AB;
+  color: #2769AC;
 }
 
 .view-os-events ul li .node {
@@ -457,7 +457,7 @@ ol.search-results li.search-result:last-child {
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
-  border-bottom: 1px solid #3A72AB;
+  border-bottom: 1px solid #2769AC;
 }
 
 .node-class .view-os-classes .views-row {
@@ -588,6 +588,10 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
   padding: 5px 0 30px;
 }
 
+.sidebar .node-teaser.node-faq {
+  padding: 5px 0 5px;
+}
+
 .page-faq h1.node-title {
 	margin-bottom: 14px;
 }
@@ -688,7 +692,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #3A72AB;
+  border-bottom: 1px solid #2769AC;
 }
 
 

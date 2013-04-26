@@ -63,6 +63,21 @@ class OsMigrateScienceTaxonomyTerm extends OsMigrate {
   public $ogVocab = TRUE;
 }
 
+/**
+ * Migrate "Authors" terms.
+ */
+class OsMigrateFamilyTaxonomyTerm extends OsMigrate {
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'family';
+
+  public $ogVocab = TRUE;
+}
+
 ///////////////////////
 // Nodes
 

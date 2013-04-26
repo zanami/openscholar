@@ -278,6 +278,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   if (!$terms = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE)) {
     return;
   }
+  uasort($terms, 'os_taxonomy_sort_by_weight');
 
   // Arrange term in an array with information about inner tree.
   $path_prefix = '';
@@ -300,21 +301,13 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
     $term_path = taxonomy_term_uri($term);
     os_taxonomy_term_alias($term_path['path'], $options);
-    // Don't process terms that are in not in level 0.
-
-    // The attached number to the term name.
-    $number = NULL;
-    if ($options['show_count'] && !empty($term->below)) {
-      $number = os_taxonomy_count_term_tagged_items($term->below, $options['bundles']);
-    }
 
     if (!empty($path_prefix) && strpos($term_path, 'taxonomy/') === 0) {
       $term->path = str_replace('taxonomy/', $path_prefix, $term_path);
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-      $term_name = $term->term_name;
-      $data[$tid] = $term_name;
+      $data[$tid] = $term->name;
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
@@ -353,7 +346,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     // Calling to a generic form ID.
-    $form = drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']);
+    $form = drupal_get_form('os_taxonomy_select_list_' . $variables['vid'], $data, $options['path_prefix']);
     return render($form);
   }
   else {
@@ -619,6 +612,8 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
  */
 function os_taxonomy_build_child_item($items, $parent, $options) {
   $content = array();
+
+  uasort($items, 'os_taxonomy_sort_by_weight');
 
   foreach ($items as $item) {
     $number = NULL;
@@ -1018,4 +1013,14 @@ function _os_taxonomy_remove_term_heading_link($markup, $element) {
   $output = preg_replace($link_pattern, "<h2>$1", $markup);
 
   return $output;
+}
+
+/**
+ * Sort terms by weight.
+ *
+ * The hierarchical taxonomy order the terms by their depth and not by their
+ * weight.
+ */
+function os_taxonomy_sort_by_weight($a, $b) {
+  return ($a->weight < $b->weight) ? -1 : 1;
 }

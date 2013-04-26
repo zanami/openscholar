@@ -1103,12 +1103,13 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   }
 
   // Add the existing query string if it exists.
-  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q')));
+  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q','destination')));
+  // Don't append a destination if it matches one of the pages we want redirected to home.
   if ($query != '') {
     $dest_path .= '?' . $query;
   }
 
-  $options['query']['destination'] = drupal_encode_path($dest_path);
+  $options['query']['destination'] = $dest_path;
 }
 
 /**

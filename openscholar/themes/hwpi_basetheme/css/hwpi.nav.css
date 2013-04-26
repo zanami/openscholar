@@ -98,8 +98,8 @@ ul.nice-menu ul {
 	list-style: none;
 	background-color: #F3F3F1;
 	text-align: left;
-	border-left: 4px solid #ccc;
 }
+
 
 .sidebar #block-os-primary-menu ul.menu li a, 
 .sidebar #block-os-secondary-menu ul.menu li a {
@@ -107,14 +107,33 @@ ul.nice-menu ul {
 	text-decoration: none !important;
 	padding: 8px 15px;
 	border-bottom: 2px solid #fff;
-	
+	font-size:15px;
 }
+
+.sidebar #block-os-primary-menu ul.menu li li a, 
+.sidebar #block-os-secondary-menu ul.menu li li a {
+	padding: 8px 25px;
+}
+
+.sidebar #block-os-primary-menu ul.menu li ul.menu, 
+.sidebar #block-os-secondary-menu ul.menu li ul.menu {
+    margin: 0 0 0 0;
+}
+
+
 
 .sidebar #block-os-primary-menu ul.menu li.last a, 
 .sidebar #block-os-secondary-menu ul.menu li.last a {
 	border-bottom: none;
 	
 }
+
+.sidebar #block-os-primary-menu ul.menu li li.last a, 
+.sidebar #block-os-secondary-menu ul.menu li li.last a {
+	border-bottom: 2px solid #fff;
+	
+}
+
 
 
 .sidebar #block-os-primary-menu a:hover, 
@@ -133,6 +152,8 @@ ul.nice-menu ul {
 	margin-bottom: 1em;
 }
 
+
+
 .region-header-third ul.nice-menu {
     margin-top: 5px;
 }
@@ -146,7 +167,8 @@ ul.nice-menu ul {
     font: bold 13px arial,sans-serif;
     text-decoration: none;
     text-transform: uppercase;
-    color: #3A72AB;
+    color: #2769AC;
+    padding: 0.3em 0 0.3em 10px;
 }
 
 #branding_footer,
