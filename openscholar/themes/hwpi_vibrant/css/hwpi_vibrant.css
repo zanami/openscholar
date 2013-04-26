@@ -460,9 +460,9 @@ ul.primary {
   color: #000;
   border-bottom: 1px solid #dededc;
   font-size: 16px;
-  height: 32px;
-  line-height: 32px;
-  padding: 0 15px;
+  line-height: 20px;
+  min-height: 20px;
+  padding: 7px 15px;
   text-transform: capitalize;
   font-weight: bold;
 }
