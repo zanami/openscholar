@@ -153,10 +153,13 @@ function drush_os_domain_build() {
   _os_drush_confirm_file_overwrite($htaccess, $srv_conf['htaccess_file']);
   
   
-  // try acquia cloud api
+  // try acquia cloud api.  
   if ($srv_conf['acquia-cloud-api']) {
     $domains = $multisites[$srv_conf['uri']];
-  
+    
+    //acquia doesn't differentiate multisites.  this list is all or nothing.
+    $all_domains = array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
+
     ob_start();
     $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); //how to silence...
     ob_get_clean();
@@ -166,8 +169,8 @@ function drush_os_domain_build() {
     }
   
     $ac_domain_list = array_map(create_function('$a', 'return $a["name"];'), $ac_domain_list['object'][1]);
-    $add = array_diff($domains, $ac_domain_list);
-    $del = array_diff($ac_domain_list, $domains);
+    $add = array_diff($all_domains, $ac_domain_list);
+    $del = array_diff($ac_domain_list, $all_domains);
     
     if ($add && (drush_prompt('Add domains to acquia config: ' . implode(', ', $add) . '? (y/n) [n] ', FALSE))) {
       foreach ($add as $domain) {
@@ -175,8 +178,8 @@ function drush_os_domain_build() {
       }
     }
     
-    if ($remove && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $remove) . '? (y/n) [n] ', FALSE))) {
-      foreach ($remove as $domain) {
+    if ($del && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $del) . '? (y/n) [n] ', FALSE))) {
+      foreach ($del as $domain) {
         drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-remove', array($domain));
       }
     }
@@ -291,7 +294,7 @@ function drush_os_domain_check() {
   //check for domains.list
   if (!file_exists($srv_conf['domains_list'])) {
     file_put_contents($srv_conf['domains_list'], "# This file created automatically by drush os-domain-config.  Do not delete.\n") || drush_die('Error creating domains.list.  Check your permissions.');
-    file_put_contents($srv_conf['domains_list'], $srv_conf['uri'], FILE_APPEND);
+    file_put_contents($srv_conf['domains_list'], str_replace('http://', '', $srv_conf['uri']), FILE_APPEND);
   }
   
   //do we have sites.php?
@@ -495,7 +498,7 @@ EOF;
  */
 function _os_drush_domain_htaccess_rewrite_condition($domains) {
   foreach ($domains as $n => $domain) {
-    $condition = '  RewriteCond %{HTTP_POST} ^' . $domain;
+    $condition = '  RewriteCond %{HTTP_HOST} ^' . $domain;
     $domains[$n] = str_replace('.', '\.', $condition);
   }
   return "\n" . implode(" [OR]\n", $domains) . "\n";
