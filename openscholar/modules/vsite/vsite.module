@@ -1064,6 +1064,20 @@ function vsite_user_view_alter(&$build){
 
 
   // Additions section.
+  // Add in an "Add website" link if user has permissions to create vsites.
+  // Make sure they're logged in and it's their user page theyre viewing.
+  if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
+    $create_new_link = l(t('Add a new site'), 'site/register', array('attributes' => array('class' => 'user-add-website')));
+    $build['add_new_site'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-site-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $create_new_link,
+      '#weight' => '10',
+    );
+  }
+
   // Load data of their sites.
   $owner_sites = vsite_load_user_sites($build['#account']->uid);
   $member_sites = vsite_load_user_membership($build['#account']->uid);
@@ -1125,6 +1139,24 @@ function vsite_user_view_alter(&$build){
       '#markup' => $vsites_list,
       '#weight' => '10',
     );
+  }
+}
+
+/**
+ * Implements hook_preprocess_page.
+ * Change the title of the "edit" tab on the user page to "Edit Account".
+ */
+function vsite_preprocess_page(&$vars) {
+  $item = menu_get_item();
+  // Only make the change to the local menu tab in the /user page.
+  if(isset($item) && (strpos($item['path'], 'user') === 0)) {
+    if (is_array($vars['tabs']['#primary'])) {
+      foreach ($vars['tabs']['#primary'] as $delta => $tab) {
+        if (in_array($tab['#link']['title'], array("Edit"))) {
+          $vars['tabs']['#primary'][$delta]['#link']['title'] = "Edit Account";
+        }
+      }
+    }
   }
 }
 
@@ -1236,6 +1268,20 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
   // Remove the form element that the 'contact' module hooks in.
   if (isset($form['contact'])) {
     $form['contact']['#access'] = FALSE;
+  }
+
+  // Change the page title to be firstname lastname if entered.
+  if(isset($form['#user']) && is_object($form['#user'])) {
+    // Load the user.
+    $user = $form['#user'];
+    // Get the first and last name.
+    $first_name = field_get_items('user',$user,'field_first_name');
+    $last_name = field_get_items('user',$user,'field_last_name');
+    if(isset($first_name) && isset($last_name) && is_array($first_name) && is_array($last_name)) {
+      $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
+      drupal_set_title($print_name);
+    }
+
   }
 }
 
