@@ -632,9 +632,9 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I expect for a behavior according the next <statements>:$/
+   * @Given /^I should be redirected in the following <cases>:$/
    */
-  public function iExpectForABehaviorAccordingTheNextStatements(TableNode $table) {
+  public function iShouldBeRedirectedInTheFollowingCases(TableNode $table) {
     $rows = $table->getRows();
     $baseUrl = $this->locatePath('');
 
