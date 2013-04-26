@@ -64,6 +64,10 @@
 	padding-right: 0.2em;
 }
 
+.views-exposed-form .views-submit-button {
+	display: block;
+}
+
 .views-exposed-form .views-widget-filter-filename {
 	display: block;
 	padding-top: 0.5em;
