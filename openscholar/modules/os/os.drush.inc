@@ -495,7 +495,7 @@ EOF;
  */
 function _os_drush_domain_htaccess_rewrite_condition($domains) {
   foreach ($domains as $n => $domain) {
-    $condition = '  RewriteCond %{HTTP_POST} ^' . $domain;
+    $condition = '  RewriteCond %{HTTP_HOST} ^' . $domain;
     $domains[$n] = str_replace('.', '\.', $condition);
   }
   return "\n" . implode(" [OR]\n", $domains) . "\n";
