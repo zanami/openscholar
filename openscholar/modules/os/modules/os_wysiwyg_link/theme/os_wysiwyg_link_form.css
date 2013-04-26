@@ -88,8 +88,7 @@ div.vertical-tabs .vertical-tabs-list {
 	margin: 0;
 }
 
-#file-entity-add-upload .form-actions,
-#file-entity-add-upload .description {
+#file-entity-add-upload .form-actions {
 	display: none;
 }
 
@@ -97,9 +96,21 @@ div.vertical-tabs .vertical-tabs-list {
 	display: none;
 }
 
-#file-entity-add-upload .form-help,
+#file-entity-add-upload .form-help {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
 #file-entity-add-upload .description {
-	display: none;
+	position: absolute;
+	background: white;
+	padding: 5px;
+	border: 1px solid lightgray;
+	border-radius: 5px;
+	width: 200px;
+	bottom: -125px;
+	left: 0;
 }
 
 #file-entity-add-upload #edit-upload label {
@@ -134,6 +145,12 @@ div.vertical-tabs .vertical-tabs-list {
 .insert-buttons .form-submit {
 	margin-top: 0.5em;
 	margin-bottom: 0;
+}
+
+#edit-upload .messages {
+	position: absolute;
+	width: 300px;
+	right: -650px;
 }
 
 /* 
