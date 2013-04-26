@@ -99,7 +99,7 @@ Drupal.wysiwyg.plugins.os_link = {
         if (text == selected) {
           text = selection.content;
         }
-        else if (text = '') {
+        else if (text == '') {
           text = window.Drupal.settings.osWysiwygLinkResult;
         }
         
