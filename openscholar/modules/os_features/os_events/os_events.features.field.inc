@@ -247,9 +247,9 @@ function os_events_field_default_fields() {
           'weight' => 0,
         ),
         'teaser' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'settings' => array(),
-          'type' => 'hidden',
+          'type' => 'text_default',
           'weight' => 0,
         ),
       ),
