@@ -287,3 +287,13 @@ function _os_booklets_option_filter_form_alter(&$form) {
   }
 }
 
+/**
+ * Implements hook_os_add_new_links_alter()
+ */
+function os_booklets_os_add_new_links_alter(&$links) {
+  // Renames "Add new" link to "Add Booklet".
+  // Otherwise it would be "Add Book page".
+  if (isset($links['book']['title'])) {
+    $links['book']['title'] = t('Booklet');
+  }
+}
