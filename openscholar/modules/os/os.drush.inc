@@ -291,7 +291,7 @@ function drush_os_domain_check() {
   //check for domains.list
   if (!file_exists($srv_conf['domains_list'])) {
     file_put_contents($srv_conf['domains_list'], "# This file created automatically by drush os-domain-config.  Do not delete.\n") || drush_die('Error creating domains.list.  Check your permissions.');
-    file_put_contents($srv_conf['domains_list'], $srv_conf['uri'], FILE_APPEND);
+    file_put_contents($srv_conf['domains_list'], str_replace('http://', '', $srv_conf['uri']), FILE_APPEND);
   }
   
   //do we have sites.php?
