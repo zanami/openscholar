@@ -271,11 +271,11 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I publish a new blog entry$/
+   * @Given /^I add a comment "([^"]*)" using the comment form$/
    */
-  public function iPublishANewBlogEntry() {
+  public function iAddACommentUsingTheCommentForm($comment) {
     return array(
-      new Step\When('I fill in "Comment" with "Lorem ipsum john doe"'),
+      new Step\When('I fill in "Comment" with "' . $comment . '"'),
       new Step\When('I press "Save"'),
     );
   }
