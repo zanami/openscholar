@@ -306,11 +306,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       $term->path = str_replace('taxonomy/', $path_prefix, $term_path);
     }
 
-    if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {    
+    if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
       $data[$tid] = $term->name;
-      if ($options['show_childs'] && $term->below) {
-        _os_taxonomy_flatten_children_terms($term, $data, $options['depth'] + 1, ' ');
-      }
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
@@ -1026,23 +1023,4 @@ function _os_taxonomy_remove_term_heading_link($markup, $element) {
  */
 function os_taxonomy_sort_by_weight($a, $b) {
   return ($a->weight < $b->weight) ? -1 : 1;
-}
-
-/**
- * @function _os_taxonomy_list_children_terms
- *
- * Flattens all child terms in $results array as $tid => $name
- *
- * Optional $depth - int limits how deep to recurse
- * Optional $prefix - str or null.  If null, no prefixes.  If a str, will prepend dashes before child terms to indicate
- */
-function _os_taxonomy_flatten_children_terms($term, &$result, $depth = -1, $prefix = NULL) {
-  if ($depth == 0) {
-    return;
-  }
-
-  $result[$term->tid] = (isset($prefix)) ? $prefix . $term->name : $term->name;
-  foreach($term->below as $child) {
-    _os_taxonomy_flatten_children_terms($child, $result, $depth - 1, (isset($prefix)) ? '-' . $prefix : NULL);
-  }
 }
