@@ -155,11 +155,11 @@ function drush_os_domain_build() {
   
   // try acquia cloud api.  
   if ($srv_conf['acquia-cloud-api']) {
-    drush_print(var_export($multisites, TRUE));
     $domains = $multisites[$srv_conf['uri']];
-    $all_domains = array_reduce();//... //acquia doesn't differentiate multisites.  this list is all or nothing.
-    array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
-  
+    
+    //acquia doesn't differentiate multisites.  this list is all or nothing.
+    $all_domains = array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
+
     ob_start();
     $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); //how to silence...
     ob_get_clean();
@@ -169,8 +169,8 @@ function drush_os_domain_build() {
     }
   
     $ac_domain_list = array_map(create_function('$a', 'return $a["name"];'), $ac_domain_list['object'][1]);
-    $add = array_diff($domains, $ac_domain_list);
-    $del = array_diff($ac_domain_list, $domains);
+    $add = array_diff($all_domains, $ac_domain_list);
+    $del = array_diff($ac_domain_list, $all_domains);
     
     if ($add && (drush_prompt('Add domains to acquia config: ' . implode(', ', $add) . '? (y/n) [n] ', FALSE))) {
       foreach ($add as $domain) {
