@@ -7,8 +7,9 @@ Feature: User page access
   Scenario: User pages are inaccessible to anonymous users.
     Given I am not logged in
      When I visit "/users/admin"
-     Then I should see "Access Denied"
+     Then I should get a "403" HTTP response
 
+  @api
   Scenario: User pages are accessible to the logged in user.
     Given I am logged in as a user with the "administrator" role
      When I visit "/user"
