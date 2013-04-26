@@ -104,8 +104,16 @@ function _os_pinserver_auth_file_download($uri) {
  */
 function _os_pinserver_auth_pinserver_private_file_settings(&$form, $form_state) {
 
-  $form['pinserver']['os_pinserver_registration'] = array(
+  $form['pinserver']['os_pinserver_custom_domain'] = array(
     '#type' => 'textfield',
+    '#title' => t('Pinserver Domain'),
+    '#required' => FALSE,
+    '#default_value' => variable_get('os_pinserver_custom_domain', FALSE),
+    '#description' => t('If you would like pinserver requests to use a domain other than what is in $base_url. Ex. if you wanted to run all pin requests through pin.mysite.com.'),
+  );
+
+  $form['pinserver']['os_pinserver_registration'] = array(
+    '#type' => 'checkbox',
     '#title' => t('Should Pinserver control access to site and user registration?'),
     '#required' => FALSE,
     '#default_value' => variable_get('os_pinserver_registration', FALSE),
@@ -156,6 +164,14 @@ function _os_pinserver_auth_vsite_private_file_settings(&$form, $form_state) {
       '#required' => FALSE,
       '#default_value' => variable_get('pinserver_app_name'),
       '#description' => t('Enter the application name given to you by Harvard Directory Services.' ),
+    );
+
+    $form['os_pinserver_custom_domain'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Pinserver Domain'),
+      '#required' => FALSE,
+      '#default_value' => variable_get('os_pinserver_custom_domain', FALSE),
+      '#description' => t('This should be the domain that is paired with your pin application above.'),
     );
   }
 }
