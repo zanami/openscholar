@@ -153,9 +153,12 @@ function drush_os_domain_build() {
   _os_drush_confirm_file_overwrite($htaccess, $srv_conf['htaccess_file']);
   
   
-  // try acquia cloud api
+  // try acquia cloud api.  
   if ($srv_conf['acquia-cloud-api']) {
+    drush_print(var_export($multisites, TRUE));
     $domains = $multisites[$srv_conf['uri']];
+    $all_domains = array_reduce();//... //acquia doesn't differentiate multisites.  this list is all or nothing.
+    array_reduce($multisites, create_function('$ret, $arr', 'return array_merge($ret, $arr);'), array());
   
     ob_start();
     $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() ); //how to silence...
@@ -175,8 +178,8 @@ function drush_os_domain_build() {
       }
     }
     
-    if ($remove && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $remove) . '? (y/n) [n] ', FALSE))) {
-      foreach ($remove as $domain) {
+    if ($del && (drush_prompt('Remove domains from acquia config: ' . implode(', ', $del) . '? (y/n) [n] ', FALSE))) {
+      foreach ($del as $domain) {
         drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-remove', array($domain));
       }
     }
