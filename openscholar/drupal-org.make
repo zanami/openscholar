@@ -252,12 +252,6 @@ projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_m
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 
-projects[og_deploy][download][type] = git
-projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
-projects[og_deploy][download][branch] = 7.x-1.x
-projects[og_deploy][subdir] = "contrib"
-projects[og_deploy][type] = module
-
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
