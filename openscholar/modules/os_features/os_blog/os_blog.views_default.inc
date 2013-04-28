@@ -156,7 +156,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['arguments']['created_year_month']['summary']['sort_order'] = 'desc';
   $handler->display->display_options['arguments']['created_year_month']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['created_year_month']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['created_year_month']['summary_options']['base_path'] = 'blog-archive';
+  $handler->display->display_options['arguments']['created_year_month']['summary_options']['base_path'] = 'blog/archive';
   $handler->display->display_options['arguments']['created_year_month']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['created_year_month']['specify_validation'] = TRUE;
 
@@ -164,7 +164,7 @@ function os_blog_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['display_comment'] = 'The OS Blog > Blog page is a condition for the OS Blog context.';
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['path'] = 'blog-archive';
+  $handler->display->display_options['path'] = 'blog/archive';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Blog';
   $handler->display->display_options['menu']['weight'] = '0';
