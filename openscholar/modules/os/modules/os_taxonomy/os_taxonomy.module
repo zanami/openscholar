@@ -862,6 +862,10 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
 function os_taxonomy_count_attached_nodes($tid, $node_bundles = array()) {
   $query = os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles);
 
+  if (og_context()) {
+    $query->join('og_membership', 'ogm', "ogm.entity_type = 'node' AND ogm.etid = n.nid");
+  }
+
   $count = $query
     ->countQuery()
     ->execute()
