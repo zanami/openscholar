@@ -280,6 +280,7 @@ a.rslides_nav.prev {
 
 .lt-ie9 #layout_16_9_side .hero img {
  position: static;
+ border:0;
  }
 
 #layout_16_9_side .hero object, #layout_16_9_side .hero embed {
