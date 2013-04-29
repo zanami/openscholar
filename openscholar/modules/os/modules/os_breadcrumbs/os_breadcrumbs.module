@@ -248,19 +248,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   $term_hierarchy = taxonomy_get_parents_all($tid);
   // Load the vid.
   $vid = $term_hierarchy[0]->vid;
-  // Load the vocabulary.
-  $vocabulary = taxonomy_vocabulary_load($vid);
-  // Load the vocabulary name.
-  $vocab_name = $vocabulary->name;
-  // Load the vocabulary path.
-  $vocab_path = $vocabulary->machine_name;
-  // Create the vocab link.
-  $short_title = _os_breadcrumbs_shorten_title($vocab_name);
-  // UPDATE VOCAB FOR NOW IS NOT A LINK.  IT LINKS TO A DEAD PAGE.
-  // ADD BACK TO A LINK WHEN VIEW IS CREATED FOR VOCABS.
-
-  //$links[] = l(ucfirst($vocab_name),$vocab_path);
-  $links[] = t(strtoupper($short_title));
+  
   $terms_ordered = array_reverse($term_hierarchy);
   foreach($terms_ordered as $key => $term) {
     $short_title = _os_breadcrumbs_shorten_title($term->name);
