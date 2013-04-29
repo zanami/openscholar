@@ -308,6 +308,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
       $data[$tid] = $term->name;
+      $data += !empty($term->below) ? os_taxonomy_build_child_item($term->below, $term, $options) : array();
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
@@ -343,9 +344,9 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
   }
 
-
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     // Calling to a generic form ID.
+    $options['path_prefix'] = empty($options['path_prefix']) ? '' : $options['path_prefix'];
     $form = drupal_get_form('os_taxonomy_select_list_' . $variables['vid'], $data, $options['path_prefix']);
     return render($form);
   }
@@ -433,7 +434,7 @@ function os_taxonomy_og_vocabulary_bundles($vocabulary, $gid) {
 function os_taxonomy_term_alias(&$term_path, $options) {
   if (!empty($options['path_prefix']) && strlen($options['path_prefix']) && strpos($term_path, 'taxonomy/') === 0) {
 
-    //If in a vsite remove the purl from the path alias
+    // If in a vsite remove the purl from the path alias.
     if (module_exists('vsite') && $purl = vsite_get_purl()) {
       $path_args = explode('/', drupal_get_path_alias($term_path));
 
@@ -443,7 +444,8 @@ function os_taxonomy_term_alias(&$term_path, $options) {
       }
 
       $path_alias = $options['path_prefix'] . implode('/', $path_args);
-    }else{
+    }
+    else {
       $path_alias = $options['path_prefix'] . drupal_get_path_alias($term_path);
     }
 
@@ -537,7 +539,10 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
  *  @see os_taxonomy_forms().
  */
 function os_taxonomy_select_list_submit($form, &$form_state) {
-  $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms_' . $form['#vocabulary']->vid];
+  $path = 'taxonomy/term/' . $form_state['values']['terms_' . $form['#vocabulary']->vid];
+  os_taxonomy_term_alias($path, array('path_prefix' => $form_state['path']));
+
+  $form_state['redirect'] = $path;
 }
 
 /**
@@ -547,19 +552,6 @@ function os_taxonomy_select_list_validate($form, &$form_state) {
   if ($form_state['values']['terms_' . $form['#vocabulary']->vid] == '--none--') {
     form_set_error('terms_' . $form['#vocabulary']->vid, t('Please select a term.'));
   }
-
-  if (empty($data)) {
-    return;
-  }
-
-  // Make sure we pass the numeric values.
-  $options['offset'] = intval($options['offset']);
-  $options['range'] = intval($options['range']);
-  if ($options['range']) {
-    $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
-  }
-
-  return theme('item_list', array('type' => 'ul', 'items' => $data));
 }
 
 /**
@@ -630,32 +622,41 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       continue;
     }
 
-    $term_path = taxonomy_term_uri($item);
-    os_taxonomy_term_alias($term_path['path'], $options);
+    if ($options['widget_type'] == 'select') {
+      $content[$item->tid] = $item->name;
+      if (!empty($item->below)) {
+        $content += os_taxonomy_build_child_item($item->below, $item, $options);
+      }
+      return $content;
+    }
+    else {
+      $term_path = taxonomy_term_uri($item);
+      os_taxonomy_term_alias($term_path['path'], $options);
 
-    $content[] = array(
-      'data' => theme('os_taxonomy_term_item', array(
-        'number' => $number,
-        'name' => $item->name,
-        'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
-        'url_path' => $term_path,
-        'description' => $item->description,
-        'link_to_empty_terms' => $options['link_to_empty_terms'],
-        'show_term_descriptions' => $options['show_term_descriptions'],
-        'childs' => $child_content,
-      )),
-      'class' => array('term-' . drupal_html_class($item->name)),
+      $content[] = array(
+        'data' => theme('os_taxonomy_term_item', array(
+          'number' => $number,
+          'name' => $item->name,
+          'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
+          'url_path' => $term_path,
+          'description' => $item->description,
+          'link_to_empty_terms' => $options['link_to_empty_terms'],
+          'show_term_descriptions' => $options['show_term_descriptions'],
+          'childs' => $child_content,
+        )),
+        'class' => array('term-' . drupal_html_class($item->name)),
+      );
+    }
+
+    $params = array(
+      'type' => 'ul',
+      'items' => $content,
+      'attributes' => array(
+         'class' => array('termchild-' . drupal_html_class($parent->name)),
+       ),
     );
+    return theme('item_list', $params);
   }
-
-  $params = array(
-    'type' => 'ul',
-    'items' => $content,
-    'attributes' => array(
-       'class' => array('termchild-' . drupal_html_class($parent->name)),
-     ),
-  );
-  return theme('item_list', $params);
 }
 
 /**
