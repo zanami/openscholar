@@ -1,18 +1,6 @@
 <?php
 
 /**
-
-brainstorming.
-
-separate out commands.  rebuild rebuilds from files.
-add appends to files, calls rebuild, ac domain add
-check
-list
-remove, deletes from files, rebuild, ac domain remove.
-
- */
-
-/**
  * @file os.drush.inc
  *
  * Drush commands provided by OpenScholar
@@ -399,7 +387,7 @@ function _os_drush_confirm_file_overwrite($contents, $destination) {
   
   $prompt_loop = TRUE;
   while ($prompt_loop) {
-    $action = drush_prompt(dt('Created @filename file.  [v]iew, [d]iff, [c]opy, [s]skip it, or [q]uit?', array('@filename' => $filename)));
+    $action = drush_prompt(dt('Created @filename file.  [v]iew, [d]iff, [u]se this file, or [q]uit?', array('@filename' => $filename)));
     switch ($action) {
       case 'v':
         drush_shell_exec_interactive('less ' . $temp);
@@ -409,17 +397,13 @@ function _os_drush_confirm_file_overwrite($contents, $destination) {
         drush_shell_exec_interactive("diff $destination $temp");
         break;
   
-      case 'c':
+      case 'u':
         $prompt_loop = FALSE;
         break;
   
       case 'q':
         drush_die('User bailed out.');
         break;
-
-      case 's':
-        unlink($temp);
-        return;
     }
   }
   // copy the file.
