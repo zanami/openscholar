@@ -92,13 +92,6 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
-  /* Filter criterion: Content: Post date */
-  $handler->display->display_options['filters']['created']['id'] = 'created';
-  $handler->display->display_options['filters']['created']['table'] = 'node';
-  $handler->display->display_options['filters']['created']['field'] = 'created';
-  $handler->display->display_options['filters']['created']['operator'] = '>';
-  $handler->display->display_options['filters']['created']['value']['value'] = '-12 months';
-  $handler->display->display_options['filters']['created']['value']['type'] = 'offset';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
