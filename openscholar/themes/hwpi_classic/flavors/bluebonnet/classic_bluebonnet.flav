@@ -1,5 +1,0 @@
-name = Bluebonnet
-description = A royal blue nav bar version of the Classic theme
-screenshot = screenshot.png
-
-css[] = bluebonnet.css
