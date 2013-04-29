@@ -357,7 +357,7 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 ; Libraries.
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
-libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.tar.gz"
+libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
@@ -380,7 +380,7 @@ libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
 
 libraries[respondjs][type] = "libraries"
 libraries[respondjs][download][type] = "file"
-libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.tar.gz"
+libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.zip"
 
 libraries[responsiveslides][type] = "libraries"
 libraries[responsiveslides][download][type] = "file"
