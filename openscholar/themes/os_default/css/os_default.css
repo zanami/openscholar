@@ -255,7 +255,7 @@ text-decoration:none;
 }
 
 
-.page-site-register #preset-wrapper,
+.page-site-register #preset-wrapper .form-item,
 .page-site-register .form-item-domain,
 .page-site-register .form-item-bundle,
 .page-site-register .form-item-vsite-private,
