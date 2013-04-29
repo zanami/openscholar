@@ -748,8 +748,12 @@ ul.nice-menu-down li li.menuparent:hover {
 
 }
 
+/*
 .navigation ul li:hover,
-.navigation ul.menu li:hover { background-color: #fff; }
+.navigation ul li li:hover,
+.navigation ul li li li:hover { background: #fff; }
+*/
+
 
 
 .navigation ul.menu li a,
@@ -765,8 +769,13 @@ ul.nice-menu-down li li.menuparent:hover {
   padding-left: 18px;
 }
 
+.navigation ul.menu li ul.menu li li a,
+.navigation ul li ul li li a {
+  padding-left: 25px;
+}
+
 .navigation a:link, .navigation a:visited { color: inherit; }
-.navigation a:hover, .navigation a:active { color: inherit; } 
+.navigation a:hover, .navigation a:active { color: inherit;text-decoration: underline !important; } 
 
 /* Section Nav */
 #boxes-box-os_pages_section_nav {
