@@ -187,17 +187,18 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 .logged-in.no-sidebars.page-user ul.primary,
 ul.primary {
 	border-bottom-color: #FFF;
-    margin: 2em 0 -8px;
+    margin: 2em 0 -10px;
     padding: 0 0 0.2em;
 }
 
+/*
 @-moz-document url-prefix() {
 .logged-in.no-sidebars.page-user ul.primary,
 ul.primary {
-    margin: 2em 0 -9px;
+    margin: 2em 0 -10px;
 }
 }
-
+*/
 .logged-in.no-sidebars.page-user ul.primary li,
 ul.primary li {
      border-radius:5px 5px 0 0;
