@@ -283,8 +283,10 @@ projects[purl][subdir] = "contrib"
 projects[purl][download][type] = git
 projects[purl][download][branch] = 7.x-1.x
 projects[purl][download][revision] = 469e8668
-projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
+projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
+projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
+
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
