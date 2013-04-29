@@ -290,7 +290,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   foreach ($terms as $tid => $term) {
     // The attached number to the term name.
     $number = NULL;
-    if ($options['show_count']) {
+    if ($options['show_count'] || !$options['show_empty_terms']) {
       $number = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
     }
 
@@ -317,7 +317,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
-          'number' => $number,
+          'number' => $options['show_count']?$number:NULL,
           'name' => $term->name,
           'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
           'url_path' => $term_path,
@@ -617,7 +617,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
 
   foreach ($items as $item) {
     $number = NULL;
-    if ($options['show_count']) {
+    if ($options['show_count'] || !$options['show_empty_terms']) {
       $number = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
     }
 
@@ -635,7 +635,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
 
     $content[] = array(
       'data' => theme('os_taxonomy_term_item', array(
-        'number' => $number,
+        'number' => $options['show_count']?$number:NULL,
         'name' => $item->name,
         'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
         'url_path' => $term_path,
