@@ -353,6 +353,28 @@ function os_files_media_title_value($element, $input = FALSE, $form_state = arra
 }
 
 /**
+ * Modifies the media_internet_add form to better describe what it accepts
+ */
+function os_files_form_media_internet_add_alter(&$form, &$form_state) {
+  $form['providers']['#access'] = false;
+  
+  $form['embed_code']['#title'] = t('URL or embed code of Internet media');
+  $form['embed_code']['#description'] = t('Enter a URL from one of !link or paste embed code from one of the following sites: @sites',
+    array(
+      '!link' => theme('link', array(
+        'path' => 'http://embed.ly/embed/features/providers',
+        'text' => t('these providers'),
+        'options' => array(
+          'attributes' => array(),
+          'html' => FALSE
+        )
+      )),
+      '@sites' => implode(', ', media_embed_get_whitelist())
+    )
+  );
+}
+
+/**
  * Implements hook_views_api().
  */
 function os_files_views_api(){

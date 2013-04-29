@@ -1,7 +1,7 @@
 
 ;----------// Theme Information
 
-  name        = Theme for the OpenScholar site
+  name        = OS theme for Harvard use
   description = Theme for the OpenScholar site
   core        = 7.x
   base theme  = os_basetheme
@@ -15,8 +15,8 @@ os[theme_type]   = "vsite"
 os[theme_access] = "private"
 
 ;----------// Stylesheets
-  stylesheets[screen][] = css/openscholar.responsive.layout.css
-  stylesheets[screen][] = css/openscholar.css
+  stylesheets[screen][] = css/os_harvard.responsive.layout.css
+  stylesheets[screen][] = css/os_harvard.css
 
 
 
