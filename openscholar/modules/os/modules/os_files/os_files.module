@@ -1171,6 +1171,8 @@ function os_files_file_default_types_alter(&$types){
     // *.doc files
     'application/vnd.msword',
     'application/vmd.ms-word',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint',
     'application/doc',
     'appl/text',
     'application/winword',
