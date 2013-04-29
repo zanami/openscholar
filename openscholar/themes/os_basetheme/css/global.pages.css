@@ -752,12 +752,13 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   padding: 1em;
 }
 
+.node-type-faq .os-slider,
 .page-faq .os-slider {
   border:none;
   padding: 0;
+  background: none !important;
+  
 }
-
-
 
 
 .field-name-og-vocabulary a.toggle {

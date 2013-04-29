@@ -193,11 +193,44 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $form['#step'] = 3;
 
   $args = $form_state['build_info']['args'];
+  /*
+   * Set a validator to check that uploaded files are the right type
+   * Only display extensions for file types that are allowed
+   * Limit the results of the popup file browser to allowed mimetypes
+   */
+  if (!isset($args[0]['types'])) {
+    $args[0]['types'] = array_keys(file_type_get_enabled_types());
+  }
+  
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
+    $extensions = array();
+    foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
+      $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
+    }
+    $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
+    
+    $types = file_type_get_all_types();
+    $mimetypes = array();
+    foreach ($types as $type => $t) {
+      if (in_array($type, $args[0]['types'])) {
+        $mimetypes = array_merge($mimetypes, $t->mimetypes);
+      }
+    }
+    if (!empty($mimetypes)) {
+      $form['upload']['#attributes'] = array(
+        'accept' => implode(',', $mimetypes),
+      );
+      $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
+    }
   }
     
   array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
+}
+
+function os_files_upload_attributes($element) {
+  $element['upload']['#attributes'] = $element['#attributes'];
+  return $element;
 }
 
 function os_files_upload_validate_file_type(stdclass $file, $types) {
@@ -748,9 +781,9 @@ function os_files_media_widget_process($element, $form_state, $form) {
 /**
  * Alters text of Add Another button for media generic widgets
  */
-function os_files_preprocess_field_multiple_value_form(&$vars) {
-  if ($vars['element']['#field_name'] == 'field_upload') {
-    $vars['element']['add_more']['#value'] = t('Add Another');
+function os_files_form_node_form_alter(&$form, &$form_state) {
+  if (isset($form['field_upload'])) {
+    $form['field_upload'][LANGUAGE_NONE]['add_more']['#value'] = t('Add Another');
   }
 }
 
@@ -1160,6 +1193,8 @@ function os_files_file_default_types_alter(&$types){
     // *.doc files
     'application/vnd.msword',
     'application/vmd.ms-word',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint',
     'application/doc',
     'appl/text',
     'application/winword',
@@ -1180,6 +1215,10 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
+    // These should be a separate type, executable or compressed or something
+    // TODO: Make a proper type for them
+    'application/x-msdos-program',
+    'application/zip',
     'application/octet-stream'
   ));
 }
@@ -1253,4 +1292,57 @@ function _os_files_video_thumb($file) {
   );
 
   return $video;
+}
+
+function _os_files_extensions_from_type($type) {
+  $types = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($types)) {
+    $types['audio'] = array(
+      'mp3',
+      'oga',
+      'm4a',
+    );
+    $types['video'] = array(
+      'mov',
+      'mpeg',
+      'mp4', 
+      'm4v',
+      'avi',
+      'ogg',
+      'ogv',
+      'wmv',
+    );
+    $types['image'] = array(
+      'jpg',
+      'jpeg',
+      'gif',
+      'png',
+      'ico',
+    );
+    $types['document'] = array(
+      'txt',
+      'pdf',
+    	'doc',
+      'docx',
+      'xls',
+      'xlsx',
+      'ppt',
+      'pptx',
+      'pps',
+      'ppsx',
+      'odt',
+      'ods',
+      'odp',
+      'xml',
+      'tex',
+      // TODO: put these in their own file type
+      'zip',
+      'tgz',
+      'gz',
+      'exe',
+    );
+  }
+  
+  return isset($types[$type])?$types[$type]:array();
 }

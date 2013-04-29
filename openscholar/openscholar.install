@@ -25,6 +25,7 @@ function openscholar_install() {
     'commodore',
     'cp_theme',
     'dunster',
+    'documental',
     'eloquent',
     'nortony',
     'quinn',

@@ -733,7 +733,7 @@ ul.nice-menu-down li li.menuparent:hover {
 .sidebar .navigation ul.menu ul.menu,
 .sidebar .navigation ul ul {
   border: none;
-  margin-left: 0;
+  margin: 0;
 }
 
 .navigation ul li,

@@ -112,9 +112,20 @@ function vsite_form_og_ui_admin_settings_alter(&$form, &$form_state, $form_id){
  * Implements hook_node_delete().
  */
 function vsite_node_delete($node) {
+  global $language;
   if (!og_is_group('node', $node)) {
     // Not a group node.
     return;
+  }
+
+  // Invalidate the VSite from Purl's cache.
+  $cache = cache_get('purl_modifiers_' . $language->language);
+  if (!empty($cache->data) && !empty($cache->data['vsite_path'][$node->purl])) {
+    db_delete('purl')
+      ->condition('id', $node->nid)
+      ->execute();
+
+    purl_modifiers(NULL, TRUE);
   }
 
   if (!variable_get('og_use_queue', FALSE)) {
@@ -196,7 +207,8 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 function vsite_custom_theme(){
   _vsite_purl_init();
 
-  if ($space = spaces_get_space() && (! module_exists('cp') || ! cp_use_cp_theme())) {
+  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
+    //If the space is enabled correctly then set the custom theme
     ctools_include('themes', 'os');
     $theme = os_theme_get();
     return $theme;
@@ -1011,6 +1023,7 @@ function vsite_load_user_membership($user_id){
  */
 function vsite_user_view_alter(&$build){
   global $user;
+
   // Removal section.
   // Remove the "history" and "member for" info if it's there.
   if (isset($build['summary'])) {
@@ -1029,7 +1042,53 @@ function vsite_user_view_alter(&$build){
     $build['og_user_node']['#access'] = FALSE;
   }
 
+  // Reorganize the name display.
+  // Remove firstname/lastname display and group it into one line.
+  if(isset($build['field_first_name'])) {
+    $first_name = $build['field_first_name']['#items'][0]['value'];
+    // Remove display.
+    $build['field_first_name']['#access'] = FALSE;
+  }
+  if(isset($build['field_last_name'])) {
+    $last_name = $build['field_last_name']['#items'][0]['value'];
+    // Remove the display.
+    $build['field_last_name']['#access'] = FALSE;
+  }
+
+  // If both first and last name are set, change the page title to be their full name.
+  if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
+    $title = $first_name . ' ' . $last_name;
+    drupal_set_title($title);
+  }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
+    // Let's add a link to inform them to add their full name.
+    $edit_path = 'user/'.$user->uid.'/edit';
+    $add_full_name_link = l(t('Add full name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
+    $build['add_full_name'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-name-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $add_full_name_link,
+      '#weight' => '5',
+    );
+  }
+
+
   // Additions section.
+  // Add in an "Add website" link if user has permissions to create vsites.
+  // Make sure they're logged in and it's their user page theyre viewing.
+  if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
+    $create_new_link = l(t('Add a new site'), 'site/register', array('attributes' => array('class' => 'user-add-website')));
+    $build['add_new_site'] = array(
+      '#title' => '',
+      '#prefix' => '<div class="user-add-site-block">',
+      '#suffix' => '</div>',
+      '#type' => 'user_profile_item',
+      '#markup' => $create_new_link,
+      '#weight' => '10',
+    );
+  }
+
   // Load data of their sites.
   $owner_sites = vsite_load_user_sites($build['#account']->uid);
   $member_sites = vsite_load_user_membership($build['#account']->uid);
@@ -1045,13 +1104,13 @@ function vsite_user_view_alter(&$build){
         $css_selector = array(
           'class' => 'plural'
         );
-        $website_title = t('My Websites:');
+        $website_title = t('My websites:');
       }
       else {
         $css_selector = array(
           'class' => 'single'
         );
-        $website_title = t('My Website:');
+        $website_title = t('My website:');
       }
       $vsites_list .= theme_item_list(array(
         'items' => $owner_sites,
@@ -1081,13 +1140,34 @@ function vsite_user_view_alter(&$build){
         'attributes' => $css_selector
       ));
     }
+
     // Set a new field.
     $build['web_sites'] = array(
-      '#title' => t('Website Membership Summary:'),
+      '#title' => '',
+      '#prefix' => '<div class="user-websites-block">',
+      '#suffix' => '</div>',
       '#type' => 'user_profile_item',
       '#markup' => $vsites_list,
-      '#weight' => '10'
+      '#weight' => '10',
     );
+  }
+}
+
+/**
+ * Implements hook_preprocess_page.
+ * Change the title of the "edit" tab on the user page to "Edit Account".
+ */
+function vsite_preprocess_page(&$vars) {
+  $item = menu_get_item();
+  // Only make the change to the local menu tab in the /user page.
+  if(isset($item) && (strpos($item['path'], 'user') === 0)) {
+    if (is_array($vars['tabs']['#primary'])) {
+      foreach ($vars['tabs']['#primary'] as $delta => $tab) {
+        if (in_array($tab['#link']['title'], array("Edit"))) {
+          $vars['tabs']['#primary'][$delta]['#link']['title'] = "Edit Account";
+        }
+      }
+    }
   }
 }
 
@@ -1199,6 +1279,20 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
   // Remove the form element that the 'contact' module hooks in.
   if (isset($form['contact'])) {
     $form['contact']['#access'] = FALSE;
+  }
+
+  // Change the page title to be firstname lastname if entered.
+  if(isset($form['#user']) && is_object($form['#user'])) {
+    // Load the user.
+    $user = $form['#user'];
+    // Get the first and last name.
+    $first_name = field_get_items('user',$user,'field_first_name');
+    $last_name = field_get_items('user',$user,'field_last_name');
+    if(isset($first_name) && isset($last_name) && is_array($first_name) && is_array($last_name)) {
+      $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
+      drupal_set_title($print_name);
+    }
+
   }
 }
 

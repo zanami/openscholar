@@ -16,7 +16,7 @@ projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.2
 
 projects[apachesolr_og][subdir] = "contrib"
-projects[apachesolr_og][version] = 1.x-dev
+projects[apachesolr_og][revision] = 5fda19fc208bd62713be99a839aed0528d9d3db7
 
 projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
@@ -251,12 +251,7 @@ projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_m
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
-
-projects[og_deploy][download][type] = git
-projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
-projects[og_deploy][download][branch] = 7.x-1.x
-projects[og_deploy][subdir] = "contrib"
-projects[og_deploy][type] = module
+projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
@@ -269,6 +264,9 @@ projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
+projects[og_vocab][download][type] = git
+projects[og_vocab][download][branch] = 7.x-1.x-dev
+projects[og_vocab][download][revision] = 61a6b9f
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -286,8 +284,10 @@ projects[purl][subdir] = "contrib"
 projects[purl][download][type] = git
 projects[purl][download][branch] = 7.x-1.x
 projects[purl][download][revision] = 469e8668
-projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
+projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
+projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
+
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
@@ -328,12 +328,6 @@ projects[transliteration][version] = 3.1
 projects[twitter_pull][subdir] = "contrib"
 projects[twitter_pull][version] = 1.0-rc4
 
-projects[uuid][subdir] = "contrib"
-projects[uuid][version] = 1.x-dev
-; Patches for og_deploy
-projects[uuid][patch][] = "http://drupal.org/files/uuid-file_entity_fail_deployment-1694972-6.patch"
-projects[uuid][patch][] = "http://drupal.org/files/uuid_validate_error.patch"
-
 projects[views][subdir] = "contrib"
 ; projects[views][version] = 3.5+29-dev
 projects[views][download][type] = git
@@ -344,7 +338,10 @@ projects[views_bulk_operations][subdir] = "contrib"
 projects[views_bulk_operations][version] = 3.0
 
 projects[views_og_cache][subdir] = "contrib"
-projects[views_og_cache][version] = 1.x-dev
+projects[views_og_cache][download][type] = git
+projects[views_og_cache][download][branch] = 7.x-1.x-dev
+projects[views_og_cache][download][revision] = 059a845
+
 
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0

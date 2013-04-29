@@ -1,8 +1,8 @@
 
 ;----------// Theme Information
 
-  name        = Documental
-  description = An ideal theme for documenting projects
+  name        = Theme for the OpenScholar site
+  description = Theme for the OpenScholar site
   core        = 7.x
   base theme  = os_basetheme
   release     = 7.x-3.x
@@ -12,11 +12,11 @@
 ;----------// OpenScholar
 
 os[theme_type]   = "vsite"
-os[theme_access] = "public"
+os[theme_access] = "private"
 
 ;----------// Stylesheets
-  stylesheets[screen][] = css/documental.responsive.layout.css
-  stylesheets[screen][] = css/documental.css
+  stylesheets[screen][] = css/openscholar.responsive.layout.css
+  stylesheets[screen][] = css/openscholar.css
 
 
 
