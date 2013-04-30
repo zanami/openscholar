@@ -362,7 +362,6 @@ libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/ma
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
-; libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/master.tar.gz"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
 
 libraries[jquery.cycle][type] = "libraries"
