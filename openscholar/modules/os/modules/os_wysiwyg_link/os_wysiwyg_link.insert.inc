@@ -191,7 +191,6 @@ function _os_link_get_view($params) {
         'upload' => drupal_get_form('file_entity_add_upload', array(
           'file_directory' => os_files_get_save_path(),
           'no_redirect' => TRUE,
-          'max_filesize' => '1MB',
         )),
       	'library' => $build,
         'actions' => array(
