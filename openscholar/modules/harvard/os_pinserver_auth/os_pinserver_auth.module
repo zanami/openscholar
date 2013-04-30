@@ -48,8 +48,8 @@ function os_pinserver_auth_node_access($node, $op, $account) {
  */
 function os_pinserver_auth_js() {
   // Ensure the stream wrappers are available
-//   drupal_load('module', 'system');
-//   _os_pinserver_auth_init_variables();
+   drupal_load('module', 'system');
+   _os_pinserver_auth_init_variables();
 
   return array(
     'files' => array(
