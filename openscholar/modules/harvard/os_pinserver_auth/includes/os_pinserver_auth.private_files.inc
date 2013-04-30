@@ -92,7 +92,12 @@ function _os_pinserver_auth_file_download($uri) {
     }
     // Otherwise, sends the user to Pinserver to log in.
     else if (function_exists('pinserver_redirect')) {
-      return pinserver_redirect(array('redirect' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
+      $return_path = $_SERVER['REQUEST_URI'];
+      //If this request came through "/system/files/foo" instead use "os_fast_path".
+      if(strpos($return_path, '/system/') === 0){
+        $return_path = variable_get('os_pinserver_auth_fast_path','os_fast').substr($return_path, 7);
+      }
+      return pinserver_redirect(array('redirect' => $return_path, 'tk_forward' => '1'));
     }
   }
 }
