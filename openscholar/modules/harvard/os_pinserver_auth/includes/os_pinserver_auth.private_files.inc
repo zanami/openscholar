@@ -92,14 +92,8 @@ dpm('is private');
     }
     // Otherwise, sends the user to Pinserver to log in.
     else if (function_exists('pinserver_redirect')) {
-      $return_path = $_SERVER['REQUEST_URI'];
-      dpm($return_path . "incoming");
-      //If this request came through "/system/files/foo" instead use "os_fast_path".
-      if(strpos($return_path, '/system/') === 0){
-        $return_path = variable_get('os_pinserver_auth_fast_path','os_fast').substr($return_path, 7);
-      }
-      dpm($return_path . "done");
-      return pinserver_redirect(array('redirect' => $return_path, 'tk_forward' => '1'));
+      $file = file_uri_to_object($uri, FALSE);
+      return pinserver_redirect(array('redirect' => $file->getExternalUrl(), 'tk_forward' => '1'));
     }
   }
 }
