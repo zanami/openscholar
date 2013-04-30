@@ -205,8 +205,12 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $extensions = array();
+    $include_pps = false;
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
       $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
+      if ($type == 'document') {
+        $include_pps = true;
+      }
     }
     $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     
@@ -219,7 +223,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     }
     if (!empty($mimetypes)) {
       $form['upload']['#attributes'] = array(
-        'accept' => implode(',', $mimetypes),
+        'accept' => implode(',', $mimetypes).($include_pps?',.pps':''),
       );
       $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
     }
