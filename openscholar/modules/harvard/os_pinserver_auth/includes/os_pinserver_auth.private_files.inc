@@ -83,7 +83,6 @@ function _os_pinserver_auth_file_download($uri) {
 
   //Serves private files to users who can login via Harvard Pinserver.
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
-dpm('is private');
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
     if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
