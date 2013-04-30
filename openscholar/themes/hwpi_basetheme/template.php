@@ -239,11 +239,12 @@ function hwpi_basetheme_node_view_alter(&$build) {
           );
         }
 
+        $term_uri = entity_uri('taxonomy_term', $t);
         $build[$v->machine_name]['inner'][$t->tid] = array(
           '#prefix' => '<div>',
           '#suffix' => '</div>',
           '#theme' => 'link',
-          '#path' => drupal_get_path_alias('taxonomy/term/'.$t->tid),
+          '#path' => $term_uri['path'],
           '#text' => $t->name,
           '#options' => array('attributes' => array(), 'html' => false),
         );
