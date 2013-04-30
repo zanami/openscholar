@@ -186,3 +186,17 @@ function _os_files_private_fid_from_uri($uri) {
 
   return isset($result['file']) ? reset(array_keys($result['file'])) : '';
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_files_private_form_file_entity_delete_form_alter(&$form, $form_state) {
+  $form['#submit'][] = 'os_files_private_redirect_after_delete_file';
+}
+
+/**
+ * When deleting a private file the user need to stay files CP.
+ */
+function os_files_private_redirect_after_delete_file($form, &$form_state) {
+  $form_state['redirect'] = 'cp/content/files-private';
+}
