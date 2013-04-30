@@ -24,6 +24,7 @@ projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
+projects[calendar][patch][] = "http://raw.github.com/openscholar/openscholar/72d63ee3537c31505b7481975886ec13789feeb5/patches/calendar-fix-week-view-overflow.patch"
 
 projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
