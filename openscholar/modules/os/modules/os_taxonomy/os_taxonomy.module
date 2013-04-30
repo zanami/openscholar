@@ -55,7 +55,7 @@ function os_taxonomy_taxonomy_term_uri($term) {
       os_taxonomy_get_prefix_path($options);
 
       // Change the path by adding the app path.
-      $path['path'] = $options['path_prefix'] . drupal_get_path_alias($path['path']);
+      os_taxonomy_term_alias($path['path'], $options);
     }
   }
 
