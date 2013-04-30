@@ -126,6 +126,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   if (empty($_GET['type']) || !in_array($_GET['type'], array('day', 'week', 'month', 'year'))) {
     return;
   }
+
   $handler = &$view->display_handler;
 
   if (!empty($view->display_handler->display->display_options['style_options']['mini'])) {
@@ -156,9 +157,9 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   $values['options']['date_id'] = $_GET['type'];
   $handler->set_option('pager', $values);
 
-  $values = $handler->get_option('arguments');
-  $values['date_argument']['granularity'] = $_GET['type'] == 'day' ? 'month' : $_GET['type'];
 
+  $values = $handler->get_option('arguments');
+  $values['date_argument']['granularity'] = $_GET['type'];
   $handler->set_option('arguments', $values);
 }
 
@@ -242,7 +243,7 @@ function os_events_url_outbound_alter(&$path, &$options, $original_path) {
     }
     $date_format->setTimestamp($time);
   }
-  
+
   if ($data[1] == 'week') {
     $date = date_format($date_format, $format[$data[1]]) . date_week(date_format($date_format, 'Y-m-d'));
   }
