@@ -114,14 +114,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
         }
       }
 
-      // Make the phone label consistent with the full node view phone label.
-      if(isset($build['field_phone'])) {
-        $phone_plain = $build['field_phone'][0]['#markup'];
-        if ($phone_plain) {
-          $build['field_phone'][0]['#markup'] = $phone_plain;
-        }
-      }
-
       unset($build['links']['node']);
 
       return;
@@ -180,7 +172,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['field_phone']['#label_display'] = 'hidden';
         $phone_plain = $build['field_phone'][0]['#markup'];
         if ($phone_plain) {
-          $build['field_phone'][0]['#markup'] = $phone_plain;
+          $build['field_phone'][0]['#markup'] = t('p: ') . $phone_plain;
         }
         $build['contact_details']['field_phone'] = $build['field_phone'];
         $build['contact_details']['field_phone']['#weight'] = 50;
