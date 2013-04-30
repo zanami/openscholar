@@ -92,8 +92,8 @@ dpm('is private');
     }
     // Otherwise, sends the user to Pinserver to log in.
     else if (function_exists('pinserver_redirect')) {
-      $file = file_uri_to_object($uri, FALSE);
-      return pinserver_redirect(array('redirect' => $file->getExternalUrl(), 'tk_forward' => '1'));
+      $wrapper = file_stream_wrapper_get_instance_by_uri($uri);
+      return pinserver_redirect(array('redirect' => $wrapper->getExternalUrl(), 'tk_forward' => '1'));
     }
   }
 }
