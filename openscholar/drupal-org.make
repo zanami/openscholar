@@ -252,7 +252,7 @@ projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_m
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
-projects[og][patch][] = "http://drupal.org/files/og-orphan_queue-1982798-1.patch"
+projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
