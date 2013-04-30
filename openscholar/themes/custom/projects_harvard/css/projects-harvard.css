@@ -901,3 +901,8 @@ border-bottom-left-radius: 3px;
     top: -30px;
     width: 22px;
 }
+
+.logged-in.no-sidebars.page-user ul.primary,
+ul.primary {
+    margin: 2em 0 -9px;
+}
