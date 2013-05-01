@@ -61,10 +61,6 @@ projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.pa
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
-; projects[deploy][subdir] = "contrib"
-; projects[deploy][version] = 2.x-dev
-; projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
-
 projects[diff][subdir] = "contrib"
 projects[diff][version] = 3.2
 
