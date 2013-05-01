@@ -117,6 +117,7 @@ input[type="search"] {
 	vertical-align:middle;
 }
 
+#content-panels #search-block-form .form-item label,
 .sidebar #search-block-form .form-item label {
 	display: none;
 }
