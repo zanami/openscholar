@@ -130,7 +130,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   $handler = &$view->display_handler;
 
   // Adding the JS for side by side events display for the week view mode.
-  if ($handler->view->display['page_2']->display_options['style_options']['calendar_type'] == 'week') {
+  if ($_GET['type'] == 'week') {
     drupal_add_js(drupal_get_path('module', 'os_events') . '/js/os_events.js');
   }
 
