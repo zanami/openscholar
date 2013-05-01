@@ -13,7 +13,8 @@
       if (container.length) {
         container.toggle();
         container.css('display','block');
-        
+
+      if($('a.more').length == 0) {
         // Adds necessary more/close links to show/hide bio node content.
         // Adds the "more >" link at the end of the default-visible blurb.
         $('<a class="more" href="#">More</a>')
@@ -40,6 +41,7 @@
             container.addClass("bio-open").stop().animate({height: '70%'}, "1500");
           }
         });
+      }
       }
       
       /**
