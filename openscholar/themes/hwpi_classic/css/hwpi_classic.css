@@ -168,6 +168,9 @@ padding: 10px 0;
     border-top: 1px solid #CCCCCC;
 }
 
+#content-column .item-list ul.pager li {
+    font-family: arial;
+}
 
 /* Footer */
 #footer {
