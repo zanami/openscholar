@@ -90,6 +90,9 @@ function os_events_process_node(&$variables) {
       $variables['content']['field_date'][0]['#markup'] .= '<p></p>';
     }
   }
+
+  // Display the day of the event without leading zero.
+  $variables['event_start']['day'] = date('j', strtotime($variables['field_date'][0]['value']));
 }
 
 /**
