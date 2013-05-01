@@ -738,7 +738,7 @@ ul.nice-menu-down li li.menuparent:hover {
 
 .navigation ul li,
 .navigation ul.menu li {
-  list-style: none;
+  list-style: none !important;
   background-color: #EEE;
   border-top: solid 1px #ccc;
   text-align: left;
