@@ -564,6 +564,8 @@ function os_files_file_default_displays(){
     'default' => array()
   ) as $type => $info ) {
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
+    $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
+    $keys["{$type}__os_files_link_icon__os_link"] = array();
   }
 
   $displays = array();
