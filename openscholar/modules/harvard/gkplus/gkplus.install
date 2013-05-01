@@ -7,6 +7,9 @@
  * and deletes any erroneous global variable.
  */
 function gkplus_update_7001() {
+  // Deletes any erroneous global value for this variable.
+  variable_del('os_taxonomy_term_page_options');
+  
   // Loads the vsite and sets the new variable value.
   if (module_exists('vsite') && $vsite = vsite_get_vsite(GKPLUS_SID)) {
     // Overridden taxonomy settings for this site.
@@ -20,6 +23,4 @@ function gkplus_update_7001() {
     $vsite->controllers->variable->set('os_taxonomy_term_page_options', $options);
   }
 
-  // Deletes any erroneous global value for this variable.
-  variable_del('os_taxonomy_term_page_options');
 }
