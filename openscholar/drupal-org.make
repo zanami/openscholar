@@ -272,8 +272,8 @@ projects[og_vocab][download][revision] = 61a6b9f
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
-projects[olark][patch][] = "http://drupal.org/files/olark-ignore-role-1858372-2.patch"
-projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-4.patch"
+projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
+projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
 projects[password_hustle][subdir] = "contrib"
 projects[password_hustle][version] = 1.0
