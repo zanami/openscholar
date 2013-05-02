@@ -55,6 +55,7 @@
 
 						<?php if ($is_front || $use_content_regions): ?>
 							<?php print render($title_prefix); ?>
+                            <a name="<?php echo $skip_link; ?>"></a>
 							<?php if (!$is_front && $title): ?>
 								<header id="main-content-header">
 									<a name="<?php echo $skip_link; ?>"></a>
