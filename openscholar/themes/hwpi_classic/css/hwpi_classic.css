@@ -44,8 +44,8 @@ body {
 .section-nav a,
 #content-column h2,
 #content-column h3,
-#content-column h4
- {
+#content-column h4,
+#content-column .field-name-body {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
