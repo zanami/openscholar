@@ -82,7 +82,7 @@ function _pathauto_extra_make_alias($gid, $type, $title, $purl = '') {
   if (isset($pattern) && strlen($pattern) > 0) {
     // Makes a bare-minimum simple node object to pass to pathauto function.
     $pattern = "[site:url]/$pattern";
-    $node = (object) array(
+    $node = (object)array(
       'title' => $title,
       'type' => $type,
       'spaces_og' => array('gid' => $gid),
@@ -154,5 +154,4 @@ function pathauto_extra_preprocess_page(&$variables) {
   drupal_add_css(drupal_get_path('module', 'pathauto_extra') . "/pathauto_extra.css");
   drupal_add_js($settings, 'setting');
 }
-
 

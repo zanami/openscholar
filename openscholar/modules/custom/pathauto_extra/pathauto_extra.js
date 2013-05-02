@@ -5,7 +5,7 @@
     // Stores behaviors as a property of Drupal.behaviors.
     Drupal.behaviors.alias_preview = {
         attach: function (context, settings) {
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // On node edit forms only, creates a static "Link URL" preview.
                 // Finds any existing alias value,
                 // then injects it into the title field description.
@@ -21,7 +21,7 @@
                 // On both node add and node edit forms, dynamically validates.
                 // If a user enters a leading or trailing slash,
                 // remove it when the input blurs, and display a message.
-                $('#edit-path-alias').blur(function() {
+                $('#edit-path-alias').blur(function () {
                     var path = $('#edit-path-alias').attr('value');
 
                     // Strips leading slash
@@ -41,14 +41,14 @@
                 });
 
                 // Removes any previous warning messages when new value is input.
-                $('#edit-path-alias').focus(function() {
+                $('#edit-path-alias').focus(function () {
                     $('div.pathauto_extra-warning').remove();
                 });
 
                 // On node add forms, prompt users to hit return and see preview.
                 // For graceful degradation, the default behavior is a static
                 // "no preview" message when javascript is not working.
-                $('.page-node-add #edit-title').focus(function() {
+                $('.page-node-add #edit-title').focus(function () {
                     if ($('#edit-title').val().length == 0) {
                         var description = '<strong>Link URL:</strong> <em>Enter text and press return to update preview.</em>';
                         $('.form-item-title .description').html(description);
@@ -56,7 +56,7 @@
                 });
 
                 // On node add forms, use AJAX callback to generate alias preview.
-                $('.page-node-add #edit-title').change(function() {
+                $('.page-node-add #edit-title').change(function () {
                     // Verifies settings before continuing...
                     if (Drupal.settings.pathauto_extra && Drupal.settings.pathauto_extra.make_alias) {
                         // Prepares the ajax callback URL to query.
@@ -72,7 +72,7 @@
                             // Adds autocomplete-style default Drupal throbber.
                             $('.form-item-title .description').html('<strong>Link URL:</strong> <span class="ajax-progress"><span class="throbber"></span></span>');
                             // Fetches the generated alias from the menu callback.
-                            $.getJSON(href, data, function(json) {
+                            $.getJSON(href, data, function (json) {
                                 // If we got a successful AJAX response...
                                 if (json.status) {
 
@@ -92,7 +92,7 @@
 
                                     // Provides a smooth animation when the user clicks "edit"
                                     // to bring the user to the custom alias field with proper settings checked.
-                                    $('.form-item-title .description a').click(function() {
+                                    $('.form-item-title .description a').click(function () {
                                         $('html, body', context).animate({ scrollTop: $('.vertical-tabs').offset().top });
                                         $('.vertical-tab-button a:contains("URL path settings")', context).click();
                                         $('#edit-path-pathauto').click().attr('checked', false).attr('value', 0);
@@ -116,5 +116,4 @@
             });
         }
     };
-
 }(jQuery));
