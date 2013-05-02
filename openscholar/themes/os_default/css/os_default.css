@@ -67,12 +67,14 @@ h2 {
 
 /* LOG IN and USER ACCOUNT PAGES */
 
+.page-john #footer,
 .page-site-register #footer,
 .logged-in.no-sidebars.page-user #footer,
 .not-logged-in.page-user #footer {
 	float:none;
 }
 
+.page-john,
 .maintenance-page,
 body.page-site-register,
 body.logged-in.no-sidebars.page-user,
@@ -84,6 +86,7 @@ body.not-logged-in.page-user {
 	line-height:1em;
 }
 
+.page-john #columns,
 .maintenance-page #page,
 .page-site-register #columns,
 .logged-in.no-sidebars.page-user #columns,
@@ -106,13 +109,14 @@ body.not-logged-in.page-user {
 	width:700px;
 }
 
-
+.page-john #content-column,
 .page-site-register #content-column,
 body.logged-in.no-sidebars.page-user #content-column,
 body.not-logged-in.page-user.no-sidebars #content-column {
     padding: 0;
 }
 
+.page-john #columns h1,
 .maintenance-page h1#site-name,
 .page-site-register #columns h1,
 .logged-in.no-sidebars.page-user #columns h1,
@@ -127,6 +131,7 @@ body.not-logged-in.page-user.no-sidebars #content-column {
 	margin:0 0 20px 0 !important;
 }
 
+.page-john #powerby-login,
 .page-site-register #powerby-login,
 .logged-in.no-sidebars.page-user #powerby-login,
 .not-logged-in.page-user #powerby-login {
@@ -171,6 +176,7 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 
 }
 
+.page-john #content,
 .maintenance-page #main-content,
 .page-site-register #content,
 .logged-in.no-sidebars.page-user #content,
