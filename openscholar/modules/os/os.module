@@ -214,6 +214,7 @@ function theme_os_nice_menus($variables) {
   ctools_include('layout', 'os');
 
   $variables += array(
+    'id' => $variables['menu_name'],
     // 'down' get from region
     'direction' => _os_nice_menus_direction($variables['region']),
     // variable?
