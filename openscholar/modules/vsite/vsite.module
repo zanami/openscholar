@@ -54,8 +54,41 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
     $form['comment_settings']['#access'] = FALSE;
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
+  // Prepares the node form for alias preview with some markup customizations.
+  $form['#after_build'][] = 'vsite_node_form_after_build';
+  drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
 }
 
+/**
+ * After build callback for node_form().
+ *
+ * Customizes path alias fields to match user expectations.
+ *
+ * @see vsite_form_node_form_alter()
+ */
+function vsite_node_form_after_build($form) {
+  if (!module_exists('vsite_domain')) {
+    return;
+  }
+  // Prepares a field prefix to store this site's path.
+  $field_prefix = _vsite_domain_current_base_url();
+  // Adds the prefix to the custom alias field on the node form.
+  $form['path']['alias']['#field_prefix'] = "$field_prefix/";
+  // If this is a vsite...
+  if (module_exists('vsite') && $purl = vsite_get_purl()) {
+    // And if this node form contains an existing alias value...
+    if ($original = $form['path']['alias']['#value']) {
+      // Removes the purl from the editable field value
+      // in order to match user expectations: the purl must in the alias,
+      // so the user should not appear to have the option to remove it.
+      // Even if the purl is not part of the field value, it will be added.
+      // @see _vsite_alter_node_path_settings()
+      $new = substr($original, strlen($purl) + 1);
+      $form['path']['alias']['#value'] = $new;
+    }
+  }
+  return $form;
+}
 
 /**
  * Implements hook_form_FORM_ID_alter().

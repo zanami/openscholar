@@ -1,6 +1,0 @@
-name = Pathauto Extra
-description = "Enhances node path alias entry with automatic preview on forms."
-package = "OpenScholar IQSS"
-core = "7.x"
-dependencies[] = pathauto
-dependencies[] = ctools
