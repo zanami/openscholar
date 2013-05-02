@@ -307,10 +307,3 @@ function vsite_update_7006() {
     vsite_attach_fields_to_group($type);
   }
 }
-
-/**
- * Updates all vsite group path field values to remove extra purl values.
- */
-vsite_update_7007() {
-  //$query = db_update('field_data_field_group_path');
-}
