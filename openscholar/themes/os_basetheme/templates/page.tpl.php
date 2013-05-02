@@ -2,7 +2,7 @@
 <!--FLEXIBLE ADMIN HEADER FOR USE BY SELECT GROUPS USING OS-->
 <?php if ($branding_header = render($page['branding_header'])): ?>
 	<div id="branding_header">
-		<div id="branding-container" class="clearfix">
+		<div  class="branding-container clearfix">
 		  <?php print $branding_header; ?>
 		</div>
 	</div>
@@ -171,7 +171,7 @@
 <?php if ($branding_footer = render($page['branding_footer'])): ?>
   <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
   <div id="branding_footer">
-		<div id="branding-container">
+		<div class="branding-container">
 	    <?php print $branding_footer; ?>
 		</div>
   </div>
