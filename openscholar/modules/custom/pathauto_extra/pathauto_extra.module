@@ -37,16 +37,16 @@ function pathauto_extra_form_node_form_alter(&$form, $form_state, $form_id) {
  * Moves the path alias field to the top of the form, after title.
  */
 function pathauto_extra_node_form_after_build($form) {
-  global $base_url;
-  if (module_exists('vsite')) {
-    $group_path = vsite_get_group_path();
-    $field_prefix = "$group_path/";
+
+  $field_prefix = url('<front>', array('absolute' => TRUE));
+  $form['path']['alias']['#field_prefix'] = "$field_prefix/";
+  if (module_exists('vsite') && $purl = vsite_get_purl()) {
+    if ($original = $form['path']['alias']['#value']) {
+      $new = substr($original, strlen($purl) + 1);
+      $form['path']['alias']['#value'] = $new;
+    }
   }
-  else {
-    $field_prefix = "$base_url/";
-  }
-  $form['path']['alias']['#field_prefix'] = $field_prefix;
-  $form['title']['#description'] = t('<strong>Link URL:</strong> ');
+  $form['title']['#description'] = t('<strong>Link URL:</strong> <em>No preview</em>');
   return $form;
 }
 
@@ -111,54 +111,48 @@ function _pathauto_extra_make_alias($gid, $type, $title, $purl = '') {
  * Adds token-friendly variables to page for pathauto_ajax.js to use.
  */
 function pathauto_extra_preprocess_page(&$variables) {
-  // Alters only node edit forms.
-  if ($variables['page']['content']['system_main']['#node_edit_form']) {
-    // Initializes module-specific Drupal JS settings variables.
-    $settings = array();
+  // Alters only node edit and node add forms.
+  if (!$variables['page']['content']['system_main']['#node_edit_form']) {
+    return;
+  }
 
-    // Only continues to process if we can find the node's type.
-    if (isset($variables['page']['content']['system_main']['#node']->type)) {
-      // Prepares this form for alias preview generation.
-      $type = $variables['page']['content']['system_main']['#node']->type;
-      $settings['pathauto_extra']['type'] = $type;
-      $settings['pathauto_extra']['make_alias'] = TRUE;
+  // Initializes module-specific Drupal JS settings variables.
+  $settings = array();
 
-      // Integrates with vsite module.
-      if (module_exists('vsite')) {
-        $vsite = vsite_get_vsite();
-        if ($vsite->id) {
-          // Stores vsite id (sid) as groups id (gid) for preview generation.
-          $settings['pathauto_extra']['gid'] = $vsite->id;
+  // Only continues to process if we can find the node's type.
+  if (isset($variables['page']['content']['system_main']['#node']->type)) {
+    // Prepares this form for alias preview generation.
+    $type = $variables['page']['content']['system_main']['#node']->type;
+    $settings['pathauto_extra']['type'] = $type;
+    $settings['pathauto_extra']['make_alias'] = TRUE;
 
-          if ($purl = vsite_get_purl($vsite)) {
+    // Integrates with vsite module.
+    if (module_exists('vsite')) {
+      $vsite = vsite_get_vsite();
+      if ($vsite->id) {
+        // Stores vsite id (sid) as groups id (gid) for preview generation.
+        $settings['pathauto_extra']['gid'] = $vsite->id;
+
+        if ($purl = vsite_get_purl($vsite)) {
+          // Absolute path to homepage includes purl for standard sites.
+          $prefix = url('<front>', array('absolute' => TRUE));
+          $shared = variable_get('vsite_domain_shared');
+          $domain = variable_get('vsite_domain_name');
+          if (!$domain || ($domain && $shared == 1)) {
             // Stores the purl value for preview generation.
             $settings['pathauto_extra']['purl'] = $purl;
+            $settings['pathauto_extra']['remove_purl'] = 1;
+            $prefix = substr($prefix, 0, -1 * strlen($purl));
           }
-          if ($group_path = vsite_get_group_path($vsite)) {
-            // Stores the purl value for preview generation.
-            $settings['pathauto_extra']['prefix'] = $group_path;
-          }
+          $settings['pathauto_extra']['prefix'] = $prefix;
         }
       }
     }
-
-    // Adds necessary variables as javascript settings to the page.
-    drupal_add_css(drupal_get_path('module', 'pathauto_extra') . "/pathauto_extra.css");
-    drupal_add_js($settings, 'setting');
   }
+
+  // Adds necessary variables as javascript settings to the page.
+  drupal_add_css(drupal_get_path('module', 'pathauto_extra') . "/pathauto_extra.css");
+  drupal_add_js($settings, 'setting');
 }
 
-/**
- * Implements hook_module_implements_alter().
- */
-//function pathauto_extra_module_implements_alter(&$implementations, $hook) {
-//  $module = 'pathauto_extra';
-//  switch ($hook) {
-//    case 'form_alter':
-//      $group = $implementations[$module];
-//      $implementations = array_reverse($implementations, TRUE);
-//      $implementations[$module] = $group;
-//      $implementations = array_reverse($implementations, TRUE);
-//      break;
-//  }
-//}
+
