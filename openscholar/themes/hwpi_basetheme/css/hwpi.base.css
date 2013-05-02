@@ -763,6 +763,11 @@ div.warning .message-wrapper {
 
 
 /* Pagers */
+
+.item-list .pager li {
+    padding: 0.7em;
+}
+
 ul.pager li {
   padding: 0;
   margin: 0;
