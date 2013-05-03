@@ -764,6 +764,20 @@ div.warning .message-wrapper {
 
 /* Pagers */
 
+ul.pager li.pager-next,
+ul.pager li.pager-previous {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+ul.pager li.pager-first {
+    padding-left: 0;
+}
+
+ul.pager li.pager-last {
+    padding-right: 0;
+}
+
 .item-list .pager li {
     padding: 0.7em;
 }
@@ -781,16 +795,6 @@ ul.pager li a {
 ul.pager li.pager-item {
   display: inline-block;
   padding: 4px 8px;
-}
-
-
-ul.pager li.pager-previous {
-  margin-right: 20px;
-}
-
-
-ul.pager li.pager-next {
-  margin-left: 20px;
 }
 
 
