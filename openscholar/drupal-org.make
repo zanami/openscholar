@@ -325,6 +325,7 @@ projects[transliteration][version] = 3.1
 
 projects[twitter_pull][subdir] = "contrib"
 projects[twitter_pull][version] = 1.0-rc4
+projects[twitter_pull][patch][] = 'http://drupal.org/files/twitter_pull-twitter_api_php-1781024-40.patch'
 
 projects[views][subdir] = "contrib"
 ; projects[views][version] = 3.5+29-dev
@@ -387,3 +388,7 @@ libraries[responsiveslides][patch][] = "https://raw.github.com/openscholar/opens
 libraries[flexslider][type] = "libraries"
 libraries[flexslider][download][type] = "file"
 libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/archive/flexslider1.zip"
+
+libraries[twitter-api-php][type] = "libraries"
+libraries[twitter-api-php][download][type] = "file"
+libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"
