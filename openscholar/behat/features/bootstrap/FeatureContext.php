@@ -781,4 +781,20 @@ class FeatureContext extends DrupalContext {
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
     $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
   }
+
+  /**
+   * @Given /^the module "([^"]*)" is enabled$/
+   * @Given /^I enable the module "([^"]*)"$/
+   */
+  public function moduleEnabled($module_name) {
+      $this->getDriver()->drush("en -y {$module_name}");
+  }
+
+  /**
+   * @Given /^the module "([^"]*)" is disabled$/
+   * @Given /^I disable the module "([^"]*)"$/
+   */
+  public function moduleDisabled($module_name) {
+    $this->getDriver()->drush("dis -y {$module_name}");
+  }
 }
