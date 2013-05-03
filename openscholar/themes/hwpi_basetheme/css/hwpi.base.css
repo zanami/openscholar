@@ -45,6 +45,7 @@ table caption {
 
 #powered-by a {
     margin-right: 15px;
+    color:#2769AC;
 
 }
 
@@ -473,7 +474,6 @@ ol.search-results li.search-result:last-child {
 
 /* News nodes */
 .node-news .field-name-field-news-date {
-  color: #7e7e7e;
   overflow: hidden;
 }
 
