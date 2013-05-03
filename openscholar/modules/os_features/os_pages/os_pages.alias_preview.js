@@ -19,11 +19,6 @@
                     }
                 }
 
-                // Removes any previous warning messages when new value is input.
-                $('#edit-path-alias').focus(function () {
-                    $('div.pathauto_extra-warning').remove();
-                });
-
                 // On node add forms, prompt users to hit return and see preview.
                 // For graceful degradation, the default behavior is a static
                 // "no preview" message when javascript is not working.

@@ -28,6 +28,11 @@
                     $('#edit-path-alias').attr('value', path);
                 });
 
+                // Removes any previous warning messages when new value is input.
+                $('#edit-path-alias').focus(function () {
+                    $('div.pathauto_extra-warning').remove();
+                });
+
                 // Displays a small warning to the user that the original input
                 // was invalid and has been replaced, explaining why.
                 function vsite_pathauto_warning(str) {
