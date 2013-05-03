@@ -314,3 +314,8 @@ ul.nice-menu-right a, ul.nice-menu-right ul a {
   border-bottom: 1px solid #a1b1b1;
   display:block;
   }
+  
+ /* TAXO OR BOOK DISPLAYED AS NAV */ 
+.navigation ul li, .navigation ul.menu li {
+    background-color: #000;
+}
