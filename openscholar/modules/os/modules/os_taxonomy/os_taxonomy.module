@@ -55,7 +55,7 @@ function os_taxonomy_taxonomy_term_uri($term) {
       os_taxonomy_get_prefix_path($options);
 
       // Change the path by adding the app path.
-      $path['path'] = $options['path_prefix'] . drupal_get_path_alias($path['path']);
+      os_taxonomy_term_alias($path['path'], $options);
     }
   }
 
@@ -290,7 +290,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   foreach ($terms as $tid => $term) {
     // The attached number to the term name.
     $number = NULL;
-    if ($options['show_count']) {
+    if ($options['show_count'] || !$options['show_empty_terms']) {
       $number = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
     }
 
@@ -318,7 +318,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
-          'number' => $number,
+          'number' => $options['show_count']?$number:NULL,
           'name' => $term->name,
           'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
           'url_path' => $term_path,
@@ -609,7 +609,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
 
   foreach ($items as $item) {
     $number = NULL;
-    if ($options['show_count']) {
+    if ($options['show_count'] || !$options['show_empty_terms']) {
       $number = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
     }
 
@@ -646,16 +646,16 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
         )),
         'class' => array('term-' . drupal_html_class($item->name)),
       );
+  
+      $params = array(
+        'type' => 'ul',
+        'items' => $content,
+        'attributes' => array(
+           'class' => array('termchild-' . drupal_html_class($parent->name)),
+         ),
+      );
+      return theme('item_list', $params);
     }
-
-    $params = array(
-      'type' => 'ul',
-      'items' => $content,
-      'attributes' => array(
-         'class' => array('termchild-' . drupal_html_class($parent->name)),
-       ),
-    );
-    return theme('item_list', $params);
   }
 }
 
@@ -862,6 +862,11 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
  */
 function os_taxonomy_count_attached_nodes($tid, $node_bundles = array()) {
   $query = os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles);
+
+  if ($og_context = og_context()) {
+    $query->join('og_membership', 'ogm', "ogm.entity_type = 'node' AND ogm.etid = n.nid");
+    $query->condition("ogm.gid", $og_context['gid']);
+  }
 
   $count = $query
     ->countQuery()

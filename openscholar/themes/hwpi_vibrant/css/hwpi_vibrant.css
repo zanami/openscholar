@@ -306,6 +306,7 @@ div.contextual-links-wrapper a,
 
 #menu-bar ul.menu ul ul {
     background: #282828;
+    min-width: 200px;
 }
 
 ul.nice-menu-down li ul li ul {

@@ -24,6 +24,7 @@ projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
+projects[calendar][patch][] = "http://raw.github.com/openscholar/openscholar/72d63ee3537c31505b7481975886ec13789feeb5/patches/calendar-fix-week-view-overflow.patch"
 
 projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
@@ -59,10 +60,6 @@ projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.pa
 
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
-
-; projects[deploy][subdir] = "contrib"
-; projects[deploy][version] = 2.x-dev
-; projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
 
 projects[diff][subdir] = "contrib"
 projects[diff][version] = 3.2
@@ -144,7 +141,7 @@ projects[file_entity][download][type] = git
 projects[file_entity][download][branch] = 7.x-2.x
 projects[file_entity][download][revision] = 68ab8ed52f9bb993e8f3c541b89420637e440609
 projects[file_entity][patch][] = "http://drupal.org/files/file_entity.1834902-3.dimension_overrides.patch"
-projects[file_entity][patch][] = "https://raw.github.com/openscholar/openscholar/df247fa777218727ca3fb34266e5b52416a087c9/patches/file_entity.private_files_view_filter.patch"
+projects[file_entity][patch][] = "https://raw.github.com/openscholar/openscholar/772cc53bad99cd1e88a24fe3f77c6fd26305c0ce/patches/file_entity.private_files_view_filter.patch"
 
 projects[filefield_paths][subdir] = "contrib"
 ;projects[filefield_paths][version] = 1.0-beta3+2-dev
@@ -251,12 +248,8 @@ projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_m
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
-
-projects[og_deploy][download][type] = git
-projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
-projects[og_deploy][download][branch] = 7.x-1.x
-projects[og_deploy][subdir] = "contrib"
-projects[og_deploy][type] = module
+projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
+projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
@@ -275,8 +268,8 @@ projects[og_vocab][download][revision] = 61a6b9f
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
-projects[olark][patch][] = "http://drupal.org/files/olark-ignore-role-1858372-2.patch"
-projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-4.patch"
+projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
+projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
 projects[password_hustle][subdir] = "contrib"
 projects[password_hustle][version] = 1.0
@@ -289,8 +282,10 @@ projects[purl][subdir] = "contrib"
 projects[purl][download][type] = git
 projects[purl][download][branch] = 7.x-1.x
 projects[purl][download][revision] = 469e8668
-projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
+projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
+projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
+
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
@@ -330,6 +325,7 @@ projects[transliteration][version] = 3.1
 
 projects[twitter_pull][subdir] = "contrib"
 projects[twitter_pull][version] = 1.0-rc4
+projects[twitter_pull][patch][] = 'http://drupal.org/files/twitter_pull-twitter_api_php-1781024-40.patch'
 
 projects[views][subdir] = "contrib"
 ; projects[views][version] = 3.5+29-dev
@@ -360,11 +356,10 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 ; Libraries.
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
-libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.tar.gz"
+libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
-; libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/master.tar.gz"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
 
 libraries[jquery.cycle][type] = "libraries"
@@ -383,7 +378,7 @@ libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
 
 libraries[respondjs][type] = "libraries"
 libraries[respondjs][download][type] = "file"
-libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.tar.gz"
+libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.zip"
 
 libraries[responsiveslides][type] = "libraries"
 libraries[responsiveslides][download][type] = "file"
@@ -393,3 +388,7 @@ libraries[responsiveslides][patch][] = "https://raw.github.com/openscholar/opens
 libraries[flexslider][type] = "libraries"
 libraries[flexslider][download][type] = "file"
 libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/archive/flexslider1.zip"
+
+libraries[twitter-api-php][type] = "libraries"
+libraries[twitter-api-php][download][type] = "file"
+libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"

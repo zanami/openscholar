@@ -67,7 +67,7 @@ div.vertical-tabs .vertical-tabs-list {
 }
 
 #media-browser-library-list li {
-	margin-right: 8px;
+	margin-right: 5px;
 }
 
 #file-entity-add-upload {
@@ -111,6 +111,11 @@ div.vertical-tabs .vertical-tabs-list {
 	width: 200px;
 	bottom: -125px;
 	left: 0;
+}
+
+.messages {
+	float: right;
+	width: 45%;
 }
 
 #file-entity-add-upload #edit-upload label {

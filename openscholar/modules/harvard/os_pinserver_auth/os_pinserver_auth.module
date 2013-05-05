@@ -48,8 +48,8 @@ function os_pinserver_auth_node_access($node, $op, $account) {
  */
 function os_pinserver_auth_js() {
   // Ensure the stream wrappers are available
-//   drupal_load('module', 'system');
-//   _os_pinserver_auth_init_variables();
+   drupal_load('module', 'system');
+   _os_pinserver_auth_init_variables();
 
   return array(
     'files' => array(
@@ -171,4 +171,18 @@ function os_pinserver_auth_get_uid_from_huid($huid = NULL) {
   }
 
   return FALSE;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Adds pathauto support for core modules.
+ */
+function os_pinserver_auth_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'file_download' && isset($implementations['os_pinserver_auth'])) {
+    // Move os_pinserver_auth.module to get included first since it redirects instead of returning denied.
+    $pa_hook = $implementations['os_pinserver_auth'];
+    unset($implementations['os_pinserver_auth']);
+    $implementations = array_merge(array('os_pinserver_auth' => $pa_hook), $implementations);
+  }
 }

@@ -83,7 +83,6 @@ function _os_pinserver_auth_file_download($uri) {
 
   //Serves private files to users who can login via Harvard Pinserver.
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
-
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
     if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
@@ -92,7 +91,8 @@ function _os_pinserver_auth_file_download($uri) {
     }
     // Otherwise, sends the user to Pinserver to log in.
     else if (function_exists('pinserver_redirect')) {
-      return pinserver_redirect(array('redirect' => $_SERVER['REQUEST_URI'], 'tk_forward' => '1'));
+      $wrapper = file_stream_wrapper_get_instance_by_uri($uri);
+      return pinserver_redirect(array('redirect' => $wrapper->getExternalUrl(), 'tk_forward' => '1'));
     }
   }
 }

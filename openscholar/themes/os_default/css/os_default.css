@@ -67,12 +67,15 @@ h2 {
 
 /* LOG IN and USER ACCOUNT PAGES */
 
+.denied #footer,
 .page-site-register #footer,
 .logged-in.no-sidebars.page-user #footer,
 .not-logged-in.page-user #footer {
 	float:none;
 }
 
+.denied,
+.maintenance-page,
 body.page-site-register,
 body.logged-in.no-sidebars.page-user,
 body.not-logged-in.page-user {
@@ -83,6 +86,8 @@ body.not-logged-in.page-user {
 	line-height:1em;
 }
 
+.denied #columns,
+.maintenance-page #page,
 .page-site-register #columns,
 .logged-in.no-sidebars.page-user #columns,
 .not-logged-in.page-user #columns {
@@ -104,12 +109,15 @@ body.not-logged-in.page-user {
 	width:700px;
 }
 
+.denied #content-column,
 .page-site-register #content-column,
 body.logged-in.no-sidebars.page-user #content-column,
 body.not-logged-in.page-user.no-sidebars #content-column {
     padding: 0;
 }
 
+.denied #columns h1,
+.maintenance-page h1#site-name,
 .page-site-register #columns h1,
 .logged-in.no-sidebars.page-user #columns h1,
 .not-logged-in.page-user #columns h1 {
@@ -123,6 +131,7 @@ body.not-logged-in.page-user.no-sidebars #content-column {
 	margin:0 0 20px 0 !important;
 }
 
+.denied #powerby-login,
 .page-site-register #powerby-login,
 .logged-in.no-sidebars.page-user #powerby-login,
 .not-logged-in.page-user #powerby-login {
@@ -167,7 +176,8 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 
 }
 
-
+.denied #content,
+.maintenance-page #main-content,
 .page-site-register #content,
 .logged-in.no-sidebars.page-user #content,
 .not-logged-in.page-user #content {
@@ -187,16 +197,10 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 .logged-in.no-sidebars.page-user ul.primary,
 ul.primary {
 	border-bottom-color: #FFF;
-    margin: 2em 0 -8px;
+    margin: 2em 0 -10px;
     padding: 0 0 0.2em;
 }
 
-@-moz-document url-prefix() {
-.logged-in.no-sidebars.page-user ul.primary,
-ul.primary {
-    margin: 2em 0 -9px;
-}
-}
 
 .logged-in.no-sidebars.page-user ul.primary li,
 ul.primary li {
@@ -242,7 +246,6 @@ text-decoration:none;
 .logged-in.no-sidebars.page-user #footer {
 	width:850px;
 }
-
 
 
 .page-site-register #content a,
@@ -351,6 +354,50 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 
 }
 
+/* SITE MAINTENANCE PAGE */
+.maintenance-page #page {
+	padding-top: 20px;
+}
 
+.maintenance-page #main-content{
+	margin-top: 20px;
+	padding-top: 15px;
+}
+
+.maintenance-page a {
+	color:#3A72AB;
+}
+
+.maintenance-page #logo {
+	display:none;
+}
+
+.maintenance-page h1#page-title {
+	margin-bottom: 0.5em;
+	font-size: 1.5em;
+	background:url('../images/warning.png') no-repeat;
+	padding-left:40px;
+	height:30px;
+}
+
+.maintenance-page h1#site-name {
+	padding-left: 10px;
+}
+
+
+/* ACCESS DENIED PAGE */
+
+.denied #footer {
+    margin: 0 auto;
+    width: 540px;
+}
+
+.denied h1#page-title {
+	margin-bottom: 0.5em;
+	font-size: 2em;
+	background:url('../images/denied.png') no-repeat;
+	padding: 8px 40px;
+	height:30px;
+}
 
 

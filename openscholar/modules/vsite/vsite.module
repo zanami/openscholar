@@ -112,9 +112,20 @@ function vsite_form_og_ui_admin_settings_alter(&$form, &$form_state, $form_id){
  * Implements hook_node_delete().
  */
 function vsite_node_delete($node) {
+  global $language;
   if (!og_is_group('node', $node)) {
     // Not a group node.
     return;
+  }
+
+  // Invalidate the VSite from Purl's cache.
+  $cache = cache_get('purl_modifiers_' . $language->language);
+  if (!empty($cache->data) && !empty($cache->data['vsite_path'][$node->purl])) {
+    db_delete('purl')
+      ->condition('id', $node->nid)
+      ->execute();
+
+    purl_modifiers(NULL, TRUE);
   }
 
   if (!variable_get('og_use_queue', FALSE)) {

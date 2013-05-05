@@ -45,6 +45,7 @@ table caption {
 
 #powered-by a {
     margin-right: 15px;
+    color:#2769AC;
 
 }
 
@@ -178,6 +179,11 @@ ol.search-results li.search-result:last-child {
     right: 430px;
 }
 
+.no-sidebars .view .date-nav-wrapper .date-prev {
+    right: 900px;
+}
+
+
 .view .date-nav-wrapper .date-prev a {
     overflow: hidden;
  	text-indent: -99999999px;
@@ -309,21 +315,21 @@ ol.search-results li.search-result:last-child {
 
 .calendar-calendar .week-view div.single-day .view-item, 
 .calendar-calendar .day-view div.single-day .view-item {
-     float: left;
-    height: 80px;
-    position: relative;
-    width: 120px;
-  }
+  float: left;
+  height: 80px;
+  position: relative;
+  width: 120px;
+}
   
 .calendar-calendar .week-view div.single-day .view-item {
-    width: 100px;
-  }  
+  width: 100%;
+}
 
 .calendar-calendar .week-view .full div.calendar-agenda-hour, 
 .calendar-calendar .day-view .full div.calendar-agenda-hour, 
 .calendar-calendar .week-view .full div.calendar-agenda-items, 
 .calendar-calendar .day-view .full div.calendar-agenda-items {
-    height: 80px;
+  height: 80px;
 }
 
 .calendar-calendar div.date-nav h3 {
@@ -468,7 +474,6 @@ ol.search-results li.search-result:last-child {
 
 /* News nodes */
 .node-news .field-name-field-news-date {
-  color: #7e7e7e;
   overflow: hidden;
 }
 
@@ -758,6 +763,25 @@ div.warning .message-wrapper {
 
 
 /* Pagers */
+
+ul.pager li.pager-next,
+ul.pager li.pager-previous {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+ul.pager li.pager-first {
+    padding-left: 0;
+}
+
+ul.pager li.pager-last {
+    padding-right: 0;
+}
+
+.item-list .pager li {
+    padding: 0.7em;
+}
+
 ul.pager li {
   padding: 0;
   margin: 0;
@@ -771,16 +795,6 @@ ul.pager li a {
 ul.pager li.pager-item {
   display: inline-block;
   padding: 4px 8px;
-}
-
-
-ul.pager li.pager-previous {
-  margin-right: 20px;
-}
-
-
-ul.pager li.pager-next {
-  margin-left: 20px;
 }
 
 

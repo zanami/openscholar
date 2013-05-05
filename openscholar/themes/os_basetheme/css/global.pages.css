@@ -901,8 +901,9 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-med
-{padding-right:10px;}
+.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-medium {
+	padding-right:10px;
+	}
 
 /**
  * "News" node-type styles.

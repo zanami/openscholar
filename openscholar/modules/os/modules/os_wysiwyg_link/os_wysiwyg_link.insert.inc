@@ -62,22 +62,30 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
-    if (isset($output['tabs'][$k]['page']['upload']['upload']['#file']) && $output['tabs'][$k]['page']['upload']['upload']['#file']) {
-      $entity = $output['tabs'][$k]['page']['upload']['upload']['#file'];
+  }
+  
+  // handle file uploads
+  if ($form = $output['tabs']['file']['page']['upload']) {
+    if (isset($form['upload']['#validated'])) {
       $commands = array();
-      if (isset($entity->fid)) {
-        media_browser_build_media_item($entity);
-        drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
-        
-        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
-        $commands[] = array(
-          'command' => 'switchTab',
-          'tab' => 'edit-file'
-        );
-        $commands[] = array(
-          'command' => 'clickOn',
-          'target' => '#media-item-'.$entity->fid.' div.media-item',
-        );
+      if ($form['upload']['#file']) {
+        $entity = $form['upload']['#file'];
+        if (isset($entity->fid)) {
+          media_browser_build_media_item($entity);
+          drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
+          
+          $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
+          // clear out status messages
+          theme('status_messages');
+       
+          $commands[] = array(
+            'command' => 'clickOn',
+            'target' => '#media-item-'.$entity->fid.' div.media-item',
+          );
+        }
+      }
+      else {
+        $commands[] = ajax_command_prepend('.views-exposed-form', theme('status_messages'));  
       }
       // return results to ajax script
       $output = array(
@@ -182,7 +190,7 @@ function _os_link_get_view($params) {
       $output = array(
         'upload' => drupal_get_form('file_entity_add_upload', array(
           'file_directory' => os_files_get_save_path(),
-          'no_redirect' => TRUE
+          'no_redirect' => TRUE,
         )),
       	'library' => $build,
         'actions' => array(
