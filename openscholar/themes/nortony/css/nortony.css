@@ -319,3 +319,9 @@ ul.nice-menu-right a, ul.nice-menu-right ul a {
 .navigation ul li, .navigation ul.menu li {
     background-color: #000;
 }
+
+
+.navigation ul li a:hover {
+  background-color: #FFF;
+color: #000;
+}
