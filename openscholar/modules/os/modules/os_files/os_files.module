@@ -840,6 +840,13 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
 }
 
 /**
+ * Adds wmode to oembed requests
+ */
+function os_files_oembed_request_alter(&$attributes, $provider, $url) {
+  $attributes['wmode'] = 'opaque';
+}
+
+/**
  * Implements hook_preprocess_media_thumbnail.
  * 
  * Displays the immutable origname as well as the mutable filename.
