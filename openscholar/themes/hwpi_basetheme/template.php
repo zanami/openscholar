@@ -22,6 +22,48 @@ function hwpi_basetheme_preprocess_html(&$vars) {
   }
 }
 
+/**
+ * Adds mobile menu controls to menubar.
+ */
+function hwpi_basetheme_page_alter(&$page) {
+  $page['menu_bar']['#sorted'] = false;
+  $page['menu_bar']['mobile'] = array(
+    '#theme' => 'links',
+    '#attributes' => array(
+      'class' => array('mobile-buttons'),
+    ),
+    '#weight' => -1000,
+    '#links' => array(
+      'mobi-main' => array(
+        'href' => '#',
+        'title' => '<span aria-hidden="true" class="icon-menu"></span>Menu',
+        'external' => true,
+        'html' => true,
+        'attributes' => array(
+          'data-target' => '#block-os-primary-menu',
+        ),
+      ),
+      'mobi-util' => array(
+        'href' => '#',
+        'title' => '<span aria-hidden="true" class="icon-plus"></span><span class="move">Utility Menu</span>',
+        'external' => true,
+        'html' => true,
+        'attributes' => array(
+          'data-target' => '.nav-util',
+        ),
+      ),
+      'mobi-search' => array(
+        'href' => '#',
+        'title' => '<span aria-hidden="true" class="icon-search3"></span><span class="move">Search</span>',
+        'external' => true,
+        'html' => true,
+        'attributes' => array(
+          'data-target' => '.dept-search',
+        )
+      )
+    )
+  );
+}
 
 /**
  * Preprocess variables for comment.tpl.php
