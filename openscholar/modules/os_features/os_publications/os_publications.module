@@ -709,6 +709,9 @@ function os_publications_preprocess_page(&$variables) {
   if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
     return;
   }
+  
+  _os_publications_autopager('os_publications', 'li.pager-next>a', '#content>.biblio-category-section');
+  
   // Make sure both filters are there.
   if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
     return;
@@ -735,4 +738,28 @@ function os_publications_preprocess_page(&$variables) {
       drupal_set_title($new_page_title);
       break;
   }
+}
+
+/**
+ * @function _os_publications_autopager
+ * 
+ * Attaches autopage javascript and provides selectors
+ */
+function _os_publications_autopager($name, $link = 'li.pager-next>a', $content = '#content') {
+  if (($lib = libraries_get_path('autopager')) == FALSE) {
+    watchdog('os_publications', t('Please install autopager library'), WATCHDOG_WARNING);
+    return FALSE;
+  }
+  
+  $setting = array(
+     $name => array(
+       'link' => $link,
+       'content' => $content,
+       'autoLoad' => TRUE,
+     ),   
+   );
+  
+  drupal_add_js(array('autopager'=>$setting), 'setting');
+  drupal_add_js(drupal_get_path('module', 'os_publications') . '/os_publications_autopager.js');
+  drupal_add_js($lib . '/jquery.autopager-1.0.0.js');
 }
