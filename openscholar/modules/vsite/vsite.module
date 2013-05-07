@@ -511,7 +511,7 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group($bundle){
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
-  og_create_field(OG_ACCESS_FIELD, 'node', $bundle);
+  og_create_field(VSITE_ACCESS_FIELD, 'node', $bundle);
 
   if (! field_info_field('field_site_address')) {
     // field_site_address.
@@ -1355,24 +1355,6 @@ function vsite_cp_settings(){
   if (! empty($space)) {
     // Get the vsite_users_contact_form_anonymous varible
     $annon_contact = $space->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
-    $node = node_load($space->group->nid);
-
-    $form['vsite_private'] = array(
-      'group' => array(
-        '#id' => 'privacy',
-        '#title' => t('Privacy'),
-        '#weight' => 10
-      ),
-      'form' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Make your site Private'),
-        '#default_value' => $node->group_access[LANGUAGE_NONE][0]['value'],
-        '#description' => "If private your vsite will only be avalible when you are logged in, regular users will see a message and be giving the choice to login."
-      ),
-      'submit' => array(
-        'vsite_cp_settings_node_submit'
-      )
-    );
   }
 
   $form['vsite_users_contact_form_anonymous'] = array(
@@ -1389,27 +1371,6 @@ function vsite_cp_settings(){
     )
   );
   return $form;
-}
-
-/**
- * Submit callback for cp/settings form.
- *
- * Sets vsite_privacy value for the node.
- *
- * @see vsite_cp_settings()
- */
-function vsite_cp_settings_node_submit($form, &$form_state){
-  // Get the current vsite.
-  $space = spaces_get_space();
-  // Node load the vsite.
-  $node = node_load($space->group->nid);
-  // Get the vsite_privacy value.
-  if (isset($form_state['values']['vsite_private']) && module_exists('vsite_access')) {
-    // Set the new group_access for the node.
-    $node->group_access[LANGUAGE_NONE][0]['value'] = $form_state['values']['vsite_private'];
-    // Resave the node.
-    node_save($node);
-  }
 }
 
 /**

@@ -6,6 +6,11 @@ include_once ('includes/os_pinserver_auth.register_form.inc');
 //Private Files Logic
 include_once ('includes/os_pinserver_auth.private_files.inc');
 
+// Temporarially Private, access restricted to pin users. All files Public.
+define('OS_PINSERVER_ACCESS', 4);
+// Perminantly Private, access restricted to pin users. All files Private.
+define('OS_PINSERVER_INTRANET_ACCESS', 5);
+
 /**
  * Implements hook_menu_alter().
  */
@@ -185,4 +190,12 @@ function os_pinserver_auth_module_implements_alter(&$implementations, $hook) {
     unset($implementations['os_pinserver_auth']);
     $implementations = array_merge(array('os_pinserver_auth' => $pa_hook), $implementations);
   }
+}
+
+/**
+ * Add Pinserver Site Privacy options
+ */
+function os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options){
+  $privacy_options[OS_PINSERVER_ACCESS] = t('Harvard Community')."<br><span class='radio-description'>".t("Only the Harvard community will be able to access your site. Sign-in via Harvard required.")."</span>";
+  //$privacy_options[OS_PINSERVER_INTRANET_ACCESS] = t('Intranet Private Harvard Community');
 }

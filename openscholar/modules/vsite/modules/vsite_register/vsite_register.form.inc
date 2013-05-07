@@ -98,22 +98,12 @@ function vsite_register_form($form, &$state) {
   }
 
   $form['vsite_private'] = array(
-    '#title' => t('Private Site'),
-    '#type' => 'checkbox',
-    '#default_value' => FALSE,
-    '#description' => t('Make your site private.  It won\'t be visible to anyone but you and won\'t be indexed by Google until you make it public.')
-  );
-  $form['vsite_privacy'] = array(
     '#type' => 'radios',
     '#title' => t('Site Publicity Setting'),
-    '#default_value' => 'public',
-    '#options' => array(
-      'public' => t('Public on the web'),
-      'link' => t('Anyone with the link'),
-      'login' => t('Only users you invite to your site'),
-    ),
-    '#description' => t('When a poll is closed, visitors can no longer vote for it.'),
-    '#access' => $admin,
+    '#default_value' => VSITE_ACCESS_PUBLIC,
+    '#options' => vsite_access_privacy_avalible_values(),
+    '#description' => t('How accesible would you like to make your site.'),
+    '#access' => module_exists('vsite_access'),
   );
 
 
@@ -307,10 +297,9 @@ function vsite_register_form_submit(&$form, &$state) {
     $commands[] = ajax_command_replace ('#submit-suffix', $message );
     $commands[] = ajax_command_remove('#edit-submit');
 
-    if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
-      $node = node_load($vsite->group->nid);
-      $node->group_access[LANGUAGE_NONE][0]['value'] = 1;
-      node_save($node);
+    if (isset($values['vsite_private']) && module_exists('vsite_access')) {
+      $wrapper = entity_metadata_wrapper('node', $space->group);
+      $wrapper->{VSITE_ACCESS_FIELD}->set($values['vsite_private']);
     }
 
     // Email user to inform them of new created site, email is always sent.
