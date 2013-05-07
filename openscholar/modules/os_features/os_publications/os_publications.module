@@ -710,7 +710,8 @@ function os_publications_preprocess_page(&$variables) {
     return;
   }
   
-  _os_publications_autopager('os_publications', 'li.pager-next>a', '#content>.biblio-category-section');
+  _os_publications_autopager('os_publications', 'li.pager-next>a', '#content>.biblio-category-section', array('pager' => 'ul.pager', 'hide_biblio_categories' => TRUE));
+  
   
   // Make sure both filters are there.
   if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
@@ -760,13 +761,17 @@ function _os_publications_autopager($name, $link = 'li.pager-next>a', $content =
     return FALSE;
   }
   
+    
   $settings = array(
      $name => array(
        'link' => $link,
        'content' => $content,
        'autoLoad' => TRUE,
+       'loading_image' => '/' . drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif',  
      ),   
    );
+  
+  $options = array_diff($options, array('link', 'content')); //link and content could be supplied in two places.  always use function args, not opts array.
   $settings[$name] += $options;
   
   drupal_add_js(array('autopager'=>$settings), 'setting');
