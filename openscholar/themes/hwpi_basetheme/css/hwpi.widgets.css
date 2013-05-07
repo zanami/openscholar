@@ -192,7 +192,7 @@ table td.mini .mini-day-on a {
 
 .view .date-nav-wrapper .date-prev,
 .view .date-nav-wrapper .date-next {
-  background: none;
+  background: none !important;
   border-radius: 0;
   overflow: hidden;
 }
