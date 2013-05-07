@@ -135,10 +135,7 @@ function os_boxes_site_info_submit($form, &$form_state) {
     if ($node->field_site_logo[LANGUAGE_NONE][0] == null) {
       $node->field_site_logo = null;
     }
-    dpm($form_state);
-    dpm($space);
-    dvm(false == null);
-    dvm(false === null);
+
     try {
       node_save($node);
       $space->controllers->variable->set('vsite_users_contact_form_anonymous', $form_state['values']['contact_anonymous']);
