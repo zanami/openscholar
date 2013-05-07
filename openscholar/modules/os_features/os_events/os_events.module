@@ -71,6 +71,22 @@ function os_events_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_default_registration_type().
+ */
+function os_event_default_registration_type() {
+  $items = array();
+  $items['event'] = entity_import('registration_type', '{
+    "name" : "event",
+    "label" : "Event",
+    "locked" : "0",
+    "weight" : "0",
+    "data" : null,
+    "rdf_mapping" : []
+  }');
+  return $items;
+}
+
+/**
  * Implements hook_process_node().
  */
 function os_events_process_node(&$variables) {
