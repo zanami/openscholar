@@ -5,7 +5,6 @@
  * Taxonomy API and custom term page callback for OpenScholar.
  */
 
-
 /**
  * Implements hook_menu_alter().
  *
@@ -309,7 +308,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-      $data[$tid] = $term->name;
+      $data[$tid] = '- ' . $term->name;
       $data += !empty($term->below) ? os_taxonomy_build_child_item($term->below, $term, $options) : array();
     }
     else {
@@ -625,11 +624,14 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     }
 
     if ($options['widget_type'] == 'select') {
-      $content[$item->tid] = $item->name;
+      $hierarchy = '-';
+      for ($i = 0; $i <= $item->depth; $i++) {
+        $hierarchy .= '-';
+      }
+      $content[$item->tid] = $hierarchy . ' ' . $item->name;
       if (!empty($item->below)) {
         $content += os_taxonomy_build_child_item($item->below, $item, $options);
       }
-      return $content;
     }
     else {
       $term_path = taxonomy_term_uri($item);
@@ -656,8 +658,16 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
            'class' => array('termchild-' . drupal_html_class($parent->name)),
          ),
       );
-      return theme('item_list', $params);
     }
+  }
+
+  // For not breaking the foreach loop, we return the select list after the form
+  // rendered fully.
+  if ($options['widget_type'] == 'select') {
+    return $content;
+  }
+  else {
+    return theme('item_list', $params);
   }
 }
 
