@@ -206,7 +206,7 @@ table td.mini .mini-day-on a {
   width: 15px;
   height: 13px;
   display: inline-block;
-  font-size: 0;
+  font-size: 0 !important;
   outline: none;
 }
 
