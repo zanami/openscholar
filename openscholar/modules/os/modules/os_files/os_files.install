@@ -392,3 +392,47 @@ function os_files_update_7002() {
     }
   }
 }
+
+/**
+ * Sets up proper bundle handling for executable file type
+ */
+function os_files_update_7003(&$ctx) {
+  field_attach_create_bundle('file', 'executable');
+}
+
+/**
+ * Updates existing files to have the new file type if their mimetypes match
+ */
+function os_files_update_7004(&$sb) {
+
+  $q = db_select('file_managed', 'fm')
+    ->fields('fm', array('fid'))
+    ->condition('filemime', array(
+      'application/x-msdos-program',
+      'application/zip',
+      'application/octet-stream'));
+
+  if (!isset($sb['progress'])) {
+    $sb['count'] = $q->countQuery()->execute()->fetchField();
+    $sb['progress'] = 0;
+    $sb['limit'] = 50;
+    $sb['fixed'] = 0;
+  }
+
+  $rs = $q->range($sb['progress'], $sb['limit'])->execute();
+  foreach ($rs as $r) {
+    $file = file_load($r->fid);
+    $type = file_get_type($file);
+    if ($type != $file->type) {
+      $file->type = $type;
+      file_save($file);
+      $sb['fixed']++;
+    }
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+    return t('Set @num files to the executable type.', array('@num' => $sb['fixed']));
+  }
+}
