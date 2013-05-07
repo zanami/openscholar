@@ -787,8 +787,12 @@ ul.pager li {
   margin: 0;
 }
 
+ul.pager li.pager-ellipsis {
+  padding:.7em 2px;
+}
+
 ul.pager li a {
-  padding: 4px;
+  padding: 3px;
 }
 
 
