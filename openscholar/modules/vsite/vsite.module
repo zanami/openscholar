@@ -1161,7 +1161,7 @@ function vsite_preprocess_page(&$vars) {
   $item = menu_get_item();
   // Only make the change to the local menu tab in the /user page.
   if(isset($item) && (strpos($item['path'], 'user') === 0)) {
-    if (is_array($vars['tabs']['#primary'])) {
+    if (isset($vars['tabs']['#primary']) && is_array($vars['tabs']['#primary'])) {
       foreach ($vars['tabs']['#primary'] as $delta => $tab) {
         if (in_array($tab['#link']['title'], array("Edit"))) {
           $vars['tabs']['#primary'][$delta]['#link']['title'] = "Edit Account";
