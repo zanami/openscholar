@@ -66,6 +66,13 @@ class os_boxes_site_info extends os_boxes_default {
       '#description' => t('Ex. Cambridge, MA 02138'),
     );
 
+    $form['contact_anonymous'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Anonymous Can Contact'),
+      '#default_value' => variable_get('vsite_users_contact_form_anonymous', true),
+      '#description' => t('Checking this box will logged out users to see and use the link to your contact form.'),
+    );
+
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save'),
@@ -83,8 +90,8 @@ class os_boxes_site_info extends os_boxes_default {
   function render() {
     $block = parent::render();
 
+    $anon_contact = variable_get('vsite_users_contact_form_anonymous', true);
     if (module_exists('vsite') && $vsite = spaces_get_space()) {
-      $annon_contact = $vsite->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
       $group = $vsite->group;
       $addr = field_get_items('node', $group, 'field_site_address');
       $addr = explode('<br>', $addr[0]['value']);
@@ -95,8 +102,6 @@ class os_boxes_site_info extends os_boxes_default {
         'address1' => (isset($addr[0])) ? $addr[0] : '',
         'address2' => (isset($addr[1])) ? $addr[1] : '',
       ));
-    }else {
-      $annon_contact = variable_get('vsite_users_contact_form_anonymous', true);
     }
 
     $output = '';
@@ -105,7 +110,7 @@ class os_boxes_site_info extends os_boxes_default {
     '.(!empty($this->options['descrip'])?'<h2>'.filter_xss($this->options['descrip']).'</h2>':'').'
     <p>'.((!empty($this->options['address1']) || !empty($this->options['address2']))?
         filter_xss($this->options['address1']).'<br>'.filter_xss($this->options['address2']):'').'
-    '.(user_is_logged_in() || isset($annon_contact)?l('(email)', 'contact_owner'):'').'</p>';
+    '.((user_is_logged_in() || $anon_contact)?l('(email)', 'contact_owner'):'').'</p>';
 
     $block['content'] = $output;
     return $block;
@@ -130,8 +135,13 @@ function os_boxes_site_info_submit($form, &$form_state) {
     if ($node->field_site_logo[LANGUAGE_NONE][0] == null) {
       $node->field_site_logo = null;
     }
+    dpm($form_state);
+    dpm($space);
+    dvm(false == null);
+    dvm(false === null);
     try {
       node_save($node);
+      $space->controllers->variable->set('vsite_users_contact_form_anonymous', $form_state['values']['contact_anonymous']);
     }
     catch (Exception $e) {
       drupal_set_message(t('Error saving site information. Contact your site administrator.'), 'error');
@@ -140,5 +150,6 @@ function os_boxes_site_info_submit($form, &$form_state) {
   }
   else {
     boxes_box_form_submit($form, $form_state);
+    variable_set('vsite_users_contact_form_anonymous', $form_state['values']['contact_anonymous']);
   }
 }
