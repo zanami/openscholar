@@ -248,6 +248,7 @@ function os_events_field_default_fields() {
         ),
         'teaser' => array(
           'label' => 'inline',
+          'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
           'weight' => 0,
@@ -269,6 +270,101 @@ function os_events_field_default_fields() {
         ),
         'type' => 'text_textfield',
         'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-event-field_event_registration'.
+  $fields['node-event-field_event_registration'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_event_registration',
+      'foreign keys' => array(
+        'registration_type' => array(
+          'columns' => array(
+            'registration_type' => 'name',
+          ),
+          'table' => 'registration_type',
+        ),
+      ),
+      'indexes' => array(
+        'registration_type' => array(
+          0 => 'registration_type',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'registration',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'registration',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => array(
+        0 => array(
+          'registration_type' => 'event',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'registration',
+          'settings' => array(
+            'label' => ' ',
+          ),
+          'type' => 'registration_default',
+          'weight' => 10,
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_event_registration',
+      'label' => 'Registration',
+      'required' => 0,
+      'settings' => array(
+        'default_registration_settings' => array(
+          'capacity' => '0',
+          'reminder' => array(
+            'reminder_settings' => array(
+              'reminder_date' => '',
+              'reminder_template' => '',
+            ),
+            'send_reminder' => 0,
+          ),
+          'scheduling' => array(
+            'close' => '',
+            'open' => '',
+          ),
+          'settings' => array(
+            'from_address' => 'admin@example.com',
+            'multiple_registrations' => 0,
+          ),
+          'status' => 1,
+        ),
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'registration',
+        'settings' => array(),
+        'type' => 'registration_select',
+        'weight' => '34',
       ),
     ),
   );
@@ -388,12 +484,211 @@ function os_events_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-event-og_group_ref'.
+  $fields['node-event-og_group_ref'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'og_group_ref',
+      'foreign keys' => array(
+        'node' => array(
+          'columns' => array(
+            'target_id' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'og',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'og_behavior' => array(
+              'status' => TRUE,
+            ),
+          ),
+          'membership_type' => 'og_membership_type_default',
+          'target_bundles' => array(),
+        ),
+        'handler_submit' => 'Change handler',
+        'target_type' => 'node',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => NULL,
+      'default_value_function' => 'entityreference_prepopulate_field_default_value',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 8,
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 5,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'og_group_ref',
+      'label' => 'Groups audience',
+      'required' => FALSE,
+      'settings' => array(
+        'behaviors' => array(
+          'og_widget' => array(
+            'admin' => array(
+              'widget_type' => 'entityreference_autocomplete',
+            ),
+            'default' => array(
+              'widget_type' => 'options_select',
+            ),
+            'status' => TRUE,
+          ),
+          'prepopulate' => array(
+            'action' => 'hide',
+            'action_on_edit' => TRUE,
+            'fallback' => 'hide',
+            'og_context' => TRUE,
+            'skip_perm' => FALSE,
+            'status' => TRUE,
+          ),
+        ),
+        'user_register_form' => FALSE,
+      ),
+      'view modes' => array(
+        'full' => array(
+          'custom settings' => FALSE,
+          'label' => 'Full',
+          'type' => 'og_list_default',
+        ),
+        'teaser' => array(
+          'custom settings' => FALSE,
+          'label' => 'Teaser',
+          'type' => 'og_list_default',
+        ),
+      ),
+      'widget' => array(
+        'module' => 'og',
+        'settings' => array(),
+        'type' => 'og_complex',
+        'weight' => '32',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-event-og_vocabulary'.
+  $fields['node-event-og_vocabulary'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'og_vocabulary',
+      'foreign keys' => array(
+        'taxonomy_term_data' => array(
+          'columns' => array(
+            'target_id' => 'tid',
+          ),
+          'table' => 'taxonomy_term_data',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'og_vocab' => array(
+              'status' => TRUE,
+            ),
+            'taxonomy-index' => array(
+              'status' => TRUE,
+            ),
+          ),
+          'target_bundles' => array(),
+        ),
+        'target_type' => 'taxonomy_term',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'og_vocab',
+          'settings' => array(
+            'concatenate' => TRUE,
+          ),
+          'type' => 'og_vocab',
+          'weight' => 9,
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'og_vocabulary',
+      'label' => 'OG vocabulary',
+      'required' => FALSE,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'og_vocab',
+        'settings' => array(),
+        'type' => 'og_vocab_complex',
+        'weight' => '33',
+      ),
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   t('Attach Files');
   t('Body');
   t('Date');
   t('Location');
+  t('Registration');
 
   return $fields;
 }

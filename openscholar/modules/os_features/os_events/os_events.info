@@ -32,6 +32,7 @@ features[features_api][] = api:1
 features[field][] = node-event-body
 features[field][] = node-event-field_date
 features[field][] = node-event-field_event_location
+features[field][] = node-event-field_event_registration
 features[field][] = node-event-field_upload
 features[menu_links][] = primary-menu:calendar
 features[node][] = event
