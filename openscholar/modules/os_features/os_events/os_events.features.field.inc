@@ -312,13 +312,11 @@ function os_events_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'registration',
-          'settings' => array(
-            'label' => ' ',
-          ),
-          'type' => 'registration_default',
-          'weight' => 10,
+          'settings' => array(),
+          'type' => 'registration_form',
+          'weight' => '10',
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
