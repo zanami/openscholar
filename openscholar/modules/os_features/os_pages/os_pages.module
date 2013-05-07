@@ -311,6 +311,9 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
     return;
   }
 
+  // Adds JS and CSS to display ajax node alias (pathauto) preview.
+  os_pages_form_node_form_alter_add_assets($form, $form['#node']->type);
+
   if (isset($_GET['parent_node'])) {
     $form['#book_parent_node'] = $_GET['parent_node'];
   }
@@ -321,8 +324,6 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
 
   // Adds the "Link URL" text below the title field.
   $form['#after_build'][] = 'os_pages_node_form_after_build';
-  // Attaches javascript to node edit forms to generate alias previews.
-  drupal_add_js(drupal_get_path('module', 'os_pages') . '/os_pages.alias_preview.js');
 }
 
 function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
@@ -449,10 +450,6 @@ function os_pages_node_submit(&$node, $form, &$form_state) {
  * Also, if the context is active (i.e. it exists), tell the template to use the content regions
  */
 function os_pages_preprocess_page(&$page) {
-  if ($page['page']['content']['system_main']['#node_edit_form']) {
-    os_pages_preprocess_page_node_add_page($page);
-  }
-
   $node = menu_get_object('node');
 
   if ($node && isset($node->nid) && $node->type == 'page') {
@@ -592,42 +589,52 @@ function _os_pages_make_alias($gid, $type, $title, $purl = '') {
 }
 
 /**
- * Implements hook_preprocess_page().
+ * Form alter callback; attaches JS and CSS for alias preview.
  *
  * Adds token-friendly settings to page for os_pages.alias_preview.js to use.
+ *
+ * @see os_pages_form_node_form_alter()
  */
-function os_pages_preprocess_page_node_add_page(&$variables) {
-  // Initializes module-specific Drupal JS settings variables.
-  $settings = array();
+function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
+  // First, adds necessary CSS and JS files.
+  // Loads path for this modules assets.
+  $module_path = drupal_get_path('module', 'os_pages');
+  // Formats the pathauto field to display inline URL prefix.
+  $asset_page_form_css = "$module_path/os_pages.form.css";
+  $form['#attached']['css'][] = $asset_page_form_css;
+  // Attaches javascript to node edit forms to generate alias previews.
+  $asset_alias_preview_js = "$module_path/os_pages.alias_preview.js";
+  $form['#attached']['js'][] = $asset_alias_preview_js;
 
-  // Only continues to process if we can find the node's type.
-  if (isset($variables['page']['content']['system_main']['#node']->type)) {
-    // Prepares this form for alias preview generation.
-    $type = $variables['page']['content']['system_main']['#node']->type;
-    $settings['alias_preview']['type'] = $type;
-    $settings['alias_preview']['make_alias'] = TRUE;
+  // Next, prepares page-specific Drupal JS settings variables.
+  $data = array();
 
-    // Integrates with vsite module.
-    if (module_exists('vsite')) {
-      $vsite = vsite_get_vsite();
-      if ($vsite->id) {
-        // Stores vsite id (sid) as groups id (gid) for preview generation.
-        $settings['alias_preview']['gid'] = $vsite->id;
-        if ($purl = vsite_get_purl($vsite)) {
-          // Stores the purl value for preview generation.
-          $settings['alias_preview']['purl'] = $purl;
-          // Absolute path to homepage includes purl for standard & group sites.
-          if (module_exists('vsite_domain')) {
-            $prefix = _vsite_domain_current_base_url();
-            // This prefix is prepended to aliases and inserted after "Link URL".
-            $settings['alias_preview']['prefix'] = $prefix;
-          }
+  // Prepares this form for alias preview generation.
+  $data['alias_preview']['type'] = $type;
+  $data['alias_preview']['make_alias'] = TRUE;
+
+  // Integrates with vsite module.
+  if (module_exists('vsite')) {
+    $vsite = vsite_get_vsite();
+    if ($vsite->id) {
+      // Stores vsite id (sid) as groups id (gid) for preview generation.
+      $data['alias_preview']['gid'] = $vsite->id;
+      if ($purl = vsite_get_purl($vsite)) {
+        // Stores the purl value for preview generation.
+        $data['alias_preview']['purl'] = $purl;
+        // Absolute path to homepage includes purl for standard & group sites.
+        if (module_exists('vsite_domain')) {
+          $prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
+          // This prefix is prepended to aliases and inserted after "Link URL".
+          $data['alias_preview']['prefix'] = $prefix;
         }
       }
     }
   }
 
   // Adds necessary variables as javascript settings to the page.
-  drupal_add_css(drupal_get_path('module', 'os_pages') . "/os_pages.form.css");
-  drupal_add_js($settings, 'setting');
+  $form['#attached']['js'][] = array(
+    'data' => $data,
+    'type' => 'setting',
+  );
 }

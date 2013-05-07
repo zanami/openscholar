@@ -71,7 +71,7 @@ function vsite_node_form_after_build($form) {
     return;
   }
   // Prepares a field prefix to store this site's path.
-  $field_prefix = _vsite_domain_current_base_url();
+  $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
   // Adds the prefix to the custom alias field on the node form.
   $form['path']['alias']['#field_prefix'] = "$field_prefix/";
   // If this is a vsite...

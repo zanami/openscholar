@@ -244,11 +244,3 @@ function _vsite_domain_processed_purls($purl = FALSE) {
 
   return $processed;
 }
-
-/**
- * Gets the current active vsite's front page absolute URL with no slashes.
- */
-function _vsite_domain_current_base_url() {
-  $url = rtrim(url('<front>', array('absolute' => TRUE)), '/');
-  return $url;
-}
