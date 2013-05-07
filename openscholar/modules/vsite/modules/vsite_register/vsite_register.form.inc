@@ -103,6 +103,18 @@ function vsite_register_form($form, &$state) {
     '#default_value' => FALSE,
     '#description' => t('Make your site private.  It won\'t be visible to anyone but you and won\'t be indexed by Google until you make it public.')
   );
+  $form['vsite_privacy'] = array(
+    '#type' => 'radios',
+    '#title' => t('Site Publicity Setting'),
+    '#default_value' => 'public',
+    '#options' => array(
+      'public' => t('Public on the web'),
+      'link' => t('Anyone with the link'),
+      'login' => t('Only users you invite to your site'),
+    ),
+    '#description' => t('When a poll is closed, visitors can no longer vote for it.'),
+    '#access' => $admin,
+  );
 
 
   if ($anonymous) {

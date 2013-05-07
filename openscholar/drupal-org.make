@@ -294,6 +294,9 @@ projects[restws][subdir] = "contrib"
 projects[restws][version] = "2.0-alpha3"
 projects[restws][patch][] = "http://drupal.org/files/1806142-restws-property-exception.patch"
 
+projects[robotstxt][subdir] = "contrib"
+projects[robotstxt][version] = "1.1"
+
 projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
 
