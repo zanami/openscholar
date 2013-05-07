@@ -804,3 +804,10 @@ ul.pager li.pager-item {
   float: left;
 }
 
+@media (max-width: 1008px) {
+
+#powerby-login {
+    margin-left: -10% !important;
+}
+}
+

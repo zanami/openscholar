@@ -301,7 +301,9 @@
 	}
 
 
-
+.mobile-buttons {
+    display: none;
+}
 
   /*
   .inset-wrapper {float:left;width:75%}
