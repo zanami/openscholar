@@ -661,12 +661,12 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     }
   }
 
-  // For not breaking the foreach loop, we return the select list after the form
-  // rendered fully.
   if ($options['widget_type'] == 'select') {
+    // When using a select list widget, we need to return array of the terms.
     return $content;
   }
   else {
+    // When using the list widget, we need to return the raw HTML output.
     return theme('item_list', $params);
   }
 }
