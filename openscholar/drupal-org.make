@@ -58,6 +58,9 @@ projects[date][subdir] = "contrib"
 projects[date][version] = 2.6
 projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 
+projects[date_ical][subdir] = "contrib"
+projects[date_ical][version] = 2.7
+
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
