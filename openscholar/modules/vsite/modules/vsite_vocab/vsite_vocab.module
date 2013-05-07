@@ -341,4 +341,13 @@ function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
 function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
   $path = 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/add';
   $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
+  $form['#submit'][] = 'vsite_vocab_invalidate_entitycache';
+}
+
+/**
+ * When updating the weight of the vocabulary terms we need to invalidate
+ * the entity cache for the taxonomy terms.
+ */
+function vsite_vocab_invalidate_entitycache($form, $form_state) {
+  cache_clear_all('*', 'cache_entity_taxonomy_term', TRUE);
 }
