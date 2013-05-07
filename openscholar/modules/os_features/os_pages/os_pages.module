@@ -323,7 +323,7 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   }
 
   // Adds the "Link URL" text below the title field.
-  $form['#after_build'][] = 'os_pages_node_form_after_build';
+  $form['title']['#description'] = t('<strong>Link URL:</strong> <em>No preview</em>');
 }
 
 function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
@@ -520,16 +520,6 @@ function os_pages_os_add_new_links_alter(&$links) {
 function os_pages_edit_form($node, $mode) {
   module_load_include('inc', 'node', 'node.pages');
   return drupal_get_form('page_node_form', $node, $mode);
-}
-
-/**
- * After build callback for node_form().
- *
- * @see os_pages_form_node_form_alter()
- */
-function os_pages_node_form_after_build($form) {
-  $form['title']['#description'] = t('<strong>Link URL:</strong> <em>No preview</em>');
-  return $form;
 }
 
 /**
