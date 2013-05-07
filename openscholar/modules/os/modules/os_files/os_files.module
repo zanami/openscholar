@@ -1392,11 +1392,13 @@ function _os_files_extensions_from_type($type) {
       'odp',
       'xml',
       'tex',
-      // TODO: put these in their own file type
+    );
+
+    $types['executable'] = array(
       'zip',
       'tgz',
       'gz',
-      'exe',
+      'exe'
     );
   }
   
