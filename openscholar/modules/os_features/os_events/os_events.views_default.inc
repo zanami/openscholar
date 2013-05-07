@@ -22,7 +22,6 @@ function os_events_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Ical';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['link_display'] = 'page_1';
   $handler->display->display_options['access']['type'] = 'spaces_feature';
@@ -602,6 +601,8 @@ function os_events_views_default_views() {
 
   /* Display: Feed */
   $handler = $view->new_display('feed', 'Feed', 'feed_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Ical';
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -610,6 +611,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['row_options']['date_field'] = 'field_data_field_date.field_date_value';
   $handler->display->display_options['row_options']['location_field'] = 'none';
   $handler->display->display_options['path'] = 'calendar/export.ics';
+  $handler->display->display_options['sitename_title'] = 0;
   $export['os_events'] = $view;
 
   return $export;
