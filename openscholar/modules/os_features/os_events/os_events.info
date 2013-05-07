@@ -23,6 +23,7 @@ dependencies[] = os
 dependencies[] = os_files
 dependencies[] = strongarm
 dependencies[] = views
+dependencies[] = registration
 features[context][] = events_events
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1
