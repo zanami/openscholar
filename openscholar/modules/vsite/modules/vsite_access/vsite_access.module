@@ -164,6 +164,7 @@ function vsite_access_cp_settings_node_submit($form, &$form_state){
     $wrapper = entity_metadata_wrapper('node', $space->group);
 
     $wrapper->{VSITE_ACCESS_FIELD}->set($form_state['values']['vsite_private']);
+    $wrapper->save();
   }
 }
 
