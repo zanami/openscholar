@@ -340,13 +340,13 @@ function os_comments_module_implements_alter(&$implementations, $hook) {
 function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
   // Hides settings for inappropriate comment types
   $node = $form['#node'];
-  $source = comment_sources_get_source($node);
+  $source = comment_sources_get_source_type($node->type);
   $action = $source ? 'change or disable' : 'enable';
 
   // Prepare description with link to app settings page for this app.
   // If vsite is enabled and app can be determined from node type,
   // then the link will go to the overlayed app settings form,
-  // Othewise, it will default to CP > Build > Apps.
+  // Otherwise, it will default to CP > Build > Apps.
 
   // Default values in case we don't find the app info.
   $app = '';
@@ -387,7 +387,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
-  $change_settings_text = t('Go to <a href="@href" target="_blank">@settings</a> to @action comments on new posts.', array('@href' => $app_settings_path, '@action' => $action, '@settings' => $settings));
+  $change_settings_text = t('Go to <a href="@href" target="_blank">@settings</a> to @action comments on new posts like this.', array('@href' => $app_settings_path, '@action' => $action, '@settings' => $settings));
   $form['comment_settings']['os_comments'] = array(
     '#markup' => "<br/>$change_settings_text",
     '#weight' => 10,
