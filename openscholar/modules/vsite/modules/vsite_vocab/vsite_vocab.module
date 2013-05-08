@@ -78,7 +78,7 @@ function vsite_vocab_term_page_access($term) {
 		return FALSE;
   }
 
-  return vsite_access_user_access($group);
+  return node_access('view', $group);
 }
 
 /**

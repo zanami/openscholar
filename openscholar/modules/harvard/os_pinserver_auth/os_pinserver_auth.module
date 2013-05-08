@@ -6,6 +6,9 @@ include_once ('includes/os_pinserver_auth.register_form.inc');
 //Private Files Logic
 include_once ('includes/os_pinserver_auth.private_files.inc');
 
+//Private Sites Logic
+include_once ('includes/os_pinserver_auth.private_sites.inc');
+
 // Temporarially Private, access restricted to pin users. All files Public.
 define('OS_PINSERVER_ACCESS', 4);
 // Perminantly Private, access restricted to pin users. All files Private.
@@ -38,7 +41,7 @@ function os_pinserver_auth_menu() {
  */
 function os_pinserver_auth_node_access($node, $op, $account) {
   //Get Bundle
-  $type = is_string($node) ? $node : $node->type;
+  $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
   // Given: an anon user is trying to create a group node, they have not logged in through pin, and pinserver registration is enabled.
   // Deny Access
@@ -46,6 +49,8 @@ function os_pinserver_auth_node_access($node, $op, $account) {
     //Only influence the create operation for logged out users.
     return NODE_ACCESS_DENY;
   }
+
+  return _os_pinserver_auth_private_site_access($node, $op, $account);
 }
 
 /**
@@ -196,6 +201,12 @@ function os_pinserver_auth_module_implements_alter(&$implementations, $hook) {
  * Add Pinserver Site Privacy options
  */
 function os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options){
-  $privacy_options[OS_PINSERVER_ACCESS] = t('Harvard Community')."<br><span class='radio-description'>".t("Only the Harvard community will be able to access your site. Sign-in via Harvard required.")."</span>";
-  //$privacy_options[OS_PINSERVER_INTRANET_ACCESS] = t('Intranet Private Harvard Community');
+  _os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options);
+}
+
+/**
+ * React to vsite access denied
+ */
+function os_pinserver_auth_vsite_access_denied($vsite){
+  _os_pinserver_auth_vsite_access_denied($vsite);
 }
