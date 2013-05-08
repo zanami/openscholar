@@ -22,6 +22,7 @@ dependencies[] = strongarm
 dependencies[] = taxonomy
 dependencies[] = token
 dependencies[] = views
+dependencies[] = vsite_access
 features[context][] = os_sitewide_front
 features[context][] = os_sitewide
 features[context][] = os_users
