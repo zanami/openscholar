@@ -719,21 +719,6 @@ table td.mini .mini-day-on a {
 }
 
 
-@media (max-width: 1008px) {
-
-#boxes-box-site_info {
-    min-height: 0;
-    padding-top: 0;
-	 margin-left: 15px;
-}
-#boxes-box-site_info h1 {
-    line-height: 35px;
-}
-#boxes-box-site_info {
-    margin-bottom: 24px;
-}
-
-}
 
 
 

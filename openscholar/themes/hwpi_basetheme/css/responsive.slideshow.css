@@ -1,0 +1,37 @@
+
+@media (max-width: 1008px) {
+
+.hero-copy {
+    background: none repeat scroll 0 0 #303030 !important;
+    padding: 12px 15px 60px !important;
+    position: static;
+    width: auto !important;
+
+}
+.hero{
+    margin: 12px 0 0 0 !important;
+}
+.front .block-boxes-os_slideshow_box {
+    border-top: medium none!important;
+}
+.rslides img {
+	left: 0;
+    top: 0;
+    position: static !important;
+}
+#layout_3_1_overlay .rslides li {
+    padding: 0;
+}
+#layout_3_1_overlay .rslides_tabs {
+    left: 15px;
+    position: relative;
+    top: -60px;
+}
+.hg-container {
+    -moz-box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 1008px;
+    padding: 0 15px;
+}
+
+}
