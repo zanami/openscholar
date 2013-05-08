@@ -27,6 +27,21 @@ function vsite_access_views_api() {
   );
 }
 
+/**
+ * Add additional lines to a site's robots.txt file.
+ *
+ * @return
+ *   An array of strings to add to the robots.txt.
+ */
+function vsite_access_robotstxt() {
+  global $base_url;
+
+  $robots_settings = variable_get('vsite_access_unindexed_sites',array());
+  $host = parse_url($base_url,PHP_URL_HOST);
+  if(isset($robots_settings[$host])){
+    return $robots_settings[$host];
+  }
+}
 
 /**
  * Implements hook_node_access().
@@ -175,4 +190,83 @@ function vsite_access_og_fields_info() {
   );
 
   return $items;
+}
+
+/**
+ * Act on the save of the privacy setting
+ */
+function vsite_access_update_privacy_settings($group){
+
+  $wrapper = entity_metadata_wrapper('node', $group);
+  $privacy = $wrapper->{VSITE_ACCESS_FIELD}->value();
+
+  //Update Robots.txt
+  vsite_access_update_robots($group, $privacy);
+}
+
+/**
+ * Update Robots.txt Settigs
+ */
+function vsite_access_update_robots($group,$privacy){
+  //Load Space
+  $vsite = vsite_get_vsite($group->nid);
+
+  //Robots.txt Base Domain Settings.
+  $domain_robots = variable_get('vsite_access_unindexed_sites');
+  $base_host = parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST);
+  $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
+
+  //If this site has a group domain, retrieve the Host.
+  if($vsite_domain){
+    $vsite_domain = parse_url($vsite_domain,PHP_URL_HOST);
+  }
+
+  if ($privacy > VSITE_ACCESS_PUBLIC){
+  	//Do not index if the site is not public
+    //Add dissallow for base_domain.
+    $domain_robots[$base_host][$group->nid] = "Disallow: /{$vsite->group->purl}/";
+
+    //Add Disallow for group domain indexing.
+    if($vsite_domain && $vsite_domain != $base_host){
+      $domain_robots[$vsite_domain][$group->nid] = "Disallow: /{$vsite->group->purl}/";
+    }
+
+    //Dissallow custom domain indexing.
+    $vsite->controllers->variable->set('robotstxt',"User-agent: *\nDisallow: /");
+
+  }else{
+    //Remove base_domain any indexing.
+    if(isset($domain_robots[$base_host][$group->nid])){
+      unset($domain_robots[$base_host][$group->nid]);
+    }
+
+    //Remove and Group Domain indexing.
+    if($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])){
+      unset($domain_robots[$vsite_domain][$group->nid]);
+    }
+
+    //Delete any custom domain indexing
+    $vsite->controllers->variable->del('robotstxt');
+  }
+
+  //Save robots changes.
+  variable_set('vsite_access_unindexed_sites',$domain_robots);
+}
+
+/**
+ * Implements hook_field_attach_insert().
+ */
+function vsite_access_field_attach_insert($entity_type, $entity) {
+  if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+    vsite_access_update_privacy_settings($entity);
+  }
+}
+
+/**
+ * Implements hook_field_attach_update().
+ */
+function vsite_access_field_attach_update($entity_type, $entity) {
+if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+    vsite_access_update_privacy_settings($entity);
+  }
 }
