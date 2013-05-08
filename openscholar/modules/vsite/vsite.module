@@ -1092,24 +1092,12 @@ function vsite_user_view_alter(&$build){
   if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
     $title = $first_name . ' ' . $last_name;
     drupal_set_title($title);
-  }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
-    // Let's add a link to inform them to add their full name.
-    $edit_path = 'user/'.$user->uid.'/edit';
-    $add_full_name_link = l(t('Add full name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
-    $build['add_full_name'] = array(
-      '#title' => '',
-      '#prefix' => '<div class="user-add-name-block">',
-      '#suffix' => '</div>',
-      '#type' => 'user_profile_item',
-      '#markup' => $add_full_name_link,
-      '#weight' => '5',
-    );
   }
 
 
   // Additions section.
   // Add in an "Add website" link if user has permissions to create vsites.
-  // Make sure they're logged in and it's their user page theyre viewing.
+  // Make sure they're logged in and it's their user page they're viewing.
   if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
     $create_new_link = l(t('Add a new site'), 'site/register', array('attributes' => array('class' => 'user-add-website')));
     $build['add_new_site'] = array(
@@ -1191,8 +1179,11 @@ function vsite_user_view_alter(&$build){
  * Change the title of the "edit" tab on the user page to "Edit Account".
  */
 function vsite_preprocess_page(&$vars) {
+  global $user;
   $item = menu_get_item();
+
   // Only make the change to the local menu tab in the /user page.
+  // Add in the "Add full name" link only on the /user page.
   if(isset($item) && (strpos($item['path'], 'user') === 0)) {
     if (isset($vars['tabs']['#primary']) && is_array($vars['tabs']['#primary'])) {
       foreach ($vars['tabs']['#primary'] as $delta => $tab) {
@@ -1200,6 +1191,49 @@ function vsite_preprocess_page(&$vars) {
           $vars['tabs']['#primary'][$delta]['#link']['title'] = "Edit Account";
         }
       }
+    }
+
+    // Retrieve the user of the /user page we're viewing.
+    if(isset($item['map'][1]) && is_object($item['map'][1])) {
+      $view_user = $item['map'][1];
+    }
+
+    // Make sure the user is logged in and they are viewing their own /user page.
+    if(user_is_logged_in() && isset($view_user->uid) && ($user->uid == $view_user->uid)) {
+      // Get the first and last name.
+      $first_name = field_get_items('user',$view_user,'field_first_name');
+      $last_name = field_get_items('user',$view_user,'field_last_name');
+
+      // No need for the Add full name link if they already have a full name.
+      if(isset($first_name) && isset($last_name) && is_array($first_name) && is_array($last_name)) {
+        return;
+      }
+
+      // Don't show the link on the user/%/edit page either, redundant.
+      if(strpos($item['path'], 'edit') !== false) {
+        return;
+      }
+
+      // Put the "Add Full Name" link in a container.
+      $vars['title_suffix']['add_full'] = array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array(
+            'add-full-name-wrapper',
+          ),
+        ),
+      );
+      $vars['title_suffix']['add_full']['add_full_name'] = array(
+        '#theme' => 'link',
+        '#text' => t('Add full name'),
+        '#path' => 'user/'.$user->uid.'/edit',
+        '#options' => array(
+          'attributes' => array(
+            'class' => array('user-add-name'),
+          ),
+          'html' => FALSE,
+        ),
+      );
     }
   }
 }
@@ -1325,7 +1359,6 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
       $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
       drupal_set_title($print_name);
     }
-
   }
 }
 
