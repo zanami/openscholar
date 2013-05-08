@@ -16,7 +16,7 @@ function os_events_os_app_info() {
     ),
     'views tabs' => array(
       'os_events' => array(
-        'page_1', // Main Cal
+        'page_1' => array('calendar'), // Main Cal
         'page_4', // Upcoming
         'feed_1', // iCal
       ),
