@@ -58,6 +58,9 @@ projects[date][subdir] = "contrib"
 projects[date][version] = 2.6
 projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 
+projects[date_ical][subdir] = "contrib"
+projects[date_ical][version] = 2.7
+
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
@@ -360,6 +363,10 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
+
+libraries[iCalcreator][type] = "libraries"
+libraries[iCalcreator][download][type] = "file"
+libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"

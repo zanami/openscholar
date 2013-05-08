@@ -36,6 +36,7 @@ dependencies[] = boxes
 dependencies[] = views
 dependencies[] = strongarm
 dependencies[] = date
+dependencies[] = date_ical
 dependencies[] = entity
 dependencies[] = token
 dependencies[] = pathauto
