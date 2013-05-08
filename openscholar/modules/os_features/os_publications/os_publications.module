@@ -710,7 +710,7 @@ function os_publications_preprocess_page(&$variables) {
     return;
   }
   
-  _os_publications_autopager('os_publications', 'li.pager-next>a', '#content>.biblio-category-section', array('pager' => 'ul.pager', 'hide_biblio_categories' => TRUE));
+  _os_publications_autopager('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => 'ul.pager', 'hide_biblio_categories' => TRUE));
   
   
   // Make sure both filters are there.
