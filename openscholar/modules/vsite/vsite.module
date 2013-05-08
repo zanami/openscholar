@@ -1231,6 +1231,7 @@ function vsite_preprocess_page(&$vars) {
           'attributes' => array(
             'class' => array('user-add-name'),
           ),
+          'fragment' => 'user_first_name',
           'html' => FALSE,
         ),
       );
@@ -1359,6 +1360,12 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
       $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
       drupal_set_title($print_name);
     }
+  }
+
+  // Add an anchor to the first name field.
+  if(isset($form['field_first_name'])) {
+    $form['field_first_name']['#prefix'] = '<a name="user_first_name" class="field_first_name_anchor">';
+    $form['field_first_name']['#suffix'] = '</a>';
   }
 }
 
