@@ -57,10 +57,28 @@
     border-right: medium none!important;
 }
 
-	
+#menu-bar {
+    padding: 0 15px;
+}	
+#block-boxes-shield{
+display:none;	
+}
+.branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
 
+    width: 100%;
+}
+#branding_footer {
+    padding-top: 25px;
+}
+.copyright {
+    line-height: 18px;
+    margin-left: 15px;
+}
 
 }
+
+
+
 
 @media (max-width: 768px) {
 
@@ -98,6 +116,10 @@
     margin-left: 0;
     margin-right: 0;
     width: 100%;
+}
+.one-sidebar.sidebar-second .content-inner {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .two-sidebars .content-inner {

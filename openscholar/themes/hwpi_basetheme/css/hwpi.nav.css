@@ -295,8 +295,9 @@ ul.primary li.active a {
     color: #FFFFFF;
     display: block;
     font: bold 16px arial,sans-serif;
+    height: 20px !important;
     letter-spacing: 1px;
-    padding: 12px 15px!important;
+    padding: 12px 15px !important;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -308,7 +309,7 @@ ul.primary li.active a {
     position: absolute;
 }
 * {
-    line-height: 1;
+    
     margin: 0;
     padding: 0;
 }
@@ -326,11 +327,29 @@ ul.primary li.active a {
        background: url("../images/icon_search.png") no-repeat scroll center center #1e1e1e;
       min-height: 20px;
 }
-.icon-plus{
-	
-}
+ul.primary li a {
+    background-color: #F3F3F1;
+    border-color: #E4E4E4;
+    margin-right: 0;
+    padding: 4px;
 }
 
+}
+
+@media (max-width: 768px) {
+	
+.link-count-mobi-search a {
+
+      min-height: 20px;
+}	
+	
+.link-count-mobi-util a {
+    min-height: 20px;
+}	
+	
+	
+	
+	
 }
 
 

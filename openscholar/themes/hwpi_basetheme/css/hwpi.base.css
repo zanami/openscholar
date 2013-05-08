@@ -809,5 +809,11 @@ ul.pager li.pager-item {
 #powerby-login {
     margin-left: -10% !important;
 }
+.view .date-nav-wrapper .date-prev {
+    right: 90%;
+}
+.view .date-nav-wrapper .date-next {
+    right: 0;
+}
 }
 
