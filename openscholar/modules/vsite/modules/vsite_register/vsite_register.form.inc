@@ -300,6 +300,7 @@ function vsite_register_form_submit(&$form, &$state) {
     if (isset($values['vsite_private']) && module_exists('vsite_access')) {
       $wrapper = entity_metadata_wrapper('node', $space->group);
       $wrapper->{VSITE_ACCESS_FIELD}->set($values['vsite_private']);
+      $wrapper->save();
     }
 
     // Email user to inform them of new created site, email is always sent.
