@@ -83,6 +83,7 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   }
 
   $path = '';
+  // Get the path of the view from the OS app info.
   if (!empty($view_names[$view->name][$view->current_display])) {
     foreach($view_names[$view->name][$view->current_display] as $views_path) {
       if ($views_path == $_GET['q']) {
@@ -92,6 +93,7 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
     }
   }
   else {
+    // No path form the OS app info, get the path from the view settings.
     $path = $view->get_path();
   }
 

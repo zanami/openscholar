@@ -16,7 +16,9 @@ function os_events_os_app_info() {
     ),
     'views tabs' => array(
       'os_events' => array(
-        'page_1' => array('calendar'), // Main Cal
+        'page_1' => array('calendar'), // Month display
+        'page_2' => array('calendar'), // Week display
+        'page_3' => array('calendar'), // Year display
         'page_4', // Upcoming
         'feed_1', // iCal
       ),
@@ -222,15 +224,20 @@ function os_events_preprocess_date_views_pager(&$variables) {
 /**
  * Implements hook_views_query_alter().
  *
- * When the user watching the month display and the date type & value does not
- * have any value - we need to set a default value to the variable to prevent
- * from the calendar to mess up.
+ * Setting a default value to the $_GET['month'] or $_GET['type'] if not exists.
  */
 function os_events_views_query_alter($view, $query) {
-  if ($view->name == 'os_events' && $view->current_display == 'page_1' && (!isset($_GET['month']) || !isset($_GET['type']))) {
-    $_GET['month'] = date('Y-m', time());
-    $_GET['type'] = 'month';
+  if ($view->name != 'os_events' ) {
+    return;
   }
+  $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
+
+  // Determine the type of the displayed month by the argument from the address.
+  $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : 'month';
+
+  // Determine the value of the calendar view mode(day, year, month) argument
+  // value.
+  $_GET[$_GET['type']] = isset($_GET[$_GET['type']]) ? $_GET[$_GET['type']] : date($format[$_GET['type']], time());
 }
 
 /**
