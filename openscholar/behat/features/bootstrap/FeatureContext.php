@@ -774,11 +774,58 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @When /^I visit the original page for the term "([^"]*)"$/
+   * @Given /^I should see the text "([^"]*)" under "([^"]*)"$/
    */
-  public function iVisitTheOriginalPageForTheTerm($term) {
-    $code = "os_migrate_demo_get_term_id('$term');";
-    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
-    $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
+  public function iShouldSeeTheTextUnder($text, $container) {
+    if (!$this->searchForTextUnderElement($text, $container)) {
+      throw new Exception(sprintf("The element with %s wasn't found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * @Then /^I should not see the text "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeTheTextUnder($text, $container) {
+    if ($this->searchForTextUnderElement($text, $container)) {
+      throw new Exception(sprintf("The element with %s was found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * Searching text under an element with class
+   */
+  private function searchForTextUnderElement($text, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//*[contains(., '{$text}')]");
+
+    return $element;
+  }
+
+  /**
+   * @Given /^I should see the link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldSeeTheLinkUnder($text, $container) {
+    if (!$this->searchForLinkUnderElement($text, $container)) {
+      throw new Exception(sprintf("The link %s wasn't found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * @Then /^I should not see the link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeTheLinkUnder($text, $container) {
+    if ($this->searchForLinkUnderElement($text, $container)) {
+      throw new Exception(sprintf("The link %s was found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * Searching text under an element with class
+   */
+  private function searchForLinkUnderElement($text, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//a[.='{$text}']");
+
+    return $element;
   }
 }
