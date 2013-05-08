@@ -18,6 +18,7 @@ function os_events_os_app_info() {
       'os_events' => array(
         'page_1', //Main Cal
         'page_4', //Upcoming
+        'feed_1', //iCal
       ),
     ),
   );
