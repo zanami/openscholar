@@ -84,6 +84,24 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
 
   $item = menu_get_item();
   $path_elements = count(explode("/", $view->get_path()));
+
+  // The views path is defined to be 'calendar/month' but when the user viewing
+  // the calendar the $_GET['q'] is actually 'calendar'. When accessing to the
+  // path 'calendar/vocab/term_name' the logic above act as
+  // 'calendar/month/vocab/term_name'. Decreasing the number of path elements
+  // will fix that.
+  if ($view->name == 'os_events' && $view->current_display == 'page_1' && $view->get_path() == 'calendar/month') {
+    $path_elements--;
+
+    // The user is in the path calendar/vocab/term_name, with no data about the
+    // current month and the year. Setting their values for today values will
+    // prevent the calendar from messing up.
+    if (!isset($_GET['month']) && !isset($_GET['type'])) {
+      $_GET['month'] = date('Y-m', time());
+      $_GET['type'] = 'month';
+    }
+  }
+
   if (count($item['original_map']) <= $path_elements) {
     // We are just looking at view path.
     return;
@@ -96,8 +114,8 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
     return;
   }
 
-  //Check the path prefixed with the purl if we are in a vsite
-  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+  // Check the path prefixed with the purl if we are in a vsite.
+  if (module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0) {
     array_unshift($path_parts, vsite_get_purl());
     if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
       return;
