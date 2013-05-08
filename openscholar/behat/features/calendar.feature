@@ -9,6 +9,7 @@ Feature: Testing OpenScholar calendar page.
   @api
   Scenario: Test the Calendar tab with day events filtered by terms.
     Given I visit "john/calendar/authors/stephen-william-hawking?type=day&day=2013-05-30"
+      And I should print page
       And I should see the text "John F. Kennedy birthday" under "view-display-id-page_1"
      When I visit "john/calendar/authors/douglas-noël-adams?type=day&day=2013-05-30"
      Then I should not see the text "John F. Kennedy birthday" under "view-display-id-page_1"
