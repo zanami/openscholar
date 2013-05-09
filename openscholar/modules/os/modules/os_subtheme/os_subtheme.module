@@ -5,60 +5,66 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function os_subtheme_menu_alter(&$items) {
+  $items['cp/appearance/add-subtheme'] = $items['admin/structure/subtheme/add'];
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function os_subtheme_admin_paths() {
+  return array(
+    'cp/appearance/add-subtheme' => TRUE,
+  );
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
-function os_subtheme_form_cp_appearance_theme_picker_form_alter(&$form, $form_state) {
+function os_subtheme_form_subtheme_manage_alter(&$form, $form_sate) {
+  // Add submit handler for redirect after uploading a user.
+  $form['#submit'][] = 'os_subtheme_redirect';
+
+  // Adding a submit handler.
+  $form['#validate'][] = 'os_subtheme_validate';
+
+  // Remove the image field.
+  $form['field_image']['#access'] = FALSE;
+}
+
+/**
+ * Redirect the user back to the appearance page.
+ */
+function os_subtheme_redirect($form, &$form_state) {
+  $form_state['redirect'] = 'cp/appearance';
+}
+
+/**
+ * Validate handler - verify the user submitted a valid base theme.
+ */
+function os_subtheme_validate($form, $form_state) {
+  $subtheme = $form_state['#entity'];
+  $subtheme->fid = $form_state['values']['file'];
+  $subtheme->extract();
+
+  $info_files = glob($subtheme->path . '/*.info');
+  $info = array();
+  foreach ($info_files as $info_file) {
+    // Get the information from the info file.
+    $file_content = drupal_parse_info_file($info_file);
+
+    foreach ($file_content as $file => $content) {
+      $info[$file] = $content;
+    }
+  }
 
   ctools_include('themes', 'os');
   $themes = os_get_themes();
 
-  drupal_add_library('system', 'ui.dialog');
-
-  drupal_add_js(drupal_get_path('module', 'os_subtheme') . '/js/os_subtheme.js');
-  drupal_add_css(drupal_get_path('module', 'os_subtheme') . '/css/os_subtheme.css');
-
-  $flavor_form = drupal_get_form('add_flavor_form');
-  $form['form'] = array(
-    '#markup' => "<div id='dialog'>" . render($flavor_form) . "</div>",
-  );
-
-  foreach ($themes as $theme_name => $theme) {
-    $os_theme_name = 'os_appearance_' . $theme_name . '_flavor';
-
-    if (!isset($form[$os_theme_name])) {
-      continue;
-    }
-
-    $title = t("Add subtheme to @name", array('@name' => $theme->info['name']));
-
-    $form[$os_theme_name]['#prefix'] = l(t('Add flavor'), '#', array('attributes' => array(
-      'class' => 'show-dialog',
-      'title' => $title,
-    )));
+  if (!(isset($info['base theme']) && in_array($info['base theme'], array_keys($themes)))) {
+    form_set_error('file][upload', t('The theme you uploaded is not valid.'));
   }
 }
 
-/**
- * Adding a subtheme to a flavor.
- */
-function add_flavor_form() {
-  $form = array();
-
-  $form['options'] = array(
-    '#type' => 'radios',
-    '#options' => array(
-      'zip' => t('Zip file'),
-    ),
-    '#default_value' => 'zip',
-  );
-
-  $form['actions'] = array(
-    '#type' => 'actions',
-
-    'next' => array(
-      '#markup' => t('Next'),
-    ),
-  );
-
-  return $form;
-}
