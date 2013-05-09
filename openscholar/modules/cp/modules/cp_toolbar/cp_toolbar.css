@@ -1,5 +1,6 @@
 #toolbar {
   background: #383838;
+  filter: none;
 }
 
 #toolbar .toolbar-left > ul {
