@@ -10,7 +10,7 @@ Feature: Testing OpenScholar calendar page.
   Scenario: Test the Calendar tab with day events filtered by terms.
     Given I visit "john/calendar?type=day&day=2013-05-29"
       And I should see the text "John F. Kennedy birthday" under "view-display-id-page_1"
-     When I visit "john/calendar/authors/douglas-noël-adams?type=day&day=2013-05-30"
+     When I visit "john/calendar/authors/douglas-noël-adams?type=day&day=2013-05-29"
      Then I should not see the text "John F. Kennedy birthday" under "view-display-id-page_1"
 
   @api
