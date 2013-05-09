@@ -131,6 +131,7 @@ function _os_link_external_form($form, $form_state, $params) {
     '#type' => 'textfield',
     '#title' => t('Website URL'),
     '#description' => t('The URL of the web page. Can be a link to one of your own pages.'),
+    '#maxlength' => 500,
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
   
