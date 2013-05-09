@@ -12,10 +12,6 @@ body {
 }
 
 /* Elements */
-a,
-a:visited {
-  color: #3A72AB;
-}
 
 #columns .links li a {
     border-bottom: none;
@@ -193,7 +189,7 @@ h2.block-title {
 
 
 #search-block-form .form-item label {
-	color:#9A9A9A;
+	color:#c8c8c8;
 }
 
 /* Border control */

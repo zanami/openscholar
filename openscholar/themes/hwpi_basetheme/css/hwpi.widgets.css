@@ -109,7 +109,7 @@ input[type="search"] {
 #search-block-form .form-item label {
 	display: inline;
 	font-weight:normal;
-	color:#6A6A6A;
+	color:#3d3d3d;
 }
 
 .lt-ie9 #search-block-form .form-item label {
@@ -356,7 +356,7 @@ table td.mini .mini-day-on a {
   border-top: 0 none;
 }
 
-.ui-tabs .ui-widget-content a { color: #2769AC; }
+.ui-tabs .ui-widget-content a { color: #215990; }
 
 
 /* OLD Slideshow Classic Frontpage */

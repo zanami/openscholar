@@ -131,7 +131,6 @@ body.no-sidebars .content-top-slideshow-enabled #menu-bar {
 /* Elements */
 a,
 a:visited {
-  color: #3A72AB;
   -webkit-transition: all 0.25s linear;
   -moz-transition: all 0.25s linear;
   -ms-transition: all 0.25s linear;
@@ -809,7 +808,7 @@ table td.mini .mini-day-on a {
 
 .section-nav .expanded.menu-depth-2 > a {
   background-color: transparent;
-  color: #3A72AB;
+  color: #2769AC;
    background: #F7F7F7;
   
 }
