@@ -1,0 +1,33 @@
+@media (max-width: 1008px) {
+	
+.two-sidebars #content-panels, .one-sidebar.sidebar-second #content-panels {
+    border-right: none;
+}
+
+
+.link-count-mobi-util {
+    width: 20%;
+}
+.link-count-mobi-search {
+    width: 20%;
+}
+
+ul.primary li a {
+    background-color: #F3F3F1;
+    border-color: #E4E4E4;
+    margin-right: 0;
+    padding: 4px;
+}
+.link-count-mobi-main a {
+    background-color:#3A72AB;
+}
+.link-count-mobi-util a {
+    background-color: #2A527A;
+
+}
+.link-count-mobi-search a {
+       background-color: #1e1e1e;
+
+}
+
+}

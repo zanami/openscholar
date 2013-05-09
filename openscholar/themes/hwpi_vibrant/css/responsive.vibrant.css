@@ -1,0 +1,55 @@
+@media (max-width: 1008px) {
+	
+.link-count-mobi-main a {
+    background-color: #fff!important;
+    color: #000!important;
+}
+.link-count-mobi-util a {
+    background-color: #F7F7F7!important;
+
+}
+.link-count-mobi-search a {
+       background-color: #4077AE!important;
+
+}
+#menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
+    background: none repeat scroll 0 0 transparent;
+    color: #303030;
+    font: bold 16px arial,sans-serif;
+    padding: 12px 15px;
+}
+#menu-bar ul > li > a:hover,
+#menu-bar ul > li > a.active,
+#menu-bar ul.nice-menu a:hover,
+#menu-bar ul.nice-menu li.menuparent:hover a,
+#menu-bar ul.nice-menu .menuparent a.active {
+  background: red; /* Old browsers */
+  background: -moz-linear-gradient(none); /* FF3.6+ */
+  background: -webkit-gradient(none); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(none); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(none); /* Opera 11.10+ */
+  background: -ms-linear-gradient(none); /* IE10+ */
+  background: linear-gradient(none); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( none ); /* IE6-9 */
+}
+
+#menu-bar ul.nice-menu a:hover,
+#menu-bar ul > li > a:hover,
+#menu-bar ul.nice-menu li.menuparent:hover a {
+  color: #fff;
+  -webkit-border-radius: 0 0 0 0;
+  border-radius: 0 0 0 0;
+}
+.link-count-mobi-main a {
+    background: url("../images/icon_menu.png") no-repeat scroll 15px center transparent !important;
+}
+.link-count-mobi-util a {
+    background: url("../images/icon_plus.png") no-repeat scroll center center transparent;
+
+}
+.link-count-mobi-search a {
+       background: url("../images/icon_search.png") no-repeat scroll center center transparent;
+
+}
+
+}
