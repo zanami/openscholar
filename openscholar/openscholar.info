@@ -34,6 +34,7 @@ dependencies[] = context
 dependencies[] = features
 dependencies[] = boxes
 dependencies[] = views
+dependencies[] = subtheme
 dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = date_ical
@@ -81,6 +82,7 @@ dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
 dependencies[] = os_tasks
+dependencies[] = os_subtheme
 dependencies[] = os_wysiwyg_link
 
 ; Control Panel

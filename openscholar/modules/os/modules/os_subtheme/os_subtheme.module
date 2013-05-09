@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * OS Subtheme module file.
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_subtheme_form_cp_appearance_theme_picker_form_alter(&$form, $form_state) {
+
+  ctools_include('themes', 'os');
+  $themes = os_get_themes();
+
+  drupal_add_library('system', 'ui.dialog');
+
+  drupal_add_js(drupal_get_path('module', 'os_subtheme') . '/js/os_subtheme.js');
+  drupal_add_css(drupal_get_path('module', 'os_subtheme') . '/css/os_subtheme.css');
+
+  $flavor_form = drupal_get_form('add_flavor_form');
+  $form['form'] = array(
+    '#markup' => "<div id='dialog'>" . render($flavor_form) . "</div>",
+  );
+
+  foreach ($themes as $theme_name => $theme) {
+    $os_theme_name = 'os_appearance_' . $theme_name . '_flavor';
+
+    if (!isset($form[$os_theme_name])) {
+      continue;
+    }
+
+    $title = t("Add subtheme to @name", array('@name' => $theme->info['name']));
+
+    $form[$os_theme_name]['#prefix'] = l(t('Add flavor'), '#', array('attributes' => array(
+      'class' => 'show-dialog',
+      'title' => $title,
+    )));
+  }
+}
+
+/**
+ * Adding a subtheme to a flavor.
+ */
+function add_flavor_form() {
+  $form = array();
+
+  $form['options'] = array(
+    '#type' => 'radios',
+    '#options' => array(
+      'zip' => t('Zip file'),
+    ),
+    '#default_value' => 'zip',
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+
+    'next' => array(
+      '#markup' => t('Next'),
+    ),
+  );
+
+  return $form;
+}

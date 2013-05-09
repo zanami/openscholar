@@ -314,6 +314,12 @@ projects[spaces][download][type] = git
 projects[spaces][download][branch] = 7.x-3.x
 projects[spaces][download][revision] = eac3a7e
 
+projects[subtheme][subdir] = "contrib"
+projects[subtheme][type] = module
+projects[subtheme][download][type] = git
+projects[subtheme][download][branch] = 7.x-1.x
+projects[subtheme][download][url] = "http://git.drupal.org/sandbox/RoySegall/1965256.git"
+
 projects[stringoverrides][version] = 1.8
 projects[stringoverrides][subdir] = "contrib"
 

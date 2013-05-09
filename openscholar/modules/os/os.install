@@ -102,3 +102,10 @@ function os_update_7008() {
 function os_update_7009() {
   variable_set('og_vocab_term_page_access', TRUE);
 }
+
+/**
+ * Turn on Subtheme and OS subtheme modules.
+ */
+function os_update_7010() {
+  module_enable(array('subtheme', 'os_subtheme'));
+}

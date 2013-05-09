@@ -1,0 +1,9 @@
+name = OS subtheme
+description = OS integration with the module Subtheme.
+
+package = OpenScholar
+
+core = 7.x
+php = 5.2.4
+
+dependencies[] = subtheme
