@@ -828,4 +828,13 @@ class FeatureContext extends DrupalContext {
 
     return $element;
   }
+
+  /**
+   * @When /^I visit the original page for the term "([^"]*)"$/
+   */
+  public function iVisitTheOriginalPageForTheTerm($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+    $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
+  }
 }
