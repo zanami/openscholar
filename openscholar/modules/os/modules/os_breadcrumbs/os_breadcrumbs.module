@@ -315,7 +315,11 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
     if(isset($parent_node)) {
       // Parent type.
       $parent_type = _os_breadcrumbs_get_content_type_title($parent_node->type) != FALSE ? _os_breadcrumbs_get_content_type_title($parent_node->type) : $parent_node->type;
-      $short_title = _os_breadcrumbs_shorten_title($parent_type);
+      if(_os_breadcrumbs_check_custom_title($parent_type) != FALSE) {
+        $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($parent_type));
+      }else {
+        $short_title = _os_breadcrumbs_shorten_title($parent_type);
+      }
       $links[] = l(strtoupper($short_title),$parent_type);
       // Parent name.
       $parent_class = $parent_node->title;
