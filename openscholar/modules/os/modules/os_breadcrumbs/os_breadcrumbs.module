@@ -230,6 +230,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   if($taxonomy_key === FALSE) {
     return $links;
   }
+  // Append the parent context onto the link.
   if($taxonomy_key != 0) {
     $prepend_taxonomy = TRUE;
     // Build the links
@@ -237,11 +238,15 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
     foreach($parent_array as $parent => $title) {
       // We need to append the content type to the terms.
       if($parent == 0) {
+        // Check for custom menu name.
+        if(_os_breadcrumbs_check_custom_title($title) != FALSE) {
+          $link_title = _os_breadcrumbs_check_custom_title($title);
+        }
       	$append_paths = $title;
       }else {
         $append_paths .= '/'.$title;
       }
-      $links[] = l(strtoupper($title), $append_paths);
+      $links[] = l(strtoupper($link_title), $append_paths);
     }
   }
   // Get the tid.
