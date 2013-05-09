@@ -6,6 +6,18 @@
 define('VSITE_ACCESS_FIELD', 'group_access');
 
 /**
+ * Define group access
+ */
+// Publicly avalible and Indexed
+define('VSITE_ACCESS_PUBLIC', 0);
+// Temporarially Private, access restricted to logged in users. Files Public.
+define('VSITE_ACCESS_PRIVATE', 1);
+// Public and accesible but in ulisted/indexed.
+define('VSITE_ACCESS_UNINDEXED', 2);
+// Perminantly Private, access restricted to logged in users. All files Private.
+define('VSITE_ACCESS_INTRANET_PRIVATE', 3);
+
+/**
  * Implements hook_views_api().
  */
 function vsite_access_views_api() {
