@@ -253,7 +253,9 @@ text-decoration:none;
 	color:#3A72AB;
 }
 
-.logged-in.no-sidebars.page-user .user-add-name {
+.add-full-name-wrapper {position:absolute;right:0px;top:20px;}
+
+.user-add-name {
 	text-decoration:underline;
 }
 
@@ -298,6 +300,8 @@ text-decoration:none;
 	margin: 8px 5px -10px;
 	
 }
+
+
 
 .logged-in.no-sidebars.page-user #content .delete-link {
 margin-right:-3px;
