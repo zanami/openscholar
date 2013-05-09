@@ -8,7 +8,7 @@ Feature: Testing OpenScholar calendar page.
 
   @api
   Scenario: Test the Calendar tab with day events filtered by terms.
-    Given I visit "john/calendar?type=day&day=2013-05-30"
+    Given I visit "john/calendar?type=day&day=2013-05-29"
       And I should print page
       And I should see the text "John F. Kennedy birthday" under "view-display-id-page_1"
      When I visit "john/calendar/authors/douglas-noël-adams?type=day&day=2013-05-30"
@@ -31,6 +31,6 @@ Feature: Testing OpenScholar calendar page.
   @api
   Scenario: Test the Calendar tab with year events filtered by terms.
     Given I visit "john/calendar/authors/stephen-william-hawking?type=year&year=2013"
-      And I should see the link "30" under "thu mini future has-events"
+      And I should see the link "29" under "thu mini future has-events"
      When I visit "john/calendar/authors/douglas-noël-adams?type=year&year=2013"
-     Then I should not see the link "30" under "view-display-id-page_1"
+     Then I should not see the link "29" under "view-display-id-page_1"
