@@ -289,9 +289,11 @@ projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
 
-
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
+
+projects[robotstxt][subdir] = "contrib"
+projects[robotstxt][version] = "1.1"
 
 projects[restws][subdir] = "contrib"
 projects[restws][version] = "2.0-alpha3"
