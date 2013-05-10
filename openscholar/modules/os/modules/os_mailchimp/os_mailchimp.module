@@ -305,7 +305,6 @@ function os_mailchimp_cp_settings(){
   return $settings;
 }
 
-
 /**
  * @function _os_mailchimp_get_lists
  *
@@ -313,19 +312,37 @@ function os_mailchimp_cp_settings(){
  * @param unknown_type $api
  */
 function _os_mailchimp_get_lists($api) {
-  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
-
-  $MC = new MCAPI($api);
-
+  $MC = _os_mailchimp_mailchimp_connect($api);
+  
   $ret = array();
   if (($lists = $MC->lists()) != FALSE) {
     foreach ($lists['data'] as $delta => $list) {
-	  $ret[$list['id']] = $list['name'];
-	}
-
-    return $ret;
-
-  } else {
-    return FALSE;
+	    $ret[$list['id']] = $list['name'];
+	  }
   }
+
+  return ($ret) ? $ret : FALSE;  
+}
+
+/**
+ * @function _os_mailchimp_get_list_info($api)
+ * 
+ *  Get info from mailchimp API describing lists
+ */
+function _os_mailchimp_get_list_info($api) {
+  $MC = _os_mailchimp_mailchimp_connect($api);
+  return ($MC) ? $MC->lists() : FALSE;
+}
+
+/**
+ * @function _os_mailchimp_mailchimp_connect
+ * @param string $api
+ *   Mailchimp api key
+ * @return Ambigous <boolean, MCAPI>
+ *   Mailchimp api connection or False
+ */
+function _os_mailchimp_mailchimp_connect($api) {
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');  
+  $MC = new MCAPI($api);
+  return ($MC) ? $MC : FALSE;
 }
