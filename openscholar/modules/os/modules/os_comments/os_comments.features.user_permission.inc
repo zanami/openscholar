@@ -14,8 +14,8 @@ function os_comments_user_default_permissions() {
   $permissions['access comments'] = array(
     'name' => 'access comments',
     'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
+      0 => 'vsite admin',
+      1 => 'vsite user',
     ),
     'module' => 'comment',
   );
