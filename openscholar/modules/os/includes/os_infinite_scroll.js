@@ -7,9 +7,9 @@
 
 (function($) {
   
-  Drupal.behaviors.os_publications = {
+  Drupal.behaviors.os_infinite_scroll = {
     attach: function (context, settings) {
-      $('body').once('os_publications_autopage', function() {
+      $('body').once('os_infinite_scroll', function() {
         if (typeof(jQuery.autopager) == 'function') {
           for (var mod in Drupal.settings.autopager) {
             
@@ -43,10 +43,16 @@
               $('.jquery-autopager-ajax-loader').remove();
             }
             
+            //hide the pager.  each page load can add a new one.
+            function hide_pager() {
+              if (settings.pager) {
+                $(settings.pager).hide();
+              }
+            }
+            
             //hide redundant biblio headers
             function os_publications_hide_biblio_category_bar() {
-              selector = '.biblio-separator-bar';
-            
+              selector = '.biblio-separator-bar';            
               $selectors = $(selector);
                 
               $selectors.each(function(selectors) {
@@ -60,8 +66,11 @@
             if (settings.loading_image) {
               var img = '<div class="jquery-autopager-ajax-loader" style="text-align:center;"><img src="' + settings.loading_image + '" alt="loading..."/></div>';
             }
-  
-            settings._load = (settings.hide_biblio_categories) ? [hide_throbber, os_publications_hide_biblio_category_bar, Drupal.attachBehaviors] : [hide_throbber, Drupal.attachBehaviors];         
+            
+            settings._load = [hide_throbber, hide_pager, Drupal.attachBehaviors];     
+            if (settings.hide_biblio_categories) {
+              settings._load.push(os_publications_hide_biblio_category_bar);
+            }
             settings.load = _load;
             
             settings._start = [show_throbber]; 
@@ -71,7 +80,7 @@
             var $pager = $.autopager(settings);
           }
           
-          //hide the pagers
+          //hide the pager.  this also happens after each load
           if (settings.pager) {
             $(settings.pager).hide();
           }

@@ -710,7 +710,8 @@ function os_publications_preprocess_page(&$variables) {
     return;
   }
   
-  _os_publications_autopager('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => '#content ul.pager', 'hide_biblio_categories' => TRUE));
+  ctools_include('infinite_scroll', 'os');
+  _os_add_infinite_scroll('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => '#content ul.pager', 'hide_biblio_categories' => TRUE));
   
   
   // Make sure both filters are there.
@@ -741,40 +742,3 @@ function os_publications_preprocess_page(&$variables) {
   }
 }
 
-/**
- * @function _os_publications_autopager
- * 
- * Attaches autopage javascript and provides selectors
- * 
- * @param $name
- *   Unique name for this infinite scroll
- * @param $link (optional)
- *   jQuery selector for the next link
- * @param $content (optional)
- *   jQuery selector for the content area
- * @param $options (optional)
- *   Associative array of additional autopager options. <http://code.google.com/p/jquery-autopager/>
- */
-function _os_publications_autopager($name, $link = 'li.pager-next>a', $content = '#content', $options = array()) {
-  if (($lib = libraries_get_path('autopager')) == FALSE) {
-    watchdog('os_publications', t('Please install autopager library'), WATCHDOG_WARNING);
-    return FALSE;
-  }
-  
-    
-  $settings = array(
-     $name => array(
-       'link' => $link,
-       'content' => $content,
-       'autoLoad' => TRUE,
-       'loading_image' => '/' . drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif',  
-     ),   
-   );
-  
-  $options = array_diff($options, array('link', 'content')); //link and content could be supplied in two places.  always use function args, not opts array.
-  $settings[$name] += $options;
-  
-  drupal_add_js(array('autopager'=>$settings), 'setting');
-  drupal_add_js(drupal_get_path('module', 'os_publications') . '/os_publications_autopager.js');
-  drupal_add_js($lib . '/jquery.autopager-1.0.0.js');
-}

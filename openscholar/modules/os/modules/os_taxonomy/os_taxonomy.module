@@ -141,6 +141,9 @@ function os_taxonomy_term_page($taxonomy_term) {
   );
 
   os_taxonomy_activate_context($taxonomy_term);
+  
+  ctools_include('infinite_scroll', 'os');
+  _os_add_infinite_scroll('os_taxonomy');
 
   return theme('os_taxonomy_tagged_nodes', $variables);
 }
