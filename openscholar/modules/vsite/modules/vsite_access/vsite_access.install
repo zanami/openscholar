@@ -47,3 +47,16 @@ function vsite_access_update_7001(&$sandbox) {
 
   return "Updated config for VSITE_ACCESS_FIELD";
 }
+
+/**
+ * Update the privacy field
+ */
+function vsite_access_update_7002(&$sandbox) {
+
+  if(!module_exists(robotstxt)){
+    if(module_enable(array('robotstxt'))){
+      return "Enabled Module robotstxt";
+    }
+    throw new DrupalUpdateException('Unable to enable robotstxt.');
+  }
+}
