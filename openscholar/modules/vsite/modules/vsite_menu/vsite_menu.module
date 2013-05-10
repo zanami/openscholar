@@ -601,6 +601,8 @@ function vsite_menu_cp_menu_form_submit($form, &$form_state) {
  * Add a custom CSS class to custom menus.
  */
 function vsite_menu_preprocess_block(&$vars) {
+  // Include the menus.
+  ctools_include('menu','os');
   // Get the current OS menus.
   $os_menus = os_get_menus();
 
