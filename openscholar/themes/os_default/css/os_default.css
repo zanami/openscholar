@@ -259,6 +259,11 @@ text-decoration:none;
 	top:20px;
 	font-size: 14px;
 	}
+	
+	
+.logged-in.no-sidebars.page-user.page-user-edit #content-column input.form-text {
+width: 48%;
+}
 
 .user-add-name {
 	text-decoration:underline;
