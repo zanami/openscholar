@@ -346,9 +346,16 @@ projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
 projects[views_og_cache][download][revision] = 059a845
 
-
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0
+
+projects[views_litepager][subdir] = "contrib"
+projects[views_litepager][version] = 3.0
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
+
+projects[views_infinite_scroll][subdir] = "contrib"
+projects[views_infinite_scroll][version] = 1.1
+projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -401,3 +408,9 @@ libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/
 libraries[twitter-api-php][type] = "libraries"
 libraries[twitter-api-php][download][type] = "file"
 libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"
+
+libraries[autopager][type] = "libraries"
+libraries[autopager][download][type] = "file"
+libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
+libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"
+
