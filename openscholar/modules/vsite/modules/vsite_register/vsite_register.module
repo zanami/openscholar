@@ -101,7 +101,7 @@ function theme_vsite_register_form_errors($vars) {
 }
 
 /**
- * Implements hook_vsite_regsiter_message().
+ * Generates the success message to display when vsite register form is submit.
  *
  * @return string
  *   The message shown to site owners after a successful web site registration.
@@ -121,7 +121,7 @@ function vsite_register_message($form, $domain) {
   $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t("Go there now"), $base_url . '/' . $domain) . '</p>';
   $message .= '</div>';
 
-  //give other modules a chance to alter message
+  // Gives other modules a chance to alter message
   module_invoke_all('vsite_register_message', $message, $form, $domain);
   return $message;
 }
