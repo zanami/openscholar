@@ -264,7 +264,7 @@ text-decoration:none;
 	text-decoration:underline;
 }
 
-.field_first_name_anchor {
+.logged-in.no-sidebars.page-user #content a.field_first_name_anchor {
 	color: #555555;
 }
 
