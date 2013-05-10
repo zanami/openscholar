@@ -305,6 +305,7 @@ class vsite extends space_og {
       'contact',
       'admin',
       'admin/*',
+      'pinserver/auth',
       // 'files/*', Need files menu entry to be loaded in a space so that the purl can be used to serve old file pats. -RB
     );
 
