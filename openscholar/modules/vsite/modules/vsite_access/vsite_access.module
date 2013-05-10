@@ -27,6 +27,22 @@ function vsite_access_views_api() {
   );
 }
 
+/**
+ * Add additional lines to a site's robots.txt file.
+ *
+ * @return
+ *   An array of strings to add to the robots.txt.
+ */
+function vsite_access_robotstxt() {
+  global $base_url;
+
+  $robots_settings = variable_get('vsite_access_unindexed_sites',array());
+  $host = parse_url($base_url,PHP_URL_HOST);
+  if(isset($robots_settings[$host])){
+    return $robots_settings[$host];
+  }
+}
+
 
 /**
  * Implements hook_node_access().
