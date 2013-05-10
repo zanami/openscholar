@@ -17,12 +17,12 @@
  * Ajax url for processing sub requests.  (using ajax so I can have one unified sub function).
  */
 function os_mailchimp_menu() {
-  $items ['admin/settings/os_mailchimp'] = array(
+  $items ['admin/config/openscholar/os_mailchimp'] = array(
     'title' => t( 'MailChimp' ),
-	'page callback' => 'drupal_get_form',
-	'page arguments' => array('os_mailchimp_admin' ),
-	'file' => 'os_mailchimp.admin.inc',
-	'access arguments' => array('access administration pages' ),
+  	'page callback' => 'drupal_get_form',
+  	'page arguments' => array('os_mailchimp_admin' ),
+  	'file' => 'os_mailchimp.admin.inc',
+  	'access arguments' => array('access administration pages' ),
   );
   $items['os_mailchimp/%ctools_js/subscribe/%'] = array(
     'title' => t('Subscribe to mailing list'),
@@ -111,8 +111,16 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
 function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
   $MC = new MCAPI($api);
+  $merge_vars = array('FNAME'=>$fn, 'LNAME'=>$ln );
+  if (variable_get('os_mailchimp_use_field', FALSE)) {
+    $name = variable_get('os_mailchimp_use_field_name', FALSE);
+    $value = variable_get('os_mailchimp_use_field_value', FALSE);
+    if ($name && $value) {
+      $merge_vars[$name] = $value;
+    }
+  }
 
-  if ($MC->listSubscribe($listid, $email, array('FNAME'=>$fn, 'LNAME'=>$ln))) {
+  if ($MC->listSubscribe($listid, $email, $merge_vars)) {
     return array('success'=>TRUE);
   } else {
   	return array('success'=>FALSE,'msg'=>$MC->errorMessage);
