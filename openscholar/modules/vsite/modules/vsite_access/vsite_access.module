@@ -22,36 +22,48 @@ function vsite_access_views_api() {
 function vsite_access_node_access($node, $op, $account) {
   $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
-  if ($op != 'view' || !($vsite = spaces_get_space())) {
-    // If we are trying to create content outside a group and do not have permission to do so
-    if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
-      return NODE_ACCESS_DENY;
+  //Handle access to Group Content
+  if(og_is_group_content_type('node', $type)){
+
+	  if ($op != 'view' || !($vsite = spaces_get_space())) {
+	    // If we are trying to create content outside a group and do not have permission to do so
+	    if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
+	      return NODE_ACCESS_DENY;
+	    }
+
+	    // Do nothing
+	    return NODE_ACCESS_IGNORE;
+	  }
+
+	  //When trying to view group content, check the privacy of the site.
+	  if(is_object($vsite->group) && !og_is_group_content_type('node', $vsite->group->type) && !node_access('view', $vsite->group, $account)){
+	    return NODE_ACCESS_DENY;
+	  }
+
+	  return NODE_ACCESS_IGNORE;
+  }
+
+  //Handle access to groups.
+  if(og_is_group_type('node', $type)){
+    $wrapper = entity_metadata_wrapper('node', $node);
+
+    if(!empty($wrapper->{VSITE_ACCESS_FIELD})){
+      switch ($wrapper->{VSITE_ACCESS_FIELD}->value()){
+      	case VSITE_ACCESS_INTRANET_PRIVATE:
+      	case VSITE_ACCESS_PRIVATE:
+      	  // Private group.
+      	  if(!user_access('administer group') && !og_is_member('node', $node->nid,'user',$account)){
+      	    // They are not a member, deny access
+      	    return NODE_ACCESS_DENY;
+      	  }
+      	break;
+      	case VSITE_ACCESS_PUBLIC:
+      	case VSITE_ACCESS_UNINDEXED:
+      	default:
+      	  return NODE_ACCESS_IGNORE;
+      	break;
+      }
+
     }
-
-    // Do nothing
-    return;
   }
-
-  // We are in a vsite
-  if (og_is_group_content_type('node', $type) && !vsite_access_user_access($vsite->group,$account)) {
-    return NODE_ACCESS_DENY;
-  }
-}
-
-function vsite_access_user_access($group, $account = NULL){
-  global $user;
-  $account = isset($account) ? $account : $user;
-
-  $wrapper = entity_metadata_wrapper('node', $group);
-
-  if(!empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()){
-    // Private group.
-    if(!user_access('administer group') && !og_is_member('node', $group->nid,'user',$account)){
-      // They are not a member, deny access
-      return false;
-    }
-  }
-
-  //This is a public site, or they have access
-  return true;
 }
