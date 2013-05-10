@@ -163,7 +163,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
 
   // Check for blog archives or publication filters.
   $item = menu_get_item();
-  if(isset($item) && ($item['path'] == 'blog' || (strpos($item['path'], 'publications') === 0))) {
+  if(isset($item) && ($item['path'] == 'blog/archive' || (strpos($item['path'], 'publications') === 0))) {
     $map = $item['original_map'];
     if(isset($map) && count($map) > 1) {
       // Rebuild the breadcrumbs.
@@ -171,22 +171,22 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
       $links[] = l(t('HOME'),'<front>');
       switch($item['original_map'][0]) {
       	case 'blog':
+          $blog_path = '';
           foreach($map as $key => $blog_archive) {
       	    $blog_breadcrumb_path = $blog_archive;
-      	    if($blog_breadcrumb_path == 'all') {
-              $blog_archive_title = 'Archive';
-      	      $blog_breadcrumb_path = $item['path'] . '/' . $blog_breadcrumb_path;
-            }elseif(is_numeric($blog_breadcrumb_path)) {
+      	    if(is_numeric($blog_breadcrumb_path)) {
               $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
             }else {
       	      $blog_archive_title = $blog_breadcrumb_path;
             }
-            $short_title = _os_breadcrumbs_shorten_title($blog_archive_title);
+            // Rebuild the blog archive path.
+            $blog_path .= $blog_breadcrumb_path . '/';
+            $short_title = _os_breadcrumbs_check_custom_title($blog_archive_title) != FALSE ? _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($blog_archive_title)) : _os_breadcrumbs_shorten_title($blog_archive_title);
             if($key == (count($map)) - 1) {
               // Remove trailing page title for now.
       	      $links[] = ''; // t(ucfirst($short_title));
             }else {
-              $links[] = l(strtoupper($short_title), $blog_breadcrumb_path);
+              $links[] = l(strtoupper($short_title), $blog_path);
             }
           }
           break;
@@ -199,11 +199,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
               // Remove trailing page title for now.
               $links[] = ''; // t(ucfirst($short_title));
             } else {
-              if(_os_breadcrumbs_check_custom_title($pub_link) != FALSE) {
-                $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($pub_link));
-              }else {
-                $short_title = _os_breadcrumbs_shorten_title($pub_link);
-              }
+              $short_title = _os_breadcrumbs_check_custom_title($pub_link) != FALSE ? _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($pub_link)) : _os_breadcrumbs_shorten_title($pub_link);
               $links[] = l(strtoupper($short_title), $pub_link);
             }
           }
