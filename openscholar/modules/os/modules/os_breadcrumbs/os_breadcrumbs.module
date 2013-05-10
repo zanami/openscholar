@@ -199,7 +199,12 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
               // Remove trailing page title for now.
               $links[] = ''; // t(ucfirst($short_title));
             } else {
-              $links[] = l(strtoupper($pub_link), $pub_link);
+              if(_os_breadcrumbs_check_custom_title($pub_link) != FALSE) {
+                $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($pub_link));
+              }else {
+                $short_title = _os_breadcrumbs_shorten_title($pub_link);
+              }
+              $links[] = l(strtoupper($short_title), $pub_link);
             }
           }
           break;
