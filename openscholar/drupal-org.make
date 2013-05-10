@@ -280,6 +280,12 @@ projects[password_hustle][version] = 1.0
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
+projects[pinserver][subdir] = "harvard"
+projects[pinserver][type] = module
+projects[pinserver][download][type] = git
+projects[pinserver][download][url] = "git://github.com/amitaibu/dyntextfield.git"
+projects[pinserver][version] = 3.1
+
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
 projects[purl][download][type] = git
@@ -288,7 +294,6 @@ projects[purl][download][revision] = 469e8668
 projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
-
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
