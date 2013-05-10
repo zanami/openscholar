@@ -469,6 +469,9 @@ function _os_breadcrumbs_get_content_type_title($node_type) {
  *   The custom menu title.
  */
 function _os_breadcrumbs_check_custom_title($path) {
+  // Load the menu file.
+  ctools_include('menu','os');
+  
   $menus = os_get_menus();
 
   if(!module_exists('vsite_menu')) {
