@@ -280,6 +280,12 @@ projects[password_hustle][version] = 1.0
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
+projects[pinserver][subdir] = "contrib"
+projects[pinserver][type] = module
+projects[pinserver][download][type] = git
+projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
+projects[pinserver][tag] = 7.x-3.1
+
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
 projects[purl][download][type] = git
