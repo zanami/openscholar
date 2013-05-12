@@ -24,8 +24,9 @@ function os_subtheme_admin_paths() {
  * Implements hook_form_FORM_ID_alter().
  */
 function os_subtheme_form_subtheme_manage_alter(&$form, $form_sate) {
-  // Add submit handler for redirect after uploading a user.
-  $form['#submit'][] = 'os_subtheme_redirect';
+  // Redirecting the user after uploading a theme, and relate the subtheme to os
+  // theme.
+  $form['#submit'][] = 'os_subtheme_submit';
 
   // Adding a submit handler.
   $form['#validate'][] = 'os_subtheme_validate';
@@ -35,10 +36,21 @@ function os_subtheme_form_subtheme_manage_alter(&$form, $form_sate) {
 }
 
 /**
- * Redirect the user back to the appearance page.
+ * Redirect the user back to the appearance page and reference the subtheme to
+ * os theme.
  */
-function os_subtheme_redirect($form, &$form_state) {
+function os_subtheme_submit($form, &$form_state) {
   $form_state['redirect'] = 'cp/appearance';
+  $subtheme = $form_state['#entity'];
+
+  $info = $subtheme->parseInfo();
+
+  $subtheme->status = SUBTHEME_ENABLED_LOAD_MANUAL;
+
+  $wrapper = entity_metadata_wrapper('subtheme', $subtheme);
+  $wrapper->field_os_theme->set($info['base theme']);
+
+  $subtheme->save();
 }
 
 /**

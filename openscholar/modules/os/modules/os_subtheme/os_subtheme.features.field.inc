@@ -103,8 +103,14 @@ function os_subtheme_field_default_fields() {
             'og_behavior' => array(
               'status' => TRUE,
             ),
+            'views-select-list' => array(
+              'status' => 0,
+            ),
           ),
           'membership_type' => 'og_membership_type_default',
+          'sort' => array(
+            'type' => 'none',
+          ),
           'target_bundles' => array(),
         ),
         'handler_submit' => 'Change handler',
@@ -116,6 +122,7 @@ function os_subtheme_field_default_fields() {
     'field_instance' => array(
       'bundle' => 'subtheme',
       'default_value' => NULL,
+      'default_value_function' => 'entityreference_prepopulate_field_default_value',
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -130,7 +137,7 @@ function os_subtheme_field_default_fields() {
       'entity_type' => 'subtheme',
       'field_name' => 'og_group_ref',
       'label' => 'Groups audience',
-      'required' => FALSE,
+      'required' => 0,
       'settings' => array(
         'behaviors' => array(
           'og_widget' => array(
@@ -141,6 +148,14 @@ function os_subtheme_field_default_fields() {
               'widget_type' => 'options_select',
             ),
             'status' => TRUE,
+          ),
+          'prepopulate' => array(
+            'action' => 'hide',
+            'action_on_edit' => 1,
+            'fallback' => 'hide',
+            'og_context' => 1,
+            'skip_perm' => 'administer group',
+            'status' => 1,
           ),
         ),
         'user_register_form' => FALSE,
@@ -158,10 +173,11 @@ function os_subtheme_field_default_fields() {
         ),
       ),
       'widget' => array(
+        'active' => 0,
         'module' => 'og',
         'settings' => array(),
         'type' => 'og_complex',
-        'weight' => '0',
+        'weight' => 0,
       ),
     ),
   );
