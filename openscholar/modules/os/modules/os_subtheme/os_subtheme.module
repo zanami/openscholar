@@ -21,6 +21,36 @@ function os_subtheme_admin_paths() {
 }
 
 /**
+ * Implements hook_init().
+ */
+function os_subtheme_init() {
+  if (!$og_context = og_context()) {
+    return;
+  }
+
+  ctools_include('themes', 'os');
+  $theme = os_theme_get();
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'subtheme')
+    ->propertyCondition('status', SUBTHEME_DISABLED, '!=')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $og_context['gid'])
+    ->fieldCondition('field_os_theme', 'value', $theme)
+    ->execute();
+
+  if (empty($result['subtheme'])) {
+    return;
+  }
+
+  $subthemes = subtheme_load_multiple(array_keys($result['subtheme']));
+
+  foreach ($subthemes as $subtheme) {
+    $subtheme->addAssets();
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function os_subtheme_form_subtheme_manage_alter(&$form, &$form_state) {
