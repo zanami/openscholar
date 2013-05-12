@@ -23,10 +23,14 @@ function os_subtheme_admin_paths() {
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function os_subtheme_form_subtheme_manage_alter(&$form, $form_sate) {
+function os_subtheme_form_subtheme_manage_alter(&$form, &$form_state) {
   // Redirecting the user after uploading a theme, and relate the subtheme to os
   // theme.
   $form['#submit'][] = 'os_subtheme_submit';
+
+  // When uploading a new sub theme, we need to notify the submit handler to
+  // set the default status as "Loaded manually"
+  $form_state['new_os_subtheme'] = !empty($form_state['#entity']->is_new);
 
   // Adding a submit handler.
   $form['#validate'][] = 'os_subtheme_validate';
@@ -40,12 +44,16 @@ function os_subtheme_form_subtheme_manage_alter(&$form, $form_sate) {
  * os theme.
  */
 function os_subtheme_submit($form, &$form_state) {
-  $form_state['redirect'] = 'cp/appearance';
   $subtheme = $form_state['#entity'];
 
   $info = $subtheme->parseInfo();
 
-  $subtheme->status = SUBTHEME_ENABLED_LOAD_MANUAL;
+  // This is a new subtheme: set the status as loaded manually and redirect to
+  // appearance control panel.
+  if ($form_state['new_os_subtheme']) {
+    $subtheme->status = SUBTHEME_ENABLED_LOAD_MANUAL;
+    $form_state['redirect'] = 'cp/appearance';
+  }
 
   $wrapper = entity_metadata_wrapper('subtheme', $subtheme);
   $wrapper->field_os_theme->set($info['base theme']);
