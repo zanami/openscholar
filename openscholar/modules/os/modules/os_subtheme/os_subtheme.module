@@ -49,16 +49,7 @@ function os_subtheme_validate($form, $form_state) {
   $subtheme->fid = $form_state['values']['file'];
   $subtheme->extract();
 
-  $info_files = glob($subtheme->path . '/*.info');
-  $info = array();
-  foreach ($info_files as $info_file) {
-    // Get the information from the info file.
-    $file_content = drupal_parse_info_file($info_file);
-
-    foreach ($file_content as $file => $content) {
-      $info[$file] = $content;
-    }
-  }
+  $info = $subtheme->parseInfo();
 
   ctools_include('themes', 'os');
   $themes = os_get_themes();
@@ -67,4 +58,3 @@ function os_subtheme_validate($form, $form_state) {
     form_set_error('file][upload', t('The theme you uploaded is not valid.'));
   }
 }
-
