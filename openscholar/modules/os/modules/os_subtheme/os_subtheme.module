@@ -104,7 +104,10 @@ function os_subtheme_validate($form, $form_state) {
   ctools_include('themes', 'os');
   $themes = os_get_themes();
 
-  if (!(isset($info['base theme']) && in_array($info['base theme'], array_keys($themes)))) {
-    form_set_error('file][upload', t('The theme you uploaded is not valid.'));
+  if (!(isset($info['base theme']))) {
+    form_set_error('file][upload', t('The theme you uploaded is not valid: there is no theme to based on.'));
+  }
+  else if (!in_array($info['base theme'], array_keys($themes))) {
+    form_set_error('file][upload', t('The theme you uploaded is not valid: the base theme is not listed in the OS theme list.'));
   }
 }
