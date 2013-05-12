@@ -5,10 +5,34 @@
  */
 
 /**
- * Implements hook_menu().
+ * Implements hook_menu_alter().
+ */
+function os_subtheme_menu() {
+  $items['cp/appearance/sub-themes'] = array(
+    'title' => 'Add subtheme',
+    'access arguments' => array('add subthemes'),
+    'page callback' => 'os_subtheme_select_method',
+    'type' => MENU_LOCAL_ACTION,
+  );
+
+  $items['cp/appearance/sub-themes/git'] = array(
+    'title' => 'Git',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_subtheme_git_method'),
+    'access arguments' => array('add subthemes'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
  */
 function os_subtheme_menu_alter(&$items) {
-  $items['cp/appearance/add-subtheme'] = $items['admin/structure/subtheme/add'];
+  $items['cp/appearance/sub-themes/subtheme'] = $items['admin/structure/subtheme/add'];
+  $items['cp/appearance/sub-themes/subtheme']['type'] = MENU_LOCAL_TASK;
+  $items['cp/appearance/sub-themes/subtheme']['title'] = 'Zip';
 }
 
 /**
@@ -16,7 +40,20 @@ function os_subtheme_menu_alter(&$items) {
  */
 function os_subtheme_admin_paths() {
   return array(
-    'cp/appearance/add-subtheme' => TRUE,
+    'cp/appearance/sub-themes' => TRUE,
+    'cp/appearance/sub-themes/*' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function os_subtheme_permission() {
+  return array(
+    'add subthemes' => array(
+      'title' => t('Add OS subthemes'),
+      'description' => t('Add subthemes in various ways.'),
+    ),
   );
 }
 
@@ -48,6 +85,43 @@ function os_subtheme_init() {
   foreach ($subthemes as $subtheme) {
     $subtheme->addAssets();
   }
+}
+
+/**
+ * Allowing to the user select the method he would like to upload.
+ */
+function os_subtheme_select_method() {
+  return theme('item_list', array('items' => array(
+    l(t('Zip'), 'cp/appearance/sub-themes/subtheme'),
+    l(t('Git'), 'cp/appearance/sub-themes/zip'),
+  )));
+}
+
+/**
+ * Upload theme via GIT.
+ */
+function os_subtheme_git_method($form, $form_state) {
+  $form['repository'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Git repository address'),
+    '#description' => t('Enter the repository address'),
+  );
+
+  $form['branch'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Branch'),
+    '#description' => t('Enter the branch of the git repository'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+  );
+
+  return $form;
 }
 
 /**
