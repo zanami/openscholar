@@ -4,7 +4,6 @@
     border-right: none;
 }
 
-
 .link-count-mobi-util {
     width: 20%;
 }
@@ -28,6 +27,20 @@ ul.primary li a {
 .link-count-mobi-search a {
        background-color: #1e1e1e;
 
+}
+#menu-bar {
+    background: none repeat scroll 0 0 #E6E6E3;
+}
+.block-boxes-os_boxes_slideshow{
+	border-top:none!important;
+}
+.sidebar .block, .front #content-column .block, .node-person .block-inner, .comment-wrapper {
+    margin-top: -10px;
+}
+}
+@media (max-width: 768px) {
+.front #content-column .block.block-boxes-os_boxes_manual_list {
+    margin-bottom: 20px;
 }
 
 }

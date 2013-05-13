@@ -3,6 +3,8 @@
     left: 20px;
     position: relative;
 }
+
+
 }
 @media (max-width: 1008px) {
 
@@ -96,9 +98,10 @@ display:none;
 .hg-container {
     -moz-box-sizing: border-box;
     margin: 0 auto;
-    max-width: 1008px;
+    max-width: 100%;
     padding: 0 15px;
 }
+
 
 }
 
@@ -168,6 +171,13 @@ display:none;
     padding-left: 0;
     position: relative;
     top: 0;
+    width: 100%;
+}
+.one-sidebar.sidebar-first .region-sidebar-first {
+    margin-top: 20px;
+  
+}
+.front .content-left.content-right.content-bottom #content-panels .region {
     width: 100%;
 }
 

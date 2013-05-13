@@ -1,5 +1,9 @@
 @media (max-width: 1008px) {
 	
+	
+	/* menus */
+	
+	
 .link-count-mobi-main a {
     background-color: #fff!important;
     color: #000!important;
@@ -10,7 +14,6 @@
 }
 .link-count-mobi-search a {
        background-color: #4077AE!important;
-
 }
 
 #menu-bar ul > li > a:hover,
@@ -50,6 +53,11 @@
     padding-top: 65px !important;
     width:100%;
 }
+
+
+/* column layouts */
+
+
 .one-sidebar.sidebar-second .region-sidebar-second {
     padding-top: 65px!important;
 
@@ -57,6 +65,13 @@
 .two-sidebars .region-sidebar-second {
     padding-top: 65px;
    
+}
+
+/* calendar arrows */
+
+
+.one-sidebar #main-content .view .date-nav-wrapper .date-prev {
+    right: 90%;
 }
 
 
