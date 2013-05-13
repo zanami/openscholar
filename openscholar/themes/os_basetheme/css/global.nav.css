@@ -758,20 +758,18 @@ ul.nice-menu-down li li.menuparent:hover {
 
 }
 
-/*
-.navigation ul li:hover,
-.navigation ul li li:hover,
-.navigation ul li li li:hover { background: #fff; }
-*/
-
-
 
 .navigation ul.menu li a,
 .navigation ul li a {
-  display: inline-block;
+  display:block;
   text-decoration: none !important;
   padding: .5em;
   color:inherit;
+}
+
+
+.navigation ul li a:hover {
+  background-color: #FFF;
 }
 
 .navigation ul.menu li ul.menu li a,
@@ -781,11 +779,11 @@ ul.nice-menu-down li li.menuparent:hover {
 
 .navigation ul.menu li ul.menu li li a,
 .navigation ul li ul li li a {
-  padding-left: 25px;
+  padding: 0.5em 0 0.5em 25px;
 }
 
 .navigation a:link, .navigation a:visited { color: inherit; }
-.navigation a:hover, .navigation a:active { color: inherit;text-decoration: underline !important; } 
+.navigation a:hover, .navigation a:active { color: inherit;} 
 
 /* Section Nav */
 #boxes-box-os_pages_section_nav {

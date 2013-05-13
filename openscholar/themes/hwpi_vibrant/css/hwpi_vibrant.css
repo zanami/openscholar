@@ -541,7 +541,7 @@ background: -o-linear-gradient(top, #ac253a 0%, #880f1c 100%);
 background: -ms-linear-gradient(top, #ac253a 0%, #880f1c 100%);
 background: linear-gradient(to bottom, #ac253a 0%, #880f1c 100%);
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ac253a', endColorstr='#880f1c',GradientType=0 );
-padding: 3px 15px;
+padding: 8px 15px;
 }
 
 .front #content-panels .block.block-boxes-os_boxes_manual_list .block-content, 

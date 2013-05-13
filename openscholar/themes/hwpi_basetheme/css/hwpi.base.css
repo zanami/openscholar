@@ -184,6 +184,10 @@ ol.search-results li.search-result:last-child {
 }
 
 
+.content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
+    right: auto;
+}
+
 .view .date-nav-wrapper .date-prev a {
     overflow: hidden;
  	text-indent: -99999999px;
@@ -787,8 +791,12 @@ ul.pager li {
   margin: 0;
 }
 
+ul.pager li.pager-ellipsis {
+  padding:.7em 2px;
+}
+
 ul.pager li a {
-  padding: 4px;
+  padding: 3px;
 }
 
 

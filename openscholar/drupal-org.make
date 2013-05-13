@@ -58,6 +58,9 @@ projects[date][subdir] = "contrib"
 projects[date][version] = 2.6
 projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 
+projects[date_ical][subdir] = "contrib"
+projects[date_ical][version] = 2.7
+
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
@@ -277,6 +280,12 @@ projects[password_hustle][version] = 1.0
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
+projects[pinserver][subdir] = "contrib"
+projects[pinserver][type] = module
+projects[pinserver][download][type] = git
+projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
+projects[pinserver][tag] = 7.x-3.1
+
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
 projects[purl][download][type] = git
@@ -286,9 +295,11 @@ projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
 
-
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
+
+projects[robotstxt][subdir] = "contrib"
+projects[robotstxt][version] = "1.1"
 
 projects[restws][subdir] = "contrib"
 projects[restws][version] = "2.0-alpha3"
@@ -364,6 +375,10 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
+
+libraries[iCalcreator][type] = "libraries"
+libraries[iCalcreator][download][type] = "file"
+libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
