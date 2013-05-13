@@ -79,5 +79,6 @@ features[views_view][] = os_publications
 features[views_view][] = publication_contributors
 features[views_view][] = publication_types
 features[views_view][] = publication_years
+files[] = os_publications_autopager.js
 spaces[types][] = og
 spaces[types][] = site
