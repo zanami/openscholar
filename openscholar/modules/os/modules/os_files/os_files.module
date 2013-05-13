@@ -423,7 +423,7 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
  * Finish callback function of the batch API.
  */
 function os_files_delete_remove_reference_finished() {
-  drupal_set_message(t('The file and his referenced were removed.'));
+  drupal_set_message(t('The file has been removed.'));
 }
 
 /**
