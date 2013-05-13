@@ -72,7 +72,7 @@ function _os_breadcrumbs_check_taxonomy($item) {
     return;
   }
 
-  // If we are in a context, appead the module to the path.
+  // If we are in a context, append the module to the path.
   if(isset($path_prefix)) {
     $path = isset($path_prefix) ? $path_prefix . '/' . $path :  $path;
   }
@@ -121,6 +121,13 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   $last_item = end($menu_active_trail);
   foreach($menu_active_trail as $key => $menu) {
     $short_title = _os_breadcrumbs_shorten_title($menu['title']);
+    // Check for a parent menu item.
+    if(_os_breadcrumbs_check_parents($menu['href']) != FALSE) {
+      $parent_links = _os_breadcrumbs_check_parents($menu['href']);
+      if(isset($parent_links) && is_array($parent_links)) {
+        $links = array_merge($links,$parent_links);
+      }
+    }
     if($key == (count($menu_active_trail)) - 1) {
       $links[] = '';//t(ucfirst($short_title));
     }else {
@@ -129,8 +136,8 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   }
   // Node id check.
   // If there is a node, push the type ahead of the node.
-  // So it reads home > publications > my publications
-  // rather than home > my publications.
+  // So it reads home > publications > node/%
+  // rather than home > node/%.
   if(strpos($last_item['href'],'node/') === 0) {
     if(isset($last_item['original_map'][1])) {
       $nid = $last_item['original_map'][1];
@@ -207,7 +214,6 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
       }
     }
   }
-
   return $links;
 }
 
@@ -462,16 +468,14 @@ function _os_breadcrumbs_get_content_type_title($node_type) {
 }
 
 /**
- * Function that will check to see if a custom menu title has been used vs the default menu title.
+ * Function to return the mlid of a given path.
  * @params $path
- *   The path of the app.
- * @return
- *   The custom menu title.
+ *  The path of a menu item.
  */
-function _os_breadcrumbs_check_custom_title($path) {
+function _os_breadcrumbs_get_mlid($path) {
   // Load the menu file.
   ctools_include('menu','os');
-  
+
   $menus = os_get_menus();
 
   if(!module_exists('vsite_menu')) {
@@ -481,6 +485,7 @@ function _os_breadcrumbs_check_custom_title($path) {
   if(!isset($path)) {
     return FALSE;
   }
+
   // Loop each menu to see if this path exists in the menu.
   foreach ($menus as $key => $value) {
     $mlid = vsite_menu_get_link_path($key, $path);
@@ -492,6 +497,25 @@ function _os_breadcrumbs_check_custom_title($path) {
   if(!isset($mlid)) {
     return FALSE;
   }
+
+  return $mlid;
+}
+
+/**
+ * Function that will check to see if a custom menu title has been used vs the default menu title.
+ * @params $path
+ *   The path of the app.
+ * @return
+ *   The custom menu title.
+ */
+function _os_breadcrumbs_check_custom_title($path) {
+
+  if(_os_breadcrumbs_get_mlid($path) == FALSE) {
+    return FALSE;
+  }
+
+  $mlid = _os_breadcrumbs_get_mlid($path);
+
   // Now that we have the mlid we can load that link.
   $link = vsite_menu_menu_link_load($mlid);
 
@@ -500,6 +524,48 @@ function _os_breadcrumbs_check_custom_title($path) {
   }
 
   return $link['title'];
+}
+
+/**
+ * Function to return the parent(s) of a given path.
+ * @params $path
+ *  The path of the app.
+ */
+function _os_breadcrumbs_check_parents($path) {
+  if(_os_breadcrumbs_get_mlid($path) == FALSE) {
+    return FALSE;
+  }
+
+  $mlid = _os_breadcrumbs_get_mlid($path);
+
+  $link = vsite_menu_menu_link_load($mlid);
+
+  // Check to see if this is the top level item.
+  if (isset($link['plid']) && (empty($link['plid']) || $link['plid'] == 0)) {
+    return FALSE;
+  }
+
+  // Loop through the parent links, subtract one to remove current mlid.
+  if (! empty($link['depth']) && $link['depth'] > 1) {
+    for($depth = $link['depth'] - 1; $depth >= 1; $depth --) {
+      $candidates[] = $link['p' . $depth];
+    }
+  }
+
+  if(empty($candidates)) {
+    return FALSE;
+  }
+
+  $links = array();
+
+  foreach($candidates as $key => $menu_id) {
+    $parent_link = vsite_menu_menu_link_load($menu_id);
+    if(isset($parent_link) && is_array($parent_link)) {
+      $links[] = l($parent_link['title'], $parent_link['link_path']);
+    }
+  }
+
+  return $links;
 }
 
 /**
