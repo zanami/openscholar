@@ -22,7 +22,17 @@ function vsite_register_admin_form($form, &$state) {
     'os_vsites_per_user' => array(
       '#title' => t('Vsites per user'),
       '#type' => 'textfield',
+      '#size' => '5',
       '#default_value' => variable_get('os_vsites_per_user', 1),
+    ),
+    // Optionally choose a node to display to newly registered users.
+    'vsite_register_welcome_message' => array(
+      '#title' => t('Welcome message'),
+      '#type' => 'textfield',
+      '#description' => t('(Optional) Choose a post to display in an overlay to newly registered vsite owners on their first visit.'),
+      '#autocomplete_path' => 'ctools/autocomplete/node',
+      '#maxlength' => 255,
+      '#default_value' => variable_get('vsite_register_welcome_message', ''),
     ),
   );
 
