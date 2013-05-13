@@ -357,7 +357,8 @@ class os_sv_list_box extends os_boxes_default {
         'sv_list_box_delta' => $this->delta,
         'pager_id' => $page,
       );
-      $pager = theme('views_mini_pager', array(
+      $use_pager = 'views_mini_pager';
+      $pager = theme($use_pager , array(
         'parameters' => $parameters,
         'element' => $page,
         'quantity' => $options['number_of_items'],
