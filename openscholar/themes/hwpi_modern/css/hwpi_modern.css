@@ -97,12 +97,6 @@ ul.nice-menu ul {
     background:#7B272B;
 }
 
-/* Secondary menu */
-#block-os-secondary-menu a {
-  color: #bac5c6;
-  font-weight: bold;
-  text-transform: uppercase;
-}
 
 .region-header-third ul.nice-menu a {
     color: #ACB9BA;

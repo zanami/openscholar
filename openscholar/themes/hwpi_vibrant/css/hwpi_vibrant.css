@@ -314,13 +314,6 @@ ul.nice-menu-down li ul li ul {
 }
 
 
-/* Secondary menu */
-#block-os-secondary-menu a {
-  color: #3e79b5;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
 /* Titles & Type */
 #page-title,
 .node-title,
