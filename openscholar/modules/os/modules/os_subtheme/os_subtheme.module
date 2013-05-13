@@ -1,4 +1,6 @@
 <?php
+use GitWrapper\GitWrapper;
+
 /**
  * @file
  * OS Subtheme module file.
