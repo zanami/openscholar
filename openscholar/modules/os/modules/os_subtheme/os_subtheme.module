@@ -104,7 +104,7 @@ function os_subtheme_select_method() {
  */
 function os_subtheme_git_method($form, $form_state) {
   // Adding the git library.
-  require_once drupal_get_path('module', 'os_subtheme') . '/git/vendor/autoload.php';
+  require_once libraries_get_path('git') . '/vendor/autoload.php';
 
   // Get the name of the current vsite so we can create a library to clone into
   // the themes via GIT.
