@@ -298,7 +298,7 @@ function cp_menu_url_validate(&$form, &$state) {
       return;
     } else {
       //absolute path to internal url.
-      $path = $fragment;
+      $path = ($fragment) ? $fragment : '<front>';
     }
   } else {
     //relative url
@@ -535,7 +535,7 @@ function cp_menu_wizard_finish(&$form_state) {
   // Builds the link from the collected data
   switch ($values['type']) {
     case 'url':
-      $url = check_url($values['url']);
+      $url = ($values['url'] == '<front>') ? '<front>' : check_url($values['url']);
       break;
 
     case 'page':
