@@ -12,12 +12,7 @@
        background-color: #4077AE!important;
 
 }
-#menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
-    background: none repeat scroll 0 0 transparent;
-    color: #303030;
-    font: bold 16px arial,sans-serif;
-    padding: 12px 15px;
-}
+
 #menu-bar ul > li > a:hover,
 #menu-bar ul > li > a.active,
 #menu-bar ul.nice-menu a:hover,
@@ -41,15 +36,28 @@
   border-radius: 0 0 0 0;
 }
 .link-count-mobi-main a {
-    background: url("../images/icon_menu.png") no-repeat scroll 15px center transparent !important;
+    background: url("../images/icon_menu.png") no-repeat scroll 15px center #FFFFFF !important;
+    margin-left: 15px;
 }
 .link-count-mobi-util a {
-    background: url("../images/icon_plus.png") no-repeat scroll center center transparent;
-
+    background: url("../images/icon_plus.png") no-repeat scroll center center #F7F7F7 !important;
 }
 .link-count-mobi-search a {
-       background: url("../images/icon_search.png") no-repeat scroll center center transparent;
+    background: url("../images/icon_search.png") no-repeat scroll center center #4077AE !important;
+    margin-right: 15px;
+}
+.not-front .hg-container {
+    padding-top: 65px !important;
+    width:100%;
+}
+.one-sidebar.sidebar-second .region-sidebar-second {
+    padding-top: 65px!important;
 
 }
+.two-sidebars .region-sidebar-second {
+    padding-top: 65px;
+   
+}
+
 
 }

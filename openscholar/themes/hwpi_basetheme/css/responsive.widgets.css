@@ -13,3 +13,11 @@
 }
 
 }
+
+@media (max-width: 768px) {
+
+#search-block-form .container-inline .form-item .form-text {
+    width: 100%;
+}
+
+}
