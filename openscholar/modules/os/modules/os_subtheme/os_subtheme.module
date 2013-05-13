@@ -139,9 +139,9 @@ function os_subtheme_git_method($form, $form_state) {
   if ($repository_address) {
     $wrapper = new GitWrapper();
     $wrapper->setPrivateKey('.');
-    $git = $wrapper->workingCopy(drupal_realpath('public://') . '/git/' . $vsite_name . '');
+    $git = $wrapper->workingCopy(drupal_realpath('public://') . '/git/' . $vsite_name . '/' . time());
     $git->clone($repository_address);
-    $form['branch']['#options'] = $git->getBranches()->remote();
+    $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $git->getBranches()->remote();
   }
 
   $form['actions'] = array(
