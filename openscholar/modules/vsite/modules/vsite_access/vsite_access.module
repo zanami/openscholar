@@ -55,8 +55,8 @@ function vsite_access_node_access($node, $op, $account) {
 	  return NODE_ACCESS_IGNORE;
   }
 
-  //Handle access to groups.
-  if(og_is_group_type('node', $type)){
+  //Handle access to groups if this is a existing group node.
+  if(!is_string($node) && og_is_group_type('node', $type) && isset($node->nid)){
     $wrapper = entity_metadata_wrapper('node', $node);
 
     if(!empty($wrapper->{VSITE_ACCESS_FIELD})){
