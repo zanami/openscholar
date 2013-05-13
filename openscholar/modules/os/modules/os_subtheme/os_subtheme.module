@@ -1,5 +1,4 @@
 <?php
-use GitWrapper\GitWrapper;
 
 /**
  * @file
@@ -155,6 +154,9 @@ function os_subtheme_git_method($form, $form_state) {
   return $form;
 }
 
+/**
+ * Return piece of the form for AJAX rendering.
+ */
 function os_subtheme_git_method_get_ajax_branches($form, $form_state) {
   return $form['branch'];
 }
@@ -214,7 +216,7 @@ function os_subtheme_validate($form, $form_state) {
   $themes = os_get_themes();
 
   if (!(isset($info['base theme']))) {
-    form_set_error('file][upload', t('The theme you uploaded is not valid: there is no theme to based on.'));
+    form_set_error('file][upload', t('The theme you uploaded is not valid: OS theme name to be based on is missing.'));
   }
   else if (!in_array($info['base theme'], array_keys($themes))) {
     form_set_error('file][upload', t('The theme you uploaded is not valid: the base theme is not listed in the OS theme list.'));

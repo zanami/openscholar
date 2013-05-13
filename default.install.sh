@@ -6,6 +6,7 @@ mkdir www
 
 bash scripts/build
 
+# Download the git wrapper library using the composer.
 cd openscholar/libraries/git
 curl -s https://getcomposer.org/installer | php
 php composer.phar install
