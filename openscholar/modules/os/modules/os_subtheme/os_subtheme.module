@@ -103,6 +103,14 @@ function os_subtheme_select_method() {
  * Upload theme via GIT.
  */
 function os_subtheme_git_method($form, $form_state) {
+  // Adding the git library.
+  require_once drupal_get_path('module', 'os_subtheme') . '/git/vendor/autoload.php';
+
+  // Get the name of the current vsite so we can create a library to clone into
+  // the themes via GIT.
+  $vsite_name = strtolower(vsite_get_vsite()->og->title);
+  $vsite_name = str_replace(array(' ', '-'), '_', $vsite_name);
+
   $form['repository'] = array(
     '#type' => 'textfield',
     '#title' => t('Git repository address'),
@@ -129,7 +137,11 @@ function os_subtheme_git_method($form, $form_state) {
   );
 
   if ($repository_address) {
-    $form['branch']['#options'][] = $repository_address;
+    $wrapper = new GitWrapper();
+    $wrapper->setPrivateKey('.');
+    $git = $wrapper->workingCopy(drupal_realpath('public://') . '/git/' . $vsite_name . '');
+    $git->clone($repository_address);
+    $form['branch']['#options'] = $git->getBranches()->remote();
   }
 
   $form['actions'] = array(
