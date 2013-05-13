@@ -548,17 +548,20 @@ function _os_breadcrumbs_check_parents($path) {
   // Loop through the parent links, subtract one to remove current mlid.
   if (! empty($link['depth']) && $link['depth'] > 1) {
     for($depth = $link['depth'] - 1; $depth >= 1; $depth --) {
-      $candidates[] = $link['p' . $depth];
+      $parent_ids[] = $link['p' . $depth];
     }
   }
 
-  if(empty($candidates)) {
+  if(empty($parent_ids)) {
     return FALSE;
   }
 
   $links = array();
 
-  foreach($candidates as $key => $menu_id) {
+  // Flip the parent keys around.
+  $parent_ids = array_reverse($parent_ids);
+
+  foreach($parent_ids as $key => $menu_id) {
     $parent_link = vsite_menu_menu_link_load($menu_id);
     if(isset($parent_link) && is_array($parent_link)) {
       $links[] = l($parent_link['title'], $parent_link['link_path']);
