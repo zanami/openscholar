@@ -374,7 +374,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* Event nodes */
-#event-start {
+.event-start {
   width: 55px;
   height: 67px;
   background: url(../images/event-shield.png) no-repeat 0 0 transparent;
@@ -382,7 +382,7 @@ ol.search-results li.search-result:last-child {
   margin-top: 3px;
 }
 
-#event-start span {
+.event-start span {
   display: block;
   font-weight: bold;
   text-align: center;

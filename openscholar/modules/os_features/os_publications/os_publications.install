@@ -337,3 +337,11 @@ function os_publications_update_7007() {
 
   return t('Extra biblio contributors have been removed.');
 }
+
+
+/**
+ * Set biblio to use views_litepager
+ */
+function os_publications_update_7008() {
+  variable_set('biblio_pager', 'pager_lite'); 
+}
