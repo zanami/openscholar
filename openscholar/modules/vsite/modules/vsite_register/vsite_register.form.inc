@@ -310,7 +310,10 @@ function vsite_register_form_submit(&$form, &$state) {
     }
 
     // Emails user to inform them of new created site, email is always sent.
-    vsite_register_notify_user($vsite);
+    // This function may additionally send a second email to a specified
+    // administrator's email address.
+    // @see vsite_register_admin_form()
+    vsite_register_notify($vsite);
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
@@ -580,6 +583,21 @@ function _vsite_register_valid_url($url) {
 }
 
 /**
+ * Sends emails using drupal_mail() to both new site owner and admin account.
+ */
+function vsite_register_notify($vsite) {
+  // Invokes drupal_mail() to send email notification to new site owner.
+  vsite_register_notify_user($vsite);
+
+  // Invokes drupal_mail() to send email notification to admin account,
+  // or whatever email is specified in variable "vsite_register_admin_mail".
+  $admin_mail = variable_get('vsite_register_admin_mail', '');
+  if ($admin_mail) {
+    vsite_register_notify_admin($vsite, $admin_mail);
+  }
+}
+
+/**
  * Form submit AJAX callback; sends out an email to the vsite owner user.
  *
  * Notifies the vsite owner of their newly created site.
@@ -653,6 +671,85 @@ function vsite_register_notify_user($vsite) {
   $params['subject'] = $subject;
   $params['body'] = $body;
   $result = drupal_mail('vsite_register', 'vsite_register_notify', $new_user->mail, $language, $params, $from, $send = TRUE);
+  if ($result == FALSE) {
+    drupal_set_message(t('Error sending notification mail to user.'), 'error');
+  }
+}
+
+/**
+ * Form submit AJAX callback; sends out a 2nd email to the administrator.
+ *
+ * Notifies the administrator that a new site has been registered.
+ *
+ * @see vsite_register_form_submit()
+ */
+function vsite_register_notify_admin($vsite, $admin_mail) {
+  global $language;
+  global $base_url;
+  global $user;
+
+  // Checks to see if the user logged in matched the newly created user.
+  if ($user->uid == $vsite->group->uid) {
+    $need_pass_reset = FALSE;
+  }
+  else {
+    $need_pass_reset = TRUE;
+  }
+
+  $params = array();
+  $from = variable_get('site_mail', ini_get('sendmail_from'));
+  $new_user = user_load($vsite->group->uid);
+
+  // Adds vsite and user object.
+  $params['vsite'] = $vsite;
+  $params['user'] = $new_user;
+
+  $scholar_site_url = url($base_url . '/' . $vsite->group->title, $options = array('absolute' => TRUE));
+  $count = count(vsite_get_vsite_by_owner($new_user->uid));
+  $timestamp = time();
+
+  $subject = t("An OpenScholar web site has been created for you.", array(
+    '!site_name' => variable_get('site_name', 'OpenScholar'),
+  ));
+  $msg_variables = array(
+    '!vsite-count' => $count,
+    '!username' => $new_user->name,
+    '!site' => variable_get('site_name', 'OpenScholar'),
+    '!scholar_site_url' => $scholar_site_url,
+    '!login_url' => user_pass_reset_url($new_user),
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!uri' => $base_url,
+    '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
+    '!mailto' => $new_user->mail,
+    '!date' => format_date(time(), 'medium', '', NULL, $language),
+    '!login_uri' => url('user', array(
+      'absolute' => TRUE,
+      'language' => $language,
+    )),
+    '!site_url' => url($vsite->group->purl),
+    '!edit_uri' => url('user/' . $new_user->uid . '/edit', array(
+      'absolute' => TRUE,
+      'language' => $language,
+    )),
+    '!scholar_edit_url' => url("/user/{$new_user->uid}/edit", array('absolute' => TRUE)),
+  );
+
+  // Determines if user is creating first site or additional site, and
+  // sends appropriate message.
+  if (count(vsite_get_vsite_by_owner($new_user->uid)) > 1 || $need_pass_reset == FALSE) {
+    $body = t("Hi !username,\n\nYour new web site at !site has been activated. Your web site url is !scholar_site_url\n\nYou will be able to log into your site at !site_login_uri with username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team",
+      $msg_variables
+    );
+  }
+  else {
+    $body = t("Hi !username,\n\nYour new web site at !site has been activated.\n\nYour web site url is !scholar_site_url\n\nYou may now log in and reset your password by clicking on this link or copying and pasting it in your browser: \n\n !login_url \n\nThis login can be used only once. After logging in, you will be redirected to !scholar_edit_url so you can change your password. Once you have set your own password, you will be able to log in at !site_login_uri as username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team",
+      $msg_variables
+    );
+  }
+
+  $params['subject'] = $subject;
+  $params['body'] = $body;
+  $result = drupal_mail('vsite_register', 'vsite_register_notify', $admin_mail, $language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to user.'), 'error');
   }

@@ -34,6 +34,15 @@ function vsite_register_admin_form($form, &$state) {
       '#maxlength' => 255,
       '#default_value' => variable_get('vsite_register_welcome_message', ''),
     ),
+    // Specify an email address to receive notifications whenever a new site
+    // is registered.
+    'vsite_register_admin_mail' => array(
+      '#title' => t('Administrator notification email'),
+      '#type' => 'textfield',
+      '#description' => t('(Optional) Specify an email address to receive notifications whenever a new site is registered. Leave blank for no administrator notification.'),
+      '#maxlength' => 255,
+      '#default_value' => variable_get('vsite_register_admin_mail', ''),
+    ),
   );
 
   return system_settings_form($form);
