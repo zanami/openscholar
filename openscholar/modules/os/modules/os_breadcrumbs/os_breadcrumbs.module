@@ -138,34 +138,44 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   // If there is a node, push the type ahead of the node.
   // So it reads home > publications > node/%
   // rather than home > node/%.
+
   if(strpos($last_item['href'],'node/') === 0) {
     if(isset($last_item['original_map'][1])) {
       $nid = $last_item['original_map'][1];
     }else {
       return;
     }
+    // Shift off the home link for later usage.
+    $home_link = array_shift($links);
     $node = node_load($nid);
-
+    $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
     // Both software release and class material need to retain their parent content type.
     if($node->type == 'class_material' || $node->type == 'software_release') {
       $links = _os_breadcrumbs_build_materials_breadcrumb($node, _os_breadcrumbs_get_content_type_title($node->type));
   	}else {
-      $home_link = array_shift($links);
-      $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
+      //$node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
       if(_os_breadcrumbs_check_custom_title($node_url) != FALSE) {
         $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_check_custom_title($node_url));
-        array_unshift($links, l(strtoupper($short_title),$node_url));
       }elseif(_os_breadcrumbs_get_content_type_title($node->type) != FALSE) {
         $short_title = _os_breadcrumbs_shorten_title(_os_breadcrumbs_get_content_type_title($node->type));
-        array_unshift($links, l(strtoupper($short_title),$node_url));
       }else {
         // Replace the _ with a space.
         $link_title = str_replace('_', ' ', $node->type);
         $short_title = _os_breadcrumbs_shorten_title($link_title);
-        array_unshift($links, l(strtoupper($short_title),$node_url));
       }
-      array_unshift($links, $home_link);
+      array_unshift($links, l(strtoupper($short_title),$node_url));
     }
+    // Check for a parent menu item.
+    if(_os_breadcrumbs_check_parents($node_url) != FALSE) {
+      $parent_links = _os_breadcrumbs_check_parents($node_url);
+      if(isset($parent_links) && is_array($parent_links)) {
+        // Pop the last element off the link arrays and push it back on after the merge.
+        $link_end = array_pop($links);
+        $links = array_merge($parent_links, $links);
+        array_push($links, $link_end);
+      }
+    }
+    array_unshift($links, $home_link);
   }
 
   // Check for blog archives or publication filters.
