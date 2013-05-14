@@ -335,6 +335,11 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       if ($options['show_childs']) {
         $child_content = !empty($term->below) ? os_taxonomy_build_child_item($term->below, $term, $options) : '';
       }
+      $link_options = array(
+        'attributes' => array(
+          'class'
+        ),
+      );
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
@@ -415,6 +420,10 @@ function os_taxonomy_get_prefix_path(&$options) {
   if (strlen($options['path_prefix'])) {
     $options['path_prefix'] = $options['path_prefix'] . "/";
   }
+
+  $info = os_app_info($feature);
+  if (!empty($info['nodetypes']))
+  $options['link_options']['nodetype'] = ucwords($info['nodetypes'][0]);
 }
 
 /**
@@ -660,7 +669,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
         'data' => theme('os_taxonomy_term_item', array(
           'number' => $number,
           'name' => $item->name,
-          'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
+          'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $item->tid ? 'active' : '',)),
           'url_path' => $term_path,
           'description' => $item->description,
           'link_to_empty_terms' => $options['link_to_empty_terms'],
