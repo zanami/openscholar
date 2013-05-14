@@ -337,15 +337,23 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       }
       $link_options = array(
         'attributes' => array(
-          'class'
+          'class' => array(),
         ),
       );
+
+      if (!empty($options['nodetype'])) {
+        $link_options['attributes']['title'] = $options['nodetype'].'s in '.$term->name;
+      }
+      if (!empty($options['tid_active_class']) && $options['tid_active_class'] == $tid) {
+        $link_options['attributes']['class'][] = 'active';
+      }
+
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
           'number' => $options['show_count']?$number:NULL,
           'name' => $term->name,
-          'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
+          'link_options' => $link_options,
           'url_path' => $term_path,
           'description' => $term->description,
           'link_to_empty_terms' => $options['link_to_empty_terms'],
@@ -423,7 +431,7 @@ function os_taxonomy_get_prefix_path(&$options) {
 
   $info = os_app_info($feature);
   if (!empty($info['nodetypes']))
-  $options['link_options']['nodetype'] = ucwords($info['nodetypes'][0]);
+  $options['nodetype'] = ucwords($info['nodetypes'][0]);
 }
 
 /**
