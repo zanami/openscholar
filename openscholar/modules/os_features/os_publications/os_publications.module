@@ -742,3 +742,18 @@ function os_publications_preprocess_page(&$variables) {
   }
 }
 
+
+
+/**
+ * Adds alt and title text where appropriate
+ */
+function os_publications_field_attach_load($entity_type, $entities, $view_mode) {
+  if ($entity_type == 'node') {
+    foreach ($entities as $e_id => $e) {
+      if ($e->type != 'biblio') continue;
+
+      $e->field_biblio_image[LANGUAGE_NONE][0]['alt'] = $e->title;
+      $e->field_biblio_image[LANGUAGE_NONE][0]['title'] = $e->title;
+    }
+  }
+}
