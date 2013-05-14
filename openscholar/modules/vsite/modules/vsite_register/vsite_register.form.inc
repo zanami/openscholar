@@ -304,7 +304,7 @@ function vsite_register_form_submit(&$form, &$state) {
     $commands[] = ajax_command_remove('#edit-submit');
 
     if (isset($values['vsite_private']) && module_exists('vsite_access')) {
-      $wrapper = entity_metadata_wrapper('node', $space->group);
+      $wrapper = entity_metadata_wrapper('node', $vsite->group);
       $wrapper->{VSITE_ACCESS_FIELD}->set($values['vsite_private']);
       $wrapper->save();
     }
@@ -624,15 +624,15 @@ function vsite_register_notify_user($vsite) {
     '!uri' => $base_url,
     '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
     '!mailto' => $new_user->mail,
-    '!date' => format_date(time(), 'medium', '', NULL, $message['language']->language),
+    '!date' => format_date(time(), 'medium', '', NULL, $language),
     '!login_uri' => url('user', array(
         'absolute' => TRUE,
-        'language' => $message['language'],
+        'language' => $language,
       )),
     '!site_url' => url($vsite->group->purl),
     '!edit_uri' => url('user/' . $new_user->uid . '/edit', array(
         'absolute' => TRUE,
-        'language' => $message['language'],
+        'language' => $language,
       )),
     '!scholar_edit_url' => url("/user/{$new_user->uid}/edit", array('absolute' => TRUE)),
   );
