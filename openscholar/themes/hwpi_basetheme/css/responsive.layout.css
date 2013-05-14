@@ -22,6 +22,9 @@
 #branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
     width: 100%;
 }
+.front .content-left.content-right.content-bottom #content-panels .region {
+    margin-bottom: 25px;
+}
 .one-sidebar.sidebar-first .region-sidebar-first {
     width: 22.6994%;
 }
