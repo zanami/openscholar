@@ -135,6 +135,7 @@ features[variable][] = configurable_timezones
 features[variable][] = pathauto_node_pattern
 features[variable][] = pathauto_update_action
 features[variable][] = site_404
+features[variable][] = site_frontpage
 features[variable][] = spaces_features
 features[variable][] = transliteration_file_lowercase
 features[variable][] = transliteration_file_uploads
