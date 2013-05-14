@@ -257,8 +257,15 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   // Append the parent context onto the link.
   if($taxonomy_key != 0) {
     $prepend_taxonomy = TRUE;
-    // Build the links
     $parent_array = array_slice($terms_array, 0, $taxonomy_key);
+    // Check for a parent menu item.
+    if(_os_breadcrumbs_check_parents($parent_array[0]) != FALSE) {
+      $parent_links = _os_breadcrumbs_check_parents($parent_array[0]);
+      if(isset($parent_links) && is_array($parent_links)) {
+        $links = array_merge($links, $parent_links);
+      }
+    }
+    // Build the links
     foreach($parent_array as $parent => $title) {
       // We need to append the content type to the terms.
       if($parent == 0) {
