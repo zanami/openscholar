@@ -312,6 +312,13 @@ function _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail) {
   $links = array();
   foreach($menu_active_trail as $key => $menu) {
     $short_title = _os_breadcrumbs_shorten_title($menu['title']);
+    // Check for a parent menu item.
+    if(_os_breadcrumbs_check_parents($menu['href']) != FALSE) {
+      $parent_links = _os_breadcrumbs_check_parents($menu['href']);
+      if(isset($parent_links) && is_array($parent_links)) {
+        $links = array_merge($links, $parent_links);
+      }
+    }
     if($key == (count($menu_active_trail)) - 1) {
       // Remove trailing page title for now.
       $links[] = ''; // t($short_title);
