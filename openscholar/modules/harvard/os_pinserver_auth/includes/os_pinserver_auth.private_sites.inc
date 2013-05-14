@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Pin protected sites, controls access to a vsite via PIN.
+ */
 
 /**
  * Logic for access to private pin protected sites
