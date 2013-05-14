@@ -186,6 +186,13 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
       // Rebuild the breadcrumbs.
       $links = array();
       $links[] = l(t('HOME'),'<front>');
+      // Check for a parent menu item.
+      if(_os_breadcrumbs_check_parents($item['original_map'][0]) != FALSE) {
+        $parent_links = _os_breadcrumbs_check_parents($item['original_map'][0]);
+        if(isset($parent_links) && is_array($parent_links)) {
+          $links = array_merge($links, $parent_links);
+        }
+      }
       switch($item['original_map'][0]) {
       	case 'blog':
           $blog_path = '';
@@ -317,8 +324,6 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
   $node_field = '';
   $links = array();
   if(isset($node)) {
-    // Build the home link.
-    $links[] = l(t('HOME'),'<front>');
     // Both software release and class material need to retain their parent content type.
     if($node->type == 'class_material') {
       $node_field_type = $node->field_class['und'][0]['target_id'];
