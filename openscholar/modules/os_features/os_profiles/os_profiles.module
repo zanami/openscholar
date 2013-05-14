@@ -159,3 +159,20 @@ function _os_profiles_person_node_title($node) {
   return $title;
 }
 
+/**
+ * Adds alt and title text where appropriate
+ */
+function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
+  if ($entity_type == 'node') {
+    foreach ($entities as $e_id => $e) {
+      if ($e->type != 'person') continue;
+
+      $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
+      $e->field_person_photo[LANGUAGE_NONE][0]['title'] = $e->title;
+
+      foreach ($e->field_website[LANGUAGE_NONE] as $k => $l) {
+        $e->field_website[LANGUAGE_NONE][$k]['attributes']['title'] = $e->title.'\'s website';
+      }
+    }
+  }
+}
