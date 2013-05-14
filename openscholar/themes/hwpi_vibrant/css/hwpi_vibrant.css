@@ -670,7 +670,7 @@ table td.mini .mini-day-on a {
     color:#FFF;
 }
 
-#event-start {
+.event-start {
     background:#F8F8F8;
     border: 1px solid #DEDEDC;
     border-radius: 3px;

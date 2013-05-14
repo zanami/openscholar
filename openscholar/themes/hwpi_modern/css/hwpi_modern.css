@@ -358,7 +358,7 @@ table td.mini {
 }
 
 
-#event-start {
+.event-start {
     background: url("../images/event-shield.png") no-repeat scroll 0 0 transparent;
 }
 
