@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Enable the os_pinserver_auth module.
  */
 function hwpi_update_7001(&$sandbox) {
   module_enable(array('os_pinserver_auth'));
 }
+

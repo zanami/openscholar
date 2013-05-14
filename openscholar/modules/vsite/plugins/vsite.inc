@@ -53,6 +53,7 @@ class vsite extends space_og {
 
     //Check if the current user has access to activate this space.
     if(!$this->access_space()){
+      module_invoke_all('vsite_access_denied',$this->group);
       drupal_access_denied();
       drupal_exit();
     }
@@ -228,11 +229,7 @@ class vsite extends space_og {
     }
 
     // Additional check for private sites.
-    if ($access && module_exists('vsite_access')) {
-      return $access && vsite_access_user_access($this->group, $account);
-    }
-
-    return $access;
+    return $access && node_access('view', $this->group, $account);
   }
 
   /**
@@ -389,7 +386,7 @@ class vsite extends space_og {
    * Overrides access_space().
    */
   function access_space($account = NULL) {
-    return parent::access_space($account) && (!module_exists('vsite_access') || vsite_access_user_access($this->group, $account));
+    return parent::access_space($account) && node_access('view', $this->group, $account);
   }
 }
 

@@ -108,7 +108,7 @@ hide($content['links']);
   <?php print render($title_prefix); ?>
 
   <?php if(!empty($event_start)): ?>
-    <div id="event-start">
+    <div class="event-start">
       <span class="event-start-month"><?php print $event_start['month']; ?></span>
       <span class="event-start-day"><?php print $event_start['day']; ?></span>
     </div>
