@@ -1347,7 +1347,6 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
-    // These should be a separate type, executable or compressed or something
   ));
 }
 
