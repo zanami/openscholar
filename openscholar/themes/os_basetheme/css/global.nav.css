@@ -433,6 +433,7 @@ div.contextual-links-wrapper ul.contextual-links {
   -webkit-border-top-right-radius: 0; /* LTR */
   -webkit-border-top-left-radius: 0; /* LTR */
   border-radius: 0; /* LTR */
+  padding: 0 !important;
 }
 
 ul.contextual-links li,
@@ -443,6 +444,7 @@ ul.contextual-links li,
  clear:both;
  background-color: none;
 border-top: none;
+margin-bottom: 0 !important;
 }
 
 ul.contextual-links li a {
@@ -450,6 +452,7 @@ padding: 0.5em .75em 0.5em 0.75em !important;
 font-family: helvetica;
 font-size: 11px !important;
 font-weight:normal !important;
+font-style:normal !important;
 text-decoration:none !important;
 text-transform:none !important;
 background: none !important;
@@ -499,7 +502,6 @@ color: #FFF !important;
 .contextual-controls-wrapper .add_new {
 	line-height: 15px !important;
 display:inline-block;
-margin-right:25px;
 padding: 5px 10px;
 border:none;
 font-size:13px;
@@ -510,14 +512,7 @@ text-shadow: 0px -1px 0px rgba(30, 30, 30, 0.25);
 -moz-border-radius: 4px;
 border-radius: 4px;
 background: rgb(61, 155, 19);
-background: -moz-linear-gradient(90deg, rgb(61, 155, 19) 30%, rgb(61, 132, 19) 70%);
-background: -webkit-linear-gradient(90deg, rgb(61, 155, 19) 30%, rgb(61, 132, 19) 70%);
-background: -o-linear-gradient(90deg, rgb(61, 155, 19) 30%, rgb(61, 132, 19) 70%);
-background: -ms-linear-gradient(90deg, rgb(61, 155, 19) 30%, rgb(61, 132, 19) 70%);
-background: linear-gradient(180deg, rgb(61, 155, 19) 30%, rgb(61, 132, 19) 70%);
--webkit-box-shadow: 0px 1px 1px rgba(50, 50, 50, 0.5);
--moz-box-shadow:    0px 1px 1px rgba(50, 50, 50, 0.5);
-box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
+
     }
 
 .contextual-controls-wrapper .add_new:hover {
@@ -549,6 +544,7 @@ html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
 .ctools-dropdown.section_links {
 	float:right;
 	display:inline;
+	margin-left:25px;
 	}	
 	
 .contextual-controls-wrapper div.ctools-dropdown.section_links a.ctools-dropdown-text-link {
@@ -574,11 +570,12 @@ background: none repeat scroll 0 0 #FFFFFF !important;
     border: 1px solid #A8BED8;
     box-shadow: 0 2px 5px #777777;
     color: #293352 !important;
-    margin: 0 1px 0 0;
     opacity: 0.93;
-    padding: 5px 0;
     width: auto;
 }
+
+
+
 
 html.js div.ctools-dropdown.add_new div.ctools-dropdown-container {
 right: 25px;
@@ -587,7 +584,7 @@ right: 25px;
 
 html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
     color: #293352 !important;
-    padding: 0 0 2px 5px;
+    padding: 5px !important;
     text-decoration:none !important;
     font-weight:normal;
     font-size:13px;
@@ -596,7 +593,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
 
 
 html.js div.ctools-dropdown.section_links div.ctools-dropdown-container {
-  margin: 22px 1px 0 0;
+  margin: 24px 1px 0 0;
   right: 1px;
 }
 
@@ -604,7 +601,7 @@ html.js div.ctools-dropdown.section_links div.ctools-dropdown-container {
 html.js div.ctools-dropdown div.ctools-dropdown-container ul li span {
     background:#777;
     color:#FFF;
-    padding-left:5px;
+    padding:5px !important;
     font-family:helvetica;
 }
 
