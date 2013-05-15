@@ -159,6 +159,7 @@ function drush_os_domain_build() {
   
     $ac_domain_list = array_map(create_function('$a', 'return $a["name"];'), $ac_domain_list['object'][1]);
     $add = array_diff($all_domains, $ac_domain_list);
+    array_pop($ac_domain_list); //last item is original domain and cannot be removed.
     $del = array_diff($ac_domain_list, $all_domains);
     
     if ($add && (drush_confirm('Add domains to acquia config: ' . implode(', ', $add) . '?'))) {
