@@ -504,37 +504,22 @@ function _os_breadcrumbs_get_content_type_title($node_type) {
 }
 
 /**
- * Function to return the mlid of a given path.
- * @params $path
- *  The path of a menu item.
+ * Helper function to build the breadcrumb app link.
+ * @param $node_type
+ *  node->type.
  */
-function _os_breadcrumbs_get_mlid($path) {
-  // Load the menu file.
-  ctools_include('menu','os');
-
-  $menus = os_get_menus();
-
-  if(!module_exists('vsite_menu')) {
+function _os_breadcrumbs_get_content_type_url($node_type) {
+  if(!isset($node_type)) {
     return FALSE;
   }
-
-  if(!isset($path)) {
-    return FALSE;
-  }
-
-  // Loop each menu to see if this path exists in the menu.
-  foreach ($menus as $key => $value) {
-    $mlid = vsite_menu_get_link_path($key, $path);
-    if(isset($mlid)) {
-      break;
+  $apps = os_app_info();
+  foreach ($apps as $app => $info) {
+    if (isset($info['nodetypes']) && is_array($info['nodetypes']) && in_array($node_type, $info['nodetypes'])) {
+      return $info['path'];
     }
   }
 
-  if(!isset($mlid)) {
-    return FALSE;
-  }
-
-  return $mlid;
+  return FALSE;
 }
 
 /**
@@ -545,15 +530,14 @@ function _os_breadcrumbs_get_mlid($path) {
  *   The custom menu title.
  */
 function _os_breadcrumbs_check_custom_title($path) {
+  // Load the menu file.
+  ctools_include('menu','os');
 
-  if(_os_breadcrumbs_get_mlid($path) == FALSE) {
+  if(os_menu_load_link_path($path) == FALSE) {
     return FALSE;
   }
 
-  $mlid = _os_breadcrumbs_get_mlid($path);
-
-  // Now that we have the mlid we can load that link.
-  $link = vsite_menu_menu_link_load($mlid);
+  $link = os_menu_load_link_path($path);
 
   if(!isset($link) || !is_array($link) || !isset($link['title'])) {
     return FALSE;
@@ -568,13 +552,18 @@ function _os_breadcrumbs_check_custom_title($path) {
  *  The path of the app.
  */
 function _os_breadcrumbs_check_parents($path) {
-  if(_os_breadcrumbs_get_mlid($path) == FALSE) {
+  // Load the menu file.
+  ctools_include('menu','os');
+
+  if(os_menu_load_link_path($path) == FALSE) {
     return FALSE;
   }
 
-  $mlid = _os_breadcrumbs_get_mlid($path);
+  $link = os_menu_load_link_path($path);
 
-  $link = vsite_menu_menu_link_load($mlid);
+  if(!isset($link) || !is_array($link)) {
+    return FALSE;
+  }
 
   // Check to see if this is the top level item.
   if (isset($link['plid']) && (empty($link['plid']) || $link['plid'] == 0)) {
@@ -605,25 +594,6 @@ function _os_breadcrumbs_check_parents($path) {
   }
 
   return $links;
-}
-
-/**
- * Helper function to build the breadcrumb app link.
- * @param $node_type
- *  node->type.
- */
-function _os_breadcrumbs_get_content_type_url($node_type) {
-  if(!isset($node_type)) {
-    return FALSE;
-  }
-  $apps = os_app_info();
-  foreach ($apps as $app => $info) {
-    if (isset($info['nodetypes']) && is_array($info['nodetypes']) && in_array($node_type, $info['nodetypes'])) {
-      return $info['path'];
-    }
-  }
-
-  return FALSE;
 }
 
 /**
