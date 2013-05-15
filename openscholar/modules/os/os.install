@@ -102,3 +102,10 @@ function os_update_7008() {
 function os_update_7009() {
   variable_set('og_vocab_term_page_access', TRUE);
 }
+
+/**
+ * Enable views_infinite_scroll and views_litepager modules
+ */
+function os_update_7010() {
+  module_enable(array('views_infinite_scroll', 'views_litepager'));
+}

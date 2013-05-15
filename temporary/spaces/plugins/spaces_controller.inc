@@ -284,6 +284,6 @@ abstract class spaces_controller {
       $environment = array_shift($environments);
     }
 
-    return ($value == NULL);
+    return ($value === NULL);
   }
 }
