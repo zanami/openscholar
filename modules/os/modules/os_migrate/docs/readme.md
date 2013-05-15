@@ -12,29 +12,34 @@ The general process is as follows:
 5. Configure os_migrate `/admin/config/openscholar/migrate`.
    * At a minimum you will need to provide a database and path.  
 6. Run migration.  You can do this in admin/content/migrate or via drush.  
-7. Check that migration went smoothly.  Fix anything that didn't.
+7. Review migrated content.  
 8. Make whatever DNS or server configuration changes are necessary so your domain uses your new installation.
 
-## Installation
+**Terminology**
+* `Drupal 7 or D7 site` The new site you're migrating content to.
+* `Legacy or D6 site` Site you're migrating content from.
 
-!! unsure how installation will go.
-* Installation is just like it was in D6.  
-* Acquire the openscholar profile.  Acquire D7.  Follow Drupal SOP, selecting openscholar as profile.
-* Drush make?
+---
 
-## Module
+## 1. Installation
+
+* Acquire OpenScholar from http://openscholar.harvard.edu/download
+* Extract zip file and copy openscholar-7.x-VERSION/docroot to your web directory.
+* install.php as per normal drupal installation, selecting OpenScholar as the profile.  http://drupal.org/documentation/install
+
+## 2. Module
 
 Enable os_migrate
 
-## Service
+## 3. Service
 
 Suspend service to your drupal 6 installation.  If downtime is acceptable maintenance mode will suffice.  We disabled user logins so no content could be created, but old content was still viewable.
 
-## Copy
+## 4. Copy
 
 Copy your database and files.  This is unecessary if you're installing side by side with d6.  We used the migration as an opportunity to move servers.  When copying files, use symlinks to keep the directory structure intact.  If you're using rsync to do the copying, use "--exclude js/* --exclude css/*" to ignore cached javascript and css.
 
-## Configuration
+## 5. Configuration
 
 OpenScholar Migrate provides the following settings, configurable at `/admin/config/openscholar/os_migrate`
 
@@ -84,7 +89,7 @@ Force migrate to ignore dependencies.  Some of the migration classes won't run u
 
 ### Force Group ID
 
-Overrides the group nodes belong to and put them all into a new group with this ID.  
+Overrides the group nodes belong to and put them all into a new group with this ID.  Don't use this in a production migration.  If you're doing additional development for os_migrate, this option is an easy way to get a whole lot of content into a single vsite to facilitate testing.
 
 ### Legacy Site
 
@@ -102,7 +107,7 @@ Ignore this if you're running migrate against a single domain.  We had several i
 
 During testing we found it useful to restrict migration to one or two problematic vsites so we could test those in isolation.  This setting takes a comma separated list of vsite node ids and (mostly) limits migration to those vsites.  
 
-## Running migration
+## 6. Running migration
 
 Migrate can be run from the UI admin/content/migrate or from drush.  Drush is the preferred method.
 
@@ -152,12 +157,22 @@ echo -e "Started: $START_DATE\nComplete: $(date)\n"
 
 
 
-## Check migration
+## 7. Check migration
 
 Look over your site and check that everything went as you expected.  See the known_issues.md file for a list of hints.
 If you need to test vsites with custom domains, those domains can be found in 'purl WHERE provider="vsite_domain" ' and 'spaces_overrides WHERE object_id="vsite_domain_name"' tables. 
 
-## Server conf
+It is a good idea to look at a variety of sites.  
+1. Check a page with each content type.  
+2. Check out an instance of each custom widget.  
+3. Make sure files still download.  
+4. Also check that embedded files (ie inline images) are still visible.  
+5. Check that cropped images (vsite logos, profiles) use the same cropping.  
+6. Double check any sites that are known to be high traffic or belong to any high maintenance faculty.
+
+## 8. Server conf
 
 Update your DNS settings to use your drupal 7 installation.  How to manage DNS is out of the scope of this document.
+
+Addtional details on drupal configuration can be found [here](http://drupal.org/documentation/install/beginners).
 
