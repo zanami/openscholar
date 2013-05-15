@@ -19,6 +19,11 @@ function os_files_ctools_plugin_api($module, $api){
       'version' => 1
     );
   }
+  elseif ($module == 'file_entity' && $api == 'file_type') {
+    return array(
+      'version' => 1
+    );
+  }
   elseif ($module == "strongarm" && $api == "strongarm") {
     return array(
       "version" => "1"
@@ -537,6 +542,15 @@ function os_files_entity_info_alter(&$info){
     'admin' => array(
       'path' => 'admin/structure/file-types/manage/%file_type',
       'real path' => 'admin/structure/file-types/manage/undefined',
+      'bundle argument' => 4
+    )
+  );
+
+  $info['file']['bundles']['executable'] = array(
+    'label' => 'Executable',
+    'admin' => array(
+      'path' => 'admin/structure/file-types/manage/%file_type',
+      'real path' => 'admin/structure/file-types/manage/executable',
       'bundle argument' => 4
     )
   );
@@ -1227,6 +1241,27 @@ function os_files_views_data_alter(&$data){
   );
 }
 
+function os_files_file_default_types() {
+  $types = array();
+
+  $types['executable'] = (object) array(
+    'api_version' => 1,
+    'type' => 'executable',
+    'label' => t('Executable'),
+    'description' => t('An <em>Executable</em> file is a program or compressed collection of files.'),
+    'mimetypes' => array(
+      'application/x-msdos-program',
+      'application/zip',
+      'application/octet-stream'
+    ),
+    'streams' => array(
+      'public',
+    ),
+  );
+
+  return $types;
+}
+
 function os_files_file_default_types_alter(&$types){
   $types['image']->mimetypes = array_merge($types['image']->mimetypes, array(
     // *.ico files
@@ -1312,11 +1347,6 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
-    // These should be a separate type, executable or compressed or something
-    // TODO: Make a proper type for them
-    'application/x-msdos-program',
-    'application/zip',
-    'application/octet-stream'
   ));
 }
 
@@ -1433,11 +1463,13 @@ function _os_files_extensions_from_type($type) {
       'odp',
       'xml',
       'tex',
-      // TODO: put these in their own file type
+    );
+
+    $types['executable'] = array(
       'zip',
       'tgz',
       'gz',
-      'exe',
+      'exe'
     );
   }
   
