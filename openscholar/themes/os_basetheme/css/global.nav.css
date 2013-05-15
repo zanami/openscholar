@@ -45,6 +45,11 @@ a:focus {}
   padding: 0 10px;
 }
 
+.lt-ie9 .nav li a,
+.lt-ie9 .nav .menu li a {
+  white-space: normal;
+}
+
 .nav ul,
 .nav ul.menu,
 .nav ul.menu li {
