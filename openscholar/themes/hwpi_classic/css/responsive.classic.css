@@ -37,6 +37,28 @@ ul.primary li a {
 .sidebar .block, .front #content-column .block, .node-person .block-inner, .comment-wrapper {
     margin-top: -10px;
 }
+/*Dropdown menu*/
+#block-os-primary-menu li {
+    border-bottom: 1px solid #34679A!important;
+    border-top: 1px solid #407EB4!important;
+}
+#menu-bar {
+    background: none repeat scroll 0 0 #E6E6E3;
+    padding: 0;
+}
+#block-os-primary-menu{
+    background: none repeat scroll 0 0 #3A72AB;
+
+}
+#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover {
+    background: none repeat scroll 0 0 #293352;
+
+}
+#block-os-primary-menu a:hover,
+#block-os-primary-menu a:focus{
+	background-color:#24527a!important;
+}
+
 }
 @media (max-width: 768px) {
 .front #content-column .block.block-boxes-os_boxes_manual_list {

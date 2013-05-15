@@ -14,7 +14,72 @@
 	#block-os-primary-menu{
 		display:none;
 	}
-	
+	#block-os-primary-menu.opened{
+	display:block;
+    padding: 0;
+
+}
+#block-os-primary-menu ul:after {
+    clear: both;
+    content: ".";
+    display: block;
+    font-size: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+#block-os-primary-menu ul {
+    left: -10px;
+    margin: 0;
+    position: static;
+    z-index: 10;
+    width:100%;
+}
+#block-os-primary-menu li.first {
+    border-top: medium none;
+}
+#block-os-primary-menu li {
+    float: none;
+}
+#block-os-primary-menu li {
+    font-family: georgia,serif;
+    list-style-type: none;
+    margin: 0!important;
+    position: relative;
+}
+#block-os-primary-menu a:after {
+    content: none !important;
+}
+#block-os-primary-menu a {
+    -moz-box-sizing: border-box;
+    border: medium none !important;
+    color: white !important;
+    display: block;
+    margin: 0 auto;
+    max-width: 1008px;
+    padding: 12px 30px !important;
+}
+#block-os-primary-menu a {
+    color: #FFFFFF;
+    display: block;
+    font-size: 20px;
+    font-weight: normal;
+    padding: 19px 15px;
+    position: relative;
+    text-decoration: none;
+    transition: none 0s ease 0s;
+}
+
+.nav li, .nav .menu li {
+    display: block;
+
+}
+#menu-bar ul.nice-menu a {
+    color: #303030;
+    font-family: Georgia,Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+    font-size: 20px;
+    padding-left: 15px !important;
+}
 	.flexslider {
     background: none repeat scroll 0 0 transparent;
     min-height: 315px;
@@ -67,8 +132,7 @@
     position: absolute;
 }
 * {
-    
-    margin: 0;
+     margin: 0;
     padding: 0;
 }
 .link-count-mobi-util a {

@@ -53,8 +53,43 @@
     padding-top: 65px !important;
     width:100%;
 }
+/* Dropdown menu */
+#block-os-primary-menu a {
+    color: #000000 !important;
+}
+#block-os-primary-menu a:hover,
+#block-os-primary-menu a:focus{
+	background-color:#24527a!important;
+}
+#block-os-primary-menu li {
+    border-bottom: 1px solid #E8E8E8!important;
+    border-top: none!important;
+}
+#menu-bar {
+    background: none repeat scroll 0 0 #E6E6E3;
+    margin: 0;
+    padding: 0 0 30px 0 !important;
+}
 
-
+#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a.active:hover {
+    background: none repeat scroll 0 0 #303030 !important;
+    color: #FFFFFF !important;
+}
+ul.menu {
+    margin-left: 15px !important;
+}
+#menu-bar ul.nice-menu li {
+    background-color: #FFFFFF !important;
+    margin-right: 30px !important;
+}
+#menu-bar nav {
+    background: none repeat scroll 0 0 #E8E8E8;
+    border-radius: 0 0 0 0;
+    box-shadow: 0 ;
+}
+.mobile-buttons a {
+    font: bold 16px arial,sans-serif !important;
+}
 /* column layouts */
 
 
@@ -66,6 +101,7 @@
     padding-top: 65px;
    
 }
+
 
 /* calendar arrows */
 
