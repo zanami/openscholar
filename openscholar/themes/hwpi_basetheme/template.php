@@ -233,7 +233,17 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
 
     if (isset($build['og_vocabulary'])) {
-      $terms = taxonomy_term_load_multiple($build['og_vocabulary']['#items']);
+      $terms = array();
+      foreach ($build['og_vocabulary']['#items'] as $i) {
+        if (isset($i['target_id'])) {
+          $terms[] = $i['target_id'];
+        }
+        else {
+          $terms[] = $i;
+        }
+      }
+
+      $terms = taxonomy_term_load_multiple($terms);
       $ordered_terms = array();
 
       foreach ($terms as $term) {
