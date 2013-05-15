@@ -40,14 +40,6 @@ h2.block-title {
 
 /* LAYOUT ELEMENTS */
 
-
-
-
-body.sidebar-first #columns .hg-container,
-body.header-left-main #header-container {
-  padding-right: 20px;
-  }
-
 .region-sidebar-second .region-inner  {
   border-left: 1px solid #D8D6D6;
   }

@@ -1,0 +1,64 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+    font-family: 'Open Sans',Helvetica,sans-serif;
+}
+
+
+#header {
+    background: #FFF;
+}
+
+
+#boxes-box-site_info, 
+#boxes-box-site_info a {
+    color: #111111;
+}
+
+
+#search-block-form .form-item label {
+    color: #3D3D3D;
+}
+
+#search-block-form input.form-submit, 
+#search-block-form #edit-submit, 
+#search-form #edit-submit {
+    background-position: 2px -373px;
+}
+
+
+h2.block-title {
+    background: #333333;
+    color: #FFFFFF;
+ 	font-size: 12px;
+ 	margin-bottom: 10px;
+    padding: 2px 8px;
+}
+
+#page-title, 
+.node-title, 
+.page-search .title a, 
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a, 
+.more-link, .page-search #content-column p, 
+.not-front #content-column p,
+.links a, 
+#footer ul.menu a, 
+.boxes-box-content h2, 
+.view-os-events .views-field-colorbox {
+    font-family: 'Open Sans',Helvetica,sans-serif;
+}
+
+#menu-bar ul.nice-menu a.active,
+#menu-bar ul.nice-menu a:hover {
+  background: #111111;
+}
+
+
+#menu-bar ul.nice-menu a {
+    color: #111111;
+}
+
+
+#menu-bar ul.menu ul ul {
+    background: #111111;
+}

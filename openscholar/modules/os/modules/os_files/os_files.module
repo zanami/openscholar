@@ -210,11 +210,11 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $extensions = array();
-    $include_pps = false;
+    $include_pps = FALSE;
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
       $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
       if ($type == 'document') {
-        $include_pps = true;
+        $include_pps = TRUE;
       }
     }
     $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
@@ -343,6 +343,8 @@ function os_files_form_file_entity_delete_form_alter(&$form, &$form_state) {
   if (strpos($form_state['file']->uri, 'private') !== 0) {
     $form['#submit'][] = 'os_files_redirect_after_delete_file';
   }
+
+  $form['#submit'][] = 'os_files_delete_remove_reference';
 }
 
 function os_files_form_file_delete_submit(&$form, &$form_state) {
@@ -357,6 +359,76 @@ function os_files_form_file_delete_submit(&$form, &$form_state) {
  */
 function os_files_redirect_after_delete_file($form, &$form_state) {
   $form_state['redirect'] = 'cp/content/files';
+}
+
+/**
+ * When deleting a field through the CP files form we need to remove the
+ * reference for the files.
+ */
+function os_files_delete_remove_reference($form, $form_state) {
+  $file = $form_state['file'];
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->fieldCondition('field_upload', 'fid', $file->fid)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $operations = array();
+  foreach (array_chunk(array_keys($result['node']), 10) as $chunk) {
+    $operations[] = array('_os_files_delete_remove_reference_finished', array($chunk, $file));
+  }
+
+  $batch = array(
+    'operations' => $operations,
+    'finished' => 'os_files_delete_remove_reference_finished',
+    'title' => t('Removing the file references'),
+    'init_message' => t('The references removed procedure has started.'),
+    'progress_message' => t('Processed @current out of @total.'),
+    'error_message' => t('Example Batch has encountered an error.'),
+  );
+
+  batch_set($batch);
+
+  batch_process($form_state['redirect']);
+}
+
+/**
+ * Callback function of the batch API for removing the file reference.
+ *
+ * @param $nids
+ *  List of node IDs to the remove the reference of the file.
+ * @param $file
+ *  The file object which his reference need to be remove.
+ */
+function _os_files_delete_remove_reference_finished($nids, $file) {
+  $nodes = node_load_multiple($nids);
+
+  foreach ($nodes as $node) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $file_field = $wrapper->field_upload->value();
+
+    foreach ($file_field as $delta => $value) {
+      if ($value['fid'] == $file->fid) {
+        unset($file_field[$delta]);
+      }
+    }
+
+    $wrapper->field_upload->set($file_field);
+
+    $wrapper->save();
+  }
+}
+
+/**
+ * Finish callback function of the batch API.
+ */
+function os_files_delete_remove_reference_finished() {
+  drupal_set_message(t('The file has been removed.'));
 }
 
 /**

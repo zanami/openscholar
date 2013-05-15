@@ -78,12 +78,28 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   }
 
   // Check if we have specified a specific display
-  if ($view_names[$view->name] !== TRUE && !in_array($view->current_display, $view_names[$view->name])) {
+  if ($view_names[$view->name] !== TRUE && !in_array($view->current_display, array_keys($view_names[$view->name]))) {
     return;
   }
 
+  $path = '';
+  // Get the path of the view from the OS app info.
+  if (!empty($view_names[$view->name][$view->current_display])) {
+    foreach($view_names[$view->name][$view->current_display] as $views_path) {
+      if ($views_path == $_GET['q']) {
+        $path = $views_path;
+        break;
+      }
+    }
+  }
+  else {
+    // No path form the OS app info, get the path from the view settings.
+    $path = $view->get_path();
+  }
+
   $item = menu_get_item();
-  $path_elements = count(explode("/", $view->get_path()));
+  $path_elements = count(explode("/", $path));
+
   if (count($item['original_map']) <= $path_elements) {
     // We are just looking at view path.
     return;
@@ -96,8 +112,8 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
     return;
   }
 
-  //Check the path prefixed with the purl if we are in a vsite
-  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+  // Check the path prefixed with the purl if we are in a vsite.
+  if (module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0) {
     array_unshift($path_parts, vsite_get_purl());
     if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
       return;
@@ -140,6 +156,9 @@ function os_taxonomy_term_page($taxonomy_term) {
   );
 
   os_taxonomy_activate_context($taxonomy_term);
+  
+  ctools_include('infinite_scroll', 'os');
+  _os_add_infinite_scroll('os_taxonomy');
 
   return theme('os_taxonomy_tagged_nodes', $variables);
 }
