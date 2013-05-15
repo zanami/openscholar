@@ -146,7 +146,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#title' => ('Taxonomy tree depth.'),
       '#description' => t('The maximum term level in the tree to count the tagged posts.'),
       '#options' => array(
-        -1 => t("Show all childeren"),
+        -1 => t("Show all children"),
         0 => t("Show only first level"),
         1 => t("2nd Level"),
         2 => t("3rd Level"),

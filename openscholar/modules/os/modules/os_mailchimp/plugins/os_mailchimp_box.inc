@@ -104,7 +104,7 @@ class os_boxes_mailchimp extends os_boxes_default {
                   )
                 )
               );
-              $block['content'] = theme('html_tag', $iframe);
+              $block['content'] = '<div>' . theme('html_tag', $iframe) . '</div>';
               break;
             }
           }
