@@ -26,14 +26,56 @@ function vsite_register_menu() {
     //'type' => MENU_LOCAL_TASK,
   );
 
+  $items['site/register/welcome'] = array(
+    'title callback' => '_vsite_register_welcome_title',
+    'page callback' => '_vsite_register_welcome_page',
+    'access callback' => TRUE, //'_vsite_welcome_message_access',
+  );
+
   // FOR DEVELOPMENT USE ONLY.
-//  $items['vsite_register_welcome/%'] = array(
-//    'title' => t('Welcome'),
-//    'page callback' => 'vsite_register_message',
-//    'page arguments' => array('form', 1),
-//    'access arguments' => 'access content',
-//  );
+  $items['vsite_register_welcome/%'] = array(
+    'title' => t('Welcome'),
+    'page callback' => 'vsite_register_message',
+    'page arguments' => array('form', 1),
+    'access arguments' => array('access content'),
+  );
   return $items;
+}
+
+/**
+ * Gets the node title from the welcome message node.
+ */
+function _vsite_register_welcome_title() {
+  $welcome_message = variable_get('vsite_register_welcome_message');
+  $nid = _vsite_register_welcome_message_nid($welcome_message);
+  if ($nid) {
+    $node = node_load($nid);
+    return $node->title;
+  }
+  return t('Welcome');
+}
+
+/**
+ * Gets the node title from the welcome message node.
+ */
+function _vsite_register_welcome_page() {
+  $welcome_message = variable_get('vsite_register_welcome_message');
+  $nid = _vsite_register_welcome_message_nid($welcome_message);
+  if ($nid) {
+    $node = node_load($nid);
+    $items = field_get_items('node', $node, 'body');
+    $body = array_shift($items);
+    return $body['value'];
+  }
+  return '';
+}
+
+/**
+ * Gets the node title from the welcome message node.
+ */
+function _vsite_register_welcome_access() {
+  $welcome_message = variable_get('vsite_register_welcome_message');
+  return (bool) $welcome_message;
 }
 
 /**
@@ -130,11 +172,7 @@ function vsite_register_message($form, $domain) {
     $overlay = _vsite_register_get_overlay($welcome_message);
   }
 
-  $overlay ='node/add/page';
-  // This does not work.
-  //$url_options = array('absolute' => TRUE, 'fragment' => "overlay=$overlay");
-  //$href = url('<front>', $url_options);
-  $href = "/$overlay";
+  $href ='/site/register/welcome';
   $message .= t('<p>The url of @whose site is @base_url/@domain <a href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
   $message .= '</div>';
 
@@ -160,6 +198,18 @@ function vsite_register_form_vsite_register_form_alter(&$form, &$form_state) {
  * Gets the overlay path from a welcome message value like "Note title [id: 13]"
  */
 function _vsite_register_get_overlay($welcome_message) {
+  $nid = _vsite_register_welcome_message_nid($welcome_message);
+  if (!$nid) {
+    return FALSE;
+  }
+
+  return drupal_lookup_path('alias', "node/$nid");
+}
+
+/**
+ * Gets the nid from the welcome message variable value.
+ */
+function _vsite_register_welcome_message_nid($welcome_message) {
   $preg_matches = array();
 
   $match = preg_match('/\[id: (\d+)\]/', $welcome_message, $preg_matches);
@@ -169,7 +219,7 @@ function _vsite_register_get_overlay($welcome_message) {
 
   if ($match) {
     $nid = $preg_matches[1];
-    return drupal_lookup_path('alias', "node/$nid");
+    return $nid;
   }
 
   return FALSE;
@@ -179,16 +229,9 @@ function _vsite_register_get_overlay($welcome_message) {
  * Implements hook_admin_paths().
  */
 function vsite_register_admin_paths() {
-  // Only continues if we have a valid node saved as a welcome message.
-  $welcome_message = variable_get('vsite_register_welcome_message', '');
-  $overlay = _vsite_register_get_overlay($welcome_message);
-  if (!$overlay) {
-    return array();
-  }
-
   // Adds the welcome message node alias to admin paths to generate overlay.
   $paths = array(
-    $overlay => TRUE,
+    'site/register/welcome' => TRUE,
   );
 
   return $paths;
