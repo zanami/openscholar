@@ -41,7 +41,7 @@
 }
  
 ul.nice-menu ul {
-    top: 3.3em;
+    top: 3.3em !important;
 }
 
 #menu-bar ul.menu ul ul {
@@ -205,6 +205,11 @@ ul.nice-menu ul {
 	margin-right:80px;
   font-size:12px;
   text-transform: uppercase;
+}
+
+#footer ul li.leaf {
+    list-style-image: none !important;
+    list-style-type: none !important;
 }
 
 /* Temporary - Footer Quicklinks Nav CSS - REMOVE WHEN THE REAL MENU FUNCTIONALITY IS READY*/

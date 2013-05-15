@@ -45,7 +45,7 @@ body {
 }
 
 ul.nice-menu ul {
-    top: 3.9em;
+    top: 3.9em !important;
 }
 
 #menu-bar ul.nice-menu a {
