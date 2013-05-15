@@ -392,6 +392,13 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
     $links[] = l(t('HOME'),'<front>');
     // Check for a book.
     if(isset($node->book)) {
+      // Check for a parent menu item.
+      if(_os_breadcrumbs_check_parents('node/' . $node->book['bid']) != FALSE) {
+        $parent_links = _os_breadcrumbs_check_parents('node/' . $node->book['bid']);
+        if(isset($parent_links) && is_array($parent_links)) {
+          $links = array_merge($links, $parent_links);
+        }
+      }
       // Traversing a book for breadcrumbs had issues separating the parents.
       // Orig using book_get_flat_menu, but that returned incorrect parents in certain use cases.
       // This method uses the mlid's stored in the p1-p9 elements of the node->book array.
@@ -411,7 +418,7 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
             $links[] =''; // t(ucfirst($short_title));
             break;
       	  }else {
-            $links[] = l(strtoupper($short_title),$book['link_path']);
+            $links[] = l(strtoupper($short_title), $book['link_path']);
       	  }
       	}
       }
