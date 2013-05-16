@@ -92,8 +92,9 @@ function os_menu_alter(&$items) {
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
   }
+  // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
-    $items['node']['page callback'] = 'drupal_not_found';
+    unset($items['node']);
   }
 }
 
