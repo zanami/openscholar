@@ -1417,36 +1417,6 @@ function vsite_redirect_reset_submit($form, &$form_state){
 }
 
 /**
- * Implements hook_cp_settings().
- *
- * Add the vsite privacy form element to CP settings.
- */
-function vsite_cp_settings(){
-  $form = array();
-  $space = spaces_get_space();
-  $annon_contact = variable_get('vsite_users_contact_form_anonymous', '1');
-  if (! empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
-    $annon_contact = $space->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
-  }
-
-  $form['vsite_users_contact_form_anonymous'] = array(
-    'group' => array(
-      '#id' => 'privacy',
-      '#title' => t('Privacy'),
-      '#weight' => 10
-    ),
-    'form' => array(
-      '#type' => 'checkbox',
-      '#title' => t('Anonymous Contact'),
-      '#default_value' => $annon_contact,
-      '#description' => "When this is checked a user does not need to be logged in to contact you."
-    )
-  );
-  return $form;
-}
-
-/**
  * Implements hook_menu().
  */
 function vsite_menu(){
