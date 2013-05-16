@@ -801,6 +801,11 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
       $file['#attributes']['class'][] = $class;
     } 
   }
+  // hide the description field when embedding
+  // no one wants it here
+  if (!empty($element['content']['media_description'])) {
+    $element['content']['media_description']['#access'] = false;
+  }
 }
 
 /**
