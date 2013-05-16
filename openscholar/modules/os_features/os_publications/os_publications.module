@@ -752,8 +752,10 @@ function os_publications_field_attach_load($entity_type, $entities, $view_mode) 
     foreach ($entities as $e_id => $e) {
       if ($e->type != 'biblio') continue;
 
-      $e->field_biblio_image[LANGUAGE_NONE][0]['alt'] = $e->title;
-      $e->field_biblio_image[LANGUAGE_NONE][0]['title'] = $e->title;
+      if (!empty($e->field_biblio_image)) {
+        $e->field_biblio_image[LANGUAGE_NONE][0]['alt'] = $e->title;
+        $e->field_biblio_image[LANGUAGE_NONE][0]['title'] = $e->title;
+      }
     }
   }
 }
