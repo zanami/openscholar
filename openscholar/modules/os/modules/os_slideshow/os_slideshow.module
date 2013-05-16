@@ -149,8 +149,8 @@ function os_slideshow_node_insert($node) {
     //array reduce's anon function gets the highest weight of all the slides, so the newly inserted one can come last.
     $box->options['nodes'][(int)$node->nid] = array(
       'nid' => (int)$node->nid,
-      'weight' => 1 + array_reduce($box->options['nodes'], function($val, $next) {return ($next['weight']>$val) ? $next['weight'] : $val;}, 0),
-    );
+      'weight' => 1 + array_reduce($box->options['nodes'], create_function('$val, $next', 'return ($next["weight"]>$val) ? $next["weight"] : $val;'), 0),
+	);
 
     if ($space) {
       $space->controllers->boxes->set($box->delta, $box);

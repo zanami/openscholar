@@ -1,0 +1,188 @@
+@media (max-width: 1072px) {
+.branding-left img {
+    left: 20px;
+    position: relative;
+}
+
+
+}
+@media (max-width: 1008px) {
+
+.branding-left {
+    margin: 10px 0 0 15px;
+}
+.branding-left img {
+    left: 0;
+    position: relative;
+}
+
+#columns .region-inner {
+    margin-bottom: -12px;
+}
+#branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
+    width: 100%;
+}
+.front .content-left.content-right.content-bottom #content-panels .region {
+    margin-bottom: 25px;
+}
+.one-sidebar.sidebar-first .region-sidebar-first {
+    width: 22.6994%;
+}
+.one-sidebar.sidebar-first .content-inner {
+    margin-left: 24.5%;
+    margin-right: 0;
+    width: 74.2331%;
+}
+.two-sidebars .region-sidebar-first {
+    float: none !important;
+    margin-left: 0;
+    width: 100%;
+}
+.two-sidebars .content-inner {
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+    width: 63.3%;
+}
+.two-sidebars .region-sidebar-second {
+    left: 68%;
+    margin-left: 0;
+    padding-left: 5px;
+    position: absolute;
+    top: 0;
+    width: 30.2%;
+}
+.two-sidebars #content-column, .two-sidebars .content-column {
+    width: 100%;
+}
+.two-sidebars .hg-container {
+    position: relative;
+}
+.one-sidebar.sidebar-second .region-sidebar-second {
+    left: 68%;
+    margin-left: 0;
+    padding-left: 5px;
+    position: absolute;
+    top: 0;
+    width: 30%;
+}
+.one-sidebar.sidebar-second #content-column .content-inner {
+    float: none !important;
+    margin-right: 0;
+    position: relative;
+    width: 67.6%;
+}
+.one-sidebar.sidebar-second  .hg-container {
+    max-width: 100% !important;
+    padding: 0 15px;
+    position: relative;
+}
+.not-front.two-sidebars #content-column .content-inner {
+    border-right: medium none!important;
+}
+
+#menu-bar {
+    margin: 0;
+    padding: 0 15px !important;
+}	
+#block-boxes-shield{
+display:none;	
+}
+.branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
+
+    width: 100%;
+}
+#branding_footer {
+    padding-top: 25px;
+}
+.copyright {
+    line-height: 18px;
+    margin-left: 15px;
+}
+.hg-container {
+    -moz-box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 100%;
+    padding: 0 15px;
+}
+
+
+}
+
+
+
+
+@media (max-width: 768px) {
+
+.region-content-first,
+.region-content-second {
+    float: none!important;
+    width: 100%!important;
+}
+.region-content-second{
+	margin-top:50px!important;
+}
+.region-inner[style]{
+	 min-height: 500px!important;
+}
+.content-left.content-right .region-content-first .region-inner, .content-left.content-bottom .region-content-first .region-inner, .content-right.content-bottom .region-content-second .region-inner, .content-left.content-right.content-bottom .region-content-second .region-inner {
+    border-right: medium none;
+}
+.front .content-left.content-right.content-bottom .region-content-first .region-inner, .front .content-left.content-right.content-bottom .region-content-second .region-inner, .content-left.content-right .region-content-first .region-inner {
+    padding-right: 0;
+}
+.front .content-left.content-right.content-bottom .region-content-bottom .region-inner, .content-left.content-right.content-bottom .region-content-second .region-inner, .content-left.content-right .region-content-second .region-inner {
+    padding-left: 0;
+}
+#content-panels .region-content-first, #content-panels .region-content-second, #content-panels .region-content-bottom {
+    display: block;
+    float: none;
+}
+#content-column, .content-column, div.sidebar {
+    clear: none;
+    float: none;
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+.one-sidebar.sidebar-first .content-inner {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+.one-sidebar.sidebar-second .content-inner {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.two-sidebars .content-inner {
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+.two-sidebars .region-sidebar-second {
+    margin-left: 0;
+    padding-left: 5px;
+    position: static;
+    width: 100%;
+}
+.one-sidebar.sidebar-second #content-column .content-inner {
+    width: 100%;
+}
+.one-sidebar.sidebar-second .region-sidebar-second {
+    left: 0;
+    margin-left: 0;
+    padding-left: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
+}
+.one-sidebar.sidebar-first .region-sidebar-first {
+    margin-top: 20px;
+  
+}
+.front .content-left.content-right.content-bottom #content-panels .region {
+    width: 100%;
+}
+
+}

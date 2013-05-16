@@ -49,7 +49,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
   right: auto;
   top: 0;
   width: 3000px;
-  z-index: 1;
+  z-index: 0;
 }
 
 body.front.no-sidebars .content-top-slideshow-enabled #columns .hg-container {

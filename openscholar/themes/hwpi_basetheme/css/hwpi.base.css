@@ -180,7 +180,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .no-sidebars .view .date-nav-wrapper .date-prev {
-    right: 900px;
+    right: 90%;
 }
 
 
@@ -811,4 +811,6 @@ ul.pager li.pager-item {
   clear: both;
   float: left;
 }
+
+
 
