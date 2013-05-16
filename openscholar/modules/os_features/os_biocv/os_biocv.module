@@ -74,6 +74,7 @@ function os_biocv_menu() {
  */
 function os_biocv_form_cv_node_form_alter(&$form, &$form_state, $form_id) {
   $settings_link = l(t('Bio/CV settings'), 'features/os_biocv');
+  $form['field_biocv_pdf_upload'][LANGUAGE_NONE][0]['#media_options']['global']['override_extensions'] = true;
 }
 
 /**
