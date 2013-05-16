@@ -74,6 +74,7 @@ projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
 projects[dyntextfield][download][type] = git
+projects[dyntextfield][download][tag] = 1.0
 projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.git"
 
 projects[entity][subdir] = "contrib"
