@@ -68,9 +68,10 @@ class os_boxes_site_info extends os_boxes_default {
 
     $form['contact_anonymous'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Anonymous Can Contact'),
+      '#title' => t('Enable contact form for Logged Out users.'),
       '#default_value' => variable_get('vsite_users_contact_form_anonymous', true),
-      '#description' => t('Checking this box will logged out users to see and use the link to your contact form.'),
+      '#description' => t('Will print an (email) link to your contact form when a visitor is not logged in.
+        Logged in users will always see the link.'),
     );
 
     $form['submit'] = array(
