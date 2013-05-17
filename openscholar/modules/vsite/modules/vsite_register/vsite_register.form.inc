@@ -333,14 +333,7 @@ function vsite_register_form_submit(&$form, &$state) {
   exit;
 }
 
-/**
- * Adds an error message to the vsite register form.
- *
- * @see vsite_register_form_submit()
- */
-function _vsite_register_form_error() {
-  return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
-}
+
 
 /**
  * Form validate callback for vsite_register_form.
@@ -591,10 +584,10 @@ function vsite_register_notify($vsite) {
 
   // Invokes drupal_mail() to send email notification to admin account,
   // or whatever email is specified in variable "vsite_register_admin_mail".
-  $admin_mail = variable_get('vsite_register_admin_mail', '');
-  if ($admin_mail) {
-    vsite_register_notify_admin($vsite, $admin_mail);
-  }
+//  $admin_mail = variable_get('vsite_register_admin_mail', '');
+//  if ($admin_mail) {
+//    vsite_register_notify_admin($vsite, $admin_mail);
+//  }
 }
 
 /**

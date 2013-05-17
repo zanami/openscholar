@@ -167,13 +167,8 @@ function vsite_register_message($form, $domain) {
     $message .= t('<p>Check your email account for further details on how to login in to start adding features and content.</p>');
   }
 
-  $welcome_message = variable_get('vsite_register_welcome_message', '');
-  if ($welcome_message) {
-    $overlay = _vsite_register_get_overlay($welcome_message);
-  }
-
-  $href ='/site/register/welcome';
-  $message .= t('<p>The url of @whose site is @base_url/@domain <a href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
+  // $href ="$base_url/$domain#overlay=/site/register/welcome";
+  // $message .= t('<p>The url of @whose site is @base_url/@domain <a href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
   $message .= '</div>';
 
   // Gives other modules a chance to alter message
@@ -235,4 +230,13 @@ function vsite_register_admin_paths() {
   );
 
   return $paths;
+}
+
+/**
+ * Adds an error message to the vsite register form.
+ *
+ * @see vsite_register_form_submit()
+ */
+function _vsite_register_form_error() {
+  return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
