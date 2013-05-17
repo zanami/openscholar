@@ -167,12 +167,43 @@ function os_publications_settings() {
     ),
   );
   $style = module_exists('biblio_citeproc') ? 'biblio_citeproc_style' : 'biblio_style';
+  // Attach extra HTML to the citation array to allow for a popup box that will display an example of the citation format.
+  $biblio_styles = biblio_get_styles();
+  if(isset($biblio_styles) && is_array($biblio_styles)) {
+    $biblio_styles_hover = array();
+    $counter = 0;
+    // Include CiteProc.
+    module_load_include('inc', 'CiteProc', 'biblio_citeproc.admin');
+    foreach($biblio_styles as $style => $name) {
+      $counter ++;
+      // Setup the new citation options to be wrapped for a popup.
+      $cite_example_link = '<a href="#" class="cite-pop" data-popbox="pop'.$counter.'">' . t('@link_name', array('@link_name' => $name)) . '</a>';
+      // Setup the h2.
+      $cite_example_title = '<h2>' . t('@csl_title', array('@csl_title' => $name)) . '</h2>';
+      // Setup the citation exmaple for the popup.
+      $citation_example = 'test text';
+      $cite_example_text = '<p>' . t('@cite_text', array('@cite_text' => $citation_example)) . '</p>';
+      // Concat it all together.
+      $cite_example_output = $cite_example_link . '<div id="pop'.$counter.'" class="citebox">' . $cite_example_title . $cite_example_text . '</div>';
+      $biblio_styles_hover[$style] = $cite_example_output;
+    }
+  }
+  //dpm($biblio_styles);
+  //dpm($biblio_styles_hover);
   $form['left'][$style] = array(
     '#type' => 'radios',
     '#title' => t('Select your preferred bibliographic format'),
     //'#description' => t('This alters the bibliographic format of your publications.'),
     '#default_value' => biblio_get_style(),
-    '#options' => biblio_get_styles(),
+    '#options' => $biblio_styles_hover,
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'os_publications') . '/misc/os_publications.css',
+      ),
+      'js' => array(
+        drupal_get_path('module', 'os_publications') . '/misc/os_publications_csl_hover.js',
+      )
+    ),
   );
 
   $form['right']['biblio_export_links'] = array(
