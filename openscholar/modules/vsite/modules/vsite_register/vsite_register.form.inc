@@ -599,6 +599,7 @@ function vsite_register_notify($vsite) {
  */
 function vsite_register_notify_user($vsite) {
   global $language;
+  $language = $language->language;
   global $base_url;
   global $user;
 
