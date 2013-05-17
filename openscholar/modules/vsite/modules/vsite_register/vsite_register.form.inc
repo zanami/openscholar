@@ -105,8 +105,8 @@ function vsite_register_form($form, &$state) {
     '#type' => 'radios',
     '#title' => t('Site Publicity Setting'),
     '#default_value' => VSITE_ACCESS_PUBLIC,
-    '#options' => vsite_access_privacy_avalible_values(),
-    '#description' => t('How accesible would you like to make your site.'),
+    '#options' => vsite_access_privacy_available_values(),
+    '#description' => t('How accessible would you like to make your site?'),
     '#access' => module_exists('vsite_access'),
   );
 

@@ -91,7 +91,6 @@ function vsite_access_node_access($node, $op, $account) {
       	  return NODE_ACCESS_IGNORE;
       	break;
       }
-
     }
   }
 }
@@ -119,7 +118,7 @@ function vsite_access_cp_settings(){
 		    '#type' => 'radios',
 		    '#title' => t('Site sharing'),
 		    '#default_value' => $wrapper->{VSITE_ACCESS_FIELD}->value(),
-		    '#options' => vsite_access_privacy_avalible_values(),
+		    '#options' => vsite_access_privacy_available_values(),
 		    '#description' => t('How accesible would you like to make your site.'),
 		  ),
       'submit' => array(
@@ -152,9 +151,9 @@ function vsite_access_cp_settings_node_submit($form, &$form_state){
 }
 
 /**
- * Return avalible privacy types
+ * Return available privacy types.
  */
-function vsite_access_privacy_avalible_values(){
+function vsite_access_privacy_available_values(){
   $options = array(
     VSITE_ACCESS_PUBLIC => t('Public on the web')."<br><span class='radio-description'>".t("Anyone on the Internet can find and access. No sign-in required.")."</span>",
 		VSITE_ACCESS_UNINDEXED => t('Anyone with the link')."<br><span class='radio-description'>".t("Anyone who has the link can access. Not listed in Google. No sign-in required.")."</span>",
