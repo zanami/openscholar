@@ -962,14 +962,14 @@ function os_files_preprocess_image_formatter(&$variables) {
   if (!empty($item['field_file_image_alt_text'])) {
     $item['alt'] = $item['field_file_image_alt_text'][LANGUAGE_NONE][0]['value'];
   }
-  else {
+  elseif (empty($item['alt'])) {
     $item['alt'] = $item['filename'];
   }
   
   if (!empty($item['field_file_image_title_text'])) {
     $item['title'] = $item['field_file_image_title_text'][LANGUAGE_NONE][0]['value'];
   }
-  else {
+  elseif (empty($item['title'])) {
     $item['title'] = $item['filename'];
   }
 }
