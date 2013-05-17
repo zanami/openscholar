@@ -181,15 +181,13 @@ function os_publications_settings() {
       // Setup the h2.
       $cite_example_title = '<h2>' . t('@csl_title', array('@csl_title' => $name)) . '</h2>';
       // Setup the citation exmaple for the popup.
-      $citation_example = 'test text';
-      $cite_example_text = '<p>' . t('@cite_text', array('@cite_text' => $citation_example)) . '</p>';
+      $citation_example = _os_publications_build_citation_example($style); //'test text';
+      $cite_example_text = '<p>' . t('!cite_text', array('!cite_text' => $citation_example)) . '</p>';
       // Concat it all together.
       $cite_example_output = $cite_example_link . '<div id="pop'.$counter.'" class="citebox">' . $cite_example_title . $cite_example_text . '</div>';
       $biblio_styles_hover[$style] = $cite_example_output;
     }
   }
-  //dpm($biblio_styles);
-  //dpm($biblio_styles_hover);
   $form['left'][$style] = array(
     '#type' => 'radios',
     '#title' => t('Select your preferred bibliographic format'),
@@ -331,4 +329,109 @@ function os_publications_reset(&$form, &$form_state) {
 
 function os_publications_reset_submit($form, $form_state) {
   //dpm($form_state['values']);
+}
+
+/**
+ * Return a pre-built node for an example citation.
+ */
+function _os_publications_get_citation_example() {
+  global $language;
+  $contributors = array(
+    0 => array(
+      'lastname' => 'Doe',
+      'firstname' => 'John',
+      'initials' => 'A',
+      'auth_category' => 1,
+      'cid' => -1),
+    1 => array(
+      'lastname' => 'Smith',
+      'firstname' => 'Richard',
+      'initials' => 'B',
+      'auth_category' => 1,
+      'cid' => -2),
+    3 => array(
+      'lastname' => 'Editor',
+      'firstname' => 'Edwin',
+      'initials' => 'Z',
+      'auth_category' => 2,
+      'cid' => -3),
+  );
+  $node = new stdClass();
+  $node->nid = -1;
+  $node->title                  = 'Book Chapter.';
+  $node->biblio_contributors    = $contributors;
+  $node->biblio_type            = 101;
+  $node->biblio_year            = 2013;
+  $node->biblio_volume          = 1;
+  $node->biblio_edition         = 5;
+  $node->biblio_issue           = 2;
+  $node->biblio_secondary_title = 'My Book Title';
+  $node->biblio_pages           = '500-731';
+  $node->biblio_coins           = '';
+
+  return $node;
+}
+
+/**
+ * Return a themed citation example.
+ *  @params $csl
+ *    Citation style to use for theming the citation.
+ */
+function _os_publications_build_citation_example($csl) {
+  if(!isset($csl)) {
+    // Get the default biblio style.
+    $style = biblio_get_style();
+  }else {
+    $style = $csl;
+  }
+
+  $node = _os_publications_get_citation_example();
+
+  return _os_publications_theme_citation(array('style_name' => $style, 'node' => $node));
+
+}
+
+function _os_publications_theme_citation($variables) {
+  global $language;
+  $citeproc = '';
+  $node = $variables['node'];
+  $style = isset($variables['style_name']) ? $variables['style_name'] : NULL;
+
+  module_load_include('inc', 'biblio_citeproc', 'CSL');
+
+  if (!$citeproc) {
+    $csl_id = ($style) ? $style : biblio_get_style();
+
+    if (strpos($csl_id, '.csl') === FALSE) {// try to convert old style names to csl...
+      if (in_array($csl_id, array('ama', 'apa', 'cse', 'ieee', 'mla', 'vancouver'))) {
+        $csl_id .= '.csl';
+      }
+      elseif ($csl_id == 'chicago') {
+        $csl_id = 'chicago-fullnote-bibliography.csl';
+      }
+      else {
+        $csl_id = '';
+        $message = t('An invalid style "@style" was selected, please check your "CiteProc" style settings.', array('@style' => $csl_id));
+        drupal_set_message($message, 'error');
+      }
+    }
+    if (!empty($csl_id)) {
+      $csl = db_query('SELECT parent,csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $csl_id))->fetchObject();
+      if (!isset($csl->csl)) {
+        drupal_set_message(t('Biblio-CiteProc could not fetch the style file: !csl_id from the database. Check your CiteProc settings.', array('!csl_id' => $csl_id)), 'error');
+        return;
+      }
+      if (!empty($csl->parent)) {
+        $csl_file_contents = db_query("SELECT csl FROM biblio_citeproc_styles WHERE id = :id", array(':id' => $csl->parent))->fetchField();
+
+      }
+      else {
+        $csl_file_contents = $csl->csl;
+      }
+      $citeproc = new citeproc($csl_file_contents, $language->language);
+    }
+  }
+  $styled_node = $citeproc->render($node);
+
+  return ($styled_node . filter_xss($node->biblio_coins, array('span')));
 }

@@ -15,7 +15,7 @@
   z-index: 99999;
   width: 400px;
   padding: 10px;
-  background: #EEEFEB;
+  background: #fff;
   color: #000000;
   border: 1px solid #4D4F53;
   margin: 0px;
@@ -24,11 +24,12 @@
 }
 
 .citebox h2 {
-  background-color: #4D4F53;
-  color:  #E3E5DD;
+  background-color: #EFEFEF;
+  color:  #000;
   font-size: 14px;
   display: block;
   width: 100%;
   margin: -10px 0px 8px -10px;
   padding: 5px 10px;
+  border-bottom: 2px solid #C4C2C2;
 }
