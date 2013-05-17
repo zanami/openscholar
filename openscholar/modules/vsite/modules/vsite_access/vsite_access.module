@@ -105,7 +105,7 @@ function vsite_access_cp_settings(){
   $space = spaces_get_space();
 
   if (! empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
+    // Gets the vsite_users_contact_form_anonymous variable.
     $wrapper = entity_metadata_wrapper('node', $space->group);
 
     $form['vsite_private'] = array(
@@ -142,9 +142,7 @@ function vsite_access_cp_settings_node_submit($form, &$form_state){
   $space = spaces_get_space();
   // Get the vsite_privacy value.
   if (isset($form_state['values']['vsite_private']) && $space) {
-
     $wrapper = entity_metadata_wrapper('node', $space->group);
-
     $wrapper->{VSITE_ACCESS_FIELD}->set($form_state['values']['vsite_private']);
     $wrapper->save();
   }

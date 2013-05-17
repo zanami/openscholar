@@ -65,7 +65,7 @@ function _vsite_register_welcome_page() {
     $node = node_load($nid);
     $items = field_get_items('node', $node, 'body');
     $body = array_shift($items);
-    return $body['value'];
+    return $body['value'] . '<div class="vsite-welcome-okay"><a class="overlay-close os-blue-button" href="#">' . t('Okay') . '</a></div>';
   }
   return '';
 }
@@ -167,8 +167,9 @@ function vsite_register_message($form, $domain) {
     $message .= t('<p>Check your email account for further details on how to login in to start adding features and content.</p>');
   }
 
-  // $href ="$base_url/$domain#overlay=/site/register/welcome";
-  // $message .= t('<p>The url of @whose site is @base_url/@domain <a href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
+  $overlay = (bool) variable_get('vsite_register_welcome_message', FALSE) ? 'overlay=site/register/welcome' : '';
+  $href ="$base_url/$domain#$overlay";
+  $message .= t('<p>The url of @whose site is @base_url/@domain <a class="os-green-button" href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
   $message .= '</div>';
 
   // Gives other modules a chance to alter message
