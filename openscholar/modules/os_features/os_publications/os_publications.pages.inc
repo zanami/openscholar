@@ -451,7 +451,6 @@ function _os_publications_theme_citation($variables) {
 
   foreach($node_array as $key => $value) {
     $styled_node .= '<div class="citation-example">' . $citeproc->render($value) . '</div>';
-    dpm($styled_node);
   }
 
   return $styled_node;
