@@ -9,6 +9,9 @@
 }
 
 /* CSS for citation style example popup box */
+.citation-example {
+  margin-bottom: 5px;
+}
 .citebox {
   display: none;
   position: absolute;

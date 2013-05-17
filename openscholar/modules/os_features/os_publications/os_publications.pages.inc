@@ -335,7 +335,7 @@ function os_publications_reset_submit($form, $form_state) {
  * Return a pre-built node for an example citation.
  */
 function _os_publications_get_citation_example() {
-  global $language;
+
   $contributors = array(
     0 => array(
       'lastname' => 'Doe',
@@ -356,9 +356,10 @@ function _os_publications_get_citation_example() {
       'auth_category' => 2,
       'cid' => -3),
   );
+  // Book Chapter.
   $node = new stdClass();
   $node->nid = -1;
-  $node->title                  = 'Book Chapter.';
+  $node->title                  = 'A Book Chapter';
   $node->biblio_contributors    = $contributors;
   $node->biblio_type            = 101;
   $node->biblio_year            = 2013;
@@ -368,8 +369,23 @@ function _os_publications_get_citation_example() {
   $node->biblio_secondary_title = 'My Book Title';
   $node->biblio_pages           = '500-731';
   $node->biblio_coins           = '';
+  // Journal Article.
+  $node1 = new stdClass();
+  $node1->nid = -1;
+  $node1->title                  = 'My Journal Article';
+  $node1->biblio_contributors    = $contributors;
+  $node1->biblio_type            = 102;
+  $node1->biblio_year            = 2011;
+  $node1->biblio_volume          = 3;
+  $node1->biblio_issue           = 4;
+  $node1->biblio_secondary_title = 'The Journal of Articles';
+  $node1->biblio_pages           = '25-56';
+  $node1->biblio_coins           = '';
 
-  return $node;
+  $node_array = array($node, $node1);
+
+
+  return $node_array;
 }
 
 /**
@@ -385,16 +401,17 @@ function _os_publications_build_citation_example($csl) {
     $style = $csl;
   }
 
-  $node = _os_publications_get_citation_example();
+  $node_array = _os_publications_get_citation_example();
 
-  return _os_publications_theme_citation(array('style_name' => $style, 'node' => $node));
+  return _os_publications_theme_citation(array('style_name' => $style, 'node_array' => $node_array));
 
 }
 
 function _os_publications_theme_citation($variables) {
   global $language;
   $citeproc = '';
-  $node = $variables['node'];
+  $styled_node = '';
+  $node_array = $variables['node_array'];
   $style = isset($variables['style_name']) ? $variables['style_name'] : NULL;
 
   module_load_include('inc', 'biblio_citeproc', 'CSL');
@@ -431,7 +448,11 @@ function _os_publications_theme_citation($variables) {
       $citeproc = new citeproc($csl_file_contents, $language->language);
     }
   }
-  $styled_node = $citeproc->render($node);
 
-  return ($styled_node . filter_xss($node->biblio_coins, array('span')));
+  foreach($node_array as $key => $value) {
+    $styled_node .= '<div class="citation-example">' . $citeproc->render($value) . '</div>';
+    dpm($styled_node);
+  }
+
+  return $styled_node;
 }
