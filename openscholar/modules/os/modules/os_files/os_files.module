@@ -346,6 +346,8 @@ function os_files_form_file_entity_delete_form_alter(&$form, &$form_state) {
     $form['#submit'][] = 'os_files_redirect_after_delete_file';
   }
 
+  array_unshift($form['#submit'], 'os_files_save_file_usage');
+
   $form['#submit'][] = 'os_files_delete_remove_reference';
 }
 
@@ -364,24 +366,33 @@ function os_files_redirect_after_delete_file($form, &$form_state) {
 }
 
 /**
+ * Save the file usage before the file usage list is being deleted.
+ */
+function os_files_save_file_usage($form, &$form_state) {
+  $file = $form_state['file'];
+
+  $usage = file_usage_list($file);
+
+  if (empty($usage['file']['node'])) {
+    return;
+  }
+
+  $form_state['file_usage'] = array_keys($usage['file']['node']);
+}
+
+/**
  * When deleting a field through the CP files form we need to remove the
  * reference for the files.
  */
 function os_files_delete_remove_reference($form, $form_state) {
   $file = $form_state['file'];
+  $operations = array();
 
-  $query = new entityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->fieldCondition('field_upload', 'fid', $file->fid)
-    ->execute();
-
-  if (empty($result['node'])) {
+  if (empty($form_state['file_usage'])) {
     return;
   }
 
-  $operations = array();
-  foreach (array_chunk(array_keys($result['node']), 10) as $chunk) {
+  foreach (array_chunk($form_state['file_usage'], 10) as $chunk) {
     $operations[] = array('_os_files_delete_remove_reference_finished', array($chunk, $file));
   }
 
@@ -412,15 +423,36 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
 
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
-    $file_field = $wrapper->field_upload->value();
+    $fields = field_info_instances('node', $wrapper->getBundle());
 
-    foreach ($file_field as $delta => $value) {
-      if ($value['fid'] == $file->fid) {
-        unset($file_field[$delta]);
+    // Searching for the field that contain the reference to the file.
+    foreach (array_keys($fields) as $field) {
+      $info = field_info_field($field);
+
+      // This is a field file, break the loop.
+      if ($info['type'] == 'file') {
+        break;
       }
     }
 
-    $wrapper->field_upload->set($file_field);
+    $file_field = $wrapper->{$field}->value();
+    $field_info = field_info_field($field);
+
+    if ($field_info['cardinality'] === 1 || $field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
+      if ($file_field['fid'] == $file->fid) {
+        $file_field = NULL;
+      }
+    }
+    else {
+      // Dealing with a multiple field.
+      foreach ($file_field as $delta => $value) {
+        if ($value['fid'] == $file->fid) {
+          unset($file_field[$delta]);
+        }
+      }
+    }
+
+    $wrapper->{$field}->set($file_field);
 
     $wrapper->save();
   }
