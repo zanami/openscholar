@@ -44,7 +44,7 @@
           topD = windowTop + 20;
         }
         // Top & left values are too extreme, scale them back a little.
-        topD = topD - 100;
+        topD = topD - 50;
         leftD = leftD - 50;
         // Set the CSS top & left.
         $(target).css('top', topD).css('left', leftD);
