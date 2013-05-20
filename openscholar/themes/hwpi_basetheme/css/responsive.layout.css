@@ -134,7 +134,9 @@ display:none;
     padding: 0 15px;
 }
 
-
+table[style] {
+    max-width: 100% !important;
+}
 }
 
 
@@ -228,6 +230,13 @@ display:none;
 }
 .front .content-left.content-right.content-bottom #content-panels .region {
     width: 100%;
+}
+.block{
+	width:100%!important;
+	}
+.block.even .block-inner {
+    margin-left: 0!important;
+
 }
 
 }
