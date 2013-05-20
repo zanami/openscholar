@@ -172,18 +172,18 @@ function os_publications_settings() {
   if(isset($biblio_styles) && is_array($biblio_styles)) {
     $biblio_styles_hover = array();
     $counter = 0;
-    foreach($biblio_styles as $style => $name) {
+    foreach($biblio_styles as $styles => $name) {
       $counter ++;
       // Setup the new citation options to be wrapped for a popup.
       $cite_example_link = '<a href="#" class="cite-pop" data-popbox="pop'.$counter.'">' . t('@link_name', array('@link_name' => $name)) . '</a>';
       // Setup the h2.
       $cite_example_title = '<h2>' . t('@csl_title', array('@csl_title' => $name)) . '</h2>';
       // Setup the citation exmaple for the popup.
-      $citation_example = _os_publications_build_citation_example($style); //'test text';
+      $citation_example = _os_publications_build_citation_example($styles); //'test text';
       $cite_example_text = '<p>' . t('!cite_text', array('!cite_text' => $citation_example)) . '</p>';
       // Concat it all together.
       $cite_example_output = $cite_example_link . '<div id="pop'.$counter.'" class="citebox">' . $cite_example_title . $cite_example_text . '</div>';
-      $biblio_styles_hover[$style] = $cite_example_output;
+      $biblio_styles_hover[$styles] = $cite_example_output;
     }
   }
   $form['left'][$style] = array(
