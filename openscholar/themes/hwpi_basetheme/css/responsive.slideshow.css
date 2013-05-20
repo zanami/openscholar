@@ -59,4 +59,7 @@
 #layout_16_9_below{
 margin-bottom:30px;	
 }
+#layout_16_9_below .hero-copy {
+    height:auto!important;
+}
 }
