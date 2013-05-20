@@ -172,8 +172,6 @@ function os_publications_settings() {
   if(isset($biblio_styles) && is_array($biblio_styles)) {
     $biblio_styles_hover = array();
     $counter = 0;
-    // Include CiteProc.
-    module_load_include('inc', 'CiteProc', 'biblio_citeproc.admin');
     foreach($biblio_styles as $style => $name) {
       $counter ++;
       // Setup the new citation options to be wrapped for a popup.
@@ -356,6 +354,23 @@ function _os_publications_get_citation_example() {
       'auth_category' => 2,
       'cid' => -3),
   );
+
+  // 10+ author example to display the different ways "et al" works.
+  $contributors_etall = array(
+    0 => array( 'lastname' => 'Doe', 'firstname' => 'John', 'initials' => 'A', 'auth_category' => 1, 'cid' => -1),
+    1 => array( 'lastname' => 'Smith', 'firstname' => 'Richard', 'initials' => 'B', 'auth_category' => 1, 'cid' => -2),
+    3 => array( 'lastname' => 'Rodgers', 'firstname' => 'Edwin', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -3),
+    4 => array( 'lastname' => 'Howard', 'firstname' => 'Ron', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -4),
+    5 => array( 'lastname' => 'Rodgers', 'firstname' => 'Jill', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -5),
+    6 => array( 'lastname' => "O'Donnell", 'firstname' => 'Frank', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -6),
+    7 => array( 'lastname' => 'McQuiad', 'firstname' => 'Robert', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -7),
+    8 => array( 'lastname' => 'Smith', 'firstname' => 'Jane', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -8),
+    9 => array( 'lastname' => 'Ortiz', 'firstname' => 'Oscar', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -9),
+    10 => array( 'lastname' => 'Edwards', 'firstname' => 'Rebecca', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -10),
+    11 => array( 'lastname' => "O'Neil", 'firstname' => 'Thomas', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -11),
+    12 => array( 'lastname' => 'Smith', 'firstname' => 'Kathrine', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -12),
+  );
+
   // Book Chapter.
   $node = new stdClass();
   $node->nid = -1;
@@ -369,6 +384,7 @@ function _os_publications_get_citation_example() {
   $node->biblio_secondary_title = 'My Book Title';
   $node->biblio_pages           = '500-731';
   $node->biblio_coins           = '';
+
   // Journal Article.
   $node1 = new stdClass();
   $node1->nid = -1;
@@ -382,7 +398,21 @@ function _os_publications_get_citation_example() {
   $node1->biblio_pages           = '25-56';
   $node1->biblio_coins           = '';
 
-  $node_array = array($node, $node1);
+  // Book.
+  $node2 = new stdClass();
+  $node2->nid = -1;
+  $node2->title                  = 'This is a Book Title';
+  $node2->biblio_contributors    = $contributors_etall;
+  $node2->biblio_type            = 100;
+  $node2->biblio_year            = 2013;
+  $node2->biblio_volume          = 1;
+  $node2->biblio_edition         = 5;
+  $node2->biblio_pages           = '800';
+  $node2->biblio_publisher       = 'Oxford University Press';
+  $node2->biblio_place_published = 'Boston, MA';
+  $node2->biblio_coins           = '';
+
+  $node_array = array($node, $node1, $node2);
 
 
   return $node_array;
