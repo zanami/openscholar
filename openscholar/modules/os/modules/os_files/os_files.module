@@ -421,22 +421,16 @@ function os_files_delete_remove_reference($form, $form_state) {
 function _os_files_delete_remove_reference_finished($nids, $file) {
   $nodes = node_load_multiple($nids);
 
-  // List of fields that may contain the reference to the file.
-  $upload_fields = array(
-    'field_biocv_pdf_upload',
-    'field_presentation_file',
-    'field_software_package',
-    'field_upload',
-    'media_gallery_file',
-  );
-
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
     $fields = field_info_instances('node', $wrapper->getBundle());
 
     // Searching for the field that contain the reference to the file.
     foreach (array_keys($fields) as $field) {
-      if (in_array($field, $upload_fields)) {
+      $info = field_info_field($field);
+
+      // This is a field file, break the loop.
+      if ($info['type'] == 'file') {
         break;
       }
     }
