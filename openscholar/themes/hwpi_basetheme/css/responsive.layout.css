@@ -6,7 +6,19 @@
 
 
 }
-@media (max-width: 1008px) {
+@media (max-width: 1008px)
+ {
+ 	
+.media-element[style] {
+    display: block !important;
+    float: none !important;
+    max-width: 100% !important;
+}
+.item-list .pager {
+    clear: both;
+    margin-bottom: 35px;
+    text-align: center;
+}
 #branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
     width: 100%;
 }
@@ -20,6 +32,14 @@
 .branding-left img {
     left: 0;
     position: relative;
+}
+.region-header-third {
+    margin: 0 !important;
+    text-align: left;
+    width: 100%;
+}
+.region-header-second table {
+    margin-bottom: 0;
 }
 #menu-bar {
     margin: 0;
