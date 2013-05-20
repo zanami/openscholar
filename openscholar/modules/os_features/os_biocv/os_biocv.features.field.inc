@@ -341,7 +341,7 @@ function os_biocv_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_biocv_pdf_upload',
-      'label' => 'CV',
+      'label' => 'CV upload',
       'required' => 0,
       'settings' => array(
         'description_field' => 0,
