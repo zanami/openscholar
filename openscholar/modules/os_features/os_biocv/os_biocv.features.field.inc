@@ -341,7 +341,7 @@ function os_biocv_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_biocv_pdf_upload',
-      'label' => 'PDF Upload',
+      'label' => 'CV',
       'required' => 0,
       'settings' => array(
         'description_field' => 0,
@@ -405,7 +405,7 @@ function os_biocv_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Attach Files');
   t('Body');
-  t('PDF Upload');
+  t('CV');
 
   return $fields;
 }
