@@ -74,6 +74,13 @@ function vsite_node_form_after_build($form) {
   $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
   // Adds the prefix to the custom alias field on the node form.
   $form['path']['alias']['#field_prefix'] = "$field_prefix/";
+  // Removes part of the default description provided by pathauto.
+  // Originally it advises users to "use relative paths",
+  // but the field prefix makes that clear.
+  // Also, it originally says "don't use trailing slash or it won't work",
+  // but this type of input is automatically removed via javascript.
+  // @see vsite.pathauto.js
+  $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
   // If this is a vsite...
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
@@ -1414,36 +1421,6 @@ function vsite_redirect_reset_submit($form, &$form_state){
       drupal_goto('user/' . $form['#user']->uid);
     }
   }
-}
-
-/**
- * Implements hook_cp_settings().
- *
- * Add the vsite privacy form element to CP settings.
- */
-function vsite_cp_settings(){
-  $form = array();
-  $space = spaces_get_space();
-  $annon_contact = variable_get('vsite_users_contact_form_anonymous', '1');
-  if (! empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
-    $annon_contact = $space->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
-  }
-
-  $form['vsite_users_contact_form_anonymous'] = array(
-    'group' => array(
-      '#id' => 'privacy',
-      '#title' => t('Privacy'),
-      '#weight' => 10
-    ),
-    'form' => array(
-      '#type' => 'checkbox',
-      '#title' => t('Anonymous Contact'),
-      '#default_value' => $annon_contact,
-      '#description' => "When this is checked a user does not need to be logged in to contact you."
-    )
-  );
-  return $form;
 }
 
 /**

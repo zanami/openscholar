@@ -217,7 +217,9 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
         $include_pps = TRUE;
       }
     }
-    $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
+    if (empty($args[0]['override_extensions'])) {
+      $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
+    }
     
     $types = file_type_get_all_types();
     $mimetypes = array();
@@ -839,6 +841,11 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
       $file['#attributes']['class'][] = $class;
     } 
   }
+  // hide the description field when embedding
+  // no one wants it here
+  if (!empty($element['content']['media_description'])) {
+    $element['content']['media_description']['#access'] = false;
+  }
 }
 
 /**
@@ -993,14 +1000,14 @@ function os_files_preprocess_image_formatter(&$variables) {
   if (!empty($item['field_file_image_alt_text'])) {
     $item['alt'] = $item['field_file_image_alt_text'][LANGUAGE_NONE][0]['value'];
   }
-  else {
+  elseif (empty($item['alt'])) {
     $item['alt'] = $item['filename'];
   }
   
   if (!empty($item['field_file_image_title_text'])) {
     $item['title'] = $item['field_file_image_title_text'][LANGUAGE_NONE][0]['value'];
   }
-  else {
+  elseif (empty($item['title'])) {
     $item['title'] = $item['filename'];
   }
 }

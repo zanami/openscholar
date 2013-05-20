@@ -222,6 +222,8 @@ function vsite_access_update_privacy_settings($group){
  * Update Robots.txt Settigs
  */
 function vsite_access_update_robots($group,$privacy){
+  global $base_url;
+
   //Load Space
   $vsite = vsite_get_vsite($group->nid);
 

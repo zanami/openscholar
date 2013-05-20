@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '.nav-util',
+          'data-target' => '#block-os-quick-links',
         ),
       ),
       'mobi-search' => array(
@@ -58,7 +58,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '.dept-search',
+          'data-target' => '#block-os-search-db-site-search, #block-os-search-solr-site-search',
         )
       )
     )

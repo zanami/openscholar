@@ -12,7 +12,7 @@ function _os_pinserver_auth_private_site_access($node, $op, $account){
   $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
   // Handle access to groups.
-  if (og_is_group_type('node', $type)) {
+  if (!is_string($node) && og_is_group_type('node', $type) && isset($node->nid)) {
     $wrapper = entity_metadata_wrapper('node', $node);
 
     if (! empty($wrapper->{VSITE_ACCESS_FIELD})) {
