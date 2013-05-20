@@ -1,5 +1,5 @@
 <?php
-
+use GitWrapper\GitWrapper;
 /**
  * @file
  * OS Subtheme module file.
@@ -133,14 +133,71 @@ function os_subtheme_git_method($form, $form_state) {
     '#options' => array(
       '---' => t(' --- Select a branch --- '),
     ),
+
+    '#ajax' => array(
+      'callback' => 'os_subtheme_git_method_get_valid_branches',
+      'wrapper' => 'branches',
+    ),
   );
 
   if ($repository_address) {
     $wrapper = new GitWrapper();
     $wrapper->setPrivateKey('.');
-    $git = $wrapper->workingCopy(drupal_realpath('public://') . '/git/' . $vsite_name . '/' . time());
-    $git->clone($repository_address);
-    $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $git->getBranches()->remote();
+
+    if (empty($form_state['#git_path'])) {
+      $path = drupal_realpath('public://') . '/git/' . $vsite_name . '/' . time();
+      $form_state['#git_path'] = $path;
+
+      // Clone the repo.
+      $clone = TRUE;
+    }
+    else {
+      $path = $form_state['#git_path'];
+      // Don't clone the repo. We already have it.
+      $clone = FALSE;
+    }
+
+    $git = $wrapper->workingCopy($path);
+
+    // This will let us know if the repo. was cloned and will not clone the
+    // repo. every time the user change the branch.
+    if ($clone) {
+      $git->clone($repository_address);
+    }
+
+    $branches = array();
+
+    foreach ($git->getBranches()->remote() as $branch) {
+      if (strpos($branch, ' -> ') !== FALSE) {
+        // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+        // don't need him.
+        continue;
+      }
+
+      $branches[str_replace(" ", "_", $branch)] = $branch;
+    }
+
+    $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $branches;
+  }
+
+  $repository_branch = !empty($form_state['values']['branch']) ? $form_state['values']['branch'] : 0;
+
+  if ($repository_branch != '---') {
+    $git->checkout($repository_branch);
+
+    $subtheme = subtheme_create(array(
+      'path' => $path,
+    ));
+
+    $info = $subtheme->parseInfo();
+
+    $form_state['subtheme'] = $subtheme;
+
+    if (!_os_subtheme_validate($info['base theme'], 'branch')) {
+      $form['branch']['#attributes'] = array(
+        'class' => array('error'),
+      );
+    }
   }
 
   $form['actions'] = array(
@@ -155,9 +212,55 @@ function os_subtheme_git_method($form, $form_state) {
 }
 
 /**
+ * Validate the submitted form.
+ */
+function os_subtheme_git_method_validate($form, $form_state) {
+  if (empty($form_state['subtheme'])) {
+    return;
+  }
+
+  $subtheme = $form_state['subtheme'];
+  $info = $subtheme->parseInfo();
+  $info['base theme'] = !isset($info['base theme']) ? NULL : $info['base theme'];
+  _os_subtheme_validate($info['base theme'], 'branch');
+}
+
+/**
+ * Create the base theme.
+ */
+function os_subtheme_git_method_submit($form, &$form_state) {
+  if (empty($form_state['subtheme'])) {
+    return;
+  }
+
+  $og_context = og_context();
+
+  $subtheme = $form_state['subtheme'];
+
+  $info = $subtheme->parseInfo();
+
+  $subtheme->title = vsite_get_vsite()->og->title . "'s " . filter_xss($info['base theme']) . " base theme.";
+  $subtheme->status = SUBTHEME_ENABLED_LOAD_MANUAL;
+  $form_state['redirect'] = 'cp/appearance';
+
+  $wrapper = entity_metadata_wrapper('subtheme', $subtheme);
+  $wrapper->field_os_theme->set($info['base theme']);
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($og_context['gid']));
+
+  $subtheme->save();
+}
+
+/**
  * Return piece of the form for AJAX rendering.
  */
 function os_subtheme_git_method_get_ajax_branches($form, $form_state) {
+  return $form['branch'];
+}
+
+/**
+ * Return piece of the form for AJAX rendering.
+ */
+function os_subtheme_git_method_get_valid_branches($form, $form_state) {
   return $form['branch'];
 }
 
@@ -178,6 +281,11 @@ function os_subtheme_form_subtheme_manage_alter(&$form, &$form_state) {
 
   // Remove the image field.
   $form['field_image']['#access'] = FALSE;
+
+  // This entity has created via git - this is no longer required nad disable
+  // the option to upload zip file so the theme will not be overridden.
+  $form['file']['#disabled'] = !empty($form_state['#entity']->path);
+  $form['file']['#required'] = empty($form_state['#entity']->path);
 }
 
 /**
@@ -211,14 +319,31 @@ function os_subtheme_validate($form, $form_state) {
   $subtheme->extract();
 
   $info = $subtheme->parseInfo();
+  _os_subtheme_validate($info['base theme'], 'file][upload');
+}
 
+/**
+ * Validating the sub theme before curating the sub theme entity.
+ * @param $value
+ *  The base theme info.
+ * @param $form_element_name
+ *  The input name in the form.
+ *
+ * @return
+ *  True or false.
+ */
+function _os_subtheme_validate($base_theme, $form_element_name) {
   ctools_include('themes', 'os');
   $themes = os_get_themes();
 
-  if (!(isset($info['base theme']))) {
-    form_set_error('file][upload', t('The theme you uploaded is not valid: OS theme name to be based on is missing.'));
+  if (!(isset($base_theme))) {
+    form_set_error($form_element_name, t('The theme you uploaded is not valid: OS theme name to be based on is missing.'));
+    return FALSE;
   }
-  else if (!in_array($info['base theme'], array_keys($themes))) {
-    form_set_error('file][upload', t('The theme you uploaded is not valid: the base theme is not listed in the OS theme list.'));
+  else if (!in_array($base_theme, array_keys($themes))) {
+    form_set_error($form_element_name, t('The theme you uploaded is not valid: the base theme is not listed in the OS theme list.'));
+    return FALSE;
   }
+
+  return TRUE;
 }
