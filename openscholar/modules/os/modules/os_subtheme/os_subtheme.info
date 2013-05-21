@@ -7,5 +7,6 @@ package = OpenScholar
 php = 5.2.4
 
 dependencies[] = subtheme
+dependencies[] = og
 
 

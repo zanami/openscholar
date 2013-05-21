@@ -62,6 +62,10 @@ function os_subtheme_permission() {
  * Implements hook_init().
  */
 function os_subtheme_init() {
+  if (!module_exists('og_context')) {
+    return;
+  }
+
   if (!$og_context = og_context()) {
     return;
   }
@@ -233,7 +237,9 @@ function os_subtheme_git_method_submit($form, &$form_state) {
     return;
   }
 
-  $og_context = og_context();
+  if ($og_context = og_context()) {
+    return;
+  }
 
   $subtheme = $form_state['subtheme'];
 

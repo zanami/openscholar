@@ -9,6 +9,9 @@
  * Implements hook_requirements().
  */
 function os_subtheme_requirements() {
+  if (!function_exists('libraries_get_libraries')) {
+    return array();
+  }
   $libraries = libraries_get_libraries();
 
   if (!in_array('git', array_keys($libraries))) {
@@ -102,10 +105,8 @@ function os_subtheme_install() {
       ),
     ),
   );
-  
-  // Attaching the needed fields.
-  og_create_field(OG_AUDIENCE_FIELD, 'subtheme', 'subtheme');
 
+  // Attaching the needed fields.
   $field = field_info_field($field_info['field_config']['field_name']);
   if (empty($field)) {
     field_create_field($field_info['field_config']);
@@ -116,4 +117,6 @@ function os_subtheme_install() {
     field_create_instance($field_info['field_instance']);
     entity_property_info_cache_clear();
   }
+
+  og_create_field(OG_AUDIENCE_FIELD, 'subtheme', 'subtheme');
 }
