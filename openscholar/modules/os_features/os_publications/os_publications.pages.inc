@@ -418,7 +418,6 @@ function _os_publications_get_citation_example() {
 
   $node_array = array($node, $node1, $node2);
 
-
   return $node_array;
 }
 
@@ -438,7 +437,6 @@ function _os_publications_build_citation_example($csl) {
   $node_array = _os_publications_get_citation_example();
 
   return _os_publications_theme_citation(array('style_name' => $style, 'node_array' => $node_array));
-
 }
 
 function _os_publications_theme_citation($variables) {
