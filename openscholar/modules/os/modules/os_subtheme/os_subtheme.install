@@ -41,7 +41,7 @@ function os_subtheme_requirements() {
  * Implements hook_install().
  */
 function os_subtheme_install() {
-  $field = array(
+  $field_info = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -106,14 +106,14 @@ function os_subtheme_install() {
   // Attaching the needed fields.
   og_create_field(OG_AUDIENCE_FIELD, 'subtheme', 'subtheme');
 
-  $field = field_info_field($field['field_config']['field_name']);
+  $field = field_info_field($field_info['field_config']['field_name']);
   if (empty($field)) {
-    $field = field_create_field($field['field_config']);
+    field_create_field($field_info['field_config']);
   }
 
-  $instance = field_info_instance('subtheme', $field['field_config']['field_name'], 'subtheme');
+  $instance = field_info_instance('subtheme', $field_info['field_config']['field_name'], 'subtheme');
   if (empty($instance)) {
-    field_create_instance($field['field_instance']);
+    field_create_instance($field_info['field_instance']);
     entity_property_info_cache_clear();
   }
 }
