@@ -298,6 +298,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       $form['biblio_tabs'][2]['biblio_secondary_title']['#title'] = t('Patent Source');
       // Hide the "Issue" field, its not needed for a patent.
       $form['biblio_tabs'][2]['biblio_issue']['#access'] = FALSE;
+      // Rename "Patent Version Number" to "Patent Number".
+      $form['biblio_tabs'][2]['biblio_volume']['#title'] = t('Patent Number');
+      // Increase the input field for the patent number.
+      $form['biblio_tabs'][2]['biblio_volume']['#size'] = 40;
       break;
 
     default:
