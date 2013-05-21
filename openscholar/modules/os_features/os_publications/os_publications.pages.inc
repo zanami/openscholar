@@ -334,6 +334,7 @@ function os_publications_reset_submit($form, $form_state) {
  */
 function _os_publications_get_citation_example() {
 
+  // Basic author listing.
   $contributors = array(
     0 => array(
       'lastname' => 'Doe',
@@ -374,6 +375,7 @@ function _os_publications_get_citation_example() {
   // Book Chapter.
   $node = new stdClass();
   $node->nid = -1;
+  $node->example_type           = 'Book Chapter';
   $node->title                  = 'A Book Chapter';
   $node->biblio_contributors    = $contributors;
   $node->biblio_type            = 101;
@@ -388,6 +390,7 @@ function _os_publications_get_citation_example() {
   // Journal Article.
   $node1 = new stdClass();
   $node1->nid = -1;
+  $node1->example_type           = 'Journal Article';
   $node1->title                  = 'My Journal Article';
   $node1->biblio_contributors    = $contributors;
   $node1->biblio_type            = 102;
@@ -401,6 +404,7 @@ function _os_publications_get_citation_example() {
   // Book.
   $node2 = new stdClass();
   $node2->nid = -1;
+  $node2->example_type           = 'Book with 10+ authors (et al)';
   $node2->title                  = 'This is a Book Title';
   $node2->biblio_contributors    = $contributors_etall;
   $node2->biblio_type            = 100;
@@ -470,7 +474,6 @@ function _os_publications_theme_citation($variables) {
       }
       if (!empty($csl->parent)) {
         $csl_file_contents = db_query("SELECT csl FROM biblio_citeproc_styles WHERE id = :id", array(':id' => $csl->parent))->fetchField();
-
       }
       else {
         $csl_file_contents = $csl->csl;
@@ -479,8 +482,16 @@ function _os_publications_theme_citation($variables) {
     }
   }
 
+  // Display the citation.
   foreach($node_array as $key => $value) {
-    $styled_node .= '<div class="citation-example">' . $citeproc->render($value) . '</div>';
+    $output = '';
+    // Strip off the "example_type" array value if one exists.
+    if(isset($value->example_type)) {
+      $example_type = '<strong>' . $value->example_type . ' ' . t('example:') . '</strong>';
+      $output .=  $example_type . '<br />';
+    }
+    $output .= $citeproc->render($value);
+    $styled_node .= '<div class="citation-example">' . $output . '</div>';
   }
 
   return $styled_node;
