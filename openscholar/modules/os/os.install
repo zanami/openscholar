@@ -106,6 +106,6 @@ function os_update_7009() {
 /**
  * Turn on Subtheme and OS subtheme modules.
  */
-function os_update_7010() {
+function os_update_7011() {
   module_enable(array('subtheme', 'os_subtheme'));
 }
