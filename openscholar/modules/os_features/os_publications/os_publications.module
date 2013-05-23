@@ -365,7 +365,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
   $form['biblio_year']['#description'] = t('Required. Must be one of @years, or YYYY', array('@years' => implode(', ', $years)));
 
-  // Set years to required so the astrisk will be added.
+  // Set biblio_year to required so the asterisks will be added.
   $form['biblio_year']['#required'] = TRUE;
 
   // Change the Notes field's description to include a link to the settings form
