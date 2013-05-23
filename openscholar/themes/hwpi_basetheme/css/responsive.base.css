@@ -10,6 +10,9 @@
 #menu-bar ul.menu ul ul {
     background: none repeat scroll 0 0 #24527A;
 }
+.header-left.header-main.header-right .region-header-second .region-inner {
+    margin-right: 0;
+}
 
 }
 

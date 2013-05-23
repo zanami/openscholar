@@ -143,11 +143,17 @@ table[style] {
 
 
 @media (max-width: 768px) {
+table[style] {
+    font-size: 80%!important;
 
+}
 #header-panels .block-boxes-os_boxes_html table {
     margin-bottom: 55px;
     margin-left: 15px;
     width: 100%;
+}
+table p {
+    font-size: 80%;
 }
 #header-panels .block-boxes-os_boxes_html td {
     display: block;
@@ -238,6 +244,18 @@ table[style] {
     margin-left: 0!important;
 
 }
+.block.block-boxes.block-boxes-os_boxes_site_logo {
+    width: 220px!important;
+}
+.header-left.header-main.header-right .region-header-second .region-inner {
+    margin-left: 0;
+
+}
+.region-header-first {
+    margin-left: 0;
+    max-width: 100%;
+    text-align: center;
+}
 
 }
 @media (max-width: 479px) {
@@ -246,4 +264,5 @@ th, td {
     padding: 0.3em 0.1em;
 
 }
+
 }
