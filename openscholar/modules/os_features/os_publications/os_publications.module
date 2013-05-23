@@ -354,9 +354,12 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       '#default_value' => isset($node->biblio_url_title) ? $node->biblio_url_title : '',
       '#type' => 'textfield',
       '#title' => 'Title',
-      '#description' => t('Text to show when linking to external URL.'),
+      '#description' => t('Display name of the external URL.'),
     ),
   );
+
+  // Change the name of "Locators" to "Link" to be more descriptive.
+  $form['biblio_tabs'][5]['#title'] = t('Link');
 
   $form['biblio_tabs'][5]['url']['biblio_url']['#title'] = t('URL');
   unset($form['biblio_tabs'][5]['biblio_url']);
