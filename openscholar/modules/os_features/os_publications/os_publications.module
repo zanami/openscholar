@@ -383,6 +383,21 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
   $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
 
+  // Move publicaiton image into a tab in publications extra.
+  // Drop the "Publication Image" title from the field as it's repetitive with the tab title.
+  $form['field_biblio_image']['und'][0]['#title'] = '';
+  $form['biblio_tabs'][] = array(
+    '#title' => 'Image',
+    '#type' => 'fieldset',
+    '#group' => 'biblio_tabs',
+    '#description' => t('Any image to associate with your publication, e.g Book Cover and Journal Cover.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#weight' => 30,
+    'field_biblio_image' => $form['field_biblio_image'],
+  );
+  unset($form['field_biblio_image']);
+
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
@@ -399,8 +414,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   unset($form['options']['sticky']);
 
   unset($form['biblio_tabs']);
-
-  dpm($form);
 }
 
 /**
