@@ -455,10 +455,11 @@ class FeatureContext extends DrupalContext {
    *  @param $arguments
    *    Array contain the arguments for function.
    *  @param $debug
-   *    Set as TRUE/FALSE to diplay the output the function print on the screen.
+   *    Set as TRUE/FALSE to display the output the function print on the screen.
    */
-  private function invoke_code($function, $arguments, $debug = FALSE) {
-    $code = "$function(" . implode(',', $arguments) . ");";
+  private function invoke_code($function, $arguments = NULL, $debug = FALSE) {
+    $code = !empty($arguments) ? "$function(" . implode(',', $arguments) . ");" : "$function();";
+
     $output = $this->getDriver()->drush("php-eval \"{$code}\"");
 
     if ($debug) {
@@ -836,5 +837,12 @@ class FeatureContext extends DrupalContext {
     $code = "os_migrate_demo_get_term_id('$term');";
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
     $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
+  }
+
+  /**
+   * @Given /^I reindex the search$/
+   */
+  public function iReindexTheSearch() {
+    $this->getDriver()->drush("search-index");
   }
 }
