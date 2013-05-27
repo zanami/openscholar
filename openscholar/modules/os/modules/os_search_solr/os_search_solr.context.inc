@@ -14,6 +14,7 @@ function os_search_solr_context_default_contexts() {
     $delta_created = '';
     $delta_bundle = '';
     $delta_og = '';
+  $export = array();
 
   	$searcher_name = os_search_solr_get_searcher_name();
     // Gets delta map
@@ -69,21 +70,21 @@ function os_search_solr_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
-        'facetapi-'.$delta_created => array(
+        'facetapi-n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB' => array(
           'module' => 'facetapi',
-          'delta' => $delta_created,
+          'delta' => 'n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB',
           'region' => 'sidebar_second',
           'weight' => '-8',
         ),
-        'facetapi'.$delta_bundle => array(
+        'facetapi-GiIy4zr9Gu0ZSa0bumw1Y9qIIpIDf1wu' => array(
           'module' => 'facetapi',
-          'delta' => $delta_bundle,
+          'delta' => 'GiIy4zr9Gu0ZSa0bumw1Y9qIIpIDf1wu',
           'region' => 'sidebar_second',
           'weight' => '-7',
         ),
-        'facetapi-'.$delta_og => array(
+        'facetapi-CpjIe0iO04QY4VGdG5PfZfBQqRWCmc4G' => array(
           'module' => 'facetapi',
-          'delta' => $delta_og,
+          'delta' => 'CpjIe0iO04QY4VGdG5PfZfBQqRWCmc4G',
           'region' => 'sidebar_second',
           'weight' => '-6',
         ),
@@ -93,8 +94,14 @@ function os_search_solr_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-5',
         ),
-      )
-    )
+        'facetapi-CIWqxieiSlmL8r64OBPFrpQKCrfcgjJA' => array(
+          'module' => 'facetapi',
+          'delta' => 'CIWqxieiSlmL8r64OBPFrpQKCrfcgjJA',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
+      ),
+    ),
   );
   $context->condition_mode = 1;
 
