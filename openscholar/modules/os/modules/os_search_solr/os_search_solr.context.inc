@@ -33,6 +33,10 @@ function os_search_solr_context_default_contexts() {
       $string_og = facetapi_build_delta($searcher_name, 'block', 'sm_og_group_ref');
       $delta_og = array_search($string_og, $map);
 
+      // Filter by OG vocab.
+      $string_og_vocab = facetapi_build_delta($searcher_name, 'block', 'sm_og_vocabulary');
+      $delta_og_vocab = array_search($string_og_vocab, $map);
+
     }
   }
   $context = new stdClass();
@@ -70,21 +74,21 @@ function os_search_solr_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
-        'facetapi-n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB' => array(
+        'facetapi-'.$delta_created => array(
           'module' => 'facetapi',
-          'delta' => 'n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB',
+          'delta' => $delta_created,
           'region' => 'sidebar_second',
           'weight' => '-8',
         ),
-        'facetapi-GiIy4zr9Gu0ZSa0bumw1Y9qIIpIDf1wu' => array(
+        'facetapi'.$delta_bundle => array(
           'module' => 'facetapi',
-          'delta' => 'GiIy4zr9Gu0ZSa0bumw1Y9qIIpIDf1wu',
+          'delta' => $delta_bundle,
           'region' => 'sidebar_second',
           'weight' => '-7',
         ),
-        'facetapi-CpjIe0iO04QY4VGdG5PfZfBQqRWCmc4G' => array(
+        'facetapi-'.$delta_og => array(
           'module' => 'facetapi',
-          'delta' => 'CpjIe0iO04QY4VGdG5PfZfBQqRWCmc4G',
+          'delta' => $delta_og,
           'region' => 'sidebar_second',
           'weight' => '-6',
         ),
@@ -94,9 +98,9 @@ function os_search_solr_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-5',
         ),
-        'facetapi-CIWqxieiSlmL8r64OBPFrpQKCrfcgjJA' => array(
+        'facetapi-' . $delta_og_vocab => array(
           'module' => 'facetapi',
-          'delta' => 'CIWqxieiSlmL8r64OBPFrpQKCrfcgjJA',
+          'delta' => $delta_og_vocab,
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
