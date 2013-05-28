@@ -431,7 +431,7 @@ class OsMigrateEventsNode extends OsMigrate {
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
-    'OsMigrateScienceTaxonomyTerm',
+    'OsMigrateAuthorsTaxonomyTerm',
   );
 
   public function __construct() {
@@ -442,7 +442,7 @@ class OsMigrateEventsNode extends OsMigrate {
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
     $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
-      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->sourceMigration(array('OsMigrateAuthorsTaxonomyTerm'))
       ->separator('|');
   }
 

@@ -104,6 +104,13 @@ function os_update_7009() {
 }
 
 /**
+ * Enable views_infinite_scroll and views_litepager modules
+ */
+function os_update_7010() {
+  module_enable(array('views_infinite_scroll', 'views_litepager'));
+}
+
+/**
  * Turn on Subtheme and OS subtheme modules.
  */
 function os_update_7011() {

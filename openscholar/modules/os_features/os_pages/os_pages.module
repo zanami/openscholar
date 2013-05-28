@@ -327,9 +327,6 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   if (isset($form_state['build_info']['args'][1])) {
     $form['#after_build'][] = '_os_pages_show_portion';
   }
-
-  // Adds the "Link URL" text below the title field.
-  $form['title']['#description'] = t('<strong>Link URL:</strong> <em>No preview</em>');
 }
 
 function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {

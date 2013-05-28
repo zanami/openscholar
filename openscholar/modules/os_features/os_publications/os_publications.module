@@ -709,6 +709,11 @@ function os_publications_preprocess_page(&$variables) {
   if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
     return;
   }
+  
+  ctools_include('infinite_scroll', 'os');
+  _os_add_infinite_scroll('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => '#content ul.pager', 'hide_biblio_categories' => TRUE));
+  
+  
   // Make sure both filters are there.
   if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
     return;
@@ -734,5 +739,23 @@ function os_publications_preprocess_page(&$variables) {
       // Set the new page title.
       drupal_set_title($new_page_title);
       break;
+  }
+}
+
+
+
+/**
+ * Adds alt and title text where appropriate
+ */
+function os_publications_field_attach_load($entity_type, $entities, $view_mode) {
+  if ($entity_type == 'node') {
+    foreach ($entities as $e_id => $e) {
+      if ($e->type != 'biblio') continue;
+
+      if (!empty($e->field_biblio_image)) {
+        $e->field_biblio_image[LANGUAGE_NONE][0]['alt'] = $e->title;
+        $e->field_biblio_image[LANGUAGE_NONE][0]['title'] = $e->title;
+      }
+    }
   }
 }

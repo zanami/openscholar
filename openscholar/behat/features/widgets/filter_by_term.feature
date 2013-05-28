@@ -8,7 +8,7 @@ Feature:
   | Vocabularies           | authors             | select list |
   | Show empty terms       | check               | checkbox    |
   | Show child terms       | check               | checkbox    |
-  | Taxonomy tree depth.  | Show all childeren  | select list |
+  | Taxonomy tree depth.  | Show all children  | select list |
     When I visit "john/publications"
     Then I should see "Filter by term"
     And I should see the following <links>
@@ -103,7 +103,7 @@ Feature:
     And I verify the "Stephen William Hawking" term link redirect to the original page
     Then I verify the "Antoine de Saint-Exupéry" term link doesn't redirect to the original page
 
-  @api
+  @api @current
   Scenario: Verify the terms links direct us to the correct path.
     Given I assign the node "Me and michelle obama" with the type "blog" to the term "Barack Hussein Obama"
      When I visit the original page for the term "Barack Hussein Obama"

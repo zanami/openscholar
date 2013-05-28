@@ -60,6 +60,7 @@ dependencies[] = media_embed
 
 ; performance
 dependencies[] = entitycache
+dependencies[] = views_litepager
 
 ; web services
 dependencies[] = restws
@@ -120,6 +121,7 @@ dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
 dependencies[] = respondjs
+dependencies[] = views_infinite_scroll
 
 files[] = openscholar.profile
 

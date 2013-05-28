@@ -74,6 +74,7 @@ projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
 projects[dyntextfield][download][type] = git
+projects[dyntextfield][download][tag] = 1.0
 projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.git"
 
 projects[entity][subdir] = "contrib"
@@ -274,11 +275,14 @@ projects[olark][version] = 1.0-beta1
 projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
 projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
-projects[password_hustle][subdir] = "contrib"
-projects[password_hustle][version] = 1.0
-
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
+
+projects[pinserver][subdir] = "contrib"
+projects[pinserver][type] = module
+projects[pinserver][download][type] = git
+projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
+projects[pinserver][tag] = 7.x-3.1
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -289,9 +293,11 @@ projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
 
-
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
+
+projects[robotstxt][subdir] = "contrib"
+projects[robotstxt][version] = "1.1"
 
 projects[restws][subdir] = "contrib"
 projects[restws][version] = "2.0-alpha3"
@@ -350,9 +356,16 @@ projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
 projects[views_og_cache][download][revision] = 059a845
 
-
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0
+
+projects[views_litepager][subdir] = "contrib"
+projects[views_litepager][version] = 3.0
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
+
+projects[views_infinite_scroll][subdir] = "contrib"
+projects[views_infinite_scroll][version] = 1.1
+projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -409,3 +422,8 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 libraries[git][type] = "libraries"
 libraries[git][download][type] = "git"
 libraries[git][download][url] = "https://github.com/cpliakas/git-wrapper.git"
+
+libraries[autopager][type] = "libraries"
+libraries[autopager][download][type] = "file"
+libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
+libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"

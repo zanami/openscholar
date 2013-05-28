@@ -1,0 +1,30 @@
+@media (max-width: 1008px) {
+
+
+.view .date-nav-wrapper .date-prev {
+    right: 90%;
+}
+.view .date-nav-wrapper .date-next {
+    right: 0;
+}
+#menu-bar ul.menu ul ul {
+    background: none repeat scroll 0 0 #24527A;
+}
+.header-left.header-main.header-right .region-header-second .region-inner {
+    margin-right: 0;
+}
+
+}
+
+@media (max-width: 768px) {
+
+.footer-left.footer.footer-right .region-footer-first, .footer-left.footer.footer-right .region-footer-third, .footer-left.footer.footer-right .region-footer, .footer-left.footer-right .region-footer-first, .footer-left.footer-right .region-footer-third, .footer-left .region-footer-first, .footer-right .region-footer-third {
+    width: 100%;
+}
+.page-node #content-column .content-inner {
+    padding: 0;
+}
+
+
+
+}

@@ -253,12 +253,25 @@ text-decoration:none;
 	color:#3A72AB;
 }
 
-.add-full-name-wrapper {position:absolute;right:0px;top:20px;}
+.add-full-name-wrapper {
+	position:absolute;
+	right:0px;
+	top:20px;
+	font-size: 14px;
+	}
+	
+	
+.logged-in.no-sidebars.page-user.page-user-edit #content-column input.form-text {
+width: 48%;
+}
 
 .user-add-name {
 	text-decoration:underline;
 }
 
+.logged-in.no-sidebars.page-user #content a.field_first_name_anchor {
+	color: #555555;
+}
 
 .page-site-register #preset-wrapper .form-item,
 .page-site-register .form-item-domain,

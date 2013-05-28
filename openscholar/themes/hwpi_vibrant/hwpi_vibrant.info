@@ -21,7 +21,7 @@
 ;----------// Stylesheets
 
   stylesheets[screen][] = css/hwpi_vibrant.css
-  stylesheets[screen][] = css/hwpi_vibrant.layout.css
+  stylesheets[screen][] = css/responsive.vibrant.css
 
 
 

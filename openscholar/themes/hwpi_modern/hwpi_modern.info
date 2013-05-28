@@ -7,9 +7,10 @@
   release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
+   flavor_name = "Crimson"
+  plugins[os][flavor] = flavors
 
 
-  
 ;----------// OpenScholar
 
   os[theme_type]    = 'vsite'
@@ -21,7 +22,7 @@
 ;----------// Stylesheets
 
   stylesheets[screen][] = css/hwpi_modern.css
-  stylesheets[screen][] = css/hwpi_modern.layout.css
+  stylesheets[screen][] = css/responsive.modern.css
 
 
 
