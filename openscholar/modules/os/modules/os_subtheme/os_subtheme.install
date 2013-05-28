@@ -51,8 +51,6 @@ function os_subtheme_install() {
           'weight' => 1,
         ),
       ),
-      'entity_type' => 'subtheme',
-      'field_name' => 'field_os_theme',
       'label' => 'OS theme',
       'required' => 0,
       'settings' => array(
@@ -71,17 +69,35 @@ function os_subtheme_install() {
     ),
   );
 
+  return;
+
   // Attaching the needed fields.
   $field = field_info_field($field_info['field_config']['field_name']);
   if (empty($field)) {
     field_create_field($field_info['field_config']);
   }
 
-  $instance = field_info_instance('subtheme', $field_info['field_config']['field_name'], 'subtheme');
+  $instance = field_info_instance('subtheme', $field_info['field_config']['field_name'], 'zip');
   if (empty($instance)) {
-    field_create_instance($field_info['field_instance']);
-    entity_property_info_cache_clear();
+    $instance = $field_info['field_instance'] + array(
+      'entity_type' => 'subtheme',
+      'bundle' => 'zip',
+      'field_name' => $field_info['field_config']['field_name'],
+    );
+    field_create_instance($instance);
   }
 
-  og_create_field(OG_AUDIENCE_FIELD, 'subtheme', 'subtheme');
+  $instance = field_info_instance('subtheme', $field_info['field_config']['field_name'], 'git');
+  if (empty($instance)) {
+    $instance = $field_info['field_instance'] + array(
+        'entity_type' => 'subtheme',
+        'bundle' => 'git',
+        'field_name' => $field_info['field_config']['field_name'],
+      );
+    field_create_instance($instance);
+  }
+
+  entity_property_info_cache_clear();
+
+//  og_create_field(OG_AUDIENCE_FIELD, 'subtheme', 'subtheme');
 }

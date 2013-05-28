@@ -8,11 +8,9 @@
 /**
  * Implements hook_menu_alter().
  */
-function os_subtheme_menu() {
-  $items['cp/appearance/sub-themes'] = array(
+function os_subtheme_menu_alter(&$items) {
+  $items['cp/appearance/sub-themes'] = $items['admin/subtheme/add'] + array(
     'title' => 'Add subtheme',
-    'access arguments' => array('add subthemes'),
-    'page callback' => 'os_subtheme_select_method',
     'type' => MENU_LOCAL_ACTION,
   );
 
@@ -26,18 +24,6 @@ function os_subtheme_admin_paths() {
   return array(
     'cp/appearance/sub-themes' => TRUE,
     'cp/appearance/sub-themes/*' => TRUE,
-  );
-}
-
-/**
- * Implements hook_permission().
- */
-function os_subtheme_permission() {
-  return array(
-    'add subthemes' => array(
-      'title' => t('Add OS subthemes'),
-      'description' => t('Add subthemes in various ways.'),
-    ),
   );
 }
 
@@ -76,16 +62,41 @@ function os_subtheme_init() {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function os_subtheme_form_alter(&$form, $form_state, $form_id) {
+  if (!in_array($form_id, array('subtheme_manage_base', 'subtheme_manage_git'))) {
+    return;
+  }
+
+  array_unshift($form['#submit'], 'os_subtheme_git_method_submit');
+}
+
+//https://github.com/RoySegall/os-subtheme.git
+
+/**
+ * Implements hook_url_outbound_alter().
+ *
+ * Change the links for creating a sub theme so the user could be in the context
+ * of the group.
+ */
+function os_subtheme_url_outbound_alter($path) {
+  if (!$og_context = og_context()) {
+    return;
+  }
+}
+
+/**
  * Create the base theme.
  *
- * TODO: bind the theme to the group using anohter submit handler.
+ * TODO: bind the theme to the group using another submit handler.
  */
 function os_subtheme_git_method_submit($form, &$form_state) {
   if (empty($form_state['subtheme'])) {
     return;
   }
 
-  if ($og_context = og_context()) {
+  if (!$og_context = og_context()) {
     return;
   }
 
@@ -93,8 +104,9 @@ function os_subtheme_git_method_submit($form, &$form_state) {
 
   $info = $subtheme->parseInfo();
 
-  $subtheme->title = vsite_get_vsite()->og->title . "'s " . filter_xss($info['base theme']) . " base theme.";
-  $subtheme->status = SUBTHEME_ENABLED_LOAD_MANUAL;
+  // Set the title and the status.
+  $form_state['values']['title'] = vsite_get_vsite()->og->title . "'s " . filter_xss($info['base theme']) . " base theme.";
+  $form_state['values']['status'] = SUBTHEME_ENABLED_LOAD_MANUAL;
   $form_state['redirect'] = 'cp/appearance';
 
   $wrapper = entity_metadata_wrapper('subtheme', $subtheme);
@@ -102,43 +114,4 @@ function os_subtheme_git_method_submit($form, &$form_state) {
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($og_context['gid']));
 
   $subtheme->save();
-}
-
-/**
- * Validate handler - verify the user submitted a valid base theme.
- */
-function os_subtheme_validate($form, $form_state) {
-  $subtheme = $form_state['#entity'];
-  $subtheme->fid = $form_state['values']['file'];
-  $subtheme->extract();
-
-  $info = $subtheme->parseInfo();
-  _os_subtheme_validate($info['base theme'], 'file][upload');
-}
-
-/**
- * Validating the sub theme before curating the sub theme entity.
- *
- * @param $base_theme
- *  The theme name which the new theme is based on.
- * @param $form_element_name
- *  The input name in the form.
- *
- * @return bool
- *  True or false.
- */
-function _os_subtheme_validate($base_theme, $form_element_name) {
-  ctools_include('themes', 'os');
-  $themes = os_get_themes();
-
-  if (!(isset($base_theme))) {
-    form_set_error($form_element_name, t('The theme you uploaded is not valid: OS theme name to be based on is missing.'));
-    return FALSE;
-  }
-  else if (!in_array($base_theme, array_keys($themes))) {
-    form_set_error($form_element_name, t('The theme you uploaded is not valid: the base theme is not listed in the OS theme list.'));
-    return FALSE;
-  }
-
-  return TRUE;
 }
