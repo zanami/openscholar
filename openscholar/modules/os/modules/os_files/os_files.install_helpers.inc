@@ -57,11 +57,30 @@ function _os_files_install_find_nodes($file) {
   return $eids;
 }
 
-function _os_files_install_find_space($file, $eids) {
+/**
+ * Determines if a file needs its space changed.
+ * Returns the new space if it does
+ *
+ * @param $file
+ * @param $eids
+ * @return int
+ */
+function _os_files_install_find_new_space($file, $eids) {
   $current_space = null;
   if (isset($file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
     $current_space = $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
   }
 
+  // no nodes use this file. We can only assume it's in the correct space already
+  if (empty($eids['node'])) {
+    return 0;
+  }
 
+  $node = node_load(reset($eids['node']));
+  if (isset($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']) && $current_space != $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']) {
+    return $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
+  }
+
+  // return nothing if the node is in the correct space already
+  return 0;
 }

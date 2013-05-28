@@ -456,6 +456,7 @@ function os_files_update_7005(&$sb) {
   foreach ($rs as $fid) {
     $file = file_load($fid);
 
+    // Update file_usage
     $eids = _os_files_install_find_nodes($file);
     db_delete('file_usage')
       ->condition('fid', $fid)
@@ -468,9 +469,16 @@ function os_files_update_7005(&$sb) {
       }
     }
 
-    if ($space = _os_files_install_find_space($file, $eids)) {
+    // Update group membership if necessary
+    if (module_exists('vsite') && $space = _os_files_install_find_space($file, $eids)) {
       $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
       file_save($file);
     }
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+    return t('File usage has been corrected for all files.');
   }
 }
