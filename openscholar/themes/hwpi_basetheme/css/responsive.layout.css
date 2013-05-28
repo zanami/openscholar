@@ -153,7 +153,7 @@ table[style] {
     width: 100%;
 }
 table p {
-    font-size: 80%;
+    font-size: 100%;
 }
 #header-panels .block-boxes-os_boxes_html td {
     display: block;
@@ -264,5 +264,9 @@ th, td {
     padding: 0.3em 0.1em;
 
 }
+.field-name-field-photo {
+    float: none!important;
+}
 
 }
+
