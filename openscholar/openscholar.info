@@ -34,7 +34,6 @@ dependencies[] = context
 dependencies[] = features
 dependencies[] = boxes
 dependencies[] = views
-dependencies[] = subtheme
 dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = date_ical
