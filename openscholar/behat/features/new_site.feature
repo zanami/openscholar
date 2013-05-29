@@ -1,6 +1,6 @@
 Feature: Testing the creation of the a new site.
 
-  @api
+  @api @javascript
   Scenario: Test the creation of a new site and verify that we don't get JS alert.
     Given I am logged in as "admin"
     When I visit "/"
