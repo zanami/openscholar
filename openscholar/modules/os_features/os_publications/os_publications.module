@@ -282,17 +282,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     $form['biblio_cut_paste']['#access'] = FALSE;
   }
 
-  // Order the publications by type for the select list.
-  // Since "Select Type" is in the DB, it needs to removed in order for proper sorting.
-  $biblio_select_type[0] = $form['biblio_type']['#options'][0];
-  unset($form['biblio_type']['#options'][0]);
-  $biblio_types = $form['biblio_type']['#options'];
-  asort($biblio_types);
-  // Add the sorted types onto the array with "Select Type".
-  $biblio_select_type += $biblio_types;
-  // Set the biblio types to the new asorted type array.
-  $form['biblio_type']['#options'] = $biblio_select_type;
-
   // Alters form based on what publication type is selected.
   switch ($tid) {
     case 0:
