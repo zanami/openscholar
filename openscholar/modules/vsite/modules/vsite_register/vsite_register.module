@@ -32,13 +32,6 @@ function vsite_register_menu() {
     'access callback' => TRUE, //'_vsite_welcome_message_access',
   );
 
-  // FOR DEVELOPMENT USE ONLY.
-  $items['vsite_register_welcome/%'] = array(
-    'title' => t('Welcome'),
-    'page callback' => 'vsite_register_message',
-    'page arguments' => array('form', 1),
-    'access arguments' => array('access content'),
-  );
   return $items;
 }
 

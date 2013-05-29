@@ -100,7 +100,7 @@ function vsite_access_node_access($node, $op, $account) {
  *
  * Add the vsite privacy/publicity form element to CP settings.
  */
-function vsite_access_cp_settings(){
+function vsite_access_cp_settings() {
   $form = array();
   $space = spaces_get_space();
 
@@ -116,10 +116,10 @@ function vsite_access_cp_settings(){
       ),
       'form' => array(
 		    '#type' => 'radios',
-		    '#title' => t('Site sharing'),
+		    '#title' => t('Site visibility'),
 		    '#default_value' => $wrapper->{VSITE_ACCESS_FIELD}->value(),
-		    '#options' => vsite_access_privacy_available_values(),
-		    '#description' => t('How accesible would you like to make your site.'),
+		    '#options' => vsite_access_privacy_available_values('', '', '', '', '', TRUE),
+		    '#description' => t('Choose who has access to view your site.'),
 		  ),
       'submit' => array(
         'vsite_access_cp_settings_node_submit'
@@ -150,14 +150,50 @@ function vsite_access_cp_settings_node_submit($form, &$form_state){
 
 /**
  * Return available privacy types.
+ *
+ * @param bool $verbose
+ *   If set to TRUE, returns additional lines of explanation for each option.
+ *
+ * Usage:
+ *  - As a callback, with no arguments, it will return just labels.
+ *  - When invoked as PHP, pass ('', '', '', '', '', TRUE) to get descriptions.
+ *
+ * @return array $options
+ *   An indexed array with constant values as keys, and string descriptions.
  */
-function vsite_access_privacy_available_values(){
-  $options = array(
-    VSITE_ACCESS_PUBLIC => t('Public on the web')."<br><span class='radio-description'>".t("Anyone on the Internet can find and access. No sign-in required.")."</span>",
-		VSITE_ACCESS_UNINDEXED => t('Anyone with the link')."<br><span class='radio-description'>".t("Anyone who has the link can access. Not listed in Google. No sign-in required.")."</span>",
-		VSITE_ACCESS_PRIVATE => t('Only users you invite to your site')."<br><span class='radio-description'>".t("Only people explicitly granted permission can access. Sign-in required.")."</span>",
-		//VSITE_ACCESS_INTRANET_PRIVATE => t('If you select this then your site will be private forever.'),
-	);
+function vsite_access_privacy_available_values($field, $instance, $entity_type, $entity, $cacheable, $verbose = FALSE) {
+  // Provides short human-friendly labels for the different options.
+  $labels = array(
+    VSITE_ACCESS_PUBLIC => t('Public on the web'),
+		VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
+		VSITE_ACCESS_PRIVATE => t('Invite only'),
+    // @todo get private intranet working.
+		//VSITE_ACCESS_INTRANET_PRIVATE => t('Private intranet'),
+  );
+  // Simply returns the labels if verbose is not TRUE.
+  if (!$verbose) {
+    return $labels;
+  }
+
+  // Otherwise, formats a second row of descriptive text if verbose is TRUE.
+  // Note: This text is to be displayed on the site register form.
+  $options = $labels;
+  $prefix = '<br><span class="radio-description">';
+  $suffix = '</span>';
+  $descriptions = array(
+    VSITE_ACCESS_PUBLIC => t('Anyone on the Internet can find and access. No sign-in required.'),
+    VSITE_ACCESS_UNINDEXED => t('Anyone who has the link can access. Not listed in Google. No sign-in required.'),
+    VSITE_ACCESS_PRIVATE => t('Only people explicitly granted permission can access. Sign-in required.'),
+    // @todo get private intranet working.
+    //VSITE_ACCESS_INTRANET_PRIVATE => t('If you select this then your site will be private forever.'),
+  );
+
+  // Adds the description and markup to each of the option labels.
+  foreach ($descriptions as $option => $description) {
+    if (isset($options[$option])) {
+      $options[$option] .= $prefix . $description . $suffix;
+    }
+  }
 
   drupal_alter('vsite_access_privacy_values', $options);
 
@@ -179,7 +215,7 @@ function vsite_access_og_fields_info() {
       'no_ui' => TRUE,
       'type' => 'list_integer',
       'cardinality' => 1,
-      'settings' => array('allowed_values' => array(), 'allowed_values_function' => 'vsite_access_privacy_avalible_values'),
+      'settings' => array('allowed_values' => array(), 'allowed_values_function' => 'vsite_access_privacy_available_values'),
     ),
     'instance' => array(
       'label' => t('Site visibility'),
