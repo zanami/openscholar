@@ -67,23 +67,6 @@ function os_subtheme_theme() {
 }
 
 /**
- * Extract a subtheme from a zip file.
- */
-function os_subtheme_extract($fid) {
-  $folder_info = array();
-
-  return $folder_info;
-}
-
-/**
- * Parsing the information from the folder of the theme.
- */
-function os_subtheme_parse_info($folder) {
-  $info = '';
-  return $info;
-}
-
-/**
  * Theme function - selecting the
  */
 function theme_os_subtheme_add_subtheme_list($variables) {
@@ -139,14 +122,7 @@ function os_subtheme_select_method() {
 /**
  * Editing a basic sub theme.
  */
-function subtheme_manage_base($form, &$form_state) {
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#required' => TRUE,
-    '#weight' => -100,
-  );
-
+function os_subtheme_manage_base($form, &$form_state) {
   $form['file'] = array(
     '#title' => t('Themes'),
     '#type' => 'managed_file',
@@ -177,11 +153,13 @@ function subtheme_manage_base($form, &$form_state) {
 /**
  * Validate function - verify the subtheme based on a theme.
  */
-function subtheme_manage_base_validate($form, $form_state) {
-  $folder = os_subtheme_extract($form_state['values']['file']);
-  $info = os_subtheme_parse_info($folder);
+function os_subtheme_manage_base_validate($form, $form_state) {
+  $subtheme = new SubTheme($form_state['values']['file']);
 
-  subtheme_validate_subtheme($info, 'file');
+  $subtheme->extract();
+  $info = $subtheme->parseInfo();
+
+  os_subtheme_validate_subtheme($info, 'file');
 }
 
 /**
@@ -215,6 +193,13 @@ function os_subtheme_validate_subtheme($info, $form_element_name, $in_form = TRU
 
     return FALSE;
   }
+  else if (empty($info['os']['theme_type']) || empty($info['os']['theme_type'])) {
+    if ($in_form) {
+      form_set_error($form_element_name, t('The theme you uploaded is not valid: OpenScholar theme information, type and access, missing.'));
+    }
+
+    return FALSE;
+  }
 
   return TRUE;
 }
@@ -222,6 +207,6 @@ function os_subtheme_validate_subtheme($info, $form_element_name, $in_form = TRU
 /**
  * Editing or creating a new sub theme.
  */
-function subtheme_manage_base_submit($form, &$form_state) {
+function os_subtheme_manage_base_submit($form, &$form_state) {
   $form_state['redirect'] = 'cp/appearance';
 }
