@@ -837,4 +837,13 @@ class FeatureContext extends DrupalContext {
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
     $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
   }
+
+  /**
+   * @Given /^I wait for page actions to complete$/
+   */
+  public function waitForPageActionsToComplete() {
+    // Waits up to 5sec for all jQuery actions (i.e. AJAX calls) to be done.
+    $duration = 5000;
+    $this->getSession()->wait($duration, '(0 === jQuery.active)');
+  }
 }
