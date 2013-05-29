@@ -843,6 +843,8 @@ class FeatureContext extends DrupalContext {
    */
   public function waitForPageActionsToComplete() {
     // Waits 5 seconds i.e. for any javascript actions to complete.
+    // @todo configure selenium for JS, see step 6 of the following link.
+    // @see http://xavierriley.co.uk/blog/2012/10/12/test-driving-prestashop-with-behat/
     $duration = 5000;
     $this->getSession()->wait($duration);
   }
