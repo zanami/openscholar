@@ -294,10 +294,11 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
     // Patents.
     case 119:
-      // Rename "Publication Source" to "Patent Source" needed for APA citations.
-      $form['biblio_tabs'][2]['biblio_secondary_title']['#title'] = t('Patent Source');
-      // Hide the "Issue" field, its not needed for a patent.
-      $form['biblio_tabs'][2]['biblio_issue']['#access'] = FALSE;
+      // Hide Publication souce to make using the csl files a bit easier.
+      $form['biblio_tabs'][2]['biblio_secondary_title']['#access'] = FALSE;
+      // Rename the "Issue" field to Patent Source (needed for APA citations).
+      $form['biblio_tabs'][2]['biblio_issue']['#title'] = t('Patent Source');
+      $form['biblio_tabs'][2]['biblio_issue']['#size'] = 50;
       // Rename "Patent Version Number" to "Patent Number".
       $form['biblio_tabs'][2]['biblio_volume']['#title'] = t('Patent Number');
       // Increase the input field for the patent number.
