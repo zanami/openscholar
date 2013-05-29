@@ -842,8 +842,8 @@ class FeatureContext extends DrupalContext {
    * @Given /^I wait for page actions to complete$/
    */
   public function waitForPageActionsToComplete() {
-    // Waits up to 5sec for all jQuery actions (i.e. AJAX calls) to be done.
+    // Waits 5 seconds i.e. for any javascript actions to complete.
     $duration = 5000;
-    $this->getSession()->wait($duration, '(0 === jQuery.active)');
+    $this->getSession()->wait($duration);
   }
 }
