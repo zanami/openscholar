@@ -20,7 +20,7 @@
     text-align: center;
 }
 #branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
-    width: 100%;
+    width: 100%!important;
 }
 .branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
     width: 100%!important;
@@ -198,8 +198,8 @@ table p {
     width: 100% !important;
 }
 .one-sidebar.sidebar-first .content-inner {
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 0!important;
+    margin-right: 0!important;
     width: 100%!important;
 }
 .one-sidebar.sidebar-second .content-inner {
