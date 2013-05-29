@@ -103,10 +103,10 @@ function vsite_register_form($form, &$state) {
 
   $form['vsite_private'] = array(
     '#type' => 'radios',
-    '#title' => t('Site Publicity Setting'),
+    '#title' => t('Site visibility'),
     '#default_value' => VSITE_ACCESS_PUBLIC,
-    '#options' => vsite_access_privacy_available_values(),
-    '#description' => t('How accessible would you like to make your site?'),
+    '#options' => vsite_access_privacy_available_values('', '', '', '', '', TRUE),
+    '#description' => t('Choose who has access to view your site.'),
     '#access' => module_exists('vsite_access'),
   );
 
@@ -292,7 +292,14 @@ function vsite_register_form_submit(&$form, &$state) {
   }
 
   // Creates the vsite node.
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $_POST['parent'])) {
+  $name = $purl = $values['domain'];
+  $author = $site_owner->uid;
+  $bundle = $values['bundle'];
+  $preset = $values['preset'];
+  $parent = $_POST['parent'] ? $_POST['parent'] : FALSE;
+  $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
+  $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
+  if ($vsite) {
     // Adds the user to the new vsite.
     module_load_include('inc', 'vsite', 'includes/user');
     vsite_user_add($site_owner);
@@ -302,12 +309,6 @@ function vsite_register_form_submit(&$form, &$state) {
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
-
-    if (isset($values['vsite_private']) && module_exists('vsite_access')) {
-      $wrapper = entity_metadata_wrapper('node', $vsite->group);
-      $wrapper->{VSITE_ACCESS_FIELD}->set($values['vsite_private']);
-      $wrapper->save();
-    }
 
     // Emails user to inform them of new created site, email is always sent.
     // This function may additionally send a second email to a specified
