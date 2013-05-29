@@ -90,3 +90,19 @@ function os_news_vsite_og_node_type_info() {
   );
 }
 
+/**
+ * Adds alt and title text where appropriate
+ */
+function os_news_field_attach_load($entity_type, $entities, $view_mode) {
+  if ($entity_type == 'node') {
+    foreach ($entities as $e_id => $e) {
+      if ($e->type != 'news') continue;
+
+      if (!empty($e->field_photo)) {
+        $e->field_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
+        $e->field_photo[LANGUAGE_NONE][0]['title'] = $e->title;
+      }
+    }
+  }
+}
+

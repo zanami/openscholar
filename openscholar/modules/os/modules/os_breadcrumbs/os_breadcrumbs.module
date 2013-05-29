@@ -272,6 +272,8 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
         // Check for custom menu name.
         if(_os_breadcrumbs_check_custom_title($title) != FALSE) {
           $link_title = _os_breadcrumbs_check_custom_title($title);
+        }else {
+          $link_title = _os_breadcrumbs_shorten_title($title);
         }
       	$append_paths = $title;
       }else {

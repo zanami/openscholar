@@ -543,7 +543,7 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
 
 html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
     font-size: 11px;
- 
+    color: #293352 !important;
 }
 	
 .ctools-dropdown.section_links {

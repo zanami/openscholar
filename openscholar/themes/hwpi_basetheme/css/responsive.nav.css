@@ -5,7 +5,8 @@
     display: none; }
 	
 	#block-os-secondary-menu,
-	#block-os-search-solr-site-search{
+	#block-os-search-solr-site-search,
+	.os-custom-menu{
 		 display: none;
 	}
 	.table-wrap {
