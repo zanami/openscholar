@@ -254,6 +254,14 @@
                <text variable="page"/>
             </group>
          </if>
+         <else-if type="patent">
+           <group prefix=". ">
+             <group>
+               <text variable="volume" prefix="US Patent No. " font-style="italic"/>
+               <text variable="issue" prefix=". "/>
+             </group>
+           </group>
+         </else-if>
          <else-if type="bill book graphic legal_case motion_picture report song chapter paper-conference" match="any">
             <group prefix=" (" suffix=")" delimiter=", ">
                <text macro="edition"/>
