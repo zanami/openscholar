@@ -58,7 +58,7 @@ line-height:22px;
   }
   
 #menu-bar {
-    margin-bottom: 8px;
+    margin-bottom: 3px;
 }
 
 #menu-bar a, 
@@ -67,8 +67,12 @@ line-height:22px;
     font-weight: bold;
 }
 
+#menu-bar a:hover {
+    color: #444;
+}
+
 #menu-bar ul.nice-menu ul {
-    margin: -1px 0 0 -12px;
+    margin: -8px 0 0 -12px;
 }
 
 #menu-bar ul.nice-menu ul li a:hover {
@@ -109,22 +113,30 @@ line-height:22px;
 .sidebar li.expanded, 
 .sidebar li.collapsed, 
 .sidebar li.leaf {
-    padding: 0 0 .5em 0;
+    padding: .3em 0;
 }
 
+.sidebar #block-os-custom-menu ul li a,
+.sidebar #block-os-primary-menu ul li a, 
 .sidebar #block-os-secondary-menu ul li a {
   display:block;
   text-decoration: none !important;
-  padding: .3em;
+  padding: .5em .2em;
   color:#444;
   font-weight:bold;
   line-height: 18px;
+  text-transform: none;
 }
 
 
+.sidebar #block-os-custom-menu ul li a:hover,
+.sidebar #block-os-primary-menu ul li a:hover,
 .sidebar #block-os-secondary-menu ul li a:hover {
-  background-color: #FFF;
+  background-color: #f1f1f1;
   text-decoration: none !important;
+    -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 h1#page-title {
