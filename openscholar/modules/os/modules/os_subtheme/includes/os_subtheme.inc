@@ -106,7 +106,7 @@ class SubTheme {
       $this->extract();
     }
 
-    $info_files = glob($this->path . '/*.info');
+    $info_files = glob($this->path . '/*.flav');
     $info = array();
 
     $info_file = reset($info_files);
@@ -118,7 +118,7 @@ class SubTheme {
       $info[$key] = $value;
     }
 
-    $info['theme name'] = str_replace(array(dirname($info_file), '.info', '/'), '', $info_file);
+    $info['theme name'] = str_replace(array(dirname($info_file), '.flav', '/'), '', $info_file);
 
     return $info;
   }

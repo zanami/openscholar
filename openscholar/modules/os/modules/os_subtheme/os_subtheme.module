@@ -181,23 +181,16 @@ function os_subtheme_manage_base_validate($form, $form_state) {
 function os_subtheme_validate_subtheme($info, $form_element_name, $in_form = TRUE) {
   $themes = list_themes();
 
-  if (empty($info['base theme'])) {
+  if (empty($info['module'])) {
     if ($in_form) {
       form_set_error($form_element_name, t('The theme you uploaded is not valid: theme name to be based on is missing.'));
     }
 
     return FALSE;
   }
-  else if (!in_array($info['base theme'], array_keys($themes))) {
+  else if (!in_array($info['module'], array_keys($themes))) {
     if ($in_form) {
       form_set_error($form_element_name, t('The theme you uploaded is not valid: the base theme is not listed in the theme list.'));
-    }
-
-    return FALSE;
-  }
-  else if (empty($info['os']['theme_type']) || empty($info['os']['theme_type'])) {
-    if ($in_form) {
-      form_set_error($form_element_name, t('The theme you uploaded is not valid: OpenScholar theme information, type and access, missing.'));
     }
 
     return FALSE;
@@ -211,7 +204,20 @@ function os_subtheme_validate_subtheme($info, $form_element_name, $in_form = TRU
  */
 function os_subtheme_manage_base_submit($form, &$form_state) {
   $file = new Subtheme($form_state['values']['file']);
-  $file->accessibleSubTheme();
+
+  $vsite = vsite_get_vsite();
+  $flavors = $vsite->controllers->variable->get('flavors');
+
+  // Parse the info.
+  $info = $file->parseInfo();
+
+  // Save the path of the extracted theme for later.
+  $flavors[$info['theme name']] = array(
+    'path' => $file->extractPath,
+    'name' => $info['name'],
+  );
+
+  $vsite->controllers->variable->set('flavors', $flavors);
 
   $form_state['redirect'] = 'cp/appearance';
 }
@@ -386,4 +392,26 @@ function os_subtheme_manage_git_submit($form, &$form_state) {
   }
 
   $form_state['redirect'] = 'admin/subtheme';
+}
+
+/**
+ * Search of the flavors uploaded to the vsite.
+ */
+function os_subtheme_get_flavors() {
+  $vsite = vsite_get_vsite();
+  $flavors = array();
+
+  foreach ($vsite->controllers->variable->get('flavors') as $name => $info) {
+    $info_files = glob($info['path'] . '/*.flav');
+    $info_file = reset($info_files);
+
+    // Get the information from the info file.
+    $file_content = drupal_parse_info_file($info_file);
+
+    $flavors[$name] = $file_content + array(
+        'path' => $info['path'],
+    );
+  }
+  
+  return $flavors;
 }
