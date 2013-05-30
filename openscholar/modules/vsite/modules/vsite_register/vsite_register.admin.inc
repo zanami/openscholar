@@ -27,11 +27,10 @@ function vsite_register_admin_form($form, &$state) {
     ),
     // Optionally choose a node to display to newly registered users.
     'vsite_register_welcome_message' => array(
-      '#title' => t('Welcome message'),
+      '#title' => t('Welcome message node ID'),
       '#type' => 'textfield',
-      '#description' => t('(Optional) Choose a post to display in an overlay to newly registered vsite owners on their first visit.'),
-      '#autocomplete_path' => 'ctools/autocomplete/node',
-      '#maxlength' => 255,
+      '#description' => t('(Optional) Enter the nid of a post to display in an overlay to newly registered vsite owners on their first visit.'),
+      '#size' => '5',
       '#default_value' => variable_get('vsite_register_welcome_message', ''),
     ),
     // Specify an email address to receive notifications whenever a new site

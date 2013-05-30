@@ -29,7 +29,9 @@ function vsite_register_menu() {
   $items['site/register/welcome'] = array(
     'title callback' => '_vsite_register_welcome_title',
     'page callback' => '_vsite_register_welcome_page',
-    'access callback' => TRUE, //'_vsite_welcome_message_access',
+    'access callback' => '_vsite_register_welcome_access',
+    'access arguments' => array(),
+    'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
@@ -39,12 +41,12 @@ function vsite_register_menu() {
  * Gets the node title from the welcome message node.
  */
 function _vsite_register_welcome_title() {
-  $welcome_message = variable_get('vsite_register_welcome_message');
-  $nid = _vsite_register_welcome_message_nid($welcome_message);
-  if ($nid) {
-    $node = node_load($nid);
+  $nid = variable_get('vsite_register_welcome_message');
+  $node = node_load($nid);
+  if (isset($node->title) && $node->title) {
     return $node->title;
   }
+  // Default to "Welcome" if the title is empty.
   return t('Welcome');
 }
 
@@ -52,13 +54,17 @@ function _vsite_register_welcome_title() {
  * Gets the node title from the welcome message node.
  */
 function _vsite_register_welcome_page() {
-  $welcome_message = variable_get('vsite_register_welcome_message');
-  $nid = _vsite_register_welcome_message_nid($welcome_message);
-  if ($nid) {
-    $node = node_load($nid);
-    $items = field_get_items('node', $node, 'body');
-    $body = array_shift($items);
-    return $body['value'] . '<div class="vsite-welcome-okay"><a class="overlay-close os-blue-button" href="#">' . t('Okay') . '</a></div>';
+  $nid = variable_get('vsite_register_welcome_message');
+  $node = node_load($nid);
+  $items = field_get_items('node', $node, 'body');
+  $body = array_shift($items);
+  // Optionally prepares a button "Okay" to dismiss the overlay.
+  if (overlay_get_mode() == 'child') {
+    $suffix = '<div class="vsite-welcome-okay"><a class="overlay-close os-blue-button" href="#">' . t('Okay') . '</a></div>';
+  }
+  if (isset($body['value'])) {
+    // Only shows the "Okay" dismiss button if the page is viewed in overlay.
+    return isset($suffix) ? $body['value'] . $suffix : $body['value'];
   }
   return '';
 }
@@ -67,8 +73,8 @@ function _vsite_register_welcome_page() {
  * Gets the node title from the welcome message node.
  */
 function _vsite_register_welcome_access() {
-  $welcome_message = variable_get('vsite_register_welcome_message');
-  return (bool) $welcome_message;
+  $nid = variable_get('vsite_register_welcome_message');
+  return is_numeric($nid) && ($nid !== 0);
 }
 
 /**
@@ -193,25 +199,6 @@ function _vsite_register_get_overlay($welcome_message) {
   }
 
   return drupal_lookup_path('alias', "node/$nid");
-}
-
-/**
- * Gets the nid from the welcome message variable value.
- */
-function _vsite_register_welcome_message_nid($welcome_message) {
-  $preg_matches = array();
-
-  $match = preg_match('/\[id: (\d+)\]/', $welcome_message, $preg_matches);
-  if (!$match) {
-    $match = preg_match('/^id: (\d+)/', $welcome_message, $preg_matches);
-  }
-
-  if ($match) {
-    $nid = $preg_matches[1];
-    return $nid;
-  }
-
-  return FALSE;
 }
 
 /**
