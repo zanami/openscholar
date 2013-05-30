@@ -22,7 +22,25 @@ function vsite_register_admin_form($form, &$state) {
     'os_vsites_per_user' => array(
       '#title' => t('Vsites per user'),
       '#type' => 'textfield',
+      '#size' => '5',
       '#default_value' => variable_get('os_vsites_per_user', 1),
+    ),
+    // Optionally choose a node to display to newly registered users.
+    'vsite_register_welcome_message' => array(
+      '#title' => t('Welcome message node ID'),
+      '#type' => 'textfield',
+      '#description' => t('(Optional) Enter the nid of a post to display in an overlay to newly registered vsite owners on their first visit.'),
+      '#size' => '5',
+      '#default_value' => variable_get('vsite_register_welcome_message', ''),
+    ),
+    // Specify an email address to receive notifications whenever a new site
+    // is registered.
+    'vsite_register_admin_mail' => array(
+      '#title' => t('Administrator notification email'),
+      '#type' => 'textfield',
+      '#description' => t('(Optional) Specify an email address to receive notifications whenever a new site is registered. Leave blank for no administrator notification.'),
+      '#maxlength' => 255,
+      '#default_value' => variable_get('vsite_register_admin_mail', ''),
     ),
   );
 

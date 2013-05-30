@@ -91,7 +91,6 @@ function vsite_access_node_access($node, $op, $account) {
       	  return NODE_ACCESS_IGNORE;
       	break;
       }
-
     }
   }
 }
@@ -101,12 +100,12 @@ function vsite_access_node_access($node, $op, $account) {
  *
  * Add the vsite privacy/publicity form element to CP settings.
  */
-function vsite_access_cp_settings(){
+function vsite_access_cp_settings() {
   $form = array();
   $space = spaces_get_space();
 
   if (! empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
+    // Gets the vsite_users_contact_form_anonymous variable.
     $wrapper = entity_metadata_wrapper('node', $space->group);
 
     $form['vsite_private'] = array(
@@ -117,10 +116,10 @@ function vsite_access_cp_settings(){
       ),
       'form' => array(
 		    '#type' => 'radios',
-		    '#title' => t('Site sharing'),
+		    '#title' => t('Site visibility'),
 		    '#default_value' => $wrapper->{VSITE_ACCESS_FIELD}->value(),
-		    '#options' => vsite_access_privacy_avalible_values(),
-		    '#description' => t('How accesible would you like to make your site.'),
+		    '#options' => vsite_access_privacy_available_values(),
+		    '#description' => t('Choose who has access to view your site.'),
 		  ),
       'submit' => array(
         'vsite_access_cp_settings_node_submit'
@@ -143,24 +142,49 @@ function vsite_access_cp_settings_node_submit($form, &$form_state){
   $space = spaces_get_space();
   // Get the vsite_privacy value.
   if (isset($form_state['values']['vsite_private']) && $space) {
-
     $wrapper = entity_metadata_wrapper('node', $space->group);
-
     $wrapper->{VSITE_ACCESS_FIELD}->set($form_state['values']['vsite_private']);
     $wrapper->save();
   }
 }
 
 /**
- * Return avalible privacy types
+ * Return available privacy types.
+ *
+ * @return array $options
+ *   An indexed array with constant values as keys, and string descriptions.
  */
-function vsite_access_privacy_avalible_values(){
+function vsite_access_privacy_available_values() {
+  // Provides short human-friendly labels for the different options.
   $options = array(
-    VSITE_ACCESS_PUBLIC => t('Public on the web')."<br><span class='radio-description'>".t("Anyone on the Internet can find and access. No sign-in required.")."</span>",
-		VSITE_ACCESS_UNINDEXED => t('Anyone with the link')."<br><span class='radio-description'>".t("Anyone who has the link can access. Not listed in Google. No sign-in required.")."</span>",
-		VSITE_ACCESS_PRIVATE => t('Only users you invite to your site')."<br><span class='radio-description'>".t("Only people explicitly granted permission can access. Sign-in required.")."</span>",
-		//VSITE_ACCESS_INTRANET_PRIVATE => t('If you select this then your site will be private forever.'),
-	);
+    VSITE_ACCESS_PUBLIC => t('Public on the web'),
+		VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
+		VSITE_ACCESS_PRIVATE => t('Invite only'),
+    // @todo get private intranet working.
+		//VSITE_ACCESS_INTRANET_PRIVATE => t('Private intranet'),
+  );
+
+  // Otherwise, formats a second row of descriptive text if verbose is TRUE.
+  // Note: This text is to be displayed on the site register form.
+  // @fixme Labels shouldn't contain a period at the end.
+  // Once this function has the option to return just labels, vs. labels AND
+  // descriptions, the period should be removed from the label-only return vals.
+  $prefix = '. <br><span class="radio-description">';
+  $suffix = '</span>';
+  $descriptions = array(
+    VSITE_ACCESS_PUBLIC => t('Anyone on the Internet can find and access. No sign-in required.'),
+    VSITE_ACCESS_UNINDEXED => t('Anyone who has the link can access. Not listed in Google. No sign-in required.'),
+    VSITE_ACCESS_PRIVATE => t('Only people explicitly granted permission can access. Sign-in required.'),
+    // @todo get private intranet working.
+    //VSITE_ACCESS_INTRANET_PRIVATE => t('If you select this then your site will be private forever.'),
+  );
+
+  // Adds the description and markup to each of the option labels.
+  foreach ($descriptions as $option => $description) {
+    if (isset($options[$option])) {
+      $options[$option] .= $prefix . $description . $suffix;
+    }
+  }
 
   drupal_alter('vsite_access_privacy_values', $options);
 
@@ -182,7 +206,7 @@ function vsite_access_og_fields_info() {
       'no_ui' => TRUE,
       'type' => 'list_integer',
       'cardinality' => 1,
-      'settings' => array('allowed_values' => array(), 'allowed_values_function' => 'vsite_access_privacy_avalible_values'),
+      'settings' => array('allowed_values' => array(), 'allowed_values_function' => 'vsite_access_privacy_available_values'),
     ),
     'instance' => array(
       'label' => t('Site visibility'),
