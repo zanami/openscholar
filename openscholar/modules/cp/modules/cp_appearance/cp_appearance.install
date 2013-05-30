@@ -9,6 +9,9 @@
  * Implements hook_requirements().
  */
 function cp_appearance_requirements() {
+  if (!function_exists('libraries_get_libraries')) {
+    return array();
+  }
   $libraries = libraries_get_libraries();
 
   if (!in_array('git', array_keys($libraries))) {
