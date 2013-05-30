@@ -30,6 +30,7 @@ projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
 projects[colorbox][version] = 2.4
 
+; 1.x version pre SCHOLAR 3.6 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
 projects[comment_sources][download][branch] = 7.x-1.x
