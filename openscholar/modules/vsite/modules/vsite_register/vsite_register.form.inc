@@ -105,7 +105,7 @@ function vsite_register_form($form, &$state) {
     '#type' => 'radios',
     '#title' => t('Site visibility'),
     '#default_value' => VSITE_ACCESS_PUBLIC,
-    '#options' => vsite_access_privacy_available_values('', '', '', '', '', TRUE),
+    '#options' => vsite_access_privacy_available_values(),
     '#description' => t('Choose who has access to view your site.'),
     '#access' => module_exists('vsite_access'),
   );
