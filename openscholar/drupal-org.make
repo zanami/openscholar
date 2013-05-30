@@ -374,7 +374,7 @@ libraries[jquery.cycle][download][url] = "https://raw.github.com/malsup/cycle/c2
 
 libraries[tinymce][type] = "libraries"
 libraries[tinymce][download][type] = "file"
-libraries[tinymce][download][url] = "http://github.com/downloads/tinymce/tinymce/tinymce_3.5.8.zip"
+libraries[tinymce][download][url] = "https://codeload.github.com/tinymce/tinymce/zip/3.5.8"
 
 libraries[spyc][type] = "libraries"
 libraries[spyc][download][type] = "file"
