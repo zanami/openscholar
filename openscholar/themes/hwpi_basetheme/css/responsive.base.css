@@ -13,7 +13,9 @@
 .header-left.header-main.header-right .region-header-second .region-inner {
     margin-right: 0;
 }
-
+.page-node #content-column .content-inner {
+    padding: 0!important;
+}
 }
 
 @media (max-width: 768px) {
