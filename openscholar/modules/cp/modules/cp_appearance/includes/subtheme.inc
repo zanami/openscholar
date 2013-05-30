@@ -10,6 +10,7 @@
  *  $file->extract();
  *  $info = $file->parseInfo();
  */
+
 class SubTheme {
 
   /**
@@ -121,32 +122,5 @@ class SubTheme {
     $info['theme name'] = str_replace(array(dirname($info_file), '.flav', '/'), '', $info_file);
 
     return $info;
-  }
-
-  /**
-   * Copy the extracted themes to the theme directory.
-   */
-  public function accessibleSubTheme() {
-    if (empty($this->path)) {
-      $this->extract();
-    }
-
-    $info = $this->parseInfo();
-
-    // The theme is already enable, no further action needed.
-    if (in_array($info['theme name'], list_themes())) {
-      return;
-    }
-
-    // Get the path.
-    $to_path = dirname(drupal_get_path('theme', $info['base theme']));
-    $from_path = $this->path;
-
-    // Make the path.
-    @mkdir($to_path . '/' . $info['theme name']);
-
-    os_subtheme_recurse_copy($from_path, $to_path . '/' . $info['theme name']);
-
-    theme_enable(array($info['theme name']));
   }
 }

@@ -527,32 +527,6 @@ function cp_appearance_manage_base_submit($form, &$form_state) {
 }
 
 /**
- * Copy files recursively.
- *
- * @param $src
- *  The directory we would like to copy.
- * @param $dst
- *  Destination of the directory.
- */
-function cp_appearance_recurse_copy($src, $dst) {
-  $dir = opendir($src);
-  @mkdir($dst);
-
-  while (FALSE !== ( $file = readdir($dir))) {
-    if (($file != '.') && ($file != '..' )) {
-      if (is_dir($src . '/' . $file) ) {
-        cp_appearance_recurse_copy($src . '/' . $file,$dst . '/' . $file);
-      }
-      else {
-        copy($src . '/' . $file,$dst . '/' . $file);
-      }
-    }
-  }
-
-  closedir($dir);
-}
-
-/**
  * Adding a theme - git.
  */
 function cp_appearance_manage_git($form, $form_state, $type) {
