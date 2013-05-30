@@ -265,6 +265,12 @@ table p {
     float: none !important;
     padding-bottom: 0 !important;
 }
+.footer-left.footer.footer-right .region-footer-first, .footer-left.footer.footer-right .region-footer-third, .footer-left.footer.footer-right .region-footer, .footer-left.footer-right .region-footer-first, .footer-left.footer-right .region-footer-third, .footer-left .region-footer-first, .footer-right .region-footer-third {
+    width: 100% !important;
+}
+.at-panel .region, .panel-row {
+    float: none!important;
+}
 
 }
 @media (max-width: 479px) {

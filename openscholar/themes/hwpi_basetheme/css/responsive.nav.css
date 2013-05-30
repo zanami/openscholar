@@ -9,6 +9,9 @@
 	.os-custom-menu{
 		 display: none;
 	}
+	#footer .os-custom-menu {
+    display: block !important;
+}
 	.table-wrap {
     overflow: scroll; } 
 	

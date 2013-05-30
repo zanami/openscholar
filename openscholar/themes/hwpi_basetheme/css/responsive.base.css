@@ -34,7 +34,7 @@
 @media (max-width: 479px){
 	
 	
-	.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser, .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio, .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser, .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio, .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
     float: none;
     margin-right: 0!important;
         width: 100%;
@@ -44,15 +44,14 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
         width: 100%;
 }
 .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content, .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
-    display: block;
     margin-left: 0!important;
     width: 100%;
 }
 .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
-    margin-left: 0 !important;
+    margin-left: 0!important;
 }
 .field-type-image {
-    margin-bottom: 0 !important;
+    margin-bottom: 0!important;
 }
 .node-news.node-teaser .field-name-field-photo {
     float: none !important;
