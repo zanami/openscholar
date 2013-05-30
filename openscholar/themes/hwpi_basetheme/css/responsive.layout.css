@@ -50,7 +50,9 @@ display:none;
 }
 /*layout*/
 #columns .region-inner {
-    margin-bottom: -12px;
+    border: medium none;
+    margin-bottom: -12px !important;
+    padding: 0 !important;
 }
 
 .front .content-left.content-right.content-bottom #content-panels .region {
@@ -145,10 +147,7 @@ table[style] {
 
 
 @media (max-width: 768px) {
-table[style] {
-    font-size: 80%!important;
 
-}
 #header-panels .block-boxes-os_boxes_html table {
     margin-bottom: 55px;
     margin-left: 15px;
