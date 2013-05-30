@@ -263,6 +263,24 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] : (isset($form_state['node']->biblio_type) ? $form_state['node']->biblio_type : 0);
 
+  // Patent Country Code array.
+  $patent_country_codes = array('AP' => 'ARIPO (African Reg Ind Prop Org)', 'AL' => 'Albania', 'DZ' => 'Algeria', 'AR' => 'Argentina',
+    'AU' => 'Australia', 'AT' => 'Austria', 'BE' => 'Belgium', 'BX' => 'Benelux', 'BR' => 'Brazil', 'BG' => 'Bulgaria', 'CA' => 'Canada',
+    'CL' => 'Chile', 'CN' => 'China', 'CO' => 'Columbia', 'HR' => 'Croatia', 'CU' => 'Cuba','CY' => 'Cyprus', 'CZ' => 'Czech Republic (CS before 1993)',
+    'CS' => 'Czechoslovakia (CZ or SK after 1992)', 'DK' => 'Denmark', 'EG' => 'Egypt', 'EA' => 'Eurasian Patent Organization',
+    'EP' => 'European Patent Office', 'DE' => 'Germany', 'DD' => 'Germany, East (DE after 1990)', 'FI' => 'Finland', 'FR' => 'France', 'GB' => 'Great Britain',
+    'GR' => 'Greece', 'HK' => 'Hong Kong', 'HU' => 'Hungary', 'IS' => 'Iceland', 'IN' => 'India', 'ID' => 'Indonesia', 'IB' => 'International Patent Institute',
+    'TP' => 'International Technology Disclosure', 'IR' => 'Iran', 'IQ' => 'Iraq', 'IE' => 'Ireland', 'IL' => 'Israel', 'IT' => 'Italy', 'JP' => 'Japan', 'JO' => 'Jordan',
+    'KE' => 'Kenya', 'KP' => 'Korea (North)', 'KR' => 'Korea (South)', 'LV' => 'Latvia', 'LT' => 'Lithuania', 'LU' => 'Luxembourg',
+    'MW' => 'Malawi', 'MY' => 'Malaysia', 'MX' => 'Mexico', 'MD' => 'Moldova', 'MC' => 'Monaco',
+    'MN' => 'Mongolia', 'MA' => 'Morocco', 'NL' => 'Netherlands', 'NZ' => 'New Zealand', 'NG' => 'Nigeria', 'NO' => 'Norway', 'OA' => 'OAPI',
+    'WO' => 'PCT', 'PE' => 'Peru', 'PH' => 'Philippines', 'PL' => 'Poland', 'PT' => 'Portugal', 'RD' => 'Research Disclosure', 'RO' => 'Romania',
+    'RU' => 'Russia (SU before 1993)', 'SA' => 'Saudi Arabia', 'SG' => 'Singapore', 'SK' => 'Slovakia (CS before 1993)', 'SI' => 'Slovenia', 'ZA' => 'South Africa',
+    'SU' => 'Soviet Union (RU after 1992)', 'ES' => 'Spain', 'LK' => 'Sri Lanka', 'SE' => 'Sweden', 'CH' => 'Switzerland', 'TW' => 'Taiwan', 'TH' => 'Thailand', 'TT' => 'Trinidad',
+    'TN' => 'Tunisia', 'TR' => 'Turkey', 'UA' => 'Ukranian Republic', 'GB' => 'United Kingdom', 'US' => 'United States of America', 'UY' => 'Uruguay',
+    'VE' => 'Venezuela', 'VN' => 'Viet Nam, Socialist Rep.', 'WO' => 'WIPO (World Intellectual Prop Org)', 'YU' => 'Yugoslavia', 'ZM' => 'Zambia', 'ZW' => 'Zimbabwe',
+  );
+
   // Hides the "Book Cover" biblio_image field.
   $form['field_biblio_image']['#access'] = FALSE;
   // Hides the "Extra Fields" (dyntextfield) field until a type is selected.
@@ -303,6 +321,12 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       $form['biblio_tabs'][2]['biblio_volume']['#title'] = t('Patent Number');
       // Increase the input field for the patent number.
       $form['biblio_tabs'][2]['biblio_volume']['#size'] = 40;
+      // Add in the patent issue country.
+      $form['biblio_tabs'][2]['biblio_section'] = array(
+        '#type' => 'select',
+        '#options' => $patent_country_codes,
+        '#title' => t('Patent Issuing Country'),
+      );
       break;
 
     default:
@@ -404,6 +428,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   unset($form['options']['sticky']);
 
   unset($form['biblio_tabs']);
+  dpm($form);
 }
 
 /**
