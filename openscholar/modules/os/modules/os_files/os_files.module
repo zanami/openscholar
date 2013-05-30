@@ -430,29 +430,29 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       $info = field_info_field($field);
 
       // This is a field file, break the loop.
-      if ($info['type'] == 'file') {
-        break;
+      if ($info['type'] != 'file') {
+        continue;
       }
-    }
 
-    $file_field = $wrapper->{$field}->value();
-    $field_info = field_info_field($field);
+      $file_field = $wrapper->{$field}->value();
+      $field_info = field_info_field($field);
 
-    if ($field_info['cardinality'] === 1 || $field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
-      if ($file_field['fid'] == $file->fid) {
-        $file_field = NULL;
-      }
-    }
-    else {
-      // Dealing with a multiple field.
-      foreach ($file_field as $delta => $value) {
-        if ($value['fid'] == $file->fid) {
-          unset($file_field[$delta]);
+      if ($field_info['cardinality'] === 1 || $field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
+        if ($file_field['fid'] == $file->fid) {
+          $file_field = NULL;
         }
       }
-    }
+      else {
+        // Dealing with a multiple field.
+        foreach ($file_field as $delta => $value) {
+          if ($value['fid'] == $file->fid) {
+            unset($file_field[$delta]);
+          }
+        }
+      }
 
-    $wrapper->{$field}->set($file_field);
+      $wrapper->{$field}->set($file_field);
+    }
 
     $wrapper->save();
   }
