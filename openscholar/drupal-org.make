@@ -80,6 +80,7 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
 projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
+projects[entity][patch][] = http://drupal.org/files/entity-file_entity_access-1831578-9.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
@@ -92,7 +93,9 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.3
+; projects[entityreference_prepopulate][version] = 1.3
+projects[entityreference_prepopulate][download][type] = git
+projects[entityreference_prepopulate][download][revision] = e2c2811
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -356,6 +359,7 @@ projects[views_slideshow][version] = 3.0
 projects[views_litepager][subdir] = "contrib"
 projects[views_litepager][version] = 3.0
 projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-off_by_one-2006992-1.patch"
 
 projects[views_infinite_scroll][subdir] = "contrib"
 projects[views_infinite_scroll][version] = 1.1
