@@ -211,7 +211,8 @@
          </else-if>
          <else-if type="patent">
             <group prefix=". ">
-              <text variable="volume" prefix="U.S. Patent "/>
+              <text variable="section" suffix=" Patent"/>
+              <text variable="volume" prefix=" "/>
             </group>
          </else-if>
          <else-if type="bill book graphic legal_case motion_picture report song" match="any">

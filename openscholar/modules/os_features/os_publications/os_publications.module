@@ -317,6 +317,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       // Rename the "Issue" field to Patent Source (needed for APA citations).
       $form['biblio_tabs'][2]['biblio_issue']['#title'] = t('Patent Source');
       $form['biblio_tabs'][2]['biblio_issue']['#size'] = 50;
+      $form['biblio_tabs'][2]['biblio_issue']['#description'] = t('Source of patent, e.g. U.S Patent and Trademark Office.');
       // Rename "Patent Version Number" to "Patent Number".
       $form['biblio_tabs'][2]['biblio_volume']['#title'] = t('Patent Number');
       // Increase the input field for the patent number.
@@ -325,7 +326,13 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       $form['biblio_tabs'][2]['biblio_section'] = array(
         '#type' => 'select',
         '#options' => $patent_country_codes,
+        '#default_value' => isset($node->biblio_section) ? $node->biblio_section : 'US',
         '#title' => t('Patent Issuing Country'),
+      );
+      // Setup a hidden field that will hold the text of the country select.
+      $form['biblio_tabs'][2]['biblio_edition'] = array(
+        '#type' => 'hidden',
+        '#value' => isset($node->biblio_edition) ? $node->biblio_edition : '',
       );
       break;
 
@@ -424,11 +431,29 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     '#collapsed' => TRUE,
   );
 
+  // Add in a new validation for patents
+  $form['#validate'][] = 'os_publications_biblio_form_patent_validate';
+
   // remove the sticky content option
   unset($form['options']['sticky']);
 
   unset($form['biblio_tabs']);
-  dpm($form);
+}
+
+/**
+ * Custom biblio form validation function for patents.
+ * Function will put the patent country select option text into a hidden field that is needed for certain citations.
+ */
+function os_publications_biblio_form_patent_validate(&$form, &$form_state) {
+  // Only altering for patent types.
+  if($form_state['values']['biblio_type'] != '119') {
+    return;
+  }
+  if(!isset($form_state['values']['biblio_section'])) {
+    return;
+  }
+  $patent_key = $form_state['values']['biblio_section'];
+  $form_state['values']['biblio_edition'] = $form['biblio_section']['#options'][$patent_key];
 }
 
 /**

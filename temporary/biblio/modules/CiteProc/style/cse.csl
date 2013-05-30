@@ -161,7 +161,9 @@
                <group prefix=" " suffix="." delimiter=" ">
                   <text macro="title" suffix="."/>
                </group>
-               <text variable="volume" prefix=" United States patent US "/>
+               <text variable="edition" prefix=" " suffix=" patent"/>
+               <text variable="section" prefix=" "/>
+               <text variable="volume" prefix=" " suffix="."/>
             </else-if>
             <else>
                <group suffix=".">

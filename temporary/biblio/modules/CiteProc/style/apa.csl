@@ -257,7 +257,8 @@
          <else-if type="patent">
            <group prefix=". ">
              <group>
-               <text variable="volume" prefix="US Patent No. " font-style="italic"/>
+               <text variable="section" suffix=" Patent No."/>
+               <text variable="volume" prefix=" " font-style="italic"/>
                <text variable="issue" prefix=". "/>
              </group>
            </group>
@@ -300,7 +301,7 @@
          </group>
       </layout>
    </citation>
-   <bibliography hanging-indent="true" et-al-min="8" et-al-use-first="7" entry-spacing="0" line-spacing="2">
+   <bibliography hanging-indent="false" et-al-min="8" et-al-use-first="7" entry-spacing="0" line-spacing="2">
       <sort>
          <key macro="author"/>
          <key macro="issued-year" sort="ascending"/>
