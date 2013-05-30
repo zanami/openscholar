@@ -60,7 +60,7 @@ function os_theme_get_flavors($theme = NULL) {
   $flavors = ctools_get_plugins('os', 'flavor');
 
   // Search through the flavors that the user uploaded.
-  $sub_themes = os_subtheme_get_flavors();
+  $sub_themes = cp_appearance_get_flavors();
 
   $flavors = array_merge($flavors, $sub_themes);
 
