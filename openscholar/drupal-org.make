@@ -32,8 +32,8 @@ projects[colorbox][version] = 2.4
 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
-projects[comment_sources][download][branch] = 7.x-2.x
-projects[comment_sources][download][revision] = 6b9ee8d2787dda840dc2353a2a571c27f7376060
+projects[comment_sources][download][branch] = 7.x-1.x
+projects[comment_sources][download][revision] = 10e4defb0f886892140e941fae76c59f466bfade
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
 ; patches needed
