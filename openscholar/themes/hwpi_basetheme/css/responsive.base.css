@@ -22,7 +22,7 @@
     width: 100%;
 }
 .page-node #content-column .content-inner {
-    padding: 0;
+    padding: 0!important;
 }
 
 

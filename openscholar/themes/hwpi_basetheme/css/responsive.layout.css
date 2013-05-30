@@ -20,10 +20,10 @@
     text-align: center;
 }
 #branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
-    width: 100%;
+    width: 100%!important;
 }
 .branding-container, #header-container, #columns, #menu-bar #block-os-primary-menu, #footer .gpanel, .region-footer, .message-inner, #powerby-login {
-    width: 100%;
+    width: 100%!important;
 }
 /*Header*/
 .branding-left {
@@ -153,7 +153,7 @@ table[style] {
     width: 100%;
 }
 table p {
-    font-size: 80%;
+    font-size: 100%;
 }
 #header-panels .block-boxes-os_boxes_html td {
     display: block;
@@ -198,9 +198,9 @@ table p {
     width: 100% !important;
 }
 .one-sidebar.sidebar-first .content-inner {
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
+    margin-left: 0!important;
+    margin-right: 0!important;
+    width: 100%!important;
 }
 .one-sidebar.sidebar-second .content-inner {
     margin-left: 0;
@@ -217,25 +217,25 @@ table p {
     margin-left: 0;
     padding-left: 5px;
     position: static;
-    width: 100%;
+    width: 100%!important;
 }
 .one-sidebar.sidebar-second #content-column .content-inner {
-    width: 100%;
+    width: 100%!important;
 }
 .one-sidebar.sidebar-second .region-sidebar-second {
     left: 0;
-    margin-left: 0;
-    padding-left: 0;
-    position: relative;
+    margin-left: 0!important;
+    padding-left: 0!important;
+    position: relative!important;
     top: 0;
-    width: 100%;
+    width: 100%!important;
 }
 .one-sidebar.sidebar-first .region-sidebar-first {
     margin-top: 20px;
   
 }
 .front .content-left.content-right.content-bottom #content-panels .region {
-    width: 100%;
+    width: 100%!important;
 }
 .block{
 	width:100%!important;
@@ -256,6 +256,13 @@ table p {
     max-width: 100%;
     text-align: center;
 }
+.region-header-second > div{
+	padding:15px;}
+
+.boxes-box-content img[style] {
+    float: none !important;
+    padding-bottom: 0 !important;
+}
 
 }
 @media (max-width: 479px) {
@@ -264,5 +271,9 @@ th, td {
     padding: 0.3em 0.1em;
 
 }
+.field-name-field-photo {
+    float: none!important;
+}
 
 }
+

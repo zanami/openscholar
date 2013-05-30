@@ -26,7 +26,7 @@
 }
 #layout_3_1_overlay .rslides_tabs {
     left: 15px;
-    position: relative;
+    position: relative!important;
     top: -60px;
 }
 
