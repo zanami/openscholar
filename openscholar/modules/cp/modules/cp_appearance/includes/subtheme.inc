@@ -9,6 +9,12 @@
  *  $file = new SubTheme($fid);
  *  $file->extract();
  *  $info = $file->parseInfo();
+ *
+ * or:
+ *
+ *  $file = new SubTheme();
+ *  $file->path = GIT_CLONED_PATH;
+ *  $info = $file->parseInfo();
  */
 
 class SubTheme {
@@ -44,8 +50,11 @@ class SubTheme {
 
   /**
    * Constructing the class.
+   *
+   * @param $fid
+   *  A file id.
    */
-  public function __construct($fid = 0) {
+  public function __construct($fid = NULL) {
     $this->fid = $fid;
   }
 
