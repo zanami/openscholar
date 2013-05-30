@@ -22,7 +22,7 @@
 
 
 #layout_3_1_overlay .rslides li {
-    padding: 0;
+    padding: 0!important;
 }
 #layout_3_1_overlay .rslides_tabs {
     left: 15px;
