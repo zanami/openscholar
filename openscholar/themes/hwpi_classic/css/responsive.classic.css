@@ -39,8 +39,9 @@ ul.primary li a {
 }
 /*Dropdown menu*/
 #block-os-primary-menu li {
-    border-bottom: 1px solid #34679A!important;
-    border-top: 1px solid #407EB4!important;
+    border-bottom: 1px solid #34679A !important;
+    border-top: 1px solid #407EB4 !important;
+    display: block;
 }
 #menu-bar {
     background: none repeat scroll 0 0 #E6E6E3;
