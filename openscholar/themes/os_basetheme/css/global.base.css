@@ -308,6 +308,7 @@ ol ul,
 
 #content-column ol ol {
  list-style-type: upper-alpha;
+ margin-left:25px;
 }
 
 #content-column ol ol ol {
