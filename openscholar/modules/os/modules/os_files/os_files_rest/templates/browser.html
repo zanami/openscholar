@@ -1,0 +1,16 @@
+<div class="container-fluid">
+    <div class="file-search">
+        <label for="file-search-input">Search</label>
+        <input id="file-search-input" type="text" ng-model="query">
+    </div>
+    <div class="results">
+        <div class="media-item" ng-repeat="file in files | filter:queryFilename">
+            <div class="media-item-thumbnail">
+                {{file.preview}}
+            </div>
+            <div class="media-item-label">
+                {{file.name}} <span ng-show="file.name != file.orig">({{file.orig}}</span>
+            </div>
+        </div>
+    </div>
+</div>

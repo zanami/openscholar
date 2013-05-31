@@ -19,7 +19,9 @@ function _os_files_rest_modify_response_row($file) {
 
   $filtered = array_diff_key($file, $blacklist);
 
-  $filtered['preview'] = drupal_render(file_view_file(file_load($file['fid']), 'preview'));
+  $f = file_load($file['fid']);
+  $filtered['orig'] = $f->origname;
+  $filtered['preview'] = drupal_render(file_view_file($f, 'preview'));
   $filtered['form'] = array(
     'name' => 'textfield',
   );
@@ -29,12 +31,15 @@ function _os_files_rest_modify_response_row($file) {
       'field_file_image_title_text' => 'textfield',
     );
   }
+  entity_get_controller('file')->resetCache();
 
   return $filtered;
 }
 
 function os_files_rest_media_browser() {
   $browser = array(
+    '#prefix' => '<div ng-app="mediaBrowser">',
+    '#suffix' => '</div>',
     '#attached' => array(
       'js' => array(
         array(
