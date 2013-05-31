@@ -312,7 +312,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
     // Patents.
     case 119:
-      // Hide Publication souce to make using the csl files a bit easier.
+      // Hide Publication source to make using the csl files a bit easier.
       $form['biblio_tabs'][2]['biblio_secondary_title']['#access'] = FALSE;
       // Rename the "Issue" field to Patent Source (needed for APA citations).
       $form['biblio_tabs'][2]['biblio_issue']['#title'] = t('Patent Source');
