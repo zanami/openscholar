@@ -52,7 +52,7 @@ display:none;
 #columns .region-inner {
     border: medium none;
     margin-bottom: -12px !important;
-    padding: 0 !important;
+
 }
 
 .front .content-left.content-right.content-bottom #content-panels .region {
@@ -270,7 +270,18 @@ table p {
 .at-panel .region, .panel-row {
     float: none!important;
 }
+th, td {
+    padding: 0.3em!important;
 
+}
+.region-inner[style]{
+min-height:300px!important;	
+
+}
+
+#columns .region-inner {
+    padding: 0 !important;
+}
 }
 @media (max-width: 479px) {
 th, td {
