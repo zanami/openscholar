@@ -221,3 +221,4 @@ function vsite_register_admin_paths() {
 function _vsite_register_form_error() {
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
+
