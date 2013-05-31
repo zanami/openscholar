@@ -191,7 +191,7 @@
          </group>
       </layout>
    </citation>
-   <bibliography hanging-indent="true" et-al-min="4" et-al-use-first="1" line-spacing="2" entry-spacing="0" subsequent-author-substitute="---">
+   <bibliography hanging-indent="false" et-al-min="4" et-al-use-first="1" line-spacing="2" entry-spacing="0" subsequent-author-substitute="---">
       <sort>
          <key macro="author"/>
          <key variable="title"/>
