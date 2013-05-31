@@ -377,7 +377,11 @@ function os_publications_update_7008() {
 
   // After the CSL files are updated, check for any existing Patents and add in the Patent Country Support.
   // Default to US and users can change if not the case.
-  $patent_country_query = db_query('SELECT nid, vid FROM {biblio} WHERE biblio_type = 119 AND biblio_section = \'\'')->fetchAll();
+  $patent_id = db_query('SELECT tid FROM {biblio_types} WHERE name = :pub_type', array(':pub_type' => 'Patent'))->fetchField();
+  if(!$patent_id) {
+    return t('@files CSL file(s) has been replaced and no existing patents updated.', array('@files' => $output));
+  }
+  $patent_country_query = db_query('SELECT nid, vid FROM {biblio} WHERE biblio_type = :patent_id AND (biblio_section = :section_name OR biblio_section IS NULL)', array(':patent_id' => $patent_id, ':section_name' => ''))->fetchAll();
   if(!$patent_country_query) {
     return t('@files CSL file(s) has been replaced and no existing patents updated.', array('@files' => $output));
   }
