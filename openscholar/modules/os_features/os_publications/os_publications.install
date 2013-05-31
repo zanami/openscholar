@@ -339,10 +339,17 @@ function os_publications_update_7007() {
 }
 
 /**
+ * Set biblio to use views_litepager
+ */
+function os_publications_update_7008() {
+  variable_set('biblio_pager', 'pager_lite'); 
+}
+
+/**
  * Update the biblio_citeproc_style table with altered csl files to account for proper patent citations.
  * Also update any existing patents to use the new style, add a default country (US) if one does not exist.
  */
-function os_publications_update_7008() {
+function os_publications_update_7009() {
   if(!module_exists('biblio_citeproc')) {
     return;
   }
@@ -388,22 +395,15 @@ function os_publications_update_7008() {
   // Update each existing patent to include default US patent country.
   foreach($patent_country_query as $biblio => $field) {
     $auth_type_update = db_update('biblio')
-      ->fields(array(
-        'biblio_section' => 'US',
-        'biblio_edition' => 'United States of America',
-      ))
-      ->condition('nid', $field->nid, '=')
-      ->condition('vid', $field->vid, '=')
-      ->execute();
+        ->fields(array(
+          'biblio_section' => 'US',
+          'biblio_edition' => 'United States of America',
+        ))
+        ->condition('nid', $field->nid, '=')
+        ->condition('vid', $field->vid, '=')
+        ->execute();
   }
 
 
   return t('@files CSL file(s) has been replaced and existing patents updated.', array('@files' => $output));
-}
-
-/**
- * Set biblio to use views_litepager
- */
-function os_publications_update_7008() {
-  variable_set('biblio_pager', 'pager_lite'); 
 }
