@@ -195,7 +195,8 @@ ul.nice-menu-left a, ul.nice-menu-left ul a {
   }
   
 
-#powerby-login {
-    margin-top: 40px;
-
-}
+ #powerby-login {
+   position: fixed;
+    right: 0;
+    bottom:20px;
+ }
