@@ -1,0 +1,50 @@
+<?php
+
+function os_files_rest_menu_alter(&$items) {
+  $items['media/browser']['page callback'] = 'os_files_rest_media_browser';
+}
+
+function _os_files_rest_modify_response_row($file) {
+  $blacklist = array(
+    'og_group_ref' => TRUE,
+    'og_membership' => TRUE,
+    'og_membership__1' => TRUE,
+    'og_membership__2' => TRUE,
+    'og_membership__3' => TRUE,
+    'og_group_ref__og_membership' => TRUE,
+    'og_group_ref__og_membership__1' => TRUE,
+    'og_group_ref__og_membership__2' => TRUE,
+    'og_group_ref__og_membership__3' => TRUE,
+  );
+
+  $filtered = array_diff_key($file, $blacklist);
+
+  $filtered['preview'] = drupal_render(file_view_file(file_load($file['fid']), 'preview'));
+  $filtered['form'] = array(
+    'name' => 'textfield',
+  );
+  if ($filtered['type'] == 'image') {
+    $filtered['form'] += array(
+      'field_file_image_alt_text' => 'textfield',
+      'field_file_image_title_text' => 'textfield',
+    );
+  }
+
+  return $filtered;
+}
+
+function os_files_rest_media_browser() {
+  $browser = array(
+    '#attached' => array(
+      'js' => array(
+        array(
+          'data' => 'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js',
+          'type' => 'external',
+        ),
+        drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserModule.js',
+      )
+    )
+  );
+
+  return $browser;
+}

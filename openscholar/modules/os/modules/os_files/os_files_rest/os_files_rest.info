@@ -1,0 +1,5 @@
+name = OS Files: Rest Interface
+description = Paths for handling files over a RESTful interface
+core = 7.x
+dependencies[] = os_files
+dependencies[] = restws
