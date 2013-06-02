@@ -1,22 +1,8 @@
 <?php
+
 /**
+ * @file
  * Provides and CRUD functions needed for adding or removing users from a vsite
- *
- * @file user.inc
- *
- * Provides user management and crud functions
- *
- * vsite_user_add
- *  Add users to a OpenScholar vsite
- *
- * vsite_user_remove
- *  Remove a user from a OpenScholar vsite
- *
- * vsite_role_grant
- *   Grant a user a role
- *
- * vsite_role_revoke
- *   Revoke a user a role
  */
 
 
@@ -76,25 +62,7 @@ function vsite_user_remove($account, $site_id) {
  *   The Group Type
  */
 function vsite_role_grant($uid, $role_name, $site_id = FALSE, $group_type = 'node') {
-  if (!$site_id && $vsite = vsite_get_vsite()) {
-    $site_id = $vsite->id;
-    $group_type = $vsite->group_type;
-  }
-
-  if (!$site_id) {
-    return;
-  }
-
-  $wrapper = entity_metadata_wrapper($group_type, $site_id);
-  $bundle = $wrapper->getBundle();
-  //Add role via OG
-  $roles = og_roles($group_type, $bundle, $site_id);
-  foreach ($roles as $rid => $role) {
-    if($role == $role_name){
-      og_role_grant($group_type, $site_id, $uid, $rid);
-      return TRUE;
-    }
-  }
+  _vsite_role_grant($uid, $role_name, $site_id, $group_type, 'revoke');
 }
 
 /**
@@ -109,7 +77,25 @@ function vsite_role_grant($uid, $role_name, $site_id = FALSE, $group_type = 'nod
  * @param $group_type
  *   The Group Type
  */
-function vsite_role_revoke($uid, $role_name, $site_id = false, $group_type = 'node') {
+function vsite_role_revoke($uid, $role_name, $site_id = FALSE, $group_type = 'node') {
+  _vsite_role_manage($uid, $role_name, $site_id, $group_type, 'revoke');
+}
+
+/**
+ * Helper function to grant or revoke an OG role.
+ *
+ * @param $uid
+ *   The user ID.
+ * @param $rid
+ *   The role ID.
+ * @param $site_id
+ *   The Group ID
+ * @param $group_type
+ *   The Group Type
+ * @param $operation
+ *   The operation to perform. Defaults to "grant".
+ */
+function _vsite_role_manage($uid, $role_name, $site_id = FALSE, $group_type = 'node', $operation = 'grant') {
   if (!$site_id && $vsite = vsite_get_vsite()) {
     $site_id = $vsite->id;
     $group_type = $vsite->group_type;
@@ -123,10 +109,12 @@ function vsite_role_revoke($uid, $role_name, $site_id = false, $group_type = 'no
   $bundle = $wrapper->getBundle();
   //Add role via OG
   $roles = og_roles($group_type, $bundle, $site_id);
+
+  $function = $operation == 'grant' ? 'og_role_grant' ? 'og_role_revoke';
+
   foreach ($roles as $rid => $role) {
-    if($role == $role_name){
-      og_role_revoke($group_type, $site_id, $uid, $rid);
-      return TRUE;
+    if ($role == $role_name){
+      $function($group_type, $site_id, $uid, $rid);
     }
   }
 }
