@@ -177,7 +177,7 @@ function os_pinserver_auth_get_uid_from_huid($huid = NULL) {
   }
 
   if ($huid) {
-    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $id))->fetchField();
+    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $huid))->fetchField();
   }
 
   return FALSE;

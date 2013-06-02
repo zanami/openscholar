@@ -97,6 +97,8 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
   }
 
   if(isset($links) && is_array($links)) {
+    // Strip out any repeating breadcrumbs.
+    $links = array_unique($links);
     // Set custom breadcrumbs
     drupal_set_breadcrumb($links);
     // Get custom breadcrumbs
@@ -125,7 +127,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
     if(_os_breadcrumbs_check_parents($menu['href']) != FALSE) {
       $parent_links = _os_breadcrumbs_check_parents($menu['href']);
       if(isset($parent_links) && is_array($parent_links)) {
-        $links = array_merge($links,$parent_links);
+        $links = array_merge($links, $parent_links);
       }
     }
     if($key == (count($menu_active_trail)) - 1) {
@@ -272,6 +274,8 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
         // Check for custom menu name.
         if(_os_breadcrumbs_check_custom_title($title) != FALSE) {
           $link_title = _os_breadcrumbs_check_custom_title($title);
+        }else {
+          $link_title = _os_breadcrumbs_shorten_title($title);
         }
       	$append_paths = $title;
       }else {
@@ -589,7 +593,7 @@ function _os_breadcrumbs_check_parents($path) {
   foreach($parent_ids as $key => $menu_id) {
     $parent_link = vsite_menu_menu_link_load($menu_id);
     if(isset($parent_link) && is_array($parent_link)) {
-      $links[] = l($parent_link['title'], $parent_link['link_path']);
+      $links[] = l(strtoupper($parent_link['title']), $parent_link['link_path']);
     }
   }
 

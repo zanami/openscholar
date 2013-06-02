@@ -64,6 +64,7 @@
 #block-os-primary-menu li {
     border-bottom: 1px solid #E8E8E8!important;
     border-top: none!important;
+        display: block;
 }
 #menu-bar {
     background: none repeat scroll 0 0 #E6E6E3;

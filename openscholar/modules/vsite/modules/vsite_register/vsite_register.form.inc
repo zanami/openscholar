@@ -103,10 +103,10 @@ function vsite_register_form($form, &$state) {
 
   $form['vsite_private'] = array(
     '#type' => 'radios',
-    '#title' => t('Site Publicity Setting'),
+    '#title' => t('Site visibility'),
     '#default_value' => VSITE_ACCESS_PUBLIC,
-    '#options' => vsite_access_privacy_avalible_values(),
-    '#description' => t('How accesible would you like to make your site.'),
+    '#options' => vsite_access_privacy_available_values(),
+    '#description' => t('Choose who has access to view your site.'),
     '#access' => module_exists('vsite_access'),
   );
 
@@ -292,7 +292,14 @@ function vsite_register_form_submit(&$form, &$state) {
   }
 
   // Creates the vsite node.
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $_POST['parent'])) {
+  $name = $purl = $values['domain'];
+  $author = $site_owner->uid;
+  $bundle = $values['bundle'];
+  $preset = $values['preset'];
+  $parent = $_POST['parent'] ? $_POST['parent'] : FALSE;
+  $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
+  $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
+  if ($vsite) {
     // Adds the user to the new vsite.
     module_load_include('inc', 'vsite', 'includes/user');
     vsite_user_add($site_owner);
@@ -303,14 +310,11 @@ function vsite_register_form_submit(&$form, &$state) {
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
 
-    if (isset($values['vsite_private']) && module_exists('vsite_access')) {
-      $wrapper = entity_metadata_wrapper('node', $space->group);
-      $wrapper->{VSITE_ACCESS_FIELD}->set($values['vsite_private']);
-      $wrapper->save();
-    }
-
     // Emails user to inform them of new created site, email is always sent.
-    vsite_register_notify_user($vsite);
+    // This function may additionally send a second email to a specified
+    // administrator's email address.
+    // @see vsite_register_admin_form()
+    vsite_register_notify($vsite);
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
@@ -330,14 +334,7 @@ function vsite_register_form_submit(&$form, &$state) {
   exit;
 }
 
-/**
- * Adds an error message to the vsite register form.
- *
- * @see vsite_register_form_submit()
- */
-function _vsite_register_form_error() {
-  return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
-}
+
 
 /**
  * Form validate callback for vsite_register_form.
@@ -580,6 +577,21 @@ function _vsite_register_valid_url($url) {
 }
 
 /**
+ * Sends emails using drupal_mail() to both new site owner and admin account.
+ */
+function vsite_register_notify($vsite) {
+  // Invokes drupal_mail() to send email notification to new site owner.
+  vsite_register_notify_user($vsite);
+
+  // Invokes drupal_mail() to send email notification to admin account,
+  // or whatever email is specified in variable "vsite_register_admin_mail".
+  $admin_mail = variable_get('vsite_register_admin_mail', '');
+  if ($admin_mail) {
+    vsite_register_notify_admin($vsite, $admin_mail);
+  }
+}
+
+/**
  * Form submit AJAX callback; sends out an email to the vsite owner user.
  *
  * Notifies the vsite owner of their newly created site.
@@ -588,6 +600,7 @@ function _vsite_register_valid_url($url) {
  */
 function vsite_register_notify_user($vsite) {
   global $language;
+  $language = $language->language;
   global $base_url;
   global $user;
 
@@ -624,15 +637,15 @@ function vsite_register_notify_user($vsite) {
     '!uri' => $base_url,
     '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
     '!mailto' => $new_user->mail,
-    '!date' => format_date(time(), 'medium', '', NULL, $message['language']->language),
+    '!date' => format_date(time(), 'medium', '', NULL, $language),
     '!login_uri' => url('user', array(
         'absolute' => TRUE,
-        'language' => $message['language'],
+        'language' => $language,
       )),
     '!site_url' => url($vsite->group->purl),
     '!edit_uri' => url('user/' . $new_user->uid . '/edit', array(
         'absolute' => TRUE,
-        'language' => $message['language'],
+        'language' => $language,
       )),
     '!scholar_edit_url' => url("/user/{$new_user->uid}/edit", array('absolute' => TRUE)),
   );
@@ -652,9 +665,139 @@ function vsite_register_notify_user($vsite) {
 
   $params['subject'] = $subject;
   $params['body'] = $body;
-  $result = drupal_mail('vsite_register', 'vsite_register_notify', $new_user->mail, $language, $params, $from, $send = TRUE);
+  $result = drupal_mail('vsite_register', 'vsite_register_notify_user', $new_user->mail, $language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to user.'), 'error');
+  }
+}
+
+/**
+ * Form submit AJAX callback; sends out a 2nd email to the administrator.
+ *
+ * Notifies the administrator that a new site has been registered.
+ *
+ * @see vsite_register_form_submit()
+ */
+function vsite_register_notify_admin($vsite, $admin_mail) {
+  global $language;
+  global $base_url;
+  global $user;
+
+  // Checks to see if the user logged in matched the newly created user.
+  if ($user->uid == $vsite->group->uid) {
+    $need_pass_reset = FALSE;
+  }
+  else {
+    $need_pass_reset = TRUE;
+  }
+
+  $params = array();
+  $from = variable_get('site_mail', ini_get('sendmail_from'));
+  $new_site_owner = user_load($vsite->group->uid);
+
+  // Adds vsite and user object.
+  $params['vsite'] = $vsite;
+  $params['user'] = $new_site_owner;
+
+  $site_url = url($base_url . '/' . $vsite->group->title, $options = array('absolute' => TRUE));
+  $count = count(vsite_get_vsite_by_owner($new_site_owner->uid));
+  $timestamp = time();
+
+  // Prepares the new vsite owner (user)'s full name.
+  $name_values = array();
+  $name_fields = array('field_first_name', 'field_last_name');
+  foreach ($name_fields as $field) {
+    $items = field_get_items('user', $new_site_owner, $field);
+    if (isset($items[0]['value']) && !empty($items[0]['value'])) {
+      $name_values[] = $items[0]['value'];
+    }
+  }
+  $full_name = sizeof($name_values) > 1 ? implode(' ', $name_values) : t('No entry');
+
+  // Prepares the site visibility value and fetches human-readable name.
+  $items = field_get_items('node', $vsite->group, VSITE_ACCESS_FIELD);
+  $visibility = (isset($items[0]['value'])) ? $items[0]['value'] : FALSE;
+  if ($visibility !== FALSE) {
+    $values = vsite_access_privacy_available_values();
+    if (isset($values[$visibility])) {
+      $visibility = $values[$visibility];
+    }
+  }
+
+  // Prepares a site type string like "Department (Academic Department)".
+  $site_type = isset($vsite->group->type) ? $vsite->group->type : '';
+  if ($site_type) {
+    if (isset($vsite->controllers->variable->values['space']['spaces_preset_og'])) {
+      $preset = $vsite->controllers->variable->values['space']['spaces_preset_og'];
+      $site_type .= "($preset)";
+    }
+  }
+
+  $msg_variables = array(
+    '!vsite_count' => $count,
+    '!username' => $new_site_owner->name,
+    '!full_name' => $full_name,
+    '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
+    '!site_name' => $vsite->group->title,
+    '!site_url' => $site_url,
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!uri' => $base_url,
+    '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
+    '!user_mail' => $new_site_owner->mail,
+    '!date' => format_date(time(), 'medium', '', NULL, $language),
+    '!login_uri' => url('user', array(
+      'absolute' => TRUE,
+      'language' => $language,
+    )),
+    '!site_url' => url($vsite->group->purl),
+    '!edit_uri' => url('user/' . $new_site_owner->uid . '/edit', array(
+      'absolute' => TRUE,
+      'language' => $language,
+    )),
+    '!scholar_edit_url' => url("/user/{$new_site_owner->uid}/edit", array('absolute' => TRUE)),
+    '!site_type' => $site_type,
+    '!site_visibility' => $visibility,
+  );
+
+  $subject = t("User !user created a site \"!site\" at !site_url", array(
+    '!site_name' => variable_get('site_name', 'OpenScholar'),
+  ));
+
+  $body = t(
+      "Hello,\n\n"
+      . "This is an automatic notification.\n\n"
+      . "On !date, a new site at !sitewide_name was registered.\n\n"
+      . "<strong>Site information</strong>\n\n"
+      . "<dl><dt>Site name</dt>"
+      . "<dd>!site_name</dd>"
+      . "<dt>Site URL</dt>"
+      . "<dd>!site_url</dd>"
+      . "<dt>Site type</dt>"
+      . "<dd>!site_type</dd>"
+      . "<dt>Site visibility</dt>"
+      . "<dd>!site_visibility</dd>"
+      . "</dl>"
+      . "Link: \n\n"
+      . " - !site_login_url \n\n"
+      . "<strong>User information</strong>\n\n"
+      . "<dl><dt>Name</dt>"
+      . "<dd>!username</dd>"
+      . "<dt>Full name</dt>"
+      . "<dd>!full_name</dd>"
+      . "<dl><dt>Email</dt>"
+      . "<dd>!user_mail</dd>"
+      . "<dt>Total sites owned/dt>"
+      . "<dd>!vsite_count</dd>"
+      . "</dl>\n\n"
+      . "Good luck!\nThe !site server",
+      $msg_variables
+  );
+
+  $params['subject'] = $subject;
+  $params['body'] = $body;
+  $result = drupal_mail('vsite_register', 'vsite_register_notify_admin', $admin_mail, $language, $params, $from, $send = TRUE);
+  if ($result == FALSE) {
+    drupal_set_message(t('Error sending notification mail to admin.'), 'error');
   }
 }
 

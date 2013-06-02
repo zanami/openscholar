@@ -9,6 +9,9 @@
 	.os-custom-menu{
 		 display: none;
 	}
+	#footer .os-custom-menu {
+    display: block !important;
+}
 	.table-wrap {
     overflow: scroll; } 
 	
@@ -36,9 +39,7 @@
     z-index: 10;
     width:100%;
 }
-#block-os-primary-menu li.first {
-    border-top: medium none;
-}
+
 #block-os-primary-menu li {
     float: none;
 }
@@ -74,6 +75,9 @@
 .nav li, .nav .menu li {
     display: block;
 
+}
+.menuparent {
+    padding: 0 !important;
 }
 #menu-bar ul.nice-menu a {
     color: #303030;
@@ -115,7 +119,7 @@
     background: url("../images/icon_menu.png") no-repeat scroll 15px center transparent;
 }
 .mobile-buttons a {
-    color: #FFFFFF;
+    color: #FFFFFF!important;
     display: block;
     font: bold 16px arial,sans-serif;
     height: 20px !important;

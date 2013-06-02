@@ -32,6 +32,7 @@
 #block-os-primary-menu li {
     border-bottom: 1px solid #80282C!important;
     border-top: 1px solid #AB383E!important;
+        display: block;
 }
 
 }

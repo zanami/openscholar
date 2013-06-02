@@ -1,7 +1,6 @@
 <?php
 
 function cp_layout_full_form($form, $form_state){
-  $form = array();
   ctools_include('ajax');
   ctools_include('modal');
   ctools_modal_add_js();
@@ -20,6 +19,13 @@ function cp_layout_full_form($form, $form_state){
   else {
     $current = current(array_diff($ctxs, array('os_public')));
   }
+
+  $form = array(
+    '#attributes' => array(
+      'class' => $ctxs
+    )
+  );
+
   if (isset($contexts[$current])) {
     $form['context_selection'] = array(
       '#type' => 'select',
