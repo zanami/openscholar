@@ -110,7 +110,7 @@ function _vsite_role_manage($uid, $role_name, $site_id = FALSE, $group_type = 'n
   //Add role via OG
   $roles = og_roles($group_type, $bundle, $site_id);
 
-  $function = $operation == 'grant' ? 'og_role_grant' ? 'og_role_revoke';
+  $function = $operation == 'grant' ? 'og_role_grant' : 'og_role_revoke';
 
   foreach ($roles as $rid => $role) {
     if ($role == $role_name){
