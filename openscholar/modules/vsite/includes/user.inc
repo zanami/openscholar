@@ -32,25 +32,13 @@
  * @return bool
  * Success
  */
-function vsite_user_add($account, $site_id = false){
-
-  $vsite = false;
-  if($site_id){
-    $vsite = spaces_load('og', $site_id);
-  }
-
-  if(is_int($account)){
-    $account = user_load($uid);
-  }
-  //Do some basic validation
-  if (!is_object($account)) {
-    //An invalid user has been passed
-    return false;
-  }
-
+function vsite_user_add($account, $site_id = FALSE) {
   module_load_include('inc', 'vsite', 'includes/vsite');
 
-  //Add the user to this site
+  $account = is_object($account) ? $account : user_load($account);
+  $vsite = vsite_get_vsite($site_id);
+
+  // Add the user to this site.
   return vsite_add_entity($account, 'user', $vsite);
 }
 
@@ -59,32 +47,19 @@ function vsite_user_add($account, $site_id = false){
  *
  * @param $account
  * The user ID or object
- *
  * @param $site_id
  * Site ID
  *
  * @return bool
  * Success
  */
-function vsite_user_remove($account, $site_id = false){
-
-  $vsite = false;
-  if($site_id){
-    $vsite = spaces_load('og', $site_id);
-  }
-
-  if(is_int($account)){
-    $account = user_load($uid);
-  }
-  //Do some basic validation
-  if (!is_object($account)) {
-    //An invalid user has been passed
-    return false;
-  }
-
+function vsite_user_remove($account, $site_id) {
   module_load_include('inc', 'vsite', 'includes/vsite');
 
-  //Remove the user from this site
+  $account = is_object($account) ? $account : user_load($account);
+  $vsite = vsite_get_vsite($site_id);
+
+  // Remove the user from this site.
   return vsite_remove_entity($account, 'user', $vsite);
 }
 
@@ -100,31 +75,26 @@ function vsite_user_remove($account, $site_id = false){
  * @param $group_type
  *   The Group Type
  */
-function vsite_role_grant($uid, $role_name, $site_id = false, $group_type = 'node') {
-
-  if(!$site_id){
-    $vsite = spaces_get_space();
-    if($vsite){
-      $site_id = $vsite->id;
-      $group_type = $vsite->group_type;
-    }
+function vsite_role_grant($uid, $role_name, $site_id = FALSE, $group_type = 'node') {
+  if (!$site_id && $vsite = vsite_get_vsite()) {
+    $site_id = $vsite->id;
+    $group_type = $vsite->group_type;
   }
 
-  if($site_id){
-    $wrapper = entity_metadata_wrapper($group_type, $site_id);
-    $bundle = $wrapper->getBundle();
-    //Add role via OG
-    $roles = og_roles($group_type, $bundle, $site_id);
-    foreach ($roles as $rid => $role) {
-      if($role == $role_name){
-        og_role_grant($group_type, $site_id, $uid, $rid);
-        return true;
-      }
-    }
+  if (!$site_id) {
+    return;
   }
 
-  //Unable to determine group
-  return false;
+  $wrapper = entity_metadata_wrapper($group_type, $site_id);
+  $bundle = $wrapper->getBundle();
+  //Add role via OG
+  $roles = og_roles($group_type, $bundle, $site_id);
+  foreach ($roles as $rid => $role) {
+    if($role == $role_name){
+      og_role_grant($group_type, $site_id, $uid, $rid);
+      return TRUE;
+    }
+  }
 }
 
 /**
@@ -140,28 +110,23 @@ function vsite_role_grant($uid, $role_name, $site_id = false, $group_type = 'nod
  *   The Group Type
  */
 function vsite_role_revoke($uid, $role_name, $site_id = false, $group_type = 'node') {
-
-  if(!$site_id){
-    $vsite = spaces_get_space();
-    if($vsite){
-      $site_id = $vsite->id;
-      $group_type = $vsite->group_type;
-    }
+  if (!$site_id && $vsite = vsite_get_vsite()) {
+    $site_id = $vsite->id;
+    $group_type = $vsite->group_type;
   }
 
-  if($site_id){
-    $wrapper = entity_metadata_wrapper($group_type, $site_id);
-    $bundle = $wrapper->getBundle();
-    //Add role via OG
-    $roles = og_roles($group_type, $bundle, $site_id);
-    foreach ($roles as $rid => $role) {
-      if($role == $role_name){
-        og_role_revoke($group_type, $site_id, $uid, $rid);
-        return true;
-      }
-    }
+  if (!$site_id) {
+    return;
   }
 
-  //Unable to determine group
-  return false;
+  $wrapper = entity_metadata_wrapper($group_type, $site_id);
+  $bundle = $wrapper->getBundle();
+  //Add role via OG
+  $roles = og_roles($group_type, $bundle, $site_id);
+  foreach ($roles as $rid => $role) {
+    if($role == $role_name){
+      og_role_revoke($group_type, $site_id, $uid, $rid);
+      return TRUE;
+    }
+  }
 }

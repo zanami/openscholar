@@ -15,10 +15,13 @@ include_once ('includes/vsite.inc');
 
 /**
  * Returns the current vsite (space).
+ *
+ * @param
+ *   The node ID of the site.
  */
-function vsite_get_vsite($sid = FALSE){
-  if ($sid && intval($sid)) {
-    $vsite = spaces_load('og', $sid, FALSE);
+function vsite_get_vsite($site_id = FALSE){
+  if ($site_id) {
+    $vsite = spaces_load('og', $site_id, FALSE);
   }
   else {
     $vsite = spaces_get_space();
