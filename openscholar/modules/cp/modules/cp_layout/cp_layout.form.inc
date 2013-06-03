@@ -316,9 +316,12 @@ function cp_layout_select_submit($form, $form_state){
 
   $theme_name = os_theme_get();
   $path = variable_get('theme_' . $theme_name . '_files_directory', '');
-  if (module_exists('vsite') && $space = spaces_get_space()) {
-    $path = 'public://' . $space->og->purl . '/css';
-    $space->controllers->variable->set('theme_' . $theme_name . '_files_directory', $path);
+
+  $vsite = module_exists('vsite') ? vsite_get_vsite() : FALSE;
+
+  if ($vsite) {
+    $path = 'public://' . $vsite->og->purl . '/css';
+    $vsite->controllers->variable->set('theme_' . $theme_name . '_files_directory', $path);
   }
 
   file_prepare_directory($path, FILE_CREATE_DIRECTORY);
@@ -328,8 +331,8 @@ function cp_layout_select_submit($form, $form_state){
   $settings['bigscreen_layout'] = $form_state['values']['layout'];
   $settings['global_default_layout'] = 'standard-layout';
 
-  if (module_exists('vsite') && $space = spaces_get_space()) {
-    $space->controllers->variable->set('theme_' . $theme_name . '_settings', $settings);
+  if ($vsite) {
+    $vsite->controllers->variable->set('theme_' . $theme_name . '_settings', $settings);
   }
   else {
     variable_set('theme_' . $theme_name . '_settings', $settings);

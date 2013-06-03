@@ -64,7 +64,7 @@ function vsite_get_subsites($vsite = FALSE) {
 
   $sid = $vsite->group->nid;
 
-  return isset($subsite_map[$sid])? $subsite_map[$sid]: array();
+  return isset($subsite_map[$sid]) ? $subsite_map[$sid]: array();
 }
 
 /**
