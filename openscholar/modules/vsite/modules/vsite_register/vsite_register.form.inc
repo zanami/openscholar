@@ -608,7 +608,7 @@ function vsite_register_notify_author($vsite) {
 
   // Checks to see if the user logged in matched the newly created user.
   global $user;
-  $body_text = _vsite_register_author_notify_body_text($user, $author);
+  $body_text = _vsite_register_notify_author_body_text($user, $author);
   $body = t($body_text, $replacements);
 
   global $language;
