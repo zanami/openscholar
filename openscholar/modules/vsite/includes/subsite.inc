@@ -12,10 +12,17 @@
  *   TRUE if user has access.
  */
 function vsite_subsite_access($op = 'create', $vsite = FALSE){
-  $vsite = $vsite ? $vsite : spaces_get_space();
+  if (!$vsite = vsite_get_vsite($vsite)) {
+    return;
+  }
+
+  if (!spaces_access_admin() || !user_access("{$op} subsites")) {
+    return;
+  }
+
   $subsite_parents = variable_get('subsite_parents',array('department'));
 
-  return ($vsite && in_array($vsite->group->type, $subsite_parents) && spaces_access_admin() && user_access("{$op} subsites"));
+  return in_array($vsite->group->type, $subsite_parents);
 }
 
 /**
@@ -51,11 +58,11 @@ function vsite_get_subsites($vsite = FALSE) {
     $subsite_map = $subsite_map->data;
   }
 
-  if (!$vsite && !$vsite = spaces_get_space()) {
+  if (!$vsite = vsite_get_vsite($vsite)) {
     return array();
   }
 
-  $sid = is_object($vsite)? $vsite->group->nid:$vsite;
+  $sid = $vsite->group->nid:$vsite;
 
   return isset($subsite_map[$sid])? $subsite_map[$sid]: array();
 }
@@ -73,7 +80,7 @@ function vsite_get_subsites($vsite = FALSE) {
  *
  */
 function vsite_subsite_node_url_options($node, &$options){
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   if(!$vsite || !isset($node->{OG_AUDIENCE_FIELD})){
     // No group information.
