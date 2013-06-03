@@ -17,7 +17,8 @@
     background: none repeat scroll 0 0 #A23338;
 
 }
-#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover {
+#menu-bar ul.nice-menu a.active, 
+#menu-bar ul.nice-menu a:hover {
     background: none repeat scroll 0 0 #1E1E1E;
 
 }
