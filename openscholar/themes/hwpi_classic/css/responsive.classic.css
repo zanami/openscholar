@@ -31,7 +31,10 @@ ul.primary li a {
 .block-boxes-os_boxes_slideshow{
 	border-top:none!important;
 }
-.sidebar .block, .front #content-column .block, .node-person .block-inner, .comment-wrapper {
+.sidebar .block, 
+.front #content-column .block, 
+.node-person .block-inner, 
+.comment-wrapper {
     margin-top: -10px;
 }
 /*Dropdown menu*/
@@ -62,7 +65,8 @@ ul.primary li a {
 .front #content-column .block.block-boxes-os_boxes_manual_list {
     margin-bottom: 20px;
 }
-.two-sidebars #content-panels, .one-sidebar.sidebar-second #content-panels {
+.two-sidebars #content-panels, 
+.one-sidebar.sidebar-second #content-panels {
     border-right: none;
 }
 
