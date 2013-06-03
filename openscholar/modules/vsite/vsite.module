@@ -36,8 +36,8 @@ function vsite_get_vsite($vsite = FALSE){
  * @param object $vsite
  */
 function vsite_get_purl($vsite = FALSE){
-  $vsite = $vsite ? $vsite : spaces_get_space();
-  return ! empty($vsite->group) ? $vsite->group->purl : '';
+  $vsite = vsite_get_vsite($vsite);
+  return !empty($vsite->group) ? $vsite->group->purl : '';
 }
 
 /**
@@ -244,7 +244,7 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 function vsite_custom_theme(){
   _vsite_purl_init();
 
-  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
+  if (($space = vsite_get_vsite()) && (!module_exists('cp') || ! cp_use_cp_theme())) {
     //If the space is enabled correctly then set the custom theme
     ctools_include('themes', 'os');
     $theme = os_theme_get();
@@ -1467,13 +1467,13 @@ function vsite_menu(){
  * @return contact_page
  */
 function vsite_site_contact(){
-  if (! ($space = spaces_get_space()) || ! ($user = user_load($space->group->uid))) {
+  $vsite = vsite_get_vsite();
+  if (!$vsite || ! ($user = user_load($vsite->group->uid))) {
     return MENU_ACCESS_DENIED;
   }
-  $space = spaces_get_space();
-  if (! empty($space)) {
+  if (!empty($vsite)) {
     // Get the vsite_users_contact_form_anonymous varible
-    $contact_anon = $space->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
+    $contact_anon = $vsite->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
   }
   else {
     $contact_anon = variable_get('vsite_users_contact_form_anonymous', '1');
@@ -1559,8 +1559,8 @@ function vsite_contact_mail_owner($form, &$form_state, $recipient){
     }
     $recipient->name = $first_name . " " . $last_name;
   }
-  elseif (($space = spaces_get_space()) && strlen($space->group->title)) {
-    $recipient->name = $space->group->title;
+  elseif (($vsite = vsite_get_vsite()) && strlen($vsite->group->title)) {
+    $recipient->name = $vsite->group->title;
   }
 
   if ($user->uid === 0) {
@@ -1609,7 +1609,7 @@ function vsite_contact_mail_owner_submit($form, &$form_state){
   global $user, $language;
 
   $account = $form_state['values']['recipient'];
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   // Send from the current user to the requested user.
   $to = $account->mail;
@@ -1632,7 +1632,7 @@ function vsite_contact_mail_owner_submit($form, &$form_state){
   $values = $form_state['values'];
   $values['account'] = $account;
   $values['user'] = $user;
-  $values['vsite'] = $space;
+  $values['vsite'] = $vsite;
 
   // Send the e-mail in the requested user language.
   drupal_mail('vsite', 'user_mail', $to, user_preferred_language($account), $values, $from);
@@ -1659,16 +1659,11 @@ function vsite_contact_mail_owner_submit($form, &$form_state){
  * @return contact_page
  */
 function vsite_site_contact_access(){
-  if (! ($space = spaces_get_space()) || ! ($user = user_load($space->group->uid))) {
+  if (!$vsite = vsite_get_vsite()) {
     return FALSE;
   }
 
-  return TRUE;
-  /*
-  $contact_anon = $vsite->controllers->variable->get('vsite_users_contact_anonymous');
-  // there was a contact form var here, but I don't know where it's set from
-  return ($contact_anon !== 0 || user_is_logged_in());
-  */
+  return user_load($vsite->group->uid);
 }
 
 /**
@@ -1750,26 +1745,27 @@ function vsite_mollom_form_info($form_id){
  * Set the head_title to the vsite name rather than the site_name, if in a vsite.
  */
 function vsite_preprocess_html(&$vars){
-  $spaces = spaces_get_space();
-  if (isset($spaces)) {
-    $vsite_title = isset($spaces->group->title) ? $spaces->group->title : variable_get('site_name');
-
-    // Check for the frontpage.
-    if (drupal_is_front_page()) {
-      $head_title = array(
-        $vsite_title
-      );
-    }
-    else {
-      $head_title = array(
-        strip_tags(drupal_get_title()),
-        $vsite_title
-      );
-    }
-
-    // Set the new page 'head' title.
-    $vars['head_title'] = implode(' | ', $head_title);
+  if (!$vsite = vsite_get_vsite()) {
+    return;
   }
+
+  $vsite_title = isset($vsite->group->title) ? $vsite->group->title : variable_get('site_name');
+
+  // Check for the frontpage.
+  if (drupal_is_front_page()) {
+    $head_title = array(
+      $vsite_title
+    );
+  }
+  else {
+    $head_title = array(
+      strip_tags(drupal_get_title()),
+      $vsite_title
+    );
+  }
+
+  // Set the new page 'head' title.
+  $vars['head_title'] = implode(' | ', $head_title);
 }
 
 /**
@@ -1777,10 +1773,10 @@ function vsite_preprocess_html(&$vars){
  * Add a link to create a subsite.
  */
 function vsite_preprocess_toolbar(&$vars){
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   ctools_include('subsite', 'vsite');
 
-  if (vsite_subsite_access('create', $space)) {
+  if (vsite_subsite_access('create', $vsite)) {
     $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
       '#theme' => 'links__toolbar_subsite',
       '#links' => array(
@@ -1792,7 +1788,7 @@ function vsite_preprocess_toolbar(&$vars){
             'data-tooltip' => t('Add a subsite to the current site.')
           ),
           'query' => array(
-            'parent' => $space->group->nid
+            'parent' => $vsite->group->nid
           )
         )
       )
@@ -1820,7 +1816,7 @@ function vsite_os_settings_subsites_form_submit($form, &$form_state){
  * Used the function spaces_user_autocomplete as the skeleton for this function.
  */
 function vsite_user_autocomplete($string = '') {
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   $matches = array();
   if ($string) {
     $query = db_select('users', 'u');
@@ -1853,10 +1849,10 @@ function vsite_user_autocomplete($string = '') {
     }
 
     // Remove current group members.
-    if(isset($space)) {
+    if(isset($vsite)) {
       $query = db_select("og_membership", "ogm");
       $query->join('users', 'u', 'u.uid = ogm.etid');
-      $query->condition("ogm.gid", $space->group->nid, "=");
+      $query->condition("ogm.gid", $vsite->group->nid, "=");
       $query->condition("entity_type","user","=");
       $query->fields("u", array("name"));
       $result = $query->execute()->fetchAll();

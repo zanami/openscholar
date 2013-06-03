@@ -19,7 +19,7 @@ function vsite_token_info() {
     'name' => t("Site PURL"),
     'description' => t('The distinct purl associated with a "vsite".'),
   );
-  
+
   return array(
     'types' => array('vsite' => $type),
     'tokens' => array('vsite' => $vsite_tokens),
@@ -30,13 +30,13 @@ function vsite_token_info() {
  * Implements hook_tokens().
  */
 function vsite_tokens($type, $tokens, array $data = array(), array $options = array()) {
-  
+
   $sanitize = !empty($options['sanitize']);
   $replacements = array();
-  
+
   //Are we replacing a vsite token
   if ($type == 'vsite') {
-  	
+
   	$group_node = false;
     /**
      * Try and get the vsite in one of three ways
@@ -47,7 +47,7 @@ function vsite_tokens($type, $tokens, array $data = array(), array $options = ar
   	if(!empty($data['node']) && og_is_group('node', $data['node'])){
     	$group_node = $data['node'];
     }elseif(!empty($data['node']) && og_is_group_content_type('node', $data['node']->type) && ($groups = og_get_entity_groups('node',$data['node']))){
-    	
+
     	if(isset($groups['node'])){
 	    	foreach ($groups['node'] as $group) {
 	    		$grp = entity_load_single('node',$group);
@@ -58,16 +58,16 @@ function vsite_tokens($type, $tokens, array $data = array(), array $options = ar
 	    	}
     	}
     }
-    
-    if (!$group_node && ($site = spaces_get_space())){
-    	$group_node = $site->group;
+
+    if (!$group_node && $vsite = vsite_get_vsite()) {
+    	$group_node = $vsite->group;
     }
-    
+
     if (!$group_node){
       //Unable to load a vsite
       return $replacements;
     }
-    
+
 
     foreach ($tokens as $name => $original) {
       switch ($name) {
