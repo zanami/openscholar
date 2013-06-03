@@ -147,13 +147,11 @@ function os_user_remove($uid, $site_id = FALSE, $group_type = 'node') {
   }
 
   if (!$site_id) {
-    if (module_exists('vsite') && ($vsite = spaces_get_space())) {
+    if (module_exists('vsite') && ($vsite = vsite_get_vsite())) {
       $site_id = $vsite->id;
     }
-    else{
-      // No SID passed and we are not in a site.
-      return FALSE;
-    }
+    // No SID passed and we are not in a site.
+    return FALSE;
   }
 
   og_ungroup($group_type, $site_id, 'user', $uid);

@@ -96,7 +96,7 @@ function os_theme_get() {
 }
 
 /**
- * gets the flavor of the currently selected theme
+ * Gets the flavor of the currently selected theme
  */
 function os_theme_get_flavor() {
   global $theme_key;
