@@ -234,7 +234,6 @@ function vsite_access_og_fields_info() {
  * Act on the save of the privacy setting
  */
 function vsite_access_update_privacy_settings($group){
-
   $wrapper = entity_metadata_wrapper('node', $group);
   $privacy = $wrapper->{VSITE_ACCESS_FIELD}->value();
 
@@ -245,23 +244,25 @@ function vsite_access_update_privacy_settings($group){
 /**
  * Update Robots.txt Settigs
  */
-function vsite_access_update_robots($group,$privacy){
+function vsite_access_update_robots($group, $privacy){
   global $base_url;
 
-  //Load Space
-  $vsite = vsite_get_vsite($group->nid);
+  // Load Vsite.
+  if (!$vsite = vsite_get_vsite($group->nid)) {
+    return;
+  }
 
-  //Robots.txt Base Domain Settings.
+  // Robots.txt Base Domain Settings.
   $domain_robots = variable_get('vsite_access_unindexed_sites');
   $base_host = parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
 
-  //If this site has a group domain, retrieve the Host.
-  if($vsite_domain){
+  // If this site has a group domain, retrieve the Host.
+  if ($vsite_domain) {
     $vsite_domain = parse_url($vsite_domain,PHP_URL_HOST);
   }
 
-  if ($privacy > VSITE_ACCESS_PUBLIC){
+  if ($privacy > VSITE_ACCESS_PUBLIC) {
   	//Do not index if the site is not public
     //Add dissallow for base_domain.
     $domain_robots[$base_host][$group->nid] = "Disallow: /{$vsite->group->purl}/";
@@ -274,14 +275,15 @@ function vsite_access_update_robots($group,$privacy){
     //Dissallow custom domain indexing.
     $vsite->controllers->variable->set('robotstxt',"User-agent: *\nDisallow: /");
 
-  }else{
+  }
+  else {
     //Remove base_domain any indexing.
     if(isset($domain_robots[$base_host][$group->nid])){
       unset($domain_robots[$base_host][$group->nid]);
     }
 
     //Remove and Group Domain indexing.
-    if($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])){
+    if ($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])){
       unset($domain_robots[$vsite_domain][$group->nid]);
     }
 
@@ -298,7 +300,7 @@ function vsite_access_update_robots($group,$privacy){
  * Implements hook_field_attach_insert().
  */
 function vsite_access_field_attach_insert($entity_type, $entity) {
-  if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+  if ($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)) {
     vsite_access_update_privacy_settings($entity);
   }
 }
@@ -307,7 +309,7 @@ function vsite_access_field_attach_insert($entity_type, $entity) {
  * Implements hook_field_attach_update().
  */
 function vsite_access_field_attach_update($entity_type, $entity) {
-if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+  if ($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)) {
     vsite_access_update_privacy_settings($entity);
   }
 }
