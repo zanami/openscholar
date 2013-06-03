@@ -182,8 +182,7 @@ function _os_pinserver_auth_vsite_private_file_settings(&$form, $form_state) {
  */
 function os_pinserver_auth_vsite_private_file_settings_submit(&$form, &$form_state){
 
-  $vsite = spaces_get_space();
-  if(!$vsite){
+  if (!$vsite = vsite_get_vsite()) {
     return;
   }
 

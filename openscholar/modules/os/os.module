@@ -262,8 +262,8 @@ function _os_nice_menus_direction($region) {
   );
 
   $settings_var = 'theme_' . os_theme_get() . '_settings';
-  if ($space = spaces_get_space()) {
-    $columns = $space->controllers->variable->get($settings_var);
+  if ($vsite = vsite_get_vsite()) {
+    $columns = $vsite->controllers->variable->get($settings_var);
   }
   else {
     $columns = variable_get($settings_var, 'three_col_grail');

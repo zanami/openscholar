@@ -90,7 +90,7 @@ function _hwpi_get_ancestry() {
   if (!$vsite = vsite_get_vsite()) {
     return $sites;
   }
-  
+
   // First, looks for parent vsites and adds them to hierarchy.
   $vsite_original = $vsite;
   $group = $vsite->group;
