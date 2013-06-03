@@ -20,18 +20,8 @@ include_once ('includes/vsite.inc');
  *   The node ID of the site.
  */
 function vsite_get_vsite($site_id = FALSE){
-  if ($site_id) {
-    $vsite = spaces_load('og', $site_id, FALSE);
-  }
-  else {
-    $vsite = spaces_get_space();
-  }
-
-  if ($vsite && $vsite->type == 'og') {
-    return $vsite;
-  }
-
-  return FALSE;
+  $vsite = $site_id ? spaces_load('og', $site_id, FALSE) : spaces_get_space();
+  return $vsite && $vsite->type == 'og' ? $vsite : FALSE;
 }
 
 /**
@@ -40,10 +30,7 @@ function vsite_get_vsite($site_id = FALSE){
  * @param object $vsite
  */
 function vsite_get_purl($vsite = FALSE){
-  if (! $vsite) {
-    $vsite = spaces_get_space();
-  }
-
+  $vsite = $vsite ? $vsite : spaces_get_space();
   return ! empty($vsite->group) ? $vsite->group->purl : '';
 }
 
@@ -73,6 +60,7 @@ function vsite_node_form_after_build($form) {
   if (!module_exists('vsite_domain')) {
     return;
   }
+
   // Prepares a field prefix to store this site's path.
   $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
   // Adds the prefix to the custom alias field on the node form.
@@ -1061,6 +1049,7 @@ function vsite_load_user_membership($user_id){
 
 /**
  * Implements hook_user_view_alter().
+ * 
  * Altering the user view to remove history, groups and other groups
  * also altering to add in "My Websites" for all sites the user belongs to.
  */
