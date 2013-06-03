@@ -163,8 +163,8 @@ function os_boxes_widget_delete_submit($form, &$form_state) {
     os_layout_block_delete('boxes-' . $form_state['values']['bid']);
 
     // Deletes box instance
-    if (module_exists('spaces') && $space = spaces_get_space()) {
-      $space->controllers->boxes->del($form_state['values']['bid']);
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $vsite->controllers->boxes->del($form_state['values']['bid']);
     }
     else {
       if ($box = boxes_box_load($form_state['values']['bid'])) {

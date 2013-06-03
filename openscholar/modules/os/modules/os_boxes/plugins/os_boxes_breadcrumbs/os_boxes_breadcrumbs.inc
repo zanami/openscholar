@@ -55,17 +55,17 @@ class os_boxes_breadcrumbs extends os_boxes_default {
       3 => '&#124;',
       4 => '-',
     );
-    $space = spaces_get_space();
+    $vsite = vsite_get_vsite();
     // Get URL arguments.
     $arguments = explode('/', request_uri());
 
     // Check for vsites
-    if(isset($space)) {
+    if ($vsite) {
       // Check for the vsite name in the url.
       // Unset it if it exists.
       // Unsetting because the breadcrumb would look like this Home > VsiteName > Page Title.
       // Removing the vsite name removes it from the breadcrumb, so it will just be Home > Page Title.
-      if($key = array_search($space->group->title, $arguments)) {
+      if ($key = array_search($vsite->group->title, $arguments)) {
       	unset($arguments[$key]);
       }
     }

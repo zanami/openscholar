@@ -29,7 +29,7 @@ class os_boxes_booktoc extends os_boxes_default {
       ->fields('n', array('title'))
       ->distinct();
 
-    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       $q->join('og_membership', 'ogm', 'n.nid = ogm.etid');
       $q->condition('gid', $vsite->group->nid);
     }
