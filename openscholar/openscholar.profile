@@ -113,7 +113,7 @@ function openscholar_flavor_form_submit($form, &$form_state) {
   variable_set('os_profile_flavor', $form_state['input']['os_profile_flavor']);
 
   // Define dummy content migration.
-  if ($form_state['input']['dummy_content']) {
+  if (!empty($form_state['input']['dummy_content'])) {
     variable_set('os_dummy_content', TRUE);
   }
 }
