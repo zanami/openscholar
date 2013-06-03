@@ -642,28 +642,27 @@ function vsite_register_notify_admin($vsite, $admin_mail) {
   $replacements = _vsite_register_mail_replacements($vsite, $author, $key);
 
   $subject = t(
-    "User !user created a site \"!site\" at !site_url",
+    "User !username created a site \"!site_name\" at !sitewide_name",
     $replacements
   );
 
   $body = t(
       "Hello,\n\n"
-      . "This is an automatic notification.\n\n"
       . "On !date,\na new site was registered at !sitewide_name.\n\n"
-      . "Link: !site_login_uri \n\n"
-      . "<b>Site information</b>\n\n"
-      . "<dl><dt>Site name</dt><dd>!site_name</dd>"
-      . "<dt>Site URL</dt><dd>!site_url</dd>"
-      . "<dt>Site type</dt><dd>!site_type</dd>"
-      . "<dt>Site visibility</dt><dd>!site_visibility</dd>"
-      . "</dl>"
-      . "<b>User information</b>\n\n"
-      . "<dl><dt>Username</dt><dd>!username</dd>"
-      . "<dt>Full name</dt><dd>!full_name</dd>"
-      . "<dl><dt>Email</dt><dd>!user_mail</dd>"
-      . "<dt>Total sites owned</dt><dd>!vsite_count</dd>"
-      . "</dl>\n\n"
-      . "Good luck!\nThe !site server",
+      . "Link: !site_login_uri"
+      . "\n\n&nbsp;\n\n"
+      . "<h2>Site information</h2>\n"
+      . "Site name:\t\t!site_name\n"
+      . "Site URL:\t\t!site_url\n"
+      . "Site type:\t\t!site_type\n"
+      . "Site visibility:\t!site_visibility"
+      . "\n\n&nbsp;\n\n"
+      . "<h2 style='font-weight:bold;'>User information</h2>\n"
+      . "Username:\t\t!username\n"
+      . "Full name:\t\t!full_name\n"
+      . "Email:\t\t\t\t!user_mail\n"
+      . "Total sites owned:\t!vsite_count\n\n"
+      . "Best wishes,\nthe !sitewide_name server",
       $replacements
   );
 
@@ -711,7 +710,8 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
     '!username' => $author->name,
     '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
     '!user_mail' => $author->mail,
-    '!site_url' => url($vsite->group->purl),
+    '!site_url' => url($base_url . '/' . $vsite->group->title, array('absolute' => TRUE)),
+    '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
   );
 
   // Adds additional replacement values depending on which email is being sent.
@@ -730,7 +730,7 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
           $name_values[] = $items[0]['value'];
         }
       }
-      $full_name = sizeof($name_values) > 1 ? implode(' ', $name_values) : t('No entry');
+      $full_name = sizeof($name_values) > 1 ? implode(' ', $name_values) : t('(No entry)');
 
       // Prepares the site visibility value and fetches human-readable name.
       $items = field_get_items('node', $vsite->group, VSITE_ACCESS_FIELD);
@@ -754,7 +754,7 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
       // Prepares the date for the email message.
       global $language;
       $language = $language->language;
-      $date = format_date(time(), 'medium', '', NULL, $language);
+      $date = format_date(time(), 'long', '', NULL, $language);
 
       $replacements += array(
         '!vsite_count' => $count,
@@ -762,7 +762,6 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
         '!site_name' => $vsite->group->title,
         '!site_type' => $site_type,
         '!site_visibility' => $visibility,
-        '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
         '!date' => $date,
       );
 
@@ -803,19 +802,19 @@ function _vsite_register_notify_author_body_text($current_user, $author) {
   $no_reset_required = (bool) $returning_author || $author_is_current_user;
   if ($no_reset_required) {
     $body_text = "Hi !username,\n\n"
-      . "Your new web site at !site has been activated."
+      . "Your new web site at !sitewide_name has been activated."
       . "Your web site url is !site_url\n\n"
       . "You will be able to log into your site at !site_login_uri "
       . "with username:\n\n!username\n\n"
       . "We hope you will enjoy your new web site.\n\n"
-      . "Sincerely,\nThe !site Team";
+      . "Sincerely,\nThe !sitewide_name Team";
   }
   // Otherwise, this site was created on the author's behalf, or this is the
   // author's very first site.
   // Includes instructions to reset password in order to login.
   else {
     $body_text = "Hi !username,\n\n"
-      . "Your new web site at !site has been activated.\n\n"
+      . "Your new web site at !sitewide_name has been activated.\n\n"
       . "Your web site url is !site_url\n\n"
       . "You may now log in and reset your password by clicking on this link "
       . "or copying and pasting it in your browser: \n\n !user_login_url \n\n"
@@ -826,7 +825,7 @@ function _vsite_register_notify_author_body_text($current_user, $author) {
       . "you will be able to log in at !site_login_uri "
       . "as username:\n\n!username\n\n"
       . "We hope you will enjoy your new web site.\n\n"
-      . "Sincerely,\nThe !site Team";
+      . "Sincerely,\nThe !sitewide_name Team";
   }
 
   return $body_text;
