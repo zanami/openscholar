@@ -32,13 +32,12 @@ class OSNodeFieldQuery extends EntityFieldQuery {
     if (!module_exists('vsite') || !$filter_vsite) {
       return;
     }
-    $space = spaces_get_space();
-    if (!is_object($space) || !is_numeric($space->id)) {
+
+    if (!$vsite = vsite_get_vsite()) {
       return;
     }
 
-    $this
-      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+    $this->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id);
   }
 }
 

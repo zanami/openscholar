@@ -27,8 +27,8 @@ function os_get_themes($theme_name = NULL, $theme_type = 'vsite') {
  * Filters keeps only OS themes.
  */
 function _os_is_os_theme($theme) {
-  $space = spaces_get_space();
-  $site_key = ($space) ? $space->group->purl : false;
+  $vsite = vsite_get_vsite();
+  $site_key = ($vsite) ? $vsite->group->purl : false;
 
   return (array_key_exists('os',$theme->info)
      && array_key_exists('theme_type', $theme->info['os'])
@@ -39,9 +39,9 @@ function _os_is_os_theme($theme) {
 
 /**
  * Returns the theme type, optionally reseting to the passed value.
- * 
+ *
  * @param string|bool $set_type
- * 
+ *
  * @return string $theme_type
  */
 function _os_get_theme_type($set_type = FALSE) {
@@ -80,21 +80,19 @@ function os_theme_get_flavors($theme = NULL) {
 }
 
 function os_theme_set($theme) {
-  if ($space = spaces_get_space()) {
-    return $space->controllers->variable->set('theme_default', $theme);
+  if ($vsite = vsite_get_vsite()) {
+    return $vsite->controllers->variable->set('theme_default', $theme);
   }
-  else {
-    return variable_set('theme_default', $theme);
-  }
+
+  return variable_set('theme_default', $theme);
 }
 
 function os_theme_get() {
-  if ($space = spaces_get_space()) {
-    return $space->controllers->variable->get('theme_default');
+  if ($vsite = vsite_get_vsite()) {
+    return $vsite->controllers->variable->get('theme_default');
   }
-  else {
-    return variable_get('theme_default', '');
-  }
+
+  return variable_get('theme_default', '');
 }
 
 /**
@@ -110,8 +108,8 @@ function os_theme_get_flavor() {
   }
 
   $flavor_key = 'os_appearance_' . $theme_key . '_flavor';
-  if ($space = spaces_get_space()) {
-    $flavor = $space->controllers->variable->get($flavor_key);
+  if ($vsite = vsite_get_vsite()) {
+    $flavor = $vsite->controllers->variable->get($flavor_key);
   }
   else {
     $flavor = variable_get($flavor_key, FALSE);
@@ -120,7 +118,5 @@ function os_theme_get_flavor() {
   if ($flavor && $flavor != 'default') {
     return array($flavor => $flavors[$flavor]);
   }
-  else {
-    return array();
-  }
+  return array();
 }

@@ -277,7 +277,7 @@ function _os_nice_menus_direction($region) {
   }
 
   $directions = (isset($region_directions[$columns])) ? $region_directions[$columns] : $region_directions['three_col_grail'];
-  return (isset($directions[$region])) ? $directions[$region] : 'down';
+  return isset($directions[$region]) ? $directions[$region] : 'down';
 }
 
 /**
