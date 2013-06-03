@@ -158,13 +158,6 @@ table[style] {
 }
 }
 
-@media(max-width:625px){
-	
-table, th, td, tr {
-    display:block;
-}
-}
-
 
 @media (max-width: 768px) {
 
