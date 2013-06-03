@@ -84,7 +84,7 @@ ul.menu {
     margin-right: 30px !important;
 }
 #menu-bar nav {
-    background: none repeat scroll 0 0 #E8E8E8;
+    background: none repeat scroll 0 0 #E8E8E8!important;
     border-radius: 0 0 0 0;
     box-shadow: 0 ;
 }
@@ -98,6 +98,7 @@ ul.menu {
     padding-top: 65px!important;
 
 }
+
 .two-sidebars .region-sidebar-second {
     padding-top: 65px;
    
