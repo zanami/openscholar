@@ -158,7 +158,12 @@ table[style] {
 }
 }
 
-
+@media{max-width:625px){
+	
+table, th, td, tr {
+    display:block;
+}
+}
 
 
 @media (max-width: 768px) {
@@ -301,8 +306,7 @@ table p {
     float: none!important;
 }
 th, td {
-    padding: 0.3em!important;
-
+    padding: 0.3em 0 0.3em 0.3em !important;
 }
 .region-inner[style]{
 min-height:300px!important;	
