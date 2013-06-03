@@ -110,7 +110,7 @@ function  harvard_courses_block_view($delta) {
  * Return links for filter the harvard courses.
  */
 function harvard_courses_courses_filter() {
-  if (!$space = spaces_get_space()) {
+  if (!$vsite = vsite_get_vsite()) {
     return;
   }
 
@@ -118,7 +118,7 @@ function harvard_courses_courses_filter() {
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvard_course')
-    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id)
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id)
     ->execute();
 
   if (empty($result['node'])) {
@@ -585,11 +585,11 @@ function harvard_courses_related_nodes($field, $search = array()) {
  * Implements hook_form_FORM_ID_alter().
  */
 function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
-  if ($form['#feature'] != 'harvard_courses' || !$space = spaces_get_space()) {
+  if ($form['#feature'] != 'harvard_courses' || !$vsite = vsite_get_vsite()) {
     return;
   }
 
-  $node = $space->og;
+  $node = $vsite->og;
 
   $elements = array();
 
@@ -612,7 +612,7 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
  * Implements hook_form_FORM_ID_alter().
  */
 function harvard_courses_form_spaces_features_form_alter(&$form, &$form_state) {
-  if (!$space = spaces_get_space()) {
+  if (!$vsite = vsite_get_vsite()) {
     return;
   }
 
