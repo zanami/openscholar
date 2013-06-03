@@ -114,6 +114,7 @@ projects[facetapi][version] = 1.1
 ;projects[facetapi][download][type] = git
 ;projects[facetapi][download][branch] = 7.x-1.0
 ;projects[facetapi][download][revision] = f7b7168
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-1.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
