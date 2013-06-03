@@ -80,16 +80,18 @@ function vsite_get_subsites($vsite = FALSE) {
  *
  */
 function vsite_subsite_node_url_options($node, &$options){
-  $vsite = vsite_get_vsite();
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
 
-  if(!$vsite || !isset($node->{OG_AUDIENCE_FIELD})){
+  if (!isset($node->{OG_AUDIENCE_FIELD})){
     // No group information.
     return;
   }
 
   //Check and see if this node is part of a subsite "not this site"
   $groups = field_get_items('node', $node, OG_AUDIENCE_FIELD);
-  if(isset($groups[0]) && $vsite->id != $groups[0]['target_id']){
+  if (isset($groups[0]) && $vsite->id != $groups[0]['target_id']){
     //Absolute will force the use of "viste_domain_name"
     $options['absolute'] = TRUE;
     //This will rewrite the URL based on this nodes group

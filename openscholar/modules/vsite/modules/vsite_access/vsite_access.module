@@ -53,7 +53,7 @@ function vsite_access_node_access($node, $op, $account) {
   //Handle access to Group Content
   if(og_is_group_content_type('node', $type)){
 
-	  if ($op != 'view' || !($vsite = spaces_get_space())) {
+	  if ($op != 'view' || !$vsite = vsite_get_vsite()) {
 	    // If we are trying to create content outside a group and do not have permission to do so
 	    if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
 	      return NODE_ACCESS_DENY;
@@ -102,11 +102,11 @@ function vsite_access_node_access($node, $op, $account) {
  */
 function vsite_access_cp_settings() {
   $form = array();
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   if (! empty($space)) {
     // Gets the vsite_users_contact_form_anonymous variable.
-    $wrapper = entity_metadata_wrapper('node', $space->group);
+    $wrapper = entity_metadata_wrapper('node', $vsite->group);
 
     $form['vsite_private'] = array(
       'group' => array(
@@ -139,10 +139,12 @@ function vsite_access_cp_settings() {
  */
 function vsite_access_cp_settings_node_submit($form, &$form_state){
   // Get the current vsite.
-  $space = spaces_get_space();
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
   // Get the vsite_privacy value.
-  if (isset($form_state['values']['vsite_private']) && $space) {
-    $wrapper = entity_metadata_wrapper('node', $space->group);
+  if (isset($form_state['values']['vsite_private'])) {
+    $wrapper = entity_metadata_wrapper('node', $vsite->group);
     $wrapper->{VSITE_ACCESS_FIELD}->set($form_state['values']['vsite_private']);
     $wrapper->save();
   }

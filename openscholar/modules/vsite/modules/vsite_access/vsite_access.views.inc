@@ -5,10 +5,10 @@
  */
 function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 
-	$space = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
 	//If we are not in a vsite, add our filter, inside a vsite we can restrict access without filters overhead
-	if (arg(0) === 'admin' || !is_object($space)) {
+	if (arg(0) === 'admin' || !is_object($vsite)) {
 
 		//After we have determined that we are not in an OG space lets make
 		//sure we add our filters
@@ -52,7 +52,5 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 
 
 		}
-	}else if(!og_is_member('node', $space->id)){
-		//The None of the view content is visible if the space is private
 	}
 }
