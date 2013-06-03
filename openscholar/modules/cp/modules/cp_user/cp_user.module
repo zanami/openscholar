@@ -63,7 +63,7 @@ function cp_user_menu(){
  * Menu access; Return TRUE if user can access user admin page.
  */
 function cp_user_admin_access() {
-  return user_access('administer users') && spaces_get_space();
+  return user_access('administer users') && vsite_get_vsite();
 }
 
 /**
@@ -87,7 +87,7 @@ function cp_user_admin_paths() {
  *   The operation needed. Defaults to "members".
  */
 function cp_user_admin($op = 'members') {
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
   switch ($op) {
     case 'add':
       module_load_include('inc', 'og_ui', 'og_ui.admin');
@@ -101,6 +101,7 @@ function cp_user_admin($op = 'members') {
     default:
       $build = cp_user_user_management_page($vsite->id);
   }
+
   return $build;
 }
 
@@ -243,32 +244,23 @@ function cp_user_no_password_validate($form, &$form_state) {
  * Submit handler; Add the newly created user to the current site.
  */
 function cp_user_user_register_submit($form, &$form_state) {
-  $space = spaces_get_space();
-  if(!empty($form_state['user']->uid)) {
-    og_group('node', $space->id, array('entity' => $form_state['user']->uid));
-
-    $og_roles = og_roles('node', false, $space->id);
-    $vsite_user_role = array_search('vsite user', $og_roles);
-
-    // Grant them the vsite user role
-    og_role_grant('node', $space->id, $form_state['user']->uid, $vsite_user_role);
-
-    // drupal_set_message to inform the user has been added to the group.
-    drupal_set_message(t('!user has been added to the website: !website',array('!user'=>$form_state['user']->name, '!website'=>$space->group->title)));
-    // Redirect the user after they add/create someone.
-    $form_state['redirect'] = 'cp/users';
+  if (empty($form_state['user']->uid)) {
+    return;
   }
-}
 
-/**
- * Implements hook_load().
- *
- * Return the loaded user from the passed user ID, or FALSE if no user
- * exists.
- */
-function user_id_load($user_id) {
-  $account = user_load($user_id);
-  return $account ? $account : FALSE;
+  $vsite = vsite_get_vsite();
+  og_group('node', $vsite->id, array('entity' => $form_state['user']->uid));
+
+  $og_roles = og_roles('node', FALSE, $vsite->id);
+  $vsite_user_role = array_search('vsite user', $og_roles);
+
+  // Grant them the vsite user role.
+  og_role_grant('node', $vsite->id, $form_state['user']->uid, $vsite_user_role);
+
+  // drupal_set_message to inform the user has been added to the group.
+  drupal_set_message(t('@user has been added to the website: @website',array('@user' => $form_state['user']->name, '@website' => $vsite->group->title)));
+  // Redirect the user after they add/create someone.
+  $form_state['redirect'] = 'cp/users';
 }
 
 /**
