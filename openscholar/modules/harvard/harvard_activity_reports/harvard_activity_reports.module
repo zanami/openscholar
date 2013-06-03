@@ -145,7 +145,7 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
  */
 function harvard_activity_reports_query_user() {
   // Check if we already have a space context.
-  if ($vsite = spaces_get_space()) {
+  if ($vsite = vsite_get_vsite()) {
     return $vsite->group->uid;
   }
 

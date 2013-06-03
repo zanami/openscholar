@@ -5,26 +5,31 @@
  */
 function cp_user_check_role($user_id, $group_id) {
   // First check to see if the user is the admin of this group.
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
-  if($space->group->nid == $group_id && $space->group->uid == $user_id){
-	// User is the manager of the site, don't allow any actions on them.
-	$group_member = t('Manager');
-	$admin_link = '';
-	$remove_link = '';
-  }else{
-  	// Check their OG roles here, they could be a vsite admin and not the manager
-	$user_roles = og_get_user_roles('node',$space->group->nid, $user_id);
-	// Check for the vsite admin role now
-	if(in_array('vsite admin', $user_roles)) {
-	  $group_member = t('Administrator');
-      $admin_link = l('Remove Admin',"cp/users/remove_admin/{$user_id}");
-	}else {
-	  $group_member = t('Member');
-	  $admin_link = l('Make Admin',"cp/users/create_admin/{$user_id}");
-	}
-	$remove_link = l('Remove Membership',"cp/users/delete_membership/{$user_id}");
+  if ($vsite->group->nid == $group_id && $vsite->group->uid == $user_id){
+    // User is the manager of the site, don't allow any actions on them.
+    $group_member = t('Manager');
+    $admin_link = '';
+    $remove_link = '';
   }
+  else {
+  	// Check their OG roles here, they could be a vsite admin and not the manager
+    $user_roles = og_get_user_roles('node', $vsite->group->nid, $user_id);
+    // Check for the vsite admin role now
+
+    if (in_array('vsite admin', $user_roles)) {
+      $group_member = t('Administrator');
+      $admin_link = l('Remove Admin',"cp/users/remove_admin/{$user_id}");
+    }
+    else {
+      $group_member = t('Member');
+      $admin_link = l('Make Admin',"cp/users/create_admin/{$user_id}");
+    }
+
+    $remove_link = l('Remove Membership',"cp/users/delete_membership/{$user_id}");
+  }
+
   $group_membership['membership'] = $group_member;
   $group_membership['admin_link'] = $admin_link;
   $group_membership['remove_link'] = $remove_link;
@@ -109,15 +114,15 @@ function cp_user_user_management_page($vsite_id) {
  * Confirmation form for removing the membership of the user form the specified group.
  */
 function cp_user_remove_membership_confirm($form_state, $user_load) {
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   // Form sets.
-  $form['gid'] = array('#type' => 'value', '#value' => $space->group->nid);
+  $form['gid'] = array('#type' => 'value', '#value' => $vsite->group->nid);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
-  $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
+  $form['site_name'] = array('#type' => 'value', '#value' => $vsite->group->title);
   // Return hook_confirm_form();
   return confirm_form($form,
-    t('Are you sure you want to remove !name from the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $space->group->title)),
+    t('Are you sure you want to remove !name from the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $vsite->group->title)),
     "cp/users",
     ' ',
     t('Remove'),
@@ -141,16 +146,16 @@ function cp_user_remove_membership_confirm_submit($form, &$form_state) {
  * Confirmation form for promoting a user to vsite admin of the specified group.
  */
 function cp_user_make_admin_confirm($form_state, $user_load) {
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   // Form sets.
-  $form['gid'] = array('#type' => 'value', '#value' => $space->group->nid);
-  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
+  $form['gid'] = array('#type' => 'value', '#value' => $vsite->group->nid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $vsite->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
-  $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
+  $form['site_name'] = array('#type' => 'value', '#value' => $vsite->group->title);
   // Return hook_confirm_form();
   return confirm_form($form,
-    t('Are you sure you want to make !name a group administrator for the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $space->group->title)),
+    t('Are you sure you want to make @name a group administrator for the website: %title?', array('@name' => $user_load['build_info']['args'][0]->name, '%title' => $vsite->group->title)),
     "cp/users",
     ' ',
     t('Confirm'),
@@ -170,7 +175,7 @@ function cp_user_make_admin_confirm_submit($form, &$form_state) {
   // Grant them the admin role
   og_role_grant('node', $form_state['values']['gid'], $form_state['values']['account'], $vsite_admin_role);
   // Set the message and redirect back to the cp/users page
-  drupal_set_message(t('!user has been promoted to administrator for !website', array('!user'=>$form_state['values']['username'],'!website'=>$form_state['values']['site_name'])));
+  drupal_set_message(t('@user has been promoted to administrator for %website', array('@user'=>$form_state['values']['username'], '%website'=>$form_state['values']['site_name'])));
   drupal_goto('cp/users');
 }
 
@@ -179,16 +184,16 @@ function cp_user_make_admin_confirm_submit($form, &$form_state) {
  * Confirmation form for promoting a user to vsite admin of the specified group.
  */
 function cp_user_remove_admin_confirm($form_state, $user_load) {
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   // Form sets.
-  $form['gid'] = array('#type' => 'value', '#value' => $space->group->nid);
-  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
+  $form['gid'] = array('#type' => 'value', '#value' => $vsite->group->nid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $vsite->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
-  $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
+  $form['site_name'] = array('#type' => 'value', '#value' => $vsite->group->title);
   // Return hook_confirm_form();
   return confirm_form($form,
-    t('Are you sure you want to remove !name as a group administrator for the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $space->group->title)),
+    t('Are you sure you want to remove @name as a group administrator for the website: %title?', array('@name' => $user_load['build_info']['args'][0]->name, '%title' => $vsite->group->title)),
     "cp/users",
     ' ',
     t('Remove'),
