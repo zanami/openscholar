@@ -33,11 +33,11 @@ function vsite_get_subsites($vsite = FALSE) {
   if(!$subsite_map && !$subsite_map = cache_get('vsite_subsite_map')) {
     $subsite_map = array();
 
-    if($info = field_info_field('field_group_parent')){
+    if (field_info_field('field_group_parent')){
       $result = db_select('field_data_field_group_parent', 'fgp')
-      ->fields('fgp',array('bundle','entity_id','field_group_parent_target_id'))
-      ->condition('deleted', 0)
-      ->execute();
+        ->fields('fgp',array('bundle','entity_id','field_group_parent_target_id'))
+        ->condition('deleted', 0)
+        ->execute();
 
       while ($item = $result->fetch()){
         $subsite_map[$item->field_group_parent_target_id][$item->entity_id] = $item->entity_id;
@@ -47,11 +47,11 @@ function vsite_get_subsites($vsite = FALSE) {
     cache_set('vsite_subsite_map',$subsite_map);
   }
 
-  if(is_object($subsite_map)){
+  if (is_object($subsite_map)){
     $subsite_map = $subsite_map->data;
   }
 
-  if(!$vsite && !$vsite = spaces_get_space()) {
+  if (!$vsite && !$vsite = spaces_get_space()) {
     return array();
   }
 
@@ -76,7 +76,7 @@ function vsite_subsite_node_url_options($node, &$options){
   $vsite = spaces_get_space();
 
   if(!$vsite || !isset($node->{OG_AUDIENCE_FIELD})){
-    //no group information
+    // No group information.
     return;
   }
 

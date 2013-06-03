@@ -16,11 +16,17 @@ include_once ('includes/vsite.inc');
 /**
  * Returns the current vsite (space).
  *
- * @param
- *   The node ID of the site.
+ * @param $vsite
+ *   The node ID or object of the site.
  */
-function vsite_get_vsite($site_id = FALSE){
-  $vsite = $site_id ? spaces_load('og', $site_id, FALSE) : spaces_get_space();
+function vsite_get_vsite($vsite = FALSE){
+  if (empty($vsite)) {
+    $vsite = spaces_get_space();
+  }
+  elseif (is_int($vsite)) {
+    $vsite = spaces_load('og', $vsite, FALSE);
+  }
+
   return $vsite && $vsite->type == 'og' ? $vsite : FALSE;
 }
 
