@@ -71,6 +71,9 @@
     margin: 0;
     padding: 0 0 30px 0 !important;
 }
+#boxes-box-os_pages_section_nav ul.menu {
+    margin-left: 0!important;
+}
 
 #menu-bar ul.nice-menu a.active, 
 #menu-bar ul.nice-menu a.active:hover {
