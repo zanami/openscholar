@@ -2,15 +2,15 @@
   var rootPath = Drupal.settings.osRestModulePath,
       restPath = Drupal.settings.restBasePath;
 
-  angular.module('mediaBrowser', []).
+  angular.module('mediaBrowser', [])
   /**
    * Service to maintain the list of files on a user's site
    */
-  factory('FileService', ['$rootScope', '$http', function ($rootScope, $http) {
+  .factory('FileService', ['$rootScope', '$http', function ($rootScope, $http) {
     var files = [];
-    $http.get({url: restPath})
+    $http.get(restPath+'/file')
       .success(function success(data) {
-        ret.files = data.list;
+        files = data.list;
         $rootScope.$broadcast('FileService.changed', files);
       })
       .error(function errorFunc() {
@@ -20,6 +20,9 @@
       });
 
     return {
+      getAll: function () {
+        return files;
+      },
       add: function (file) {
         files.push(file);
         $rootScope.$broadcast('FileService.changed', files);
@@ -55,42 +58,57 @@
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.
       when('/browser/upload', {
-        templateUrl: path+'/templates/upload.html',
-        controller: UploadCtrl
+        templateUrl: rootPath+'/templates/upload.html',
+        controller: 'UploadCtrl'
       }).
       when('browser/internet', {
-        templateUrl: path+'/templates/internet.html',
-        controller: InternetCtrl
+        templateUrl: rootPath+'/templates/internet.html',
+        controller: 'InternetCtrl'
       }).
       when('/browser/list', {
-        templateUrl: path+'/templates/browser.html',
-        controller: BrowserCtrl
+        templateUrl: rootPath+'/templates/browser.html',
+        controller: 'BrowserCtrl'
       }).
       when('/browser/edit/:fileId', {
-        templateUrl: path+'/templates/fileEdit.html',
-        controller: FileEditCtrl
+        templateUrl: rootPath+'/templates/fileEdit.html',
+        controller: 'FileEditCtrl'
       }).
-      when('/', {}).    // do nothing when the browser isn't open
       otherwise({
-        redirectTo: '/'
+        redirectTo: '/browser/list'
       });
   }]).
   controller('BrowserCtrl', ['FileService', '$scope', function (FileService, $scope) {
-    $scope.files = FileService.file;
+    $scope.files = FileService.getAll();
 
     $scope.$on('FileService.changed', function (event, files) {
       $scope.files = files;
     });
 
     $scope.queryFilename = function (item) {
-      if (item.name.indexOf($scope.filename) > -1) {
-        return true;
+      if ($scope.search) {
+        if (item.name.indexOf($scope.search) > -1) {
+          return true;
+        }
+        else if (item.orig.indexOf($scope.search) > -1) {
+          return true;
+        }
+        return false;
       }
-      else if (item.orig.indexOf($scope.filename) > -1) {
-        return true;
-      }
-      return false;
-    }
-  }]);
+      return true;
+    };
 
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.numberOfPages = function () {
+      return Math.ceil($scope.files.length/$scope.pageSize);
+    };
+
+
+  }]).
+  filter('start', function () {
+    return function (input, start) {
+      start = +start;
+      return input.slice(start);
+    }
+  });
 })();

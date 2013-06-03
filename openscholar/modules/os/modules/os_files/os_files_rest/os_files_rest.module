@@ -4,6 +4,19 @@ function os_files_rest_menu_alter(&$items) {
   $items['media/browser']['page callback'] = 'os_files_rest_media_browser';
 }
 
+function os_files_rest_restws_response_alter(&$response, $function) {
+  switch ($function ) {
+    case 'queryResource':
+      foreach ($response['list'] as $k => $f) {
+        $response['list'][$k] = _os_files_rest_modify_response_row($f);
+      }
+      break;
+    case 'viewResource':
+        $response = _os_files_rest_modify_response_row($response);
+      break;
+  }
+}
+
 function _os_files_rest_modify_response_row($file) {
   $blacklist = array(
     'og_group_ref' => TRUE,
@@ -38,18 +51,44 @@ function _os_files_rest_modify_response_row($file) {
 
 function os_files_rest_media_browser() {
   $browser = array(
-    '#prefix' => '<div ng-app="mediaBrowser">',
-    '#suffix' => '</div>',
+    '#prefix' => '<div ng-app="mediaBrowser"><div ng-view>',
+    '#suffix' => '</div></div>',
     '#attached' => array(
       'js' => array(
         array(
           'data' => 'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js',
           'type' => 'external',
         ),
-        drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserModule.js',
+        array(
+          'data' => array(
+            'osRestModulePath' => $GLOBALS['base_url'].'/'.drupal_get_path('module', 'os_files_rest'),
+            'restBasePath' => url('')
+          ),
+          'type' => 'setting',
+        ),
+        array (
+          'data' => drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserModule.js',
+          'type' => 'file',
+          'scope' => 'footer',
+        )
+      ),
+      'css' => array(
+        drupal_get_path('module', 'os_files_rest').'/misc/os_files_rest.mediaBrowser.css',
       )
     )
   );
 
   return $browser;
+}
+
+/**
+ * Move angular to the top of the list scripts list
+ * We need it to load before jQuery because the version in Drupal is too old.
+ */
+function os_files_rest_process_html(&$vars) {
+  $search = '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js"></script>';
+  $style = str_replace($search, '', $vars['scripts'], $count);
+  if ($count) {
+    $vars['scripts'] = $search."\n".$style;
+  }
 }
