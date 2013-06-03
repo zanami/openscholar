@@ -62,7 +62,11 @@ if (!class_exists('purl_vsite_domain')) {
     }
 
     private function remove_scholar_purl($path, &$options) {
-      if (!($vsite = spaces_get_space()) || !strlen($vsite->group->purl)) {
+      if (!$vsite = vsite_get_vsite()) {
+        return $path;
+      }
+
+      if (empty($vsite->group->purl)) {
         return $path;
       }
 
@@ -94,7 +98,7 @@ if (!class_exists('purl_vsite_domain')) {
       if ($plugin) {
         $class = ctools_plugin_get_class($plugin, 'handler');
       }
-	  
+
       // Doesn't alter if link destination is an excluded path
       if (isset($class) && call_user_func(array($class, 'is_excluded_path'), $path)) {
         return;
@@ -119,7 +123,7 @@ if (!class_exists('purl_vsite_domain')) {
       if ((!($vsite = spaces_get_space()) && !($vsite = spaces_load('og', $item->id))) || !strlen($vsite->group->purl)) {
         return;
       }
-	  
+
       // Aliases query if it has not been aliased yet
       if (!in_array($vsite->group->purl, _vsite_domain_processed_purls())) {
         _vsite_domain_processed_purls($vsite->group->purl);
