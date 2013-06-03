@@ -541,6 +541,10 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     color: #FFF;
 }
 
+html.js .biblio-export div.ctools-dropdown a.ctools-dropdown-text-link {
+    color: inherit !important;
+}
+
 html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
     font-size: 11px;
     color: #293352 !important;
