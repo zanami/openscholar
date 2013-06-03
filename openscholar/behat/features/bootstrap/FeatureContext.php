@@ -8,6 +8,7 @@ use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
 
+
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {

@@ -6,7 +6,7 @@
 function openscholar_install_tasks($install_state) {
   $tasks = array();
 
-  // OS flavors (production, development, etc)
+  // OS flavors (production, development, etc).
   $tasks['openscholar_flavor_form'] = array(
     'display_name' => t('Choose environment'),
     'type' => 'form'
