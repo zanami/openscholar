@@ -158,7 +158,7 @@ table[style] {
 }
 }
 
-@media{max-width:625px){
+@media(max-width:625px){
 	
 table, th, td, tr {
     display:block;
