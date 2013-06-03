@@ -1,42 +1,36 @@
 <?php
 
 /**
- * Returns if a user has permission to add/delete a subsite
+ * Returns if a user has permission to add/delete a subsite.
  *
  * @param $op
- * Operation (create, delete)
- *
+ *   Operation (create, delete)
  * @param $vsite
+ *   Optional; the Vsite node object.
  *
- * @return bool
- * Access
+ * @return
+ *   TRUE if user has access.
  */
-function vsite_subsite_access($op = 'create', $vsite = false){
-
-  if(!$vsite){
-    $vsite = spaces_get_space();
-  }
-
+function vsite_subsite_access($op = 'create', $vsite = FALSE){
+  $vsite = $vsite ? $vsite : spaces_get_space();
   $subsite_parents = variable_get('subsite_parents',array('department'));
 
-  return ($vsite && in_array($vsite->group->type,$subsite_parents) && spaces_access_admin() && user_access("{$op} subsites"));
+  return ($vsite && in_array($vsite->group->type, $subsite_parents) && spaces_access_admin() && user_access("{$op} subsites"));
 }
 
 /**
- * Returns the subsites for a site
+ * Returns the subsites for a site.
  *
  * @param $vsite
- * Parent Site (Vsite Object or Int)
+ *   Parent Site (Node object or integer).
  *
- * @param $reset
- *
- * @return array
- * Subsite ID's
+ * @return
+ *   Array with subsite IDs.
  */
-function vsite_get_subsites($vsite = false, $reset = false){
-  $subsite_map = drupal_static('vsite_get_subsites',array());
+function vsite_get_subsites($vsite = FALSE) {
+  $subsite_map = drupal_static(__FUNCTION__ ,array());
 
-  if($reset || (!$subsite_map && !($subsite_map = cache_get('vsite_subsite_map')))){
+  if(!$subsite_map && !$subsite_map = cache_get('vsite_subsite_map')) {
     $subsite_map = array();
 
     if($info = field_info_field('field_group_parent')){
@@ -57,29 +51,13 @@ function vsite_get_subsites($vsite = false, $reset = false){
     $subsite_map = $subsite_map->data;
   }
 
-  if(!$vsite && !($vsite = spaces_get_space())){
+  if(!$vsite && !$vsite = spaces_get_space()) {
     return array();
   }
 
   $sid = is_object($vsite)? $vsite->group->nid:$vsite;
 
-  return isset($subsite_map[$sid])? $subsite_map[$sid]:array();
-}
-
-/**
- * Returns if the current site has subsites
- *
- * @param $vsite
- * Parent Site (Vsite Object or Int)
- *
- *
- * @return boolean
- *
- */
-function vsite_has_subsites($vsite = false){
-
-  //If this site has subsites return True.
-  return count(vsite_get_subsites($vsite))? TRUE:FALSE;
+  return isset($subsite_map[$sid])? $subsite_map[$sid]: array();
 }
 
 /**

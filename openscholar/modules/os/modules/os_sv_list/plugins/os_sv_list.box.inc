@@ -99,7 +99,7 @@ class os_sv_list_box extends os_boxes_default {
         '#type' => 'checkboxes',
         '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
         '#default_value' => $this->options['query_scope'],
-        '#access' => vsite_has_subsites(),
+        '#access' => vsite_get_subsites(),
         '#required' => TRUE,
       );
     }
@@ -285,7 +285,7 @@ class os_sv_list_box extends os_boxes_default {
 	      '#type' => 'checkboxes',
 	      '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
 	      '#default_value' => $this->options['query_scope'],
-	      '#access' => vsite_has_subsites(),
+	      '#access' => vsite_get_subsites(),
 	      '#required' => TRUE,
 	    );
     }

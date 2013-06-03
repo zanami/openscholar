@@ -1049,7 +1049,7 @@ function vsite_load_user_membership($user_id){
 
 /**
  * Implements hook_user_view_alter().
- * 
+ *
  * Altering the user view to remove history, groups and other groups
  * also altering to add in "My Websites" for all sites the user belongs to.
  */
@@ -1384,7 +1384,7 @@ function vsite_node_view($node, $view_mode){
 function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
-    vsite_get_subsites(FALSE,TRUE);
+    drupal_static_reset('vsite_get_subsites');
   }
 }
 
@@ -1394,7 +1394,7 @@ function vsite_node_insert($node){
 function vsite_node_update($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
-    vsite_get_subsites(FALSE,TRUE);
+    drupal_static_reset('vsite_get_subsites');
   }
 }
 
