@@ -254,12 +254,12 @@ function vsite_access_update_robots($group, $privacy) {
   $vsite = vsite_get_vsite($sid);
   $purl = $vsite->group->purl;
 
-  // The unindexed sites variable is an array keyed by domain name,
-  // with a key for the purl base domain, and also a key for each vsite with
-  // a custom domain (regardless if the vsite domain is shared or owned).
-  // Each vsite may have a robots.txt string saved at any domain key,
-  // accessed by it's vsite ID.
-  $unindexed_sites = variable_get('vsite_access_unindexed_sites');
+  // The variable $directives is an array keyed by domain name,
+  // with one array key for the purl base domain,
+  // and an additional key for each vsite custom domain.
+  // The array holds a sorted (ksort) list of robots.txt directives
+  // which are added to that domain's robots.txt file.
+  $directives = variable_get('vsite_access_unindexed_sites');
   $base_domain = parse_url(variable_get('purl_base_domain', $base_url), PHP_URL_HOST);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
 
@@ -276,16 +276,16 @@ function vsite_access_update_robots($group, $privacy) {
   $disallow_purl = (bool) $privacy > VSITE_ACCESS_PUBLIC;
   if ($disallow_purl) {
     // Undoes any previous Allow directives (see below).
-    if ($has_custom_domain && isset($unindexed_sites[$vsite_domain]["Allow $sid"])) {
-      unset($unindexed_sites[$vsite_domain]["Allow $sid"]);
+    if ($has_custom_domain && isset($directives[$vsite_domain]["Allow $sid"])) {
+      unset($directives[$vsite_domain]["Allow $sid"]);
     }
     // Does not index if the site is not public.
     // Adds dissallow for base_domain.
-    $unindexed_sites[$base_domain][$sid] = "Disallow: /$purl/";
+    $directives[$base_domain][$sid] = "Disallow: /$purl/";
 
     // Adds Disallow for group domain indexing.
     if ($has_custom_domain) {
-      $unindexed_sites[$vsite_domain][$sid] = "Disallow: /$purl/";
+      $directives[$vsite_domain][$sid] = "Disallow: /$purl/";
     }
 
     // Disallows custom domain indexing.
@@ -296,11 +296,11 @@ function vsite_access_update_robots($group, $privacy) {
   else {
     // Undoes any previous private vsite settings (see above).
     // Unsets any Disallow directives for this vsite.
-    if (isset($unindexed_sites[$base_domain][$sid])) {
-      unset($unindexed_sites[$base_domain][$sid]);
+    if (isset($directives[$base_domain][$sid])) {
+      unset($directives[$base_domain][$sid]);
     }
-    if ($has_custom_domain && isset($unindexed_sites[$vsite_domain][$sid])) {
-      unset($unindexed_sites[$vsite_domain][$sid]);
+    if ($has_custom_domain && isset($directives[$vsite_domain][$sid])) {
+      unset($directives[$vsite_domain][$sid]);
     }
     // Deletes any custom domain indexing stored in variable 'robotstxt'.
     $vsite->controllers->variable->del('robotstxt');
@@ -314,18 +314,20 @@ function vsite_access_update_robots($group, $privacy) {
       // @see http://en.wikipedia.org/wiki/Robots_exclusion_standard#Allow_directive
       $allow_this_site = "Allow: /files/$purl/files";
       $disallow_others = "Disallow: /files/*/files";
-      $unindexed_sites[$vsite_domain]["Allow $sid"] = $allow_this_site;
-      $unindexed_sites[$vsite_domain]["Disallow others"] = $disallow_others;
+      $directives[$vsite_domain]["Allow $sid"] = $allow_this_site;
+      $directives[$vsite_domain]["Disallow others"] = $disallow_others;
     }
   }
 
-  // Sorts the the directives by key, so that the precedence is:
-  // 1. Disallow /$purl/ (keyed by ID)
-  // 2. Allow /files/$purl/files (for custom domains only, keyed by "Allow ID")
-  // 3. Disallow /files/*/files (for custom domains only, keyed by "Disallow others")
-  $unindexed_sites[$vsite_domain] = ksort($unindexed_sites[$vsite_domain]);
+  // Sorts the the custom domain directives by key, so that the precedence is:
+  // 1. Disallow /$purl/ (for any private sites on this domain, keyed by ID)
+  // 2. Allow /files/$purl/files (for each public site, keyed by "Allow ID")
+  // 3. Disallow /files/*/files (only one entry, keyed by "Disallow others")
+  if ($has_custom_domain) {
+    $directives[$vsite_domain] = ksort($directives[$vsite_domain]);
+  }
   // Saves robots changes.
-  variable_set('vsite_access_unindexed_sites', $unindexed_sites);
+  variable_set('vsite_access_unindexed_sites', $directives);
 }
 
 /**
