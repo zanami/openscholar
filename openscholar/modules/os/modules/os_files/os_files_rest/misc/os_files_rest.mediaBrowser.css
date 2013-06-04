@@ -1,0 +1,23 @@
+
+.media-item {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  padding: 5px;
+  width: 100px;
+  display: inline-block;
+  margin: 5px 5px 0 0;
+  vertical-align: top;
+}
+
+.media-item img {
+  height: auto;
+  width: 100%;
+}
+
+.media-item .media-item-label {
+  text-align: center;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
