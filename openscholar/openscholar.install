@@ -90,7 +90,7 @@ function openscholar_install() {
   // Allow accessing resource node to all users.
   foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
     user_role_grant_permissions($rid, array('access resource node'));
-    user_role_frant_permissions($rid, array('access resource file'));
+    user_role_grant_permissions($rid, array('access resource file'));
   }
 }
 
