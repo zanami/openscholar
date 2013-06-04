@@ -316,7 +316,7 @@ if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type
  *
  * Adding visibility field of the group which the group content belong to.
  */
-function vsite_access_views_default_views_alter(&$views) {
+function _vsite_access_views_default_views_alter(&$views) {
   foreach ($views as $view) {
     if ($view->base_table != 'node') {
       // Alter only views based on nodes.
@@ -352,7 +352,7 @@ function vsite_access_views_default_views_alter(&$views) {
  *
  * When the user is in a vsite we need to remove the visibility access filter.
  */
-function vsite_access_views_query_alter(&$view, &$query) {
+function _vsite_access_views_query_alter(&$view, &$query) {
   $vsite = vsite_get_vsite();
 
   if (!$vsite) {
@@ -364,4 +364,33 @@ function vsite_access_views_query_alter(&$view, &$query) {
       unset($query->where[1]['conditions'][$key]);
     }
   }
+}
+
+/**
+ * Implements hook_views_pre_execute().
+ */
+function vsite_access_views_query_alter(view &$view) {
+  if ($view->base_table != 'node') {
+    return;
+  }
+
+  $query =& $view->query;
+  $join = new views_join;
+
+  $def['table'] = 'node';
+  $def['field'] = 'nid';
+  $def['left_table'] = 'og_membership';
+  $def['left_field'] = 'etid';
+  $join->definition = $def;
+
+  $join->construct();
+
+  $query->add_relationship('ogm', $join, 'og_membership');
+//  $query->add_table('node', NULL, $join, 'ogm');
+
+//  $query->where[1]['conditions'][] = array(
+//    'field' => 'ogm.id',
+//    'value' => 1,
+//    'operator' => '>',
+//  );
 }
