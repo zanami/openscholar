@@ -327,4 +327,12 @@ th, td {
 }
 
 }
-
+@media (max-width:400px){
+	
+.branding-left {
+    left: 10px;
+    margin: 10px 0 !important;
+    position: relative;
+    width: 190px;
+}
+}
