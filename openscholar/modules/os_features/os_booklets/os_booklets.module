@@ -72,7 +72,7 @@ function os_booklets_menu_alter(&$items) {
   }
 }
 
-/** 
+/**
  * Checks that node is book before allowing access to outline
  */
 function _os_booklets_outline_access($node) {
@@ -261,8 +261,8 @@ function _os_booklets_child_page_form_alter(&$form) {
  * @see os_booklets_form_book_node_form_alter()
  */
 function _os_booklets_option_filter_form_alter(&$form) {
-  $space = spaces_get_space();
-  if (!module_exists('vsite') || !$space) {
+  $vsite = vsite_get_vsite();
+  if (!module_exists('vsite') || !$vsite) {
     return;
   }
 

@@ -32,7 +32,7 @@ class os_boxes_site_logo extends os_boxes_default {
       $height = $this->options['height'];
       $width = $this->options['width'];
       $ratio = 0;
-      if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
         $file = field_get_items('node', $vsite->group, 'field_site_logo');
         $file = $file[0];
         $fid = $file['fid'];
@@ -74,13 +74,13 @@ class os_boxes_site_logo extends os_boxes_default {
           )
         )
       );
-      
+
       if (function_exists('imagefield_crop_upload_validate')) {
         $form['file']['#upload_validators']['imagefield_crop_upload_validate'] = array(null, $instance);
       }
 
-      if (module_exists('vsite') && $space = spaces_get_space()) {
-        $form['file']['#upload_location'] = 'public://'.$space->group->purl.'/files';
+      if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+        $form['file']['#upload_location'] = 'public://' . $vsite->group->purl.'/files';
       }
 
       $form['submit'] = array(
@@ -115,10 +115,10 @@ class os_boxes_site_logo extends os_boxes_default {
       // get the title of the site so we can use it in an alt attribute
       $site_info = boxes_box_load('site_info');
       $site_title = $site_info->options['site_title'];
-      
+
       // if we happen to be in a vsite, load the logo from their field
       $fid = $this->options['fid'];
-      if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
         $fid = field_get_items('node', $vsite->group, 'field_site_logo');
         $fid = $fid[0]['fid'];
         // if the site title is the default, use the vsite's title
@@ -159,7 +159,7 @@ function os_boxes_site_logo_submit($form, $form_state) {
     );
 
     $scale = null;
-    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
       if ($instance['widget']['settings']['resolution']) {
         $scale = explode('x', $instance['widget']['settings']['resolution']);
@@ -199,8 +199,8 @@ function os_boxes_site_logo_submit($form, $form_state) {
     );
   }
 
-  if (module_exists('vsite') && $space = spaces_get_space()) {
-    $node = $space->group;
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    $node = $vsite->group;
 
     if ($file->fid) {
       $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
@@ -323,7 +323,7 @@ function _os_boxes_site_logo_preview_process($element, $form_state, $form) {
   $element = @imagefield_crop_widget_preview_process($element, $form_state, $form);
 
   $scale = null;
-  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
     $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
     if ($instance['widget']['settings']['resolution']) {
       $scale = explode('x', $instance['widget']['settings']['resolution']);

@@ -17,8 +17,8 @@ class osTask extends og_task {
     $this->account = user_load($user->uid);
 
     if (empty($entity)) {
-      $space = spaces_get_space();
-      $this->site = $space->group;
+      $vsite = vsite_get_vsite();
+      $this->site = $vsite->group;
     }
   }
 }

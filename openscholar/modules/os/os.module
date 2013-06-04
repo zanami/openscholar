@@ -901,7 +901,7 @@ function theme_openscholar_login($variables) {
  *       @ingroup themeable
  */
 function theme_openscholar_get_started() {
-  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
     $create_time = $vsite->group->created;
   }
 

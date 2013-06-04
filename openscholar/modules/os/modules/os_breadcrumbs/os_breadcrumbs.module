@@ -290,7 +290,7 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($path) {
   $term_hierarchy = taxonomy_get_parents_all($tid);
   // Load the vid.
   $vid = $term_hierarchy[0]->vid;
-  
+
   $terms_ordered = array_reverse($term_hierarchy);
   foreach($terms_ordered as $key => $term) {
     $short_title = _os_breadcrumbs_shorten_title($term->name);
@@ -634,9 +634,9 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   $links = array();
   // Only alter public facing pages for the breadcrumbs.
   if(context_isset('context', 'os_public')) {
-    $space = spaces_get_space();
-    if(isset($space)) {
-      $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+    $vsite = vsite_get_vsite();
+    if(isset($vsite)) {
+      $breadcrumb_show = $vsite->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
     }else {
       $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
     }
@@ -661,12 +661,12 @@ function os_breadcrumbs_preprocess_page(&$variables) {
  */
 function os_breadcrumbs_cp_settings() {
   $form = array();
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
   $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
 
-  if (!empty($space)) {
+  if (!empty($vsite)) {
     // Get the vsite_users_contact_form_anonymous varible
-    $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+    $breadcrumb_show = $vsite->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
   }
   $form['os_breadcrumbs_show_breadcrumbs'] = array(
     'group' => array(

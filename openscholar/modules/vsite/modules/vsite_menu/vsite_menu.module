@@ -8,7 +8,7 @@ define('VSITE_MENU_CUSTOM_MLID', 1000);
  * @return array Tree, or false on failure
  */
 function vsite_menu_os_menu_tree($menu_key){
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   if ($vsite && isset($vsite->controllers->menus)) {
     return $vsite->controllers->menus->get_menu_tree($menu_key);
@@ -23,7 +23,7 @@ function vsite_menu_os_menu_tree($menu_key){
  * @param string $menu_key
  */
 function vsite_menu_del($menu_key){
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   $current_menus = os_get_menus();
   //Remove the menu from the variable
@@ -45,7 +45,7 @@ function vsite_menu_del($menu_key){
  * @param string $menu_key
  */
 function vsite_menu_add($title, $menu_key){
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   $current_menus = os_get_menus();
   $current_menus[$menu_key] = $title;
@@ -67,7 +67,7 @@ function vsite_menu_add($title, $menu_key){
  */
 function vsite_menu_revert($menu_name = false){
 
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   $current_menus = os_get_menus();
 
@@ -126,7 +126,7 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
 function vsite_menu_menu_link_save(&$item){
   drupal_alter('menu_link', $item);
   ctools_include('menu', 'os');
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
   if (! $vsite)
     return false;
 
@@ -252,7 +252,7 @@ function vsite_menu_menu_link_save(&$item){
  */
 function vsite_menu_menu_link_load($mlid, $menu = ''){
 
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
   if (! $vsite)
     return false;
 
@@ -311,7 +311,7 @@ function vsite_menu_get_link_path($menu, $path){
  */
 function vsite_menu_delete_menu_link($menu, $mlid){
   $refresh_menu = false;
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
   if (! $vsite){
     return false;
   }
@@ -436,7 +436,7 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
  * Helper function to get an array of menu links from the controller or drupal, used by crud functions
  */
 function _vsite_menu_get_menu_links($menu){
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   if($vsite){
     //Retrieve the menu data from the controller
@@ -519,7 +519,7 @@ function _vsite_menu_sort_weight($a, $b){
  */
 function vsite_menu_form_cp_menu_build_form_alter(&$form, &$form_state, $form_id){
   // For administrators, let them save to either the space or the preset
-  if (($vsite = spaces_get_space()) && user_access('administer spaces')) {
+  if (($vsite = vsite_get_vsite()) && user_access('administer spaces')) {
 
     if (! empty($form['#submit'])) {
       $position = array_search('cp_menu_submit_form', $form['#submit'], TRUE);
@@ -553,11 +553,11 @@ function vsite_menu_form_cp_menu_build_form_alter(&$form, &$form_state, $form_id
  * Similar to cp_menu_submit_form() but provides revert and save to preset.
  */
 function vsite_menu_cp_menu_form_submit($form, &$form_state) {
-  if ($space = spaces_get_space()) {
+  if ($vsite = vsite_get_vsite()) {
     $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
 
-    if ($preset = $space->controllers->variable->get('spaces_preset_' . $space->type)) {
-      $preset = spaces_preset_load($preset, $space->type);
+    if ($preset = $vsite->controllers->variable->get('spaces_preset_' . $vsite->type)) {
+      $preset = spaces_preset_load($preset, $vsite->type);
     }
 
     //Reset, Save to preset, or call standard submit handler
@@ -575,7 +575,7 @@ function vsite_menu_cp_menu_form_submit($form, &$form_state) {
 
     	    //Loop through all menus
     	    foreach (os_get_menus() as $menu_name => $title){
-    	      $override = $space->controllers->menus->get($menu_name);
+    	      $override = $vsite->controllers->menus->get($menu_name);
     	      if($override){
     	        $preset->value['menus'][$menu_name] = $override;
     	      }

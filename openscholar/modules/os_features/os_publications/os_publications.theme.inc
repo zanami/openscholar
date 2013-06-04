@@ -194,7 +194,7 @@ function _os_publications_plain_citation($node) {
 }
 
 function theme_os_publications_export_links($variables) {
-  if (module_exists('vsite') && !spaces_get_space()) {
+  if (module_exists('vsite') && !vsite_get_vsite()) {
     // Don't show export link when not in a VSite, to prevent from loading too
     // many nodes.
     return;

@@ -24,7 +24,7 @@ class os_context_condition_os_site extends context_condition {
       // Default: NON Multi Tenant Always in a site
       $value = 1;
       if (module_exists('vsite')) {
-        $vsite = spaces_get_space();
+        $vsite = vsite_get_vsite();
         if (!$vsite) {
           $value = 0;
         }

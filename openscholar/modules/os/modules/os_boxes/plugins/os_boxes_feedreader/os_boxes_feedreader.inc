@@ -29,8 +29,8 @@ class os_boxes_feedreader extends os_boxes_default {
     $query->entityCondition('entity_type', 'node')->propertyCondition('status', 1)->propertyCondition('type', 'feed')->propertyOrderBy('title');
 
     // Restrict to this site
-    if (module_exists('vsite') && $space = spaces_get_space()) {
-      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id);
     }
 
     $result = $query->execute();

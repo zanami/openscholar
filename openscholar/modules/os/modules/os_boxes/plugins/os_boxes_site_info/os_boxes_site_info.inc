@@ -18,7 +18,7 @@ class os_boxes_site_info extends os_boxes_default {
   function box_form(&$form_state) {
     $form = parent::options_form($form_state);
 
-    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       $group = $vsite->group;
       $addr = field_get_items('node', $group, 'field_site_address');
       if (isset($addr[0])) {
@@ -92,7 +92,7 @@ class os_boxes_site_info extends os_boxes_default {
     $block = parent::render();
 
     $anon_contact = variable_get('vsite_users_contact_form_anonymous', true);
-    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       $group = $vsite->group;
       $addr = field_get_items('node', $group, 'field_site_address');
       $addr = explode('<br>', $addr[0]['value']);
@@ -120,9 +120,9 @@ class os_boxes_site_info extends os_boxes_default {
 
 function os_boxes_site_info_submit($form, &$form_state) {
   $box = $form_state['box'];
-  if (module_exists('vsite') && $space = spaces_get_space()) {
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
     // populate the vsite with this information
-    $node = $space->group;
+    $node = $vsite->group;
     $node->title = $form_state['values']['site_title'];
 
     $node->field_site_description[LANGUAGE_NONE][0] = array(
@@ -139,7 +139,7 @@ function os_boxes_site_info_submit($form, &$form_state) {
 
     try {
       node_save($node);
-      $space->controllers->variable->set('vsite_users_contact_form_anonymous', $form_state['values']['contact_anonymous']);
+      $vsite->controllers->variable->set('vsite_users_contact_form_anonymous', $form_state['values']['contact_anonymous']);
     }
     catch (Exception $e) {
       drupal_set_message(t('Error saving site information. Contact your site administrator.'), 'error');

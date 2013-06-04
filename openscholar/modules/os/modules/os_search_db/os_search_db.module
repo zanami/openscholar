@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Implements hook_block_info().
@@ -58,7 +58,7 @@ function os_search_db_os_widget(){
  * @param QueryAlterableInterface $query
  */
 function os_search_db_query_alter(QueryAlterableInterface $query) {
-  if(module_exists('vsite') && ($vsite = spaces_get_space())){
+  if(module_exists('vsite') && ($vsite = vsite_get_vsite())){
     // I only want to see items in this site
     if (!($query instanceof PagerDefault) ) return;
 

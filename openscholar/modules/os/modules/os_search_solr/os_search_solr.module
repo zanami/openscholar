@@ -68,7 +68,7 @@ function os_search_solr_apachesolr_query_alter($query) {
     $query->addFilter('hash', apachesolr_site_hash());
   }
 
-  if(module_exists('vsite') && ($vsite = spaces_get_space())){
+  if(module_exists('vsite') && ($vsite = vsite_get_vsite())){
     // I only want to see items in this site
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
   }

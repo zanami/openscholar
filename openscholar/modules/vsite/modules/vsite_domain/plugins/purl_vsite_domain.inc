@@ -120,7 +120,7 @@ if (!class_exists('purl_vsite_domain')) {
      * so that aliased paths will be picked up
      */
     public function adjust(&$value, $item, &$q) {
-      if ((!($vsite = spaces_get_space()) && !($vsite = spaces_load('og', $item->id))) || !strlen($vsite->group->purl)) {
+      if ((!($vsite = vsite_get_vsite()) && !($vsite = spaces_load('og', $item->id))) || !strlen($vsite->group->purl)) {
         return;
       }
 

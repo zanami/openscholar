@@ -73,7 +73,7 @@ function os_publications_menu_alter(&$items) {
  * only inside a VSite context, to prevent from loading too many nodes.
  */
 function os_publications_export_access() {
-  if (!user_access('show export links') || (module_exists('vsite') && !spaces_get_space())) {
+  if (!user_access('show export links') || (module_exists('vsite') && !vsite_get_vsite())) {
     return;
   }
 
@@ -106,18 +106,18 @@ function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
  * Joins to the og_membership table, which is where these relationships are stored
  */
 function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
-  if (!module_exists('vsite') || !$space = spaces_get_space()) {
+  if (!module_exists('vsite') || !$vsite = vsite_get_vsite()) {
     return;
   }
 
   _os_publications_filter_by_term($query);
 
   // this has to be separate because of scoping.
-  if ($space->type == 'og') {
+  if ($vsite->type == 'og') {
     $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
     $query->condition('ogm.entity_type', 'node');
     $query->condition('ogm.group_type', 'node');
-    $query->condition('ogm.gid', $space->id);
+    $query->condition('ogm.gid', $vsite->id);
   }
 
   $item = menu_get_item();
@@ -136,9 +136,9 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
   // Check the sort order for biblio.
   // If we're sorting by year, we want to sort by date as well to replicate D6
   // sorting.
-  if ($space->controllers->variable->get('biblio_sort','space') == 'year') {
+  if ($vsite->controllers->variable->get('biblio_sort','space') == 'year') {
     // Get their sort order.
-    $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
+    $biblio_year_sort = $vsite->controllers->variable->get('biblio_order','space');
     $order = &$query->getOrderBy();
 
     // Don't wipe the non-default sort order, this will let users still toggle asc/desc sorting by year.
@@ -603,7 +603,7 @@ function os_publications_preprocess_node(&$vars) {
  * Adds in the biblio_url to the external link.
  */
 function os_publications_node_view_alter(&$build, $type) {
-  $spaces = spaces_get_space();
+  $vsites = vsite_get_vsite();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if($build['#view_mode'] == 'full') {
       // Remove the publication image as it's called in theme_os_publications_tabular instead.
@@ -626,7 +626,7 @@ function os_publications_node_view_alter(&$build, $type) {
       // Add the abstract slider.
 	    _os_publications_attach_abstract($build, $build['#node'], 'teaser');
 	    // Add in notes.
-      if(isset($spaces) && is_object($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
+      if(isset($vsites) && is_object($vsites) && $vsites->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
         _os_publications_attach_notes($build, $build['#node']);
       }
       $build['teaser']['#weight'] = 1;
@@ -729,8 +729,8 @@ function _os_publications_clear_cache($node) {
 
   $cid = "biblio:";
 
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    $cid = $cid.'space:'.$space->id;
+  if (module_exists('spaces') && $vsite = vsite_get_vsite()) {
+    $cid = $cid.'space:'.$vsite->id;
   }
 
   cache_clear_all($cid, 'cache_biblio_lists',TRUE);
@@ -740,7 +740,7 @@ function _os_publications_clear_cache($node) {
  * Ensures the space is set on imported biblio nodes
  */
 function _os_publications_handle_import($node) {
-  if ($node->type == 'biblio' && isset($node->nid) && module_exists('vsite') && $space = spaces_get_space()) {
+  if ($node->type == 'biblio' && isset($node->nid) && module_exists('vsite') && $vsite = vsite_get_vsite()) {
     $groups = field_get_items('node', $node, OG_AUDIENCE_FIELD, $node->language);
     //If this node is in no groups add it to the active group
     if(empty($groups)){
@@ -772,11 +772,11 @@ function os_publications_preprocess_page(&$variables) {
   if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
     return;
   }
-  
+
   ctools_include('infinite_scroll', 'os');
   _os_add_infinite_scroll('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => '#content ul.pager', 'hide_biblio_categories' => TRUE));
-  
-  
+
+
   // Make sure both filters are there.
   if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
     return;

@@ -104,7 +104,7 @@ function vsite_access_cp_settings() {
   $form = array();
   $vsite = vsite_get_vsite();
 
-  if (! empty($space)) {
+  if (! empty($vsite)) {
     // Gets the vsite_users_contact_form_anonymous variable.
     $wrapper = entity_metadata_wrapper('node', $vsite->group);
 

@@ -10,10 +10,10 @@ function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
   global $menu_admin;
   $form['#attached']['css'] = array(drupal_get_path('module', 'menu') . '/menu.css');
   include_once drupal_get_path('module', 'menu')."/menu.admin.inc";
-  
-  $vsite = spaces_get_space();
+
+  $vsite = vsite_get_vsite();
   if(!$vsite || ! isset($vsite->controllers->menus)) return false;
-  
+
   $tree = $vsite->controllers->menus->get_menu_tree($menu['menu_name']);
   $node_links = array();
   menu_tree_collect_node_links($tree, $node_links);
@@ -30,7 +30,7 @@ function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
     foreach (element_children($form) as $link) {
     	unset($form[$link]['operations']);
     }
-    
+
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
       '#type' => 'submit',
@@ -52,14 +52,14 @@ function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
  */
 function vsite_menu_menu_overview_form_submit($form, &$form_state){
   ctools_include('menu', 'os');
-  $vsite = spaces_get_space();
+  $vsite = vsite_get_vsite();
   $os_menus = os_get_menus();
   $menu_name = $form['#menu']['menu_name'];
-  
+
   //Only execute this function if we are in a space and this is an os_menu
   if (! $vsite || ! isset($vsite->controllers->menus) || ! array_key_exists($menu_name, $os_menus))
     return menu_overview_form_submit($form, $form_state);
-    
+
   // When dealing with saving menu items, the order in which these items are
   // saved is critical. If a changed child item is saved before its parent,
   // the child item could be saved with an invalid path past its immediate
@@ -68,13 +68,13 @@ function vsite_menu_menu_overview_form_submit($form, &$form_state){
   // See http://drupal.org/node/181126#comment-632270
   $order = array_flip(array_keys($form_state['input'])); // Get the $_POST order.
   $form = array_merge($order, $form); // Update our original form with the new order.
-   
+
   $items = array();
   $fields = array(
       'weight',
       'plid'
   );
-  
+
   //Build the full menu_item list and mark the customized menu entries as such
   foreach ( element_children($form) as $mlid ) {
     if (isset($form[$mlid]['#item'])) {
@@ -96,12 +96,12 @@ function vsite_menu_menu_overview_form_submit($form, &$form_state){
       }
     }
   }
-  
+
   //Save the changed links and update thier parent items and depth
   foreach ($items as $item){
   	vsite_menu_menu_link_save($item);
   }
-  
+
   drupal_set_message(t('Your configuration has been saved.'));
 }
 

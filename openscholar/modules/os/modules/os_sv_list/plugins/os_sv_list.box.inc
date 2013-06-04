@@ -484,7 +484,7 @@ class os_sv_list_box extends os_boxes_default {
 	    foreach (array_filter($options['query_scope']) as $scope){
 	      switch ($scope){
 	      	case 'current':
-	      	  $vsite = spaces_get_space();
+	      	  $vsite = vsite_get_vsite();
 	      	  if (is_object($vsite) && is_numeric($vsite->id)) {
 	      	    $gids[$vsite->id] = $vsite->id;
 	      	  }

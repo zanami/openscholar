@@ -95,7 +95,7 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
   $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
   $output = ctools_modal_form_render($form_state, $output);
   print ajax_render($output);
-  exit; 
+  exit;
 }
 
 /**
@@ -177,14 +177,14 @@ function os_mailchimp_form($state, $args=array()) {
   $fn = '';
 
   // Swap to spaces_get_space.
-  $space = spaces_get_space();
+  $vsite = vsite_get_vsite();
 
   // Hardcoded the path into the delta due to d7 returning form args this way.
   // Check to see if they're using the form or link display.
   if (isset($state['build_info']['args'][0]['delta'])) { // form
-    $box = $space->controllers->boxes->get($state['build_info']['args'][0]['delta']);
+    $box = $vsite->controllers->boxes->get($state['build_info']['args'][0]['delta']);
   } else { // everything else
-    $box = $space->controllers->boxes->get($state['delta']);
+    $box = $vsite->controllers->boxes->get($state['delta']);
   }
 
   global $user;
@@ -295,7 +295,7 @@ function os_mailchimp_form_submit($form, $form_state) {
  */
 function os_mailchimp_cp_settings(){
   $api = variable_get('os_mailchimp_vsite_api_key', '');
-  
+
   $settings['os_mailchimp_vsite_api_key'] = array(
     'group' => array(
       '#id' => 'social',
@@ -321,7 +321,7 @@ function os_mailchimp_cp_settings(){
  */
 function _os_mailchimp_get_lists($api) {
   $MC = _os_mailchimp_mailchimp_connect($api);
-  
+
   $ret = array();
   if (($lists = $MC->lists()) != FALSE) {
     foreach ($lists['data'] as $delta => $list) {
@@ -329,12 +329,12 @@ function _os_mailchimp_get_lists($api) {
 	  }
   }
 
-  return ($ret) ? $ret : FALSE;  
+  return ($ret) ? $ret : FALSE;
 }
 
 /**
  * @function _os_mailchimp_get_list_info($api)
- * 
+ *
  *  Get info from mailchimp API describing lists
  */
 function _os_mailchimp_get_list_info($api) {
@@ -350,7 +350,7 @@ function _os_mailchimp_get_list_info($api) {
  *   Mailchimp api connection or False
  */
 function _os_mailchimp_mailchimp_connect($api) {
-  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');  
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
   $MC = new MCAPI($api);
   return ($MC) ? $MC : FALSE;
 }

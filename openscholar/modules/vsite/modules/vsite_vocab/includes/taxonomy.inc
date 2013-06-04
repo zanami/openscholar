@@ -15,7 +15,7 @@
 function vsite_vocab_get_vocabularies($vsite = false){
   // Get the active space
   if (! $vsite) {
-    $vsite = spaces_get_space();
+    $vsite = vsite_get_vsite();
   }
 
   if ($vsite) {
@@ -44,7 +44,7 @@ function vsite_vocab_add_vocab($vid, $vsite = false){
 
   // Get the active space
   if (! $vsite) {
-    $vsite = spaces_get_space();
+    $vsite = vsite_get_vsite();
   }
 
   if ($vid && $vsite) {

@@ -27,11 +27,11 @@ class os_boxes_html extends os_boxes_default {
   }
 
   public function options_submit($form, $form_state) {
-    if (module_exists('vsite') && $space = spaces_get_space()) {
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       // construct a fake node so we can pass it into os_wysiwyg's helper function
-      $space->group->body[LANGUAGE_NONE][0]['value'] = $this->options['text']['value'];
+      $vsite->group->body[LANGUAGE_NONE][0]['value'] = $this->options['text']['value'];
 
-      os_wysiwyg_update_files($space->group);
+      os_wysiwyg_update_files($vsite->group);
     }
   }
 

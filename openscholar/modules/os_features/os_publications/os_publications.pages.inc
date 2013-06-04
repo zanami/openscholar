@@ -35,7 +35,7 @@ function os_publications_overview() {
 
   // handle caching
   //cache_set($ckey, $output, 'cache_biblio_lists');
-  
+
   // change the page title to match the menu entry
   ctools_include('menu', 'os');
   $menu_item = os_menu_load_link_path($_GET['q']);
@@ -55,9 +55,9 @@ function _os_publications_cache_key($args) {
   $key = array();
   $key[] = 'biblio';
 
-  if (module_exists('spaces') && $space = spaces_get_space()) {
+  if (module_exists('spaces') && $vsite = vsite_get_vsite()) {
     $key[] = 'space';
-    $key[] = $space->id;
+    $key[] = $vsite->id;
   }
 
   $has_arg = false;
@@ -131,8 +131,8 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
     $output = ob_get_clean();
 
     // handle for spaces
-    if (module_exists('spaces') && $space = spaces_get_space()) {
-      $title = $space->group->purl . '-' . $title;
+    if (module_exists('spaces') && $vsite = vsite_get_vsite()) {
+      $title = $vsite->group->purl . '-' . $title;
     }
 
     $header = drupal_get_http_header('Content-Disposition');
