@@ -1,7 +1,14 @@
 <?php
 
-function os_files_rest_menu_alter(&$items) {
-  $items['media/browser']['page callback'] = 'os_files_rest_media_browser';
+function os_files_rest_menu() {
+  $items['media/browser/rest'] = array(
+    'title' => 'Media Browser REST',
+    'page callback' => 'os_files_rest_media_browser',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
 }
 
 function os_files_rest_restws_response_alter(&$response, $function) {
