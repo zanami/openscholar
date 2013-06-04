@@ -339,4 +339,10 @@ th, td {
     position: relative;
     width: 190px;
 }
+.region.region-footer-first {
+    max-width: 99%!important;
+}
+#branding_footer{
+    padding-bottom: 20px;
+}
 }
