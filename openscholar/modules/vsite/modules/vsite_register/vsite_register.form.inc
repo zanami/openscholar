@@ -581,7 +581,7 @@ function _vsite_register_valid_url($url) {
  */
 function vsite_register_notify($vsite) {
   // Invokes drupal_mail() to send email notification to new site owner.
-  vsite_register_notify_user($vsite);
+  vsite_register_notify_author($vsite);
 
   // Invokes drupal_mail() to send email notification to admin account,
   // or whatever email is specified in variable "vsite_register_admin_mail".
@@ -598,74 +598,31 @@ function vsite_register_notify($vsite) {
  *
  * @see vsite_register_form_submit()
  */
-function vsite_register_notify_user($vsite) {
-  global $language;
-  $language = $language->language;
-  global $base_url;
-  global $user;
+function vsite_register_notify_author($vsite) {
+  // Prepares replacement values for email token text.
+  $key = 'vsite_register_notify_author';
+  $author = user_load($vsite->group->uid);
+  $replacements = _vsite_register_mail_replacements($vsite, $author, $key);
+
+  $subject = t('An OpenScholar web site has been created for you.');
 
   // Checks to see if the user logged in matched the newly created user.
-  if ($user->uid == $vsite->group->uid) {
-    $need_pass_reset = FALSE;
-  }
-  else {
-    $need_pass_reset = TRUE;
-  }
+  global $user;
+  $body_text = _vsite_register_notify_author_body_text($user, $author);
+  $body = t($body_text, $replacements);
+
+  global $language;
+  $language = $language->language;
 
   $params = array();
-  $from = variable_get('site_mail', ini_get('sendmail_from'));
-  $new_user = user_load($vsite->group->uid);
-
-  // Adds vsite and user object.
   $params['vsite'] = $vsite;
-  $params['user'] = $new_user;
-
-  $scholar_site_url = url($base_url . '/' . $vsite->group->title, $options = array('absolute' => TRUE));
-  $count = count(vsite_get_vsite_by_owner($new_user->uid));
-  $timestamp = time();
-
-  $subject = t("An OpenScholar web site has been created for you.", array(
-      '!site_name' => variable_get('site_name', 'OpenScholar'),
-    ));
-  $msg_variables = array(
-    '!vsite-count' => $count,
-    '!username' => $new_user->name,
-    '!site' => variable_get('site_name', 'OpenScholar'),
-    '!scholar_site_url' => $scholar_site_url,
-    '!login_url' => user_pass_reset_url($new_user),
-    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
-    '!uri' => $base_url,
-    '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
-    '!mailto' => $new_user->mail,
-    '!date' => format_date(time(), 'medium', '', NULL, $language),
-    '!login_uri' => url('user', array(
-        'absolute' => TRUE,
-        'language' => $language,
-      )),
-    '!site_url' => url($vsite->group->purl),
-    '!edit_uri' => url('user/' . $new_user->uid . '/edit', array(
-        'absolute' => TRUE,
-        'language' => $language,
-      )),
-    '!scholar_edit_url' => url("/user/{$new_user->uid}/edit", array('absolute' => TRUE)),
-  );
-
-  // Determines if user is creating first site or additional site, and
-  // sends appropriate message.
-  if (count(vsite_get_vsite_by_owner($new_user->uid)) > 1 || $need_pass_reset == FALSE) {
-    $body = t("Hi !username,\n\nYour new web site at !site has been activated. Your web site url is !scholar_site_url\n\nYou will be able to log into your site at !site_login_uri with username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team",
-      $msg_variables
-    );
-  }
-  else {
-    $body = t("Hi !username,\n\nYour new web site at !site has been activated.\n\nYour web site url is !scholar_site_url\n\nYou may now log in and reset your password by clicking on this link or copying and pasting it in your browser: \n\n !login_url \n\nThis login can be used only once. After logging in, you will be redirected to !scholar_edit_url so you can change your password. Once you have set your own password, you will be able to log in at !site_login_uri as username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team",
-      $msg_variables
-    );
-  }
-
+  $params['user'] = $author;
   $params['subject'] = $subject;
   $params['body'] = $body;
-  $result = drupal_mail('vsite_register', 'vsite_register_notify_user', $new_user->mail, $language, $params, $from, $send = TRUE);
+
+  $from = variable_get('site_mail', ini_get('sendmail_from'));
+
+  $result = drupal_mail('vsite_register', 'vsite_register_notify_author', $author->mail, $language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to user.'), 'error');
   }
@@ -679,123 +636,47 @@ function vsite_register_notify_user($vsite) {
  * @see vsite_register_form_submit()
  */
 function vsite_register_notify_admin($vsite, $admin_mail) {
-  global $language;
-  global $base_url;
-  global $user;
+  // Prepares replacement values for email token text.
+  $key = 'vsite_register_notify_admin';
+  $author = user_load($vsite->group->uid);
+  $replacements = _vsite_register_mail_replacements($vsite, $author, $key);
 
-  // Checks to see if the user logged in matched the newly created user.
-  if ($user->uid == $vsite->group->uid) {
-    $need_pass_reset = FALSE;
-  }
-  else {
-    $need_pass_reset = TRUE;
-  }
-
-  $params = array();
-  $from = variable_get('site_mail', ini_get('sendmail_from'));
-  $new_site_owner = user_load($vsite->group->uid);
-
-  // Adds vsite and user object.
-  $params['vsite'] = $vsite;
-  $params['user'] = $new_site_owner;
-
-  $site_url = url($base_url . '/' . $vsite->group->title, $options = array('absolute' => TRUE));
-  $count = count(vsite_get_vsite_by_owner($new_site_owner->uid));
-  $timestamp = time();
-
-  // Prepares the new vsite owner (user)'s full name.
-  $name_values = array();
-  $name_fields = array('field_first_name', 'field_last_name');
-  foreach ($name_fields as $field) {
-    $items = field_get_items('user', $new_site_owner, $field);
-    if (isset($items[0]['value']) && !empty($items[0]['value'])) {
-      $name_values[] = $items[0]['value'];
-    }
-  }
-  $full_name = sizeof($name_values) > 1 ? implode(' ', $name_values) : t('No entry');
-
-  // Prepares the site visibility value and fetches human-readable name.
-  $items = field_get_items('node', $vsite->group, VSITE_ACCESS_FIELD);
-  $visibility = (isset($items[0]['value'])) ? $items[0]['value'] : FALSE;
-  if ($visibility !== FALSE) {
-    $values = vsite_access_privacy_available_values();
-    if (isset($values[$visibility])) {
-      $visibility = $values[$visibility];
-    }
-  }
-
-  // Prepares a site type string like "Department (Academic Department)".
-  $site_type = isset($vsite->group->type) ? $vsite->group->type : '';
-  if ($site_type) {
-    if (isset($vsite->controllers->variable->values['space']['spaces_preset_og'])) {
-      $preset = $vsite->controllers->variable->values['space']['spaces_preset_og'];
-      $site_type .= "($preset)";
-    }
-  }
-
-  $msg_variables = array(
-    '!vsite_count' => $count,
-    '!username' => $new_site_owner->name,
-    '!full_name' => $full_name,
-    '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
-    '!site_name' => $vsite->group->title,
-    '!site_url' => $site_url,
-    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
-    '!uri' => $base_url,
-    '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
-    '!user_mail' => $new_site_owner->mail,
-    '!date' => format_date(time(), 'medium', '', NULL, $language),
-    '!login_uri' => url('user', array(
-      'absolute' => TRUE,
-      'language' => $language,
-    )),
-    '!site_url' => url($vsite->group->purl),
-    '!edit_uri' => url('user/' . $new_site_owner->uid . '/edit', array(
-      'absolute' => TRUE,
-      'language' => $language,
-    )),
-    '!scholar_edit_url' => url("/user/{$new_site_owner->uid}/edit", array('absolute' => TRUE)),
-    '!site_type' => $site_type,
-    '!site_visibility' => $visibility,
+  $subject = t(
+    "User !username created a site \"!site_name\" at !sitewide_name",
+    $replacements
   );
-
-  $subject = t("User !user created a site \"!site\" at !site_url", array(
-    '!site_name' => variable_get('site_name', 'OpenScholar'),
-  ));
 
   $body = t(
       "Hello,\n\n"
-      . "This is an automatic notification.\n\n"
-      . "On !date, a new site at !sitewide_name was registered.\n\n"
-      . "<strong>Site information</strong>\n\n"
-      . "<dl><dt>Site name</dt>"
-      . "<dd>!site_name</dd>"
-      . "<dt>Site URL</dt>"
-      . "<dd>!site_url</dd>"
-      . "<dt>Site type</dt>"
-      . "<dd>!site_type</dd>"
-      . "<dt>Site visibility</dt>"
-      . "<dd>!site_visibility</dd>"
-      . "</dl>"
-      . "Link: \n\n"
-      . " - !site_login_url \n\n"
-      . "<strong>User information</strong>\n\n"
-      . "<dl><dt>Name</dt>"
-      . "<dd>!username</dd>"
-      . "<dt>Full name</dt>"
-      . "<dd>!full_name</dd>"
-      . "<dl><dt>Email</dt>"
-      . "<dd>!user_mail</dd>"
-      . "<dt>Total sites owned/dt>"
-      . "<dd>!vsite_count</dd>"
-      . "</dl>\n\n"
-      . "Good luck!\nThe !site server",
-      $msg_variables
+      . "On !date,\na new site was registered at !sitewide_name.\n\n"
+      . "Link: !site_login_uri"
+      . "\n\n&nbsp;\n\n"
+      . "<h2>Site information</h2>\n"
+      . "Site name:\t\t!site_name\n"
+      . "Site URL:\t\t!site_url\n"
+      . "Site type:\t\t!site_type\n"
+      . "Site visibility:\t!site_visibility"
+      . "\n\n&nbsp;\n\n"
+      . "<h2 style='font-weight:bold;'>User information</h2>\n"
+      . "Username:\t\t!username\n"
+      . "Full name:\t\t!full_name\n"
+      . "Email:\t\t\t\t!user_mail\n"
+      . "Total sites owned:\t!vsite_count\n\n"
+      . "Best wishes,\nthe !sitewide_name server",
+      $replacements
   );
 
+  $from = variable_get('site_mail', ini_get('sendmail_from'));
+
+  $params = array();
   $params['subject'] = $subject;
   $params['body'] = $body;
-  $result = drupal_mail('vsite_register', 'vsite_register_notify_admin', $admin_mail, $language, $params, $from, $send = TRUE);
+  $params['vsite'] = $vsite;
+  $params['user'] = $author;
+
+  global $language;
+  $language = $language->language;
+  $result = drupal_mail('vsite_register', $key, $admin_mail, $language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to admin.'), 'error');
   }
@@ -813,3 +694,139 @@ function vsite_register_mail($key, &$message, $params) {
   $message['user'] = $params['user'];
 }
 
+/**
+ * Returns an array of string replacement values for vsite register mails.
+ *
+ * @param object $vsite
+ *   The newly created vsite object, whose link, etc. will be a replacement val.
+ * @param string $key
+ *   The mail key used by drupal_mail(), to load certain variables.
+ */
+function _vsite_register_mail_replacements($vsite, $author, $key) {
+  global $base_url;
+
+  // Initialize replacements array with values common to both mail keys.
+  $replacements = array(
+    '!username' => $author->name,
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!user_mail' => $author->mail,
+    '!site_url' => url($base_url . '/' . $vsite->group->title, array('absolute' => TRUE)),
+    '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
+  );
+
+  // Adds additional replacement values depending on which email is being sent.
+  switch ($key) {
+    case 'vsite_register_notify_admin':
+
+      // Prepares vsite count value (total number of vsites owned by author).
+      $count = count(vsite_get_vsite_by_owner($author->uid));
+
+      // Prepares the new vsite owner (user)'s full name.
+      $name_values = array();
+      $name_fields = array('field_first_name', 'field_last_name');
+      foreach ($name_fields as $field) {
+        $items = field_get_items('user', $author, $field);
+        if (isset($items[0]['value']) && !empty($items[0]['value'])) {
+          $name_values[] = $items[0]['value'];
+        }
+      }
+      $full_name = sizeof($name_values) > 1 ? implode(' ', $name_values) : t('(No entry)');
+
+      // Prepares the site visibility value and fetches human-readable name.
+      $items = field_get_items('node', $vsite->group, VSITE_ACCESS_FIELD);
+      $visibility = (isset($items[0]['value'])) ? $items[0]['value'] : FALSE;
+      if ($visibility !== FALSE) {
+        $values = vsite_access_privacy_available_values();
+        if (isset($values[$visibility])) {
+          $visibility = $values[$visibility];
+        }
+      }
+
+      // Prepares a site type like "department (os_department_minimal preset)".
+      $site_type = isset($vsite->group->type) ? $vsite->group->type : '';
+      if ($site_type) {
+        if (isset($vsite->controllers->variable->values['space']['spaces_preset_og'])) {
+          $preset = $vsite->controllers->variable->values['space']['spaces_preset_og'];
+          $site_type .= " ($preset preset)";
+        }
+      }
+
+      // Prepares the date for the email message.
+      global $language;
+      $language = $language->language;
+      $date = format_date(time(), 'long', '', NULL, $language);
+
+      $replacements += array(
+        '!vsite_count' => $count,
+        '!full_name' => $full_name,
+        '!site_name' => $vsite->group->title,
+        '!site_type' => $site_type,
+        '!site_visibility' => $visibility,
+        '!date' => $date,
+      );
+
+      break;
+    case 'author_notify':
+      $replacements += array(
+        '!user_edit_uri' => url('user/' . $author->uid . '/edit', array(
+          'absolute' => TRUE
+        )),
+        '!user_login_uri' => url('user', array(
+          'absolute' => TRUE
+        )),
+      );
+      break;
+  }
+
+  return $replacements;
+}
+
+/**
+ * Returns special instructions for resetting password in certain cases.
+ *
+ * @param object $current_user
+ *   The currently logged-in user.
+ * @param object $author
+ *   The newly registered vsite's author.
+ *
+ * @return string $body_text
+ *   The email body message text to return, optionally containing instructions
+ *   to reset password.
+ */
+function _vsite_register_notify_author_body_text($current_user, $author) {
+  // Checks if the site was created "vicariously", on behalf of author.
+  $author_is_current_user = (bool) $current_user->uid == $author->uid;
+  // Checks if user is creating first site or additional site.
+  $returning_author = (bool) count(vsite_get_vsite_by_owner($author->uid)) > 1;
+  // In either of these cases, no password reset is required.
+  $no_reset_required = (bool) $returning_author || $author_is_current_user;
+  if ($no_reset_required) {
+    $body_text = "Hi !username,\n\n"
+      . "Your new web site at !sitewide_name has been activated."
+      . "Your web site url is !site_url\n\n"
+      . "You will be able to log into your site at !site_login_uri "
+      . "with username:\n\n!username\n\n"
+      . "We hope you will enjoy your new web site.\n\n"
+      . "Sincerely,\nThe !sitewide_name Team";
+  }
+  // Otherwise, this site was created on the author's behalf, or this is the
+  // author's very first site.
+  // Includes instructions to reset password in order to login.
+  else {
+    $body_text = "Hi !username,\n\n"
+      . "Your new web site at !sitewide_name has been activated.\n\n"
+      . "Your web site url is !site_url\n\n"
+      . "You may now log in and reset your password by clicking on this link "
+      . "or copying and pasting it in your browser: \n\n !user_login_url \n\n"
+      . "This login can be used only once. "
+      . "After logging in, you will be redirected to !user_edit_url "
+      . "so you can change your password. "
+      . "Once you have set your own password, "
+      . "you will be able to log in at !site_login_uri "
+      . "as username:\n\n!username\n\n"
+      . "We hope you will enjoy your new web site.\n\n"
+      . "Sincerely,\nThe !sitewide_name Team";
+  }
+
+  return $body_text;
+}

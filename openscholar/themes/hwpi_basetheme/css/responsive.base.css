@@ -20,7 +20,13 @@
 
 @media (max-width: 768px) {
 
-.footer-left.footer.footer-right .region-footer-first, .footer-left.footer.footer-right .region-footer-third, .footer-left.footer.footer-right .region-footer, .footer-left.footer-right .region-footer-first, .footer-left.footer-right .region-footer-third, .footer-left .region-footer-first, .footer-right .region-footer-third {
+.footer-left.footer.footer-right .region-footer-first, 
+.footer-left.footer.footer-right .region-footer-third, 
+.footer-left.footer.footer-right .region-footer, 
+.footer-left.footer-right .region-footer-first, 
+.footer-left.footer-right .region-footer-third, 
+.footer-left .region-footer-first, 
+.footer-right .region-footer-third {
     width: 100%;
 }
 .page-node #content-column .content-inner {
@@ -34,7 +40,9 @@
 @media (max-width: 479px){
 	
 	
-.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser, .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio, .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser, 
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio, 
+.block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
     float: none;
     margin-right: 0!important;
         width: 100%;
@@ -57,7 +65,10 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
     float: none !important;
 }
 	
-	
+.two-sidebars #content-panels,
+.one-sidebar.sidebar-second #content-panels {
+    border-right: 0!important;
+}	
 	
 	
 }
