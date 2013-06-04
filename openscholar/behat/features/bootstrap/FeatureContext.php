@@ -797,4 +797,12 @@ class FeatureContext extends DrupalContext {
   public function moduleDisabled($module_name) {
     $this->getDriver()->drush("dis -y {$module_name}");
   }
+
+  /**
+   * @Given /^anonymous users may "([^"]*)"$/
+   */
+  public function anonymousUsersMay($permission) {
+    $code = "user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('$permission');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
 }
