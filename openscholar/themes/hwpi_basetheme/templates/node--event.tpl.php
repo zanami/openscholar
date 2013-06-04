@@ -114,7 +114,7 @@ hide($content['links']);
     </div>
   <?php endif; ?>
 
-  <div id="event-content">
+  <div class="event-content">
     <?php if ($title && !$page): ?>
       <header<?php print $header_attributes; ?>>
         <?php if ($title): ?>

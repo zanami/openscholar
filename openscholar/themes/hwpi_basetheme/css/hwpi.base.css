@@ -409,7 +409,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-.event-start #event-content {
+.event-start .event-content {
   margin-left: 70px;
 }
 
@@ -430,7 +430,7 @@ ol.search-results li.search-result:last-child {
 	margin-bottom: 15px;
 }
 
-#event-content .node-header h1.node-title {
+.event-content .node-header h1.node-title {
 	margin-bottom: 0;
 }
 
