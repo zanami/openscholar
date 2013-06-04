@@ -250,7 +250,9 @@ function vsite_access_update_robots($group, $privacy){
   global $base_url;
 
   // Load Vsite.
-  $vsite = vsite_get_vsite($group->nid);
+  if (!$vsite = vsite_get_vsite($group->nid)) {
+    retrurn;
+  }
 
   // Robots.txt Base Domain Settings.
   $domain_robots = variable_get('vsite_access_unindexed_sites');
