@@ -37,13 +37,13 @@
     padding: 0!important;
 }
 .event-start .event-start {
-    float: none;
+    float: none!important;
 }
 .event-start .event-content {
-    margin-left: 0;
+    margin-left: 0!important;
 }
 .boxes-box-content span[style] {
-    float: none !important;
+    float: none!important;
 }
 .footer-left.footer.footer-right .region-footer-first, 
 .footer-left.footer.footer-right .region-footer-third, 
