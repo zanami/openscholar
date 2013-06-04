@@ -293,7 +293,6 @@ function vsite_access_update_robots($group,$privacy){
   variable_set('vsite_access_unindexed_sites',$domain_robots);
 }
 
-
 /**
  * Implements hook_field_attach_insert().
  */
@@ -310,4 +309,10 @@ function vsite_access_field_attach_update($entity_type, $entity) {
 if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
     vsite_access_update_privacy_settings($entity);
   }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function vsite_access_views_query_alter(&$view,&$query) {
 }
