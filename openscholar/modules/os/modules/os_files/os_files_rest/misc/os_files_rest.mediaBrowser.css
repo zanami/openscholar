@@ -1,4 +1,17 @@
 
+/* Search form */
+div.file-search {
+  padding-bottom: .5em;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: .75em;
+  margin-right: 5px;
+}
+
+#file-search-input {
+  margin: 9px 0;
+}
+
+/* Single file thumbnails */
 .media-item {
   background: #FFFFFF;
   border: 1px solid #CCCCCC;
@@ -20,4 +33,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Pager */
+.pager {
+  margin: 1em 0;
+  border-top: 1px solid lightgray;
+  padding-top: 0.5em;
+  text-align: center;
 }
