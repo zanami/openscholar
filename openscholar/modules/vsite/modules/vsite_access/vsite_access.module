@@ -36,13 +36,12 @@ function vsite_access_views_api() {
 function vsite_access_robotstxt() {
   global $base_url;
 
-  $robots_settings = variable_get('vsite_access_unindexed_sites',array());
-  $host = parse_url($base_url,PHP_URL_HOST);
-  if(isset($robots_settings[$host])){
+  $robots_settings = variable_get('vsite_access_unindexed_sites', array());
+  $host = parse_url($base_url, PHP_URL_HOST);
+  if (isset($robots_settings[$host])) {
     return $robots_settings[$host];
   }
 }
-
 
 /**
  * Implements hook_node_access().
@@ -50,46 +49,46 @@ function vsite_access_robotstxt() {
 function vsite_access_node_access($node, $op, $account) {
   $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
-  //Handle access to Group Content
-  if(og_is_group_content_type('node', $type)){
+  // Handle access to Group Content
+  if (og_is_group_content_type('node', $type)) {
 
-	  if ($op != 'view' || !($vsite = spaces_get_space())) {
-	    // If we are trying to create content outside a group and do not have permission to do so
-	    if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
-	      return NODE_ACCESS_DENY;
-	    }
+    if ($op != 'view' || !($vsite = spaces_get_space())) {
+      // If we are trying to create content outside a group and do not have permission to do so
+      if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
+        return NODE_ACCESS_DENY;
+      }
 
-	    // Do nothing
-	    return NODE_ACCESS_IGNORE;
-	  }
+      // Do nothing
+      return NODE_ACCESS_IGNORE;
+    }
 
-	  //When trying to view group content, check the privacy of the site.
-	  if(is_object($vsite->group) && !og_is_group_content_type('node', $vsite->group->type) && !node_access('view', $vsite->group, $account)){
-	    return NODE_ACCESS_DENY;
-	  }
+    // When trying to view group content, check the privacy of the site.
+    if (is_object($vsite->group) && !og_is_group_content_type('node', $vsite->group->type) && !node_access('view', $vsite->group, $account)) {
+      return NODE_ACCESS_DENY;
+    }
 
-	  return NODE_ACCESS_IGNORE;
+    return NODE_ACCESS_IGNORE;
   }
 
-  //Handle access to groups if this is a existing group node.
-  if(!is_string($node) && og_is_group_type('node', $type) && isset($node->nid)){
+  // Handle access to groups if this is a existing group node.
+  if (!is_string($node) && og_is_group_type('node', $type) && isset($node->nid)) {
     $wrapper = entity_metadata_wrapper('node', $node);
 
-    if(!empty($wrapper->{VSITE_ACCESS_FIELD})){
-      switch ($wrapper->{VSITE_ACCESS_FIELD}->value()){
-      	case VSITE_ACCESS_INTRANET_PRIVATE:
-      	case VSITE_ACCESS_PRIVATE:
-      	  // Private group.
-      	  if(!user_access('administer group') && !og_is_member('node', $node->nid,'user',$account)){
-      	    // They are not a member, deny access
-      	    return NODE_ACCESS_DENY;
-      	  }
-      	break;
-      	case VSITE_ACCESS_PUBLIC:
-      	case VSITE_ACCESS_UNINDEXED:
-      	default:
-      	  return NODE_ACCESS_IGNORE;
-      	break;
+    if (!empty($wrapper->{VSITE_ACCESS_FIELD})) {
+      switch ($wrapper->{VSITE_ACCESS_FIELD}->value()) {
+        case VSITE_ACCESS_INTRANET_PRIVATE:
+        case VSITE_ACCESS_PRIVATE:
+          // Private group.
+          if (!user_access('administer group') && !og_is_member('node', $node->nid, 'user', $account)) {
+            // They are not a member, deny access
+            return NODE_ACCESS_DENY;
+          }
+          break;
+
+        case VSITE_ACCESS_PUBLIC:
+        case VSITE_ACCESS_UNINDEXED:
+        default:
+          return NODE_ACCESS_IGNORE;
       }
     }
   }
@@ -104,7 +103,7 @@ function vsite_access_cp_settings() {
   $form = array();
   $space = spaces_get_space();
 
-  if (! empty($space)) {
+  if (!empty($space)) {
     // Gets the vsite_users_contact_form_anonymous variable.
     $wrapper = entity_metadata_wrapper('node', $space->group);
 
@@ -112,18 +111,18 @@ function vsite_access_cp_settings() {
       'group' => array(
         '#id' => 'privacy',
         '#title' => t('Privacy'),
-        '#weight' => 10
+        '#weight' => 10,
       ),
       'form' => array(
-		    '#type' => 'radios',
-		    '#title' => t('Site visibility'),
-		    '#default_value' => $wrapper->{VSITE_ACCESS_FIELD}->value(),
-		    '#options' => vsite_access_privacy_available_values(),
-		    '#description' => t('Choose who has access to view your site.'),
-		  ),
+        '#type' => 'radios',
+        '#title' => t('Site visibility'),
+        '#default_value' => $wrapper->{VSITE_ACCESS_FIELD}->value(),
+        '#options' => vsite_access_privacy_available_values(),
+        '#description' => t('Choose who has access to view your site.'),
+      ),
       'submit' => array(
-        'vsite_access_cp_settings_node_submit'
-      )
+        'vsite_access_cp_settings_node_submit',
+      ),
     );
   }
 
@@ -137,7 +136,7 @@ function vsite_access_cp_settings() {
  *
  * @see vsite_cp_settings()
  */
-function vsite_access_cp_settings_node_submit($form, &$form_state){
+function vsite_access_cp_settings_node_submit($form, &$form_state) {
   // Get the current vsite.
   $space = spaces_get_space();
   // Get the vsite_privacy value.
@@ -158,10 +157,10 @@ function vsite_access_privacy_available_values() {
   // Provides short human-friendly labels for the different options.
   $options = array(
     VSITE_ACCESS_PUBLIC => t('Public on the web'),
-		VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
-		VSITE_ACCESS_PRIVATE => t('Invite only'),
+    VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
+    VSITE_ACCESS_PRIVATE => t('Invite only'),
     // @todo get private intranet working.
-		//VSITE_ACCESS_INTRANET_PRIVATE => t('Private intranet'),
+    //VSITE_ACCESS_INTRANET_PRIVATE => t('Private intranet'),
   );
 
   // Otherwise, formats a second row of descriptive text if verbose is TRUE.
@@ -233,72 +232,71 @@ function vsite_access_og_fields_info() {
 /**
  * Act on the save of the privacy setting
  */
-function vsite_access_update_privacy_settings($group){
+function vsite_access_update_privacy_settings($group) {
 
   $wrapper = entity_metadata_wrapper('node', $group);
   $privacy = $wrapper->{VSITE_ACCESS_FIELD}->value();
 
-  //Update Robots.txt
+  // Updates Robots.txt
   vsite_access_update_robots($group, $privacy);
 }
 
 /**
  * Update Robots.txt Settigs
  */
-function vsite_access_update_robots($group,$privacy){
+function vsite_access_update_robots($group, $privacy) {
   global $base_url;
 
-  //Load Space
+  // Loads space.
   $vsite = vsite_get_vsite($group->nid);
 
-  //Robots.txt Base Domain Settings.
+  // Robots.txt Base Domain Settings.
   $domain_robots = variable_get('vsite_access_unindexed_sites');
-  $base_host = parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST);
+  $base_host = parse_url(variable_get('purl_base_domain', $base_url), PHP_URL_HOST);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
 
-  //If this site has a group domain, retrieve the Host.
-  if($vsite_domain){
-    $vsite_domain = parse_url($vsite_domain,PHP_URL_HOST);
+  // If this site has a group domain, retrieves the Host.
+  if ($vsite_domain) {
+    $vsite_domain = parse_url($vsite_domain, PHP_URL_HOST);
   }
 
-  if ($privacy > VSITE_ACCESS_PUBLIC){
-  	//Do not index if the site is not public
-    //Add dissallow for base_domain.
+  if ($privacy > VSITE_ACCESS_PUBLIC) {
+    // Does not index if the site is not public.
+    // Adds dissallow for base_domain.
     $domain_robots[$base_host][$group->nid] = "Disallow: /{$vsite->group->purl}/";
 
-    //Add Disallow for group domain indexing.
-    if($vsite_domain && $vsite_domain != $base_host){
+    // Adds Disallow for group domain indexing.
+    if ($vsite_domain && $vsite_domain != $base_host) {
       $domain_robots[$vsite_domain][$group->nid] = "Disallow: /{$vsite->group->purl}/";
     }
 
-    //Dissallow custom domain indexing.
-    $vsite->controllers->variable->set('robotstxt',"User-agent: *\nDisallow: /");
-
-  }else{
-    //Remove base_domain any indexing.
-    if(isset($domain_robots[$base_host][$group->nid])){
+    // Dissallows custom domain indexing.
+    $vsite->controllers->variable->set('robotstxt', "User-agent: *\nDisallow: /");
+  }
+  else {
+    // Removes base_domain any indexing.
+    if (isset($domain_robots[$base_host][$group->nid])) {
       unset($domain_robots[$base_host][$group->nid]);
     }
 
-    //Remove and Group Domain indexing.
-    if($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])){
+    // Removes and Group Domain indexing.
+    if ($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])) {
       unset($domain_robots[$vsite_domain][$group->nid]);
     }
 
-    //Delete any custom domain indexing
+    // Deletes any custom domain indexing.
     $vsite->controllers->variable->del('robotstxt');
   }
 
-  //Save robots changes.
-  variable_set('vsite_access_unindexed_sites',$domain_robots);
+  // Saves robots changes.
+  variable_set('vsite_access_unindexed_sites', $domain_robots);
 }
-
 
 /**
  * Implements hook_field_attach_insert().
  */
 function vsite_access_field_attach_insert($entity_type, $entity) {
-  if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+  if ($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)) {
     vsite_access_update_privacy_settings($entity);
   }
 }
@@ -307,7 +305,8 @@ function vsite_access_field_attach_insert($entity_type, $entity) {
  * Implements hook_field_attach_update().
  */
 function vsite_access_field_attach_update($entity_type, $entity) {
-if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)){
+  if ($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type)) {
     vsite_access_update_privacy_settings($entity);
   }
 }
+
