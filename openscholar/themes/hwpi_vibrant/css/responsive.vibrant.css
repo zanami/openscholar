@@ -21,7 +21,7 @@
 #menu-bar ul.nice-menu a:hover,
 #menu-bar ul.nice-menu li.menuparent:hover a,
 #menu-bar ul.nice-menu .menuparent a.active {
-  background: red; /* Old browsers */
+  background: #24527A; /* Old browsers */
   background: -moz-linear-gradient(none); /* FF3.6+ */
   background: -webkit-gradient(none); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(none); /* Chrome10+,Safari5.1+ */
@@ -71,8 +71,12 @@
     margin: 0;
     padding: 0 0 30px 0 !important;
 }
+#boxes-box-os_pages_section_nav ul.menu {
+    margin-left: 0!important;
+}
 
-#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a.active:hover {
+#menu-bar ul.nice-menu a.active, 
+#menu-bar ul.nice-menu a.active:hover {
     background: none repeat scroll 0 0 #303030 !important;
     color: #FFFFFF !important;
 }
@@ -84,12 +88,16 @@ ul.menu {
     margin-right: 30px !important;
 }
 #menu-bar nav {
-    background: none repeat scroll 0 0 #E8E8E8;
+    background: none repeat scroll 0 0 #E8E8E8!important;
     border-radius: 0 0 0 0;
     box-shadow: 0 ;
 }
 .mobile-buttons a {
     font: bold 16px arial,sans-serif !important;
+}
+/*Breadcrumb*/
+.node-type-page .breadcrumb, .breadcrumb {
+    margin: -40px 0 35px!important;
 }
 /* column layouts */
 
@@ -98,9 +106,14 @@ ul.menu {
     padding-top: 65px!important;
 
 }
+
 .two-sidebars .region-sidebar-second {
     padding-top: 65px;
    
+}
+#menu-bar ul.nice-menu .menuparent ul li a {
+    background: none repeat scroll 0 0 #24527A !important;
+
 }
 
 

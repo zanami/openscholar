@@ -114,6 +114,7 @@ projects[facetapi][version] = 1.1
 ;projects[facetapi][download][type] = git
 ;projects[facetapi][download][branch] = 7.x-1.0
 ;projects[facetapi][download][revision] = f7b7168
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-1.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
@@ -417,8 +418,11 @@ libraries[twitter-api-php][type] = "libraries"
 libraries[twitter-api-php][download][type] = "file"
 libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"
 
+libraries[git][type] = "libraries"
+libraries[git][download][type] = "git"
+libraries[git][download][url] = "https://github.com/cpliakas/git-wrapper.git"
+
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
 libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
 libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"
-
