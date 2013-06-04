@@ -312,7 +312,56 @@ if($entity_type == 'node' && 'group' == vsite_get_type_from_bundle($entity->type
 }
 
 /**
- * Implements hook_views_query_alter().
+ * Implements hook_views_default_views_alter().
+ *
+ * Adding visibility field of the group which the group content belong to.
  */
-function vsite_access_views_query_alter(&$view,&$query) {
+function vsite_access_views_default_views_alter(&$views) {
+  foreach ($views as $view) {
+    if ($view->base_table != 'node') {
+      // Alter only views based on nodes.
+      continue;
+    }
+
+    foreach (array_keys($view->display) as $display_name) {
+      $handler =& $view->display[$display_name]->handler;
+
+      /* Relationship: OG membership: OG membership from Node */
+      $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
+      $handler->display->display_options['relationships']['og_membership_rel']['table'] = 'node';
+      $handler->display->display_options['relationships']['og_membership_rel']['field'] = 'og_membership_rel';
+      /* Relationship: OG membership: Group Node from OG membership */
+      $handler->display->display_options['relationships']['og_membership_related_node_group']['id'] = 'og_membership_related_node_group';
+      $handler->display->display_options['relationships']['og_membership_related_node_group']['table'] = 'og_membership';
+      $handler->display->display_options['relationships']['og_membership_related_node_group']['field'] = 'og_membership_related_node_group';
+      $handler->display->display_options['relationships']['og_membership_related_node_group']['relationship'] = 'og_membership_rel';
+      /* Filter criterion: Content: Site visibility (group_access) */
+      $handler->display->display_options['filters']['group_access_value']['id'] = 'group_access_value';
+      $handler->display->display_options['filters']['group_access_value']['table'] = 'field_data_group_access';
+      $handler->display->display_options['filters']['group_access_value']['field'] = 'group_access_value';
+      $handler->display->display_options['filters']['group_access_value']['relationship'] = 'og_membership_related_node_group';
+      $handler->display->display_options['filters']['group_access_value']['value'] = array(
+        0 => '0',
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ *
+ * When the user is in a vsite we need to remove the visibility access filter.
+ */
+function vsite_access_views_query_alter(&$view, &$query) {
+  $vsite = vsite_get_vsite();
+
+  if (!$vsite) {
+    return;
+  }
+
+  foreach ($query->where[1]['conditions'] as $key => $condition) {
+    if ($condition['field'] == 'node_og_membership__field_data_group_access.group_access_value') {
+      unset($query->where[1]['conditions'][$key]);
+    }
+  }
 }
