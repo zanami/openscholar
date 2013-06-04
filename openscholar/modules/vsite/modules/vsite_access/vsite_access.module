@@ -275,6 +275,10 @@ function vsite_access_update_robots($group, $privacy) {
   // Disallows robots in sites with privacy settings greater than public.
   $disallow_purl = (bool) $privacy > VSITE_ACCESS_PUBLIC;
   if ($disallow_purl) {
+    // Undoes any previous Allow directives (see below).
+    if ($has_custom_domain && isset($unindexed_sites[$vsite_domain]["Allow $sid"])) {
+      unset($unindexed_sites[$vsite_domain]["Allow $sid"]);
+    }
     // Does not index if the site is not public.
     // Adds dissallow for base_domain.
     $unindexed_sites[$base_domain][$sid] = "Disallow: /$purl/";
@@ -290,23 +294,36 @@ function vsite_access_update_robots($group, $privacy) {
   // Otherwise, this vsite is publicly indexed.
   // Only excludes other vsite's files directories from robotstxt.
   else {
-    // Uses Allow and Disallow directive to hide only other vsite's files.
-    // First, makes an exception to override the Disallow and include this site.
-    // Then, excludes all individual sites' files directories based on pattern.
-    // The major search engines support this ability to override Allow.
-    // @see http://en.wikipedia.org/wiki/Robots_exclusion_standard#Allow_directive
-    $disallow_others = "Allow: /files/$purl/files\nDisallow: /files/*/files";
-    $unindexed_sites[$base_domain][$sid] = $disallow_others;
+    // Undoes any previous private vsite settings (see above).
+    // Unsets any Disallow directives for this vsite.
+    if (isset($unindexed_sites[$base_domain][$sid])) {
+      unset($unindexed_sites[$base_domain][$sid]);
+    }
+    if ($has_custom_domain && isset($unindexed_sites[$vsite_domain][$sid])) {
+      unset($unindexed_sites[$vsite_domain][$sid]);
+    }
+    // Deletes any custom domain indexing stored in variable 'robotstxt'.
+    $vsite->controllers->variable->del('robotstxt');
 
     // Also hides other vsites from any custom domain for this vsite.
     if ($has_custom_domain) {
-      $unindexed_sites[$vsite_domain][$sid] = $disallow_others;
+      // Uses Allow and Disallow directive to hide only other vsite's files.
+      // First, makes an exception to override the Disallow and include this site.
+      // Then, excludes all individual sites' files directories based on pattern.
+      // The major search engines support this ability to override Allow.
+      // @see http://en.wikipedia.org/wiki/Robots_exclusion_standard#Allow_directive
+      $allow_this_site = "Allow: /files/$purl/files";
+      $disallow_others = "Disallow: /files/*/files";
+      $unindexed_sites[$vsite_domain]["Allow $sid"] = $allow_this_site;
+      $unindexed_sites[$vsite_domain]["Disallow others"] = $disallow_others;
     }
-
-    // Deletes any custom domain indexing stored in variable 'robotstxt'.
-    $vsite->controllers->variable->del('robotstxt');
   }
 
+  // Sorts the the directives by key, so that the precedence is:
+  // 1. Disallow /$purl/ (keyed by ID)
+  // 2. Allow /files/$purl/files (for custom domains only, keyed by "Allow ID")
+  // 3. Disallow /files/*/files (for custom domains only, keyed by "Disallow others")
+  $unindexed_sites[$vsite_domain] = ksort($unindexed_sites[$vsite_domain]);
   // Saves robots changes.
   variable_set('vsite_access_unindexed_sites', $unindexed_sites);
 }
