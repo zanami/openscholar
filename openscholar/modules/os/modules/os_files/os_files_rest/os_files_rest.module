@@ -42,14 +42,12 @@ function _os_files_rest_modify_response_row($file) {
   $f = file_load($file['fid']);
   $filtered['orig'] = $f->origname;
   $filtered['preview'] = drupal_render(file_view_file($f, 'preview'));
-  $filtered['form'] = array(
-    'name' => 'textfield',
-  );
-  if ($filtered['type'] == 'image') {
-    $filtered['form'] += array(
-      'field_file_image_alt_text' => 'textfield',
-      'field_file_image_title_text' => 'textfield',
-    );
+  switch ($filtered['type']) {
+    case 'image':
+      $filtered['form'] = 'file_edit_image';
+      break;
+    default:
+      $filtered['form'] = 'file_edit_default';
   }
   entity_get_controller('file')->resetCache();
 

@@ -23,6 +23,14 @@
       getAll: function () {
         return files;
       },
+      get: function (fid) {
+        for (var i = 0; i < files.length; i++) {
+          if (files[i].fid == fid) {
+            return files[i];
+          }
+        }
+        throw new Exception('FID not found');
+      },
       add: function (file) {
         files.push(file);
         $rootScope.$broadcast('FileService.changed', files);
@@ -77,13 +85,16 @@
         redirectTo: '/browser/list'
       });
   }]).
-  controller('BrowserCtrl', ['FileService', '$scope', '$filter', function (FileService, $scope, $filter) {
+  controller('BrowserCtrl', ['FileService', '$scope', '$filter', '$http', '$templateCache', function (FileService, $scope, $filter, $http, $templateCache) {
     $scope.files = FileService.getAll();
+    $scope.templatePath = rootPath;
 
+    // Watch for changes in file list
     $scope.$on('FileService.changed', function (event, files) {
       $scope.files = files;
     });
 
+    // Filter list of files by a filename fragment
     $scope.queryFilename = function (item) {
       if ($scope.search) {
         if (item.name.indexOf($scope.search) > -1) {
@@ -97,6 +108,7 @@
       return true;
     };
 
+    // pager methods
     var currentPage = 0;
     $scope.currentPage = function () {
       return Math.min(currentPage, $scope.numberOfPages()-1);
@@ -109,7 +121,15 @@
       return Math.ceil($filter('filter')($scope.files, $scope.queryFilename).length/$scope.pageSize);
     };
 
+    // selected file
+    $scope.setSelection = function (fid) {
+      $scope.selection = fid;
+      $scope.selected_file = angular.copy(FileService.get(fid));
+    };
 
+    // preload file edit templates
+    $http.get(rootPath+'/templates/file_edit_default.html', {cache:$templateCache});
+    $http.get(rootPath+'/templates/file_edit_image.html', {cache:$templateCache});
   }]).
   filter('start', function () {
     return function (input, start) {

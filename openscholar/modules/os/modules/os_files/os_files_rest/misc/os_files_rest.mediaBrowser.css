@@ -11,6 +11,12 @@ div.file-search {
   margin: 9px 0;
 }
 
+/* Full listing */
+.results {
+  margin-right: 230px;
+  border-right: 1px solid lightgray;
+}
+
 /* Single file thumbnails */
 .media-item {
   background: #FFFFFF;
@@ -46,4 +52,18 @@ div.file-search {
   border-top: 1px solid lightgray;
   padding-top: 0.5em;
   text-align: center;
+}
+
+/* File Edit panel */
+#file-edit-section {
+  position: absolute;
+  width: 205px;
+  top: 100px;
+  bottom: 42px;
+  right: 18px;
+  overflow: auto;
+}
+
+#file-edit-section input {
+  margin-bottom: 1em;
 }
