@@ -788,7 +788,7 @@ function os_date_formats() {
     ),
     array(
       'type' => 'os_date_abbreviated',
-      'format' => 'M d, g:ia',
+      'format' => 'M j, g:ia',
     ),
     array(
       'type' => 'os_date',
