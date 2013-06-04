@@ -1,25 +1,34 @@
 @media (max-width: 1008px) {
 
 
-.view .date-nav-wrapper .date-prev {
-    right: 90%!important;
-}
 .view .date-nav-wrapper .date-next {
     right: 0;
 }
-#menu-bar ul.menu ul ul {
-    background: none repeat scroll 0 0 #24527A;
-}
+/*Header*/
+
 .header-left.header-main.header-right .region-header-second .region-inner {
     margin-right: 0;
 }
+/*Menu*/
+#menu-bar ul.menu ul ul {
+    background: none repeat scroll 0 0 #24527A;
+}
+/*Layout*/
 .page-node #content-column .content-inner {
     padding: 0!important;
+}
+/*Slideshow controls*/
+.view .date-nav-wrapper .date-prev {
+    right: 94%!important;
 }
 }
 
 @media (max-width: 768px) {
-
+	
+/*Layout*/
+.page-node #content-column .content-inner {
+    padding: 0!important;
+}
 .footer-left.footer.footer-right .region-footer-first, 
 .footer-left.footer.footer-right .region-footer-third, 
 .footer-left.footer.footer-right .region-footer, 
@@ -29,15 +38,12 @@
 .footer-right .region-footer-third {
     width: 100%;
 }
-.page-node #content-column .content-inner {
-    padding: 0!important;
-}
 
 
 }
 @media (max-width: 479px){
 	
-	
+/*Layout*/	
 .block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser, 
 .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio, 
 .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
