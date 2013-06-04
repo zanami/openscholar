@@ -2,13 +2,13 @@
 
 
 .view .date-nav-wrapper .date-prev {
-    right: 90%;
+    right: 90%!important;
 }
 .view .date-nav-wrapper .date-next {
     right: 0;
 }
 #menu-bar ul.menu ul ul {
-    background: none repeat scroll 0 0 #24527A !important;
+    background: none repeat scroll 0 0 #24527A;
 }
 .header-left.header-main.header-right .region-header-second .region-inner {
     margin-right: 0;
