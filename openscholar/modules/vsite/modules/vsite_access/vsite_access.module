@@ -251,7 +251,7 @@ function vsite_access_update_robots($group, $privacy){
 
   // Load Vsite.
   if (!$vsite = vsite_get_vsite($group->nid)) {
-    retrurn;
+    return;
   }
 
   // Robots.txt Base Domain Settings.
