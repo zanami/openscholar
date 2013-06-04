@@ -77,7 +77,7 @@
         redirectTo: '/browser/list'
       });
   }]).
-  controller('BrowserCtrl', ['FileService', '$scope', function (FileService, $scope) {
+  controller('BrowserCtrl', ['FileService', '$scope', '$filter', function (FileService, $scope, $filter) {
     $scope.files = FileService.getAll();
 
     $scope.$on('FileService.changed', function (event, files) {
@@ -97,10 +97,16 @@
       return true;
     };
 
-    $scope.currentPage = 0;
+    var currentPage = 0;
+    $scope.currentPage = function () {
+      return Math.min(currentPage, $scope.numberOfPages()-1);
+    };
+    $scope.setCurrentPage = function (p) {
+      currentPage = p;
+    };
     $scope.pageSize = 10;
     $scope.numberOfPages = function () {
-      return Math.ceil($scope.files.length/$scope.pageSize);
+      return Math.ceil($filter('filter')($scope.files, $scope.queryFilename).length/$scope.pageSize);
     };
 
 
