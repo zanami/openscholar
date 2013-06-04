@@ -242,54 +242,73 @@ function vsite_access_update_privacy_settings($group) {
 }
 
 /**
- * Update Robots.txt Settigs
+ * Updates robots.txt settings variable 'vsite_access_unindexed_sites'.
+ *
+ * @see vsite_access_robotstxt()
  */
 function vsite_access_update_robots($group, $privacy) {
   global $base_url;
 
-  // Loads space.
-  $vsite = vsite_get_vsite($group->nid);
+  // Loads space and vsite variables.
+  $sid = $group->nid;
+  $vsite = vsite_get_vsite($sid);
+  $purl = $vsite->group->purl;
 
-  // Robots.txt Base Domain Settings.
-  $domain_robots = variable_get('vsite_access_unindexed_sites');
-  $base_host = parse_url(variable_get('purl_base_domain', $base_url), PHP_URL_HOST);
+  // The unindexed sites variable is an array keyed by domain name,
+  // with a key for the purl base domain, and also a key for each vsite with
+  // a custom domain (regardless if the vsite domain is shared or owned).
+  // Each vsite may have a robots.txt string saved at any domain key,
+  // accessed by it's vsite ID.
+  $unindexed_sites = variable_get('vsite_access_unindexed_sites');
+  $base_domain = parse_url(variable_get('purl_base_domain', $base_url), PHP_URL_HOST);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
 
-  // If this site has a group domain, retrieves the Host.
+  // Checks if this site has a group domain.
+  $has_custom_domain = FALSE;
   if ($vsite_domain) {
     $vsite_domain = parse_url($vsite_domain, PHP_URL_HOST);
+    if ($vsite_domain != $base_domain) {
+      $has_custom_domain = TRUE;
+    }
   }
 
-  if ($privacy > VSITE_ACCESS_PUBLIC) {
+  // Disallows robots in sites with privacy settings greater than public.
+  $disallow_purl = (bool) $privacy > VSITE_ACCESS_PUBLIC;
+  if ($disallow_purl) {
     // Does not index if the site is not public.
     // Adds dissallow for base_domain.
-    $domain_robots[$base_host][$group->nid] = "Disallow: /{$vsite->group->purl}/";
+    $unindexed_sites[$base_domain][$sid] = "Disallow: /$purl/";
 
     // Adds Disallow for group domain indexing.
-    if ($vsite_domain && $vsite_domain != $base_host) {
-      $domain_robots[$vsite_domain][$group->nid] = "Disallow: /{$vsite->group->purl}/";
+    if ($has_custom_domain) {
+      $unindexed_sites[$vsite_domain][$sid] = "Disallow: /$purl/";
     }
 
-    // Dissallows custom domain indexing.
+    // Disallows custom domain indexing.
     $vsite->controllers->variable->set('robotstxt', "User-agent: *\nDisallow: /");
   }
+  // Otherwise, this vsite is publicly indexed.
+  // Only excludes other vsite's files directories from robotstxt.
   else {
-    // Removes base_domain any indexing.
-    if (isset($domain_robots[$base_host][$group->nid])) {
-      unset($domain_robots[$base_host][$group->nid]);
+    // Uses Allow and Disallow directive to hide only other vsite's files.
+    // First, makes an exception to override the Disallow and include this site.
+    // Then, excludes all individual sites' files directories based on pattern.
+    // The major search engines support this ability to override Allow.
+    // @see http://en.wikipedia.org/wiki/Robots_exclusion_standard#Allow_directive
+    $disallow_others = "Allow: /files/$purl/files\nDisallow: /files/*/files";
+    $unindexed_sites[$base_domain][$sid] = $disallow_others;
+
+    // Also hides other vsites from any custom domain for this vsite.
+    if ($has_custom_domain) {
+      $unindexed_sites[$vsite_domain][$sid] = $disallow_others;
     }
 
-    // Removes and Group Domain indexing.
-    if ($vsite_domain && $vsite_domain != $base_host && isset($domain_robots[$vsite_domain][$group->nid])) {
-      unset($domain_robots[$vsite_domain][$group->nid]);
-    }
-
-    // Deletes any custom domain indexing.
+    // Deletes any custom domain indexing stored in variable 'robotstxt'.
     $vsite->controllers->variable->del('robotstxt');
   }
 
   // Saves robots changes.
-  variable_set('vsite_access_unindexed_sites', $domain_robots);
+  variable_set('vsite_access_unindexed_sites', $unindexed_sites);
 }
 
 /**
