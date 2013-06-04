@@ -156,6 +156,10 @@ footer{position:relative;
 table[style] {
     max-width: 100% !important;
 }
+#footer{
+	z-index:1;
+	
+}
 }
 
 
