@@ -34,8 +34,6 @@
 }
 
 
-
-
 }
 @media (max-width: 479px){
 	
@@ -51,7 +49,8 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
     margin-left: 0!important;
         width: 100%;
 }
-.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content, .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content, 
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
     margin-left: 0!important;
     width: 100%;
 }
