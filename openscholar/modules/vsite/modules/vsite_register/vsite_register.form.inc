@@ -330,6 +330,15 @@ function vsite_register_form_submit(&$form, &$state) {
       call_user_func($fnc, $form, $state);
     }
   }
+
+  // Check for a present queued og_tasks batch.
+  $batch =& batch_get();
+  if($vsite && $batch){
+    //Run all the batch commands right now.
+    $batch['progressive'] = FALSE;
+		batch_process();
+  }
+
   print ajax_render($commands);
   exit;
 }
@@ -612,7 +621,6 @@ function vsite_register_notify_author($vsite) {
   $body = t($body_text, $replacements);
 
   global $language;
-  $language = $language->language;
 
   $params = array();
   $params['vsite'] = $vsite;
@@ -622,7 +630,7 @@ function vsite_register_notify_author($vsite) {
 
   $from = variable_get('site_mail', ini_get('sendmail_from'));
 
-  $result = drupal_mail('vsite_register', 'vsite_register_notify_author', $author->mail, $language, $params, $from, $send = TRUE);
+  $result = drupal_mail('vsite_register', 'vsite_register_notify_author', $author->mail, $language->language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to user.'), 'error');
   }
@@ -675,8 +683,7 @@ function vsite_register_notify_admin($vsite, $admin_mail) {
   $params['user'] = $author;
 
   global $language;
-  $language = $language->language;
-  $result = drupal_mail('vsite_register', $key, $admin_mail, $language, $params, $from, $send = TRUE);
+  $result = drupal_mail('vsite_register', $key, $admin_mail, $language->language, $params, $from, $send = TRUE);
   if ($result == FALSE) {
     drupal_set_message(t('Error sending notification mail to admin.'), 'error');
   }
@@ -753,8 +760,7 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
 
       // Prepares the date for the email message.
       global $language;
-      $language = $language->language;
-      $date = format_date(time(), 'long', '', NULL, $language);
+      $date = format_date(time(), 'long', '', NULL, $language->language);
 
       $replacements += array(
         '!vsite_count' => $count,
