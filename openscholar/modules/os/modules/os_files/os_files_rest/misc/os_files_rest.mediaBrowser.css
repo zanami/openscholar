@@ -35,6 +35,11 @@ div.file-search {
   white-space: nowrap;
 }
 
+.media-item.selected {
+  background-color: #F4ECC7;
+  border-color: #058AC5;
+}
+
 /* Pager */
 .pager {
   margin: 1em 0;
