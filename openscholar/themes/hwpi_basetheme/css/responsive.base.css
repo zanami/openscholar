@@ -13,6 +13,13 @@
 #menu-bar ul.menu ul ul {
     background: none repeat scroll 0 0 #24527A;
 }
+.region-header-third .block-os-search-solr,
+.region-header-third .block-os-search-db {
+    left: 30px;
+    margin-bottom: -80px;
+    position: relative;
+    top: 55px;
+}
 /*Layout*/
 .page-node #content-column .content-inner {
     padding: 0!important;
@@ -28,6 +35,15 @@
 /*Layout*/
 .page-node #content-column .content-inner {
     padding: 0!important;
+}
+.event-start .event-start {
+    float: none;
+}
+.event-start .event-content {
+    margin-left: 0;
+}
+.boxes-box-content span[style] {
+    float: none !important;
 }
 .footer-left.footer.footer-right .region-footer-first, 
 .footer-left.footer.footer-right .region-footer-third, 
