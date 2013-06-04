@@ -58,7 +58,7 @@ function vsite_access_update_7002(&$sandbox) {
     if (module_enable(array('robotstxt'))) {
       return "Enabled Module robotstxt";
     }
-    thrownew DrupalUpdateException('Unable to enable robotstxt.');
+    throw new DrupalUpdateException('Unable to enable robotstxt.');
   }
 }
 
