@@ -83,9 +83,13 @@
 ul.menu {
     margin-left: 15px !important;
 }
+
 #menu-bar ul.nice-menu li {
     background-color: #FFFFFF !important;
     margin-right: 30px !important;
+}
+#menu-bar ul.menu ul ul {
+    background: none repeat scroll 0 0 #80282C!important;
 }
 #menu-bar nav {
     background: none repeat scroll 0 0 #E8E8E8!important;
