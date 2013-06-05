@@ -31,8 +31,9 @@ projects[colorbox][subdir] = "contrib"
 projects[colorbox][version] = 2.4
 
 projects[comment_sources][download][type] = git
-projects[dyntextfield][download][tag] = 7.x-2.1
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
+projects[comment_sources][download][branch] = 7.x-2.x
+projects[comment_sources][download][revision] = 1594b58344a4483e07f25ce912f3bed3b5e27adc
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
 ; patches needed
@@ -70,7 +71,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/comment_sources-7.x-2.1/patches/disqus.patch"
+projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/1594b58344a4483e07f25ce912f3bed3b5e27adc/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -118,7 +119,7 @@ projects[fb_social][subdir] = "contrib"
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
-projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/comment_sources-7.x-2.1/patches/fb_social.patch"
+projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/1594b58344a4483e07f25ce912f3bed3b5e27adc/patches/fb_social.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
