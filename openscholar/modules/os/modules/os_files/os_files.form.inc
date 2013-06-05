@@ -1,10 +1,25 @@
 <?php
 
+function os_files_upload_page($ajax) {
+  $form_state = array();
+
+  $form = drupal_get_form('os_files_upload', $form_state);
+  if (empty($form_state['commands']) && !$ajax) {
+    return $form;
+  }
+  else {
+    print ajax_render($form_state['commands']);
+    exit;
+  }
+}
+
 /**
  * Save files to a temporary location so we can check if a file with that URI already exists
  */
 function os_files_upload($form, $form_state) {
-  $form = array();
+  $form = array(
+    '#action' => 'os/files/upload'
+  );
 
   $options = media_get_browser_params();
   form_load_include($form_state, 'inc', 'file_entity', 'file_entity.pages');
@@ -45,7 +60,7 @@ function os_files_upload_submit($form, $form_state) {
   $existing = file_uri_to_object($uri);
   if (isset($existing->fid)) {
     // a file with this uri already exist. Prompt to replace
-    $form_state['redirect'] = 'os/file/replace/'.$file->fid;
+    $form_state['redirect'] = 'os/files/replace/'.$file->fid;
   }
 }
 

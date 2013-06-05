@@ -47,6 +47,21 @@ function os_files_menu(){
     'type' => MENU_CALLBACK
   );
 
+  $items['os/files/upload'] = array(
+    'title' => 'Upload File',
+    'page callback' => 'os_files_upload_page',
+    'file' => 'os_files.form.inc',
+    'access arguments' => array('create file')
+  );
+
+  $items['os/files/replace/%file'] = array(
+    'title' => 'Replace File Dialog',
+    'page callback' => 'os_files_replace_page',
+    'page arguments' => array(3),
+    'file' => 'os_ffiles.form.inc',
+    'access arguments' => array('create file')
+  );
+
   return $items;
 }
 
@@ -977,6 +992,9 @@ function os_files_views_pre_render(&$view) {
         'form' => drupal_get_form('media_internet_add'),
       )
     );
+
+    $output['upload']['actions']['save']['#attributes']['class'][] = 'ctools-use-ajax-submit';
+    $output['internet']['form']['actions']['submit']['#attributes']['class'][] = 'ctools-use-ajax-submit';
     $view->attachment_before = drupal_render($output);
   }
 }
