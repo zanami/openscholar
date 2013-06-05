@@ -972,11 +972,12 @@ function os_files_views_pre_render(&$view) {
     $output = array(
       'upload' => drupal_get_form('os_files_upload'),
       'internet' => array(
-        '#prefix' => '<div id="media-internet-wrapper">',
+        '#prefix' => '<div id="media-internet-wrapper"><div class="media-internet-btn">Web</div>',
         '#suffix' => '</div>',
         'form' => drupal_get_form('media_internet_add'),
       )
     );
+    $view->attachment_before = drupal_render($output);
   }
 }
 

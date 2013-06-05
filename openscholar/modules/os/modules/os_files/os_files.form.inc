@@ -19,10 +19,20 @@ function os_files_upload($form, $form_state) {
     '#pre_render' => array('file_managed_file_pre_render', 'file_entity_upload_validators_pre_render'),
   );
 
-  $form['actions'] = array('#type' => 'actions');
-  $form['actions']['save'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'save' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'os_files').'/theme/os_files_upload_form.js',
+      ),
+      'css' => array(
+        drupal_get_path('module', 'os_files').'/theme/os_files_upload_form.css'
+      )
+    )
   );
 
   return $form;
