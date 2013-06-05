@@ -104,12 +104,7 @@ display:none;
     padding-left: 5px;
     width: 30%!important;
 }
-.one-sidebar.sidebar-second #content-column .content-inner {
-    float: none !important;
-    margin-right: 0;
-    position: relative;
-    width: 66%;
-}
+
 .ui-tabs {
     padding: 0!important;
 }
