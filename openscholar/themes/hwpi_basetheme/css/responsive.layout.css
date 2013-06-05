@@ -2,16 +2,13 @@
 }
 @media (max-width: 1059px) {
 .branding-left {
-    margin: 10px 0 0 -3%!important;}
+    margin: 10px 0 0 0!important;}
 
 
 }
 @media (max-width: 1008px)
  {
- .branding-left {
-    margin: 10px 0 0 0.5%!important;
 
-}	
 .media-element[style] {
     display: block !important;
     float: none !important;
@@ -104,11 +101,7 @@ display:none;
     position: relative;
 }
 .one-sidebar.sidebar-second .region-sidebar-second {
-    left: 68%;
-    margin-left: 0!important;
     padding-left: 5px;
-    position: absolute;
-    top: 0;
     width: 30%!important;
 }
 .one-sidebar.sidebar-second #content-column .content-inner {
