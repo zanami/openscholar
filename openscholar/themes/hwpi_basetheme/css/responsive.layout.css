@@ -112,7 +112,10 @@ display:none;
     float: none !important;
     margin-right: 0;
     position: relative;
-    width: 67.6%;
+    width: 66%;
+}
+.ui-tabs {
+    padding: 0!important;
 }
 .one-sidebar.sidebar-second  .hg-container {
     max-width: 100% !important;
@@ -266,6 +269,10 @@ table p {
 }
 .block.block-boxes.block-boxes-os_boxes_site_logo {
     width: 220px!important;
+}
+.ui-tabs .ui-tabs-nav li a {
+    height: 35px;
+
 }
 .header-left.header-main.header-right .region-header-second .region-inner {
     margin-left: 0;
