@@ -24,7 +24,7 @@ div.file-search {
   padding: 5px;
   width: 100px;
   display: inline-block;
-  margin: 5px 5px 0 0;
+  margin: 0 14px 10px 0;
   vertical-align: top;
 }
 
@@ -54,6 +54,10 @@ div.file-search {
   text-align: center;
 }
 
+.pager button {
+  padding: 0px 5px;
+}
+
 /* File Edit panel */
 #file-edit-section {
   position: absolute;
@@ -66,4 +70,8 @@ div.file-search {
 
 #file-edit-section input {
   margin-bottom: 1em;
+}
+
+#file-edit-section button {
+  padding: 3px 5px;
 }

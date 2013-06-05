@@ -40,6 +40,8 @@
           if (files[i].fid == file.fid) {
             files[i] = file;
             $rootScope.$broadcast('FileService.changed', files);
+            operating = true;
+            $http.put
             return true;
           }
         }
@@ -57,7 +59,8 @@
           }
         }
         return false;
-      }
+      },
+      operating: false
     };
   }]).
   /**
@@ -130,6 +133,15 @@
     // preload file edit templates
     $http.get(rootPath+'/templates/file_edit_default.html', {cache:$templateCache});
     $http.get(rootPath+'/templates/file_edit_image.html', {cache:$templateCache});
+
+    // file edit form methods
+    $scope.save = function() {
+      FileService.edit(selected_file);
+    };
+
+    $scope.delete = function() {
+      FileService.delete(selected_file);
+    };
   }]).
   filter('start', function () {
     return function (input, start) {
