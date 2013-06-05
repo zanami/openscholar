@@ -58,7 +58,7 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 
   if (!$view->get_item($display_id, 'relationship', 'og_membership_related_node_group')) {
     // Add the Relationship from the OG-membership to the group node.
-    $view->add_item($display_id, 'relationship', 'og_membership', 'og_membership_related_node_group');
+    $view->add_item($display_id, 'relationship', 'og_membership', 'og_membership_related_node_group', array('relationship' => 'og_membership_rel'));
   }
 
   $group_filter = array(
