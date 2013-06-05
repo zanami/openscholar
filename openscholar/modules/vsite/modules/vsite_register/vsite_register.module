@@ -6,6 +6,11 @@
  */
 
 /**
+ * Defines the menu path for the optional vsite welcome overlay message.
+ */
+define('VSITE_REGISTER_WELCOME_PATH', 'cp/path');
+
+/**
  * Implements hook_menu().
  */
 function vsite_register_menu() {
@@ -26,7 +31,7 @@ function vsite_register_menu() {
     //'type' => MENU_LOCAL_TASK,
   );
 
-  $items['site/register/welcome'] = array(
+  $items[VSITE_REGISTER_WELCOME_PATH] = array(
     'title callback' => '_vsite_register_welcome_title',
     'page callback' => '_vsite_register_welcome_page',
     'access callback' => '_vsite_register_welcome_access',
@@ -159,25 +164,38 @@ function vsite_register_message($form, $domain) {
 
   $whose = user_access('create openscholar site on behalf of others') ? 'the' : 'your';
 
-  $message = '<div id="success-message" class="status">';
-  $message .= t('<p>Success! @whose new site has been created.</p>', array('@whose' => ucfirst($whose)));
-
+  $paragraphs = array();
+  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose)));
   if (in_array('anonymous user', $user->roles)) {
-    $message .= t('<p>Check your email account for further details on how to login in to start adding features and content.</p>');
+    $paragraphs[] = t('Check your email account for further details on how to login in to start adding features and content.');
   }
 
-  $overlay = (bool) variable_get('vsite_register_welcome_message', FALSE) ? 'overlay=site/register/welcome' : '';
-  $href ="$base_url/$domain#$overlay";
-  $message .= t('<p>The url of @whose site is @base_url/@domain <a class="os-green-button" href="@href">Go there now &raquo;</a></p>', array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain, '@href' => $href));
-  $message .= '</div>';
+  $overlay = (bool) variable_get('vsite_register_welcome_message', FALSE) ? 'overlay=' . VSITE_REGISTER_WELCOME_PATH : '';
+  $href = "$base_url/$domain#$overlay";
+  $link = l(t('Go there now ') . '&raquo;', $href, array('html' => TRUE, 'attributes' => array('title' => t('Visit your new site now'), 'class' => array('os-green-button'))));
+  $paragraphs[] = t('The url of @whose site is @base_url/@domain '. $link, array('@whose' => $whose, '@base_url' => $base_url, '@domain' => $domain));
+
+  $message = array(
+    'container' => array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'success-message',
+        'class' => array('status'),
+      ),
+      'message_text' => array(
+        '#type' => 'markup',
+        '#markup' => '<p>' . implode('</p><p>', $paragraphs) . '</p>',
+      ),
+    ),
+  );
 
   // Gives other modules a chance to alter message
   module_invoke_all('vsite_register_message', $message, $form, $domain);
-  return $message;
+  return drupal_render($message);
 }
 
 /**
- * Implements hook_fork_BASE_FORM_ID_alter() for vsite_register_form.
+ * Implements hook_form_BASE_FORM_ID_alter() for vsite_register_form.
  *
  * Removes the notify element if the user is not logged in.
  */
@@ -207,7 +225,7 @@ function _vsite_register_get_overlay($welcome_message) {
 function vsite_register_admin_paths() {
   // Adds the welcome message node alias to admin paths to generate overlay.
   $paths = array(
-    'site/register/welcome' => TRUE,
+    VSITE_REGISTER_WELCOME_PATH => TRUE,
   );
 
   return $paths;
