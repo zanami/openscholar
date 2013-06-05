@@ -1,4 +1,4 @@
-; Drupal.org release file.
+; Drupal.org MakeFile for OpenScholar.
 core = 7.x
 api = 2
 
