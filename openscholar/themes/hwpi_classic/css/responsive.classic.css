@@ -28,6 +28,9 @@ ul.primary li a {
 #menu-bar {
     background: none repeat scroll 0 0 #E6E6E3;
 }
+#menu-bar ul.menu ul ul {
+    background: none repeat scroll 0 0 #24527A!important;
+}
 .block-boxes-os_boxes_slideshow{
 	border-top:none!important;
 }

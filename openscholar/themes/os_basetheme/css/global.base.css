@@ -300,20 +300,23 @@ ol ul,
 
 /** 1 A a (1) **/
 
-
+.mceContentBody ol,
 #content-column ol {
  list-style-type:decimal; 
 }
 
+.mceContentBody ol ol,
 #content-column ol ol {
  list-style-type: upper-alpha;
  margin-left:25px;
 }
 
+.mceContentBody ol ol ol,
 #content-column ol ol ol {
  list-style-type: lower-alpha;
 }
 
+.mceContentBody ol ol ol ol,
 #content-column ol ol ol ol {
  list-style-type: decimal;
 }
