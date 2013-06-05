@@ -15,9 +15,10 @@
     border-top: medium none!important;
 }
 .rslides img {
-	left: 0;
-    top: 0;
+    left: 0;
     position: static !important;
+    top: 0;
+    width: 100%;
 }
 
 

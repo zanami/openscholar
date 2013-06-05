@@ -156,6 +156,10 @@ footer{position:relative;
 table[style] {
     max-width: 100% !important;
 }
+#footer{
+	z-index:1;
+	
+}
 }
 
 
@@ -327,4 +331,18 @@ th, td {
 }
 
 }
-
+@media (max-width:400px){
+	
+.branding-left {
+    left: 10px;
+    margin: 10px 0 !important;
+    position: relative;
+    width: 190px;
+}
+.region.region-footer-first {
+    max-width: 99%!important;
+}
+#branding_footer{
+    padding-bottom: 20px;
+}
+}

@@ -109,10 +109,3 @@ function os_update_7009() {
 function os_update_7010() {
   module_enable(array('views_infinite_scroll', 'views_litepager'));
 }
-
-/**
- * Turn on Subtheme and OS subtheme modules.
- */
-function os_update_7011() {
-  module_enable(array('subtheme', 'os_subtheme'));
-}
