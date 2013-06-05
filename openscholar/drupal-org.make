@@ -98,6 +98,7 @@ projects[entityreference_prepopulate][subdir] = "contrib"
 ; projects[entityreference_prepopulate][version] = 1.3
 projects[entityreference_prepopulate][download][type] = git
 projects[entityreference_prepopulate][download][revision] = e2c2811
+projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
