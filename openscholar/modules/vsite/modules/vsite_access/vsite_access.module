@@ -27,6 +27,56 @@ function vsite_access_views_api() {
   );
 }
 
+
+/**
+ * Implements hook_views_pre_view().
+ *
+ * After we have determined that we are not in an OG space lets make
+ * sure we add our filters.
+ */
+function vsite_access_views_pre_view(&$view, &$display_id, &$args){
+  if (arg(0) === 'admin' || $space = spaces_get_space()) {
+    //If we are not in a vsite, add our filter, inside a vsite we can restrict
+    // access without filters overhead
+    return;
+  }
+
+  if ($group_filter = $view->get_item($display_id, 'filter', VSITE_ACCESS_FIELD.'_value')) {
+    //If the group filter is already present there is no need to do anything
+    return;
+  }
+
+  $table = $view->base_table;
+  if (!in_array($table, array('node'))) {
+    return;
+  }
+
+  if (!$view->get_item($display_id, 'relationship', 'og_membership_rel')) {
+    // Add the Relationship to the node table.
+    $view->add_item($display_id, 'relationship', $table, 'og_membership_rel');
+  }
+
+  if (!$view->get_item($display_id, 'relationship', 'og_membership_related_node_group')) {
+    // Add the Relationship from the OG-membership to the group node.
+    $view->add_item($display_id, 'relationship', 'og_membership', 'og_membership_related_node_group', array('relationship' => 'og_membership_rel'));
+  }
+
+  $group_filter = array(
+    'id' => 'group_access_value',
+    'table' => 'field_data_group_access',
+    'field' => 'group_access_value',
+    'group_type' => 'group',
+    'operator' => 'in',
+    'group' => '1',
+    'exposed' => false,
+    'relationship' => 'og_membership_related_node_group',
+    'value' => array(VSITE_ACCESS_PUBLIC => VSITE_ACCESS_PUBLIC),
+  );
+
+  // Add the filter for group access field.
+  $view->set_item($display_id, 'filter', VSITE_ACCESS_FIELD.'_value', $group_filter);
+}
+
 /**
  * Add additional lines to a site's robots.txt file.
  *
