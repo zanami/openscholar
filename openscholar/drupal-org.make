@@ -362,8 +362,8 @@ projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-of
 
 projects[views_infinite_scroll][subdir] = "contrib"
 projects[views_infinite_scroll][version] = 1.1
-projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
-projects[views_infinite_scroll][patch][] = "https://drupal.org/files/views_infinite_scroll-no_auto_scroll-2012910-1.patch"
+;projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
+;projects[views_infinite_scroll][patch][] = "http://localhost/patch/views_infinite_scroll-no_auto_scroll-2012910-1.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -419,7 +419,5 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
-libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
-libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"
-libraries[autopager][patch][] = "https://drupal.org/files/autopager-no_auto_scroll-2012910-1.patch"
+libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/master.zip"
 
