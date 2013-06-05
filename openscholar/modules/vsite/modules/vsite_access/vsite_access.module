@@ -250,8 +250,8 @@ function vsite_access_update_robots($group, $privacy) {
   global $base_url;
 
   // Loads space and vsite variables.
-  $sid = $group->nid;
-  $vsite = vsite_get_vsite($sid);
+  $gid = $group->nid;
+  $vsite = vsite_get_vsite($gid);
   $purl = $vsite->group->purl;
 
   // The variable $directives is an array keyed by domain name,
@@ -276,16 +276,16 @@ function vsite_access_update_robots($group, $privacy) {
   $disallow_purl = (bool) $privacy > VSITE_ACCESS_PUBLIC;
   if ($disallow_purl) {
     // Undoes any previous Allow directives (see below).
-    if ($has_custom_domain && isset($directives[$vsite_domain]["Allow $sid"])) {
-      unset($directives[$vsite_domain]["Allow $sid"]);
+    if ($has_custom_domain && isset($directives[$vsite_domain]["Allow $gid"])) {
+      unset($directives[$vsite_domain]["Allow $gid"]);
     }
     // Does not index if the site is not public.
     // Adds dissallow for base_domain.
-    $directives[$base_domain][$sid] = "Disallow: /$purl/";
+    $directives[$base_domain][$gid] = "Disallow: /$purl/";
 
     // Adds Disallow for group domain indexing.
     if ($has_custom_domain) {
-      $directives[$vsite_domain][$sid] = "Disallow: /$purl/";
+      $directives[$vsite_domain][$gid] = "Disallow: /$purl/";
     }
 
     // Disallows custom domain indexing.
@@ -296,11 +296,11 @@ function vsite_access_update_robots($group, $privacy) {
   else {
     // Undoes any previous private vsite settings (see above).
     // Unsets any Disallow directives for this vsite.
-    if (isset($directives[$base_domain][$sid])) {
-      unset($directives[$base_domain][$sid]);
+    if (isset($directives[$base_domain][$gid])) {
+      unset($directives[$base_domain][$gid]);
     }
-    if ($has_custom_domain && isset($directives[$vsite_domain][$sid])) {
-      unset($directives[$vsite_domain][$sid]);
+    if ($has_custom_domain && isset($directives[$vsite_domain][$gid])) {
+      unset($directives[$vsite_domain][$gid]);
     }
     // Deletes any custom domain indexing stored in variable 'robotstxt'.
     $vsite->controllers->variable->del('robotstxt');
@@ -314,7 +314,7 @@ function vsite_access_update_robots($group, $privacy) {
       // @see http://en.wikipedia.org/wiki/Robots_exclusion_standard#Allow_directive
       $allow_this_site = "Allow: /files/$purl/files";
       $disallow_others = "Disallow: /files/*/files";
-      $directives[$vsite_domain]["Allow $sid"] = $allow_this_site;
+      $directives[$vsite_domain]["Allow $gid"] = $allow_this_site;
       $directives[$vsite_domain]["Disallow others"] = $disallow_others;
     }
   }
