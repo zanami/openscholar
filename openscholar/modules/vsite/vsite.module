@@ -23,7 +23,7 @@ function vsite_get_vsite($vsite = FALSE){
   if (empty($vsite)) {
     $vsite = spaces_get_space();
   }
-  elseif (is_int($vsite)) {
+  elseif (!is_object($vsite)) {
     $vsite = spaces_load('og', $vsite, FALSE);
   }
 
