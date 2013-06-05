@@ -34,12 +34,13 @@ ul.primary li a {
 .block-boxes-os_boxes_slideshow{
 	border-top:none!important;
 }
-.sidebar .block, 
+ 
 .front #content-column .block, 
 .node-person .block-inner, 
 .comment-wrapper {
     margin-top: -10px;
 }
+
 /*Dropdown menu*/
 #block-os-primary-menu li {
     border-bottom: 1px solid #34679A !important;
@@ -72,5 +73,7 @@ ul.primary li a {
 .one-sidebar.sidebar-second #content-panels {
     border-right: none;
 }
-
+.sidebar .block,{
+	    margin-top: 10px!important;
+}
 }
