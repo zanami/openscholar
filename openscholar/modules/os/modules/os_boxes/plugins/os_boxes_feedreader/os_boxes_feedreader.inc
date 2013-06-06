@@ -85,6 +85,9 @@ class os_boxes_feedreader extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render(){
+    if (!vsite_get_vsite()) {
+      return;
+    }
     $block = parent::render();
     if (! $this->options['feed'] || ! ($node = node_load($this->options['feed']))) {
       return $block;
