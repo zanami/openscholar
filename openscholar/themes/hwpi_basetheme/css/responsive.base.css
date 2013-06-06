@@ -22,7 +22,8 @@
 }
 /*Layout*/
 .page-node #content-column .content-inner {
-    padding: 0!important;
+    margin-left: 25%;
+    padding: 0 !important;
 }
 /*Slideshow controls*/
 .view .date-nav-wrapper .date-prev {
