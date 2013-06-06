@@ -4,6 +4,8 @@ default:
       drupal_users:
         admin:
           'admin'
+        john:
+          'jfk'
       # the node ID of the group
       vsite:
         1

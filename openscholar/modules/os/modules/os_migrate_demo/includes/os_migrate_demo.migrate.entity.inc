@@ -69,7 +69,11 @@ abstract class OsMigrate extends Migration {
   }
 
   public function prepareRow($row) {
-    $row->uid = 1;
+    // The migrate content isn't belong to any one, the default will be the
+    // admin user.
+    if (!$row->uid) {
+      $row->uid = 1;
+    }
 
     if ($this->entityType == 'taxonomy_term' && $this->ogVocab) {
       $this->prepareRowTaxonomyTerm($row);
