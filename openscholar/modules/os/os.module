@@ -192,6 +192,11 @@ function os_block_view_alter(&$block, &$data) {
       '#menu_name' => $data->delta,
       '#region' => $data->region,
     );
+    
+    if ($theme == 'os_nice_menus') {
+      $block['content']['#prefix'] = '<li>';
+      $block['content']['#suffix'] = '</li>';
+    }
   }
 
   // if the block has no content, nothing should be rendered
