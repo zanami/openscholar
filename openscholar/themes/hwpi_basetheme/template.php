@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '#block-os-quick-links',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
         ),
       ),
       'mobi-search' => array(
