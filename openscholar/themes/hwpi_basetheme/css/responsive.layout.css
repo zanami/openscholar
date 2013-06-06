@@ -41,7 +41,7 @@
 }
 /*Header*/
 .branding-left {
-    margin: 10px 0 0 15px;
+    margin: 10px 0 0 10px!important;
 }
 .branding-left img {
     left: 0;
