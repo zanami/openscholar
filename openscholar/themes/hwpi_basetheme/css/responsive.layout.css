@@ -149,6 +149,9 @@ table[style] {
 	z-index:1;
 	
 }
+.not-logged-in.page-user #footer {
+    width: 100%!important;
+}
 
 }
 
@@ -276,8 +279,6 @@ table p {
     max-width: 100%;
     text-align: center;
 }
-.region-header-second > div{
-	padding:15px;}
 
 .boxes-box-content img[style] {
     float: none !important;
