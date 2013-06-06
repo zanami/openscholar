@@ -401,6 +401,10 @@ ul ul ul ul {
     display: block;
 }
 
+.view-os-events .attachment-after .links {
+  padding-top: 10px;
+  text-align: right; /* LTR */
+}
 
 /* BOOK NAVS */
 .book-menu {
