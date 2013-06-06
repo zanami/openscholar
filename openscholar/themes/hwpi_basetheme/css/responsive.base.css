@@ -25,9 +25,12 @@
     margin-left: 25%;
     padding: 0 !important;
 }
-/*Slideshow controls*/
+/*Calendar controls*/
 .view .date-nav-wrapper .date-prev {
     right: 94%!important;
+}
+.region-sidebar .view .date-nav-wrapper .date-prev {
+    right: 90% !important;
 }
 }
 
