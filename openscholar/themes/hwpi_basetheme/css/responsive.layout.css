@@ -144,10 +144,12 @@ footer{position:relative;
 table[style] {
     max-width: 100% !important;
 }
+/*Footer*/
 #footer{
 	z-index:1;
 	
 }
+
 }
 
 
@@ -319,6 +321,28 @@ th, td {
 }
 #content-column .block.block-boxes-os_boxes_manual_list {
     padding: 0 5px!important;
+}
+/*footer*/
+#powerby-login {
+    float: none;
+    margin-right: 20px !important;
+    margin-top: 20px;
+    position: relative;
+    right: 10%;
+    width: 100%;
+}
+#footer .footer-login {
+    
+    display: block;
+    float: none !important;
+    margin-bottom: 20px !important;
+    padding: 0 10px !important;
+    position: relative;
+}
+#powered-by a {
+    float: left;
+    margin-left: 10px !important;
+    width: 100%;
 }
 
 }
