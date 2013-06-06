@@ -94,8 +94,13 @@ function os_events_process_node(&$variables) {
     }
   }
 
-  // Display the day of the event without leading zero.
-  $variables['event_start']['day'] = date('j', strtotime($variables['field_date'][0]['value']));
+  $variables['link_title_text'] = '';
+  if (isset($variables['date_id'])) {
+    list(,,$field,$delta) = explode('.', $variables['date_id']);
+    $date = field_get_items('node', $variables['elements']['#node'], $field);
+    $date = $date[$delta]['value'];
+    $variables['link_title_text'] = t('Begins at @date', array('@date' => date('D M j h:iA', strtotime($date))));
+  }
 }
 
 /**
