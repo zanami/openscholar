@@ -97,9 +97,13 @@ function os_events_process_node(&$variables) {
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
     list(,,$field,$delta) = explode('.', $variables['date_id']);
-    $date = field_get_items('node', $variables['elements']['#node'], $field);
+    $date = field_get_items('node', $variables['node'], $field);
+    dpm($variables);
     $date = $date[$delta]['value'];
-    $variables['link_title_text'] = t('Begins at @date', array('@date' => date('D M j h:iA', strtotime($date))));
+    $variables['link_title_text'] = t('Begins at @date', array('@date' => gmdate('D M j', strtotime($date))));
+    if (isset($variables['content']['links']['node']['#links']['node-readmore'])) {
+      $variables['content']['links']['node']['#links']['node-readmore']['attributes']['title'] .= ' on '.gmdate('D M j', strtotime($date));
+    }
   }
 }
 
