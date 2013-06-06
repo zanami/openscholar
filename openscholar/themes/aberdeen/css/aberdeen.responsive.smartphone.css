@@ -51,14 +51,11 @@
     border-radius: 0;
 }
 
+#header-container .region {text-align:left:}
 
 .view-os-image-gallery-slideshow img,
-#header-container img {width:100%;}
+#header-container img {max-width:100%;}
 
 .block-boxes-os_shields_box {
 	display:none;
-}
-
-#header-container {height:110px;}
-
 }
