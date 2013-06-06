@@ -8,7 +8,6 @@ use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
 
-
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
@@ -68,14 +67,25 @@ class FeatureContext extends DrupalContext {
       throw new Exception("Password not found for '$username'.");
     }
 
-    // Log in.
-    // Go to the user page.
-    $element = $this->getSession()->getPage();
-    $this->getSession()->visit($this->locatePath('/user'));
-    $element->fillField('Username', $username);
-    $element->fillField('Password', $password);
-    $submit = $element->findButton('Log in');
-    $submit->click();
+    if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
+      // We are using a cli, log in with meta step.
+      return array(
+        new Step\When('I visit "/user"'),
+        new Step\When('I fill in "Username" with "' . $username . '"'),
+        new Step\When('I fill in "Password" with "' . $password . '"'),
+        new Step\When('I press "edit-submit"'),
+      );
+    }
+    else {
+      // Log in.
+      // Go to the user page.
+      $element = $this->getSession()->getPage();
+      $this->getSession()->visit($this->locatePath('/user'));
+      $element->fillField('Username', $username);
+      $element->fillField('Password', $password);
+      $submit = $element->findButton('Log in');
+      $submit->click();
+    }
   }
 
   /**
@@ -629,7 +639,7 @@ class FeatureContext extends DrupalContext {
    * @Given /^I invalidate cache$/
    */
   public function iInvalidateCache() {
-    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 
