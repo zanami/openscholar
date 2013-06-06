@@ -32,9 +32,6 @@
     margin:0;
 }
 
-.region-header-third {
-	height:60px;
-}
 
 .region-header-third #block-os-secondary-menu ul {
     float: left;
@@ -51,7 +48,7 @@
     border-radius: 0;
 }
 
-#header-container .region {text-align:left:}
+#header-container .region {text-align:left;}
 
 .view-os-image-gallery-slideshow img,
 #header-container img {max-width:100%;}
