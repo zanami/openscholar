@@ -1,5 +1,9 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto);
 
+
+body  {
+	font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+}
 #header {
      background: none repeat scroll 0px 0px #EBEBEB;
      border-bottom: 2px solid #DDDDDD;
@@ -39,6 +43,8 @@ border-top-right-radius: 3px;
     background-position:2px -406px;
 }
 
+
+
 #boxes-box-site_info, #boxes-box-site_info a {
      font-family: 'Roboto',helvetica,arial;
 }
@@ -67,12 +73,28 @@ border-top-right-radius: 3px;
      padding: 15px;
 }
 
+
+.sidebar .block-boxes-os-pages-section-nav .block-content {
+    padding: 0;
+}
+
+.sidebar .block.section-nav, #content-column .block.section-nav {
+    border:  none;
+}
+
 .front #content-panels .block-title, .sidebar .block-title {
      background: none repeat scroll 0% 0% #EBEBEB;
      border-bottom: 1px solid #DDDDDD;
      color: #303030;
      font-family: 'Roboto',helvetica;
      font-size: 12px;
+     line-height: 20px;
+     min-height: 20px;
+     padding: 7px 15px;
+}
+
+.not-front h2.block-title {
+    padding: 7px 15px;
 }
 
 #content-panels .block-inner {
