@@ -20,6 +20,9 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'bundles' => array('department'),
     'og_tasks' => array(
+      'vsiteTaskAcademicsSection',
+      'vsiteTaskResearchSection',
+      'vsiteTaskResourcesSection',
       'vsiteTaskNewsEventsSection',
       'vsiteTaskAboutSection'
     ),
