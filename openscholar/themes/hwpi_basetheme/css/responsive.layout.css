@@ -101,8 +101,12 @@ display:none;
     position: relative;
 }
 .one-sidebar.sidebar-second .region-sidebar-second {
+    margin-left: -31% !important;
     padding-left: 5px;
-    width: 30%!important;
+    width: 30% !important;
+}
+.one-sidebar.sidebar-second .content-inner {
+    margin-right: 34%!important;
 }
 
 .ui-tabs {
@@ -325,12 +329,8 @@ th, td {
 }
 /*footer*/
 #powerby-login {
-    float: none;
-    margin-right: 20px !important;
-    margin-top: 20px;
     position: relative;
-    right: 10%;
-    width: 100%;
+    right: 0;
 }
 #footer .footer-login {
     
@@ -345,6 +345,7 @@ th, td {
     margin-left: 10px !important;
     width: 100%;
 }
+
 
 }
 @media (max-width:400px){
