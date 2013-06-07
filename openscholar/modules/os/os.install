@@ -109,3 +109,23 @@ function os_update_7009() {
 function os_update_7010() {
   module_enable(array('views_infinite_scroll', 'views_litepager'));
 }
+
+/**
+ * Turn on Subtheme and OS subtheme modules.
+ */
+function os_update_7011() {
+  module_enable(array('subtheme', 'os_subtheme'));
+}
+
+/**
+ * Allow access to file/*.json for all users
+ */
+function os_update_7012() {
+  //Only grant this if the module is installed
+  if (module_exists('restws')){
+    // Allow accessing resource file to all users.
+    foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
+      user_role_grant_permissions($rid, array('access resource file'));
+    }
+  }
+}
