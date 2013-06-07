@@ -30,8 +30,19 @@ display:none;}
 display:block;
 }
 
-#block-os-secondary-menu.opened{
-		display:block;
+#block-os-secondary-menu.opened {
+    background-color: #2A527A;
+    display: block;
+    left: 15px;
+    position: absolute;
+    top: 59px;
+    z-index: 3;
+}
+.region-header-third ul.nice-menu a {
+    color: #FFFFFF!important;
+}
+.region-header-third ul.nice-menu li {
+    float: none;
 }
 #block-os-primary-menu ul:after {
     clear: both;
@@ -40,6 +51,12 @@ display:block;
     font-size: 0;
     height: 0;
     visibility: hidden;
+}
+.region-header-third {
+    width: 96.8%;
+}
+.region-header-third ul.menu {
+    float: left!important;
 }
 
 #block-os-primary-menu ul {
