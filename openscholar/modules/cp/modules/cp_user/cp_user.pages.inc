@@ -1,90 +1,120 @@
 <?php
 
 /**
- * Function to return the user's role in the group,
- * along with the links to perform action based on the returned roles.
+ * Returns an array of links for this user in the Manage Members table.
+ *
+ * @param int $uid
+ *   The specified user object's User ID.
+ * @param int $gid
+ *   The specified vsite object's OG group Node ID.
+ *
+ * @return array $columns
  */
-function cp_user_check_role($user_id, $group_id) {
-  // First check to see if the user is the admin of this group.
+function cp_user_check_role($uid, $gid) {
+  $columns = array();
+
+  // First checks to see if the user is the admin of this group.
   $space = spaces_get_space();
 
-  if ($space->group->nid == $group_id && $space->group->uid == $user_id) {
-    // User is the manager of the site, don't allow any actions on them.
+  // Checks if the current user is this vsite's author (owner).
+  $is_owner = (bool) ($space->group->nid == $gid && $space->group->uid == $uid);
+  // If the user is the owner, return a special row with no edit links.
+  if ($is_owner) {
     $group_member = t('Manager');
     $admin_link = '';
     $remove_link = '';
   }
+  // Otherwise, checks the current user's OG roles.
+  // The member's role could be one of: Vsite admin, Content Editor, or Member.
+  // @fixme determine better name for non-admin, non-content-editor
   else {
-    // Check their OG roles here, they could be a vsite admin and not the manager
-    $user_roles = og_get_user_roles('node', $space->group->nid, $user_id);
-    // Check for the vsite admin role now
+    // Loads the user's roles with this group node.
+    $user_roles = og_get_user_roles('node', $space->group->nid, $uid);
+    // Handles vsite admins...
     if (in_array('vsite admin', $user_roles)) {
       $group_member = t('Administrator');
-      $admin_link = l('Remove Admin', "cp/users/remove_admin/{$user_id}");
+      $admin_link = l('Remove Admin', "cp/users/remove_admin/{$uid}");
     }
+    // Handles non-admins...
     else {
       $group_member = t('Member');
-      $admin_link = l('Make Admin', "cp/users/create_admin/{$user_id}");
+      $admin_link = l('Make Admin', "cp/users/create_admin/{$uid}");
     }
-    $remove_link = l('Remove Membership', "cp/users/delete_membership/{$user_id}");
+    $remove_link = l('Remove Membership', "cp/users/delete_membership/{$uid}");
   }
-  $group_membership['membership'] = $group_member;
-  $group_membership['admin_link'] = $admin_link;
-  $group_membership['remove_link'] = $remove_link;
 
-  return $group_membership;
+  $columns['membership'] = $group_member;
+  $columns['admin_link'] = $admin_link;
+  $columns['remove_link'] = $remove_link;
+
+  return $columns;
 }
 
 /**
- * Function to return the user's first/last names.
+ * Returns an array containing the user's first, last, and username.
+ *
+ * @param int $uid
+ *   The given User ID
+ *
+ * @return array $name
+ *   An indexed array containing:
+ *   - username
+ *   - first_name
+ *   - last_name
  */
-function cp_user_get_user_names($user_id) {
-  $user = user_load($user_id);
-  $name_array = array();
-  // Get the first name.
-  $user_first_name = field_get_items('user', $user, 'field_first_name');
-  if (isset($user_first_name[0]['safe_value'])) {
-    $first_name = $user_first_name[0]['safe_value'];
+function cp_user_get_user_names($uid) {
+  $name = array();
+
+  $user = user_load($uid);
+
+  // Get the first name field's safe value.
+  $items = field_get_items('user', $user, 'field_first_name');
+  if (isset($items[0]['safe_value'])) {
+    $first_name = $items[0]['safe_value'];
   }
   else {
     $first_name = '';
   }
-  // Get the last name.
-  $user_last_name = field_get_items('user', $user, 'field_last_name');
-  if (isset($user_last_name[0]['safe_value'])) {
-    $last_name = $user_last_name[0]['safe_value'];
+  // Get the last name field's safe value.
+  $items = field_get_items('user', $user, 'field_last_name');
+  if (isset($items[0]['safe_value'])) {
+    $last_name = $items[0]['safe_value'];
   }
   else {
     $last_name = '';
   }
-  $name_array['username'] = $user->name;
-  $name_array['first_name'] = $first_name;
-  $name_array['last_name'] = $last_name;
+  $name['username'] = $user->name;
+  $name['first_name'] = $first_name;
+  $name['last_name'] = $last_name;
 
-  return $name_array;
+  return $name;
 }
 
 /**
- * Function to return the users of a group.
+ * Returns an array containing the given vsite's members names and roles.
+ *
+ * @param int $gid
+ *   The specified vsite object's OG group Node ID.
+ *
+ * @return array $members
+ *   The list of members in the specified vsite.
  */
-function cp_user_load_group_users($vsite_id) {
+function cp_user_load_group_users($gid) {
   $query = db_select("og_membership", "ogm");
-  $query->condition("ogm.gid", $vsite_id, "=");
+  $query->condition("ogm.gid", $gid, "=");
   $query->condition("entity_type", "user", "=");
   $query->fields("ogm", array("entity_type", "etid"));
   $result = $query->execute()->fetchAll();
 
-  $user_array = array();
+  $members = array();
   foreach ($result as $entity => $value) {
-    $user_array[] = array('User' => cp_user_get_user_names($value->etid), 'Member' => cp_user_check_role($value->etid, $vsite_id));
+    $members[] = array('User' => cp_user_get_user_names($value->etid), 'Member' => cp_user_check_role($value->etid, $gid));
   }
-  return $user_array;
+  return $members;
 }
 
 /**
- * Function to display the users of group,
- * action links for those users as well as the
- * add new user link.
+ * Page callback; returns content for the CP > People page (Manage Members).
  */
 function cp_user_user_management_page($vsite_id) {
   // Create the table.
@@ -110,8 +140,7 @@ function cp_user_user_management_page($vsite_id) {
 }
 
 /**
- * Implements hook_confirm_form().
- * Confirmation form for removing the membership of the user form the specified group.
+ * Form builder; provides confirmation for "Remove Member" action.
  */
 function cp_user_remove_membership_confirm($form_state, $user_load) {
   $space = spaces_get_space();
@@ -131,7 +160,7 @@ function cp_user_remove_membership_confirm($form_state, $user_load) {
 }
 
 /**
- * Function to remove the user from the selected group/site.
+ * Submit callback; removes the specified member after user confirms action.
  */
 function cp_user_remove_membership_confirm_submit($form, &$form_state) {
   // Ungroup the user from the node
@@ -142,8 +171,7 @@ function cp_user_remove_membership_confirm_submit($form, &$form_state) {
 }
 
 /**
- * Implements hook_confirm_form().
- * Confirmation form for promoting a user to vsite admin of the specified group.
+ * Form builder; provides confirmation for "Make Admin" action.
  */
 function cp_user_make_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
@@ -164,7 +192,7 @@ function cp_user_make_admin_confirm($form_state, $user_load) {
 }
 
 /**
- * Function to promote the user to vsite admin of the selected group/site.
+ * Submit callback; makes specified user an admin after user confirms action.
  */
 function cp_user_make_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
@@ -180,8 +208,7 @@ function cp_user_make_admin_confirm_submit($form, &$form_state) {
 }
 
 /**
- * Implements hook_confirm_form().
- * Confirmation form for promoting a user to vsite admin of the specified group.
+ * Form builder; provides confirmation for "Remove Admin" action.
  */
 function cp_user_remove_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
@@ -202,7 +229,7 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
 }
 
 /**
- * Function to promote the user to vsite admin of the selected group/site.
+ * Submit callback; removes admin from specified user after user confirms action.
  */
 function cp_user_remove_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
