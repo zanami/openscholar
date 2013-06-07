@@ -56,6 +56,7 @@ function cp_user_menu() {
     'file' => 'cp_user.pages.inc',
   );
 
+  /*
   $items['cp/users/edit_membership/%user_id'] = array(
     'type' => MENU_CALLBACK,
     'title' => 'Edit Member',
@@ -64,7 +65,7 @@ function cp_user_menu() {
     'access callback' => 'cp_user_admin_access',
     'file' => 'cp_user.pages.inc',
   );
-
+  */
   return $items;
 }
 
