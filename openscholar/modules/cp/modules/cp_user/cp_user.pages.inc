@@ -217,3 +217,23 @@ function cp_user_remove_admin_confirm_submit($form, &$form_state) {
   drupal_goto('cp/users');
 }
 
+/**
+ * Form builder; provides the options for the "Edit membership" form.
+ */
+function cp_user_edit_membership_form($form_state, $user_load) {
+  $space = spaces_get_space();
+  // Form sets.
+  $form['gid'] = array('#type' => 'value', '#value' => $space->group->nid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
+  $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
+  $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
+  $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
+  // Return hook_confirm_form();
+  return confirm_form($form,
+    t('Are you sure you want to make !name a group administrator for the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $space->group->title)),
+    "cp/users",
+    ' ',
+    t('Confirm'),
+    t('Cancel')
+  );
+}

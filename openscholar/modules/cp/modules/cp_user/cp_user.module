@@ -12,7 +12,7 @@ function cp_user_menu() {
   $items = array();
 
   $items['cp/users'] = array(
-    'title' => 'Manage Members',
+    'title' => t('Manage Members'),
     'description' => 'Find and manage site members.',
     'page callback' => 'cp_user_admin',
     'access callback' => 'cp_user_admin_access',
@@ -22,7 +22,7 @@ function cp_user_menu() {
   );
 
   $items['cp/users/add'] = array(
-    'title' => 'Add a User to Your Website',
+    'title' => t('Add a User to Your Website'),
     'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
     'file' => 'cp_user.pages.inc',
@@ -31,7 +31,7 @@ function cp_user_menu() {
 
   $items['cp/users/delete_membership/%user_id'] = array(
     'type' => MENU_CALLBACK,
-    'title' => 'Group Membership',
+    'title' => t('Remove Membership'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_user_remove_membership_confirm', 3),
     'access callback' => 'cp_user_admin_access',
@@ -52,6 +52,15 @@ function cp_user_menu() {
     'title' => 'Group Membership',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_user_remove_admin_confirm', 3),
+    'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
+  );
+
+  $items['cp/users/edit_membership/%user_id'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Edit Member',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_user_edit_membership_form', 3),
     'access callback' => 'cp_user_admin_access',
     'file' => 'cp_user.pages.inc',
   );
