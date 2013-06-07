@@ -4,7 +4,7 @@
 	.branding-right {
     display: none; }
 	
-	#block-os-secondary-menu,
+	
 	#block-os-search-solr-site-search,
 	.os-custom-menu{
 		 display: none;
@@ -22,6 +22,16 @@
 	display:block;
     padding: 0;
 
+}
+#block-os-secondary-menu{
+display:none;}
+
+#block-os-search-solr-site-search.opened{
+display:block;
+}
+
+#block-os-secondary-menu.opened{
+		display:block;
 }
 #block-os-primary-menu ul:after {
     clear: both;
