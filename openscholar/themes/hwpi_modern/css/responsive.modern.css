@@ -43,9 +43,5 @@
 }
 @media (max-width: 768px) {
 
- #powered-by a {
-    float: left;
-    margin-left: 0 !important;
-    width: 100%;
-}
+
 }
