@@ -26,8 +26,13 @@
 #block-os-secondary-menu{
 display:none;}
 
-#block-os-search-solr-site-search.opened{
-display:block;
+#block-os-search-solr-site-search.opened {
+    background-color: #1E1E1E;
+    display: block;
+    left: 15px;
+    position: absolute;
+    top: 59px;
+    width: 100%;
 }
 
 #block-os-secondary-menu.opened {
@@ -37,6 +42,10 @@ display:block;
     position: absolute;
     top: 59px;
     z-index: 3;
+    width:100%;
+}
+#search-block-form .form-item label {
+    display: none !important;
 }
 .region-header-third ul.nice-menu a {
     color: #FFFFFF!important;
@@ -53,7 +62,7 @@ display:block;
     visibility: hidden;
 }
 .region-header-third {
-    width: 96.8%;
+    width: 96.8%!important;
 }
 .region-header-third ul.menu {
     float: left!important;
