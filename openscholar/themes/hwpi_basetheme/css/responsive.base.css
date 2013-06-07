@@ -29,7 +29,8 @@
 .view .date-nav-wrapper .date-prev {
     right: 94%!important;
 }
-.region-sidebar .view .date-nav-wrapper .date-prev {
+.region-sidebar-first .date-prev,
+.region-sidebar-second .date-prev {
     right: 90% !important;
 }
 }
