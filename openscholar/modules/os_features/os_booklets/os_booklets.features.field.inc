@@ -50,6 +50,12 @@ function os_booklets_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
           'weight' => 0,
         ),
         'teaser' => array(
@@ -59,7 +65,7 @@ function os_booklets_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
+          'weight' => '0',
         ),
       ),
       'entity_type' => 'node',
@@ -126,11 +132,18 @@ function os_booklets_field_default_fields() {
           'type' => 'os_files_image_list',
           'weight' => '1',
         ),
-        'teaser' => array(
+        'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
           'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'file',
+          'settings' => array(),
+          'type' => 'file_default',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'node',
@@ -191,6 +204,7 @@ function os_booklets_field_default_fields() {
       ),
     ),
   );
+
 
   // Translatables
   // Included for use with string extractors like potx.
