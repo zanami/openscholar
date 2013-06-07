@@ -8,7 +8,7 @@
 /**
  * Implements hook_menu().
  */
-function cp_user_menu(){
+function cp_user_menu() {
   $items = array();
 
   $items['cp/users'] = array(
@@ -97,6 +97,7 @@ function cp_user_admin($op = 'members') {
       // on the action the user wants to take.
       $build['user_register'] = drupal_get_form('user_register_form');
       break;
+
     case 'members':
     default:
       $build = cp_user_user_management_page($vsite->id);
@@ -119,7 +120,7 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   // Added the link onto the form as just text and set the weight higher to bump it down the add user form.
   $form['og_user']['name']['#title'] = t('User');
   // The new autocomplete is for vsites, only switch the autocomplete if vsite is enabled.
-  if(module_exists('vsite')) {
+  if (module_exists('vsite')) {
     $form['og_user']['name']['#description'] = t('Type in a persons name, login, or e-mail address to search for their account.');
     // Add the new user autocomplete function.
     $form['og_user']['name']['#autocomplete_path'] = 'vsite/autocomplete/user';
@@ -127,7 +128,8 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
     '#markup' => '<div id="cp-user-create-new">' . t('If you can\'t find their account, click "!create_new" to create a new account.',
-        array('!create_new' => $ajax_link)) . '</div>',
+      array('!create_new' => $ajax_link)
+    ) . '</div>',
     '#weight' => 2,
   );
   // Attach the custom js file to control the toggle of the two forms.
@@ -143,7 +145,7 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   );
 
   // Hide the option to select a user role for now.
-  if(isset($form['og_user']['roles'])) {
+  if (isset($form['og_user']['roles'])) {
     $form['og_user']['roles']['#access'] = FALSE;
   }
 
@@ -156,13 +158,13 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
  * Submit handler; redirect the user back to the /cp/users page
  * after submitting the add user.
  */
-function cp_user_og_ui_add_users_submit(&$form, &$form_state){
+function cp_user_og_ui_add_users_submit(&$form, &$form_state) {
 
   $state = $form_state['values']['state'];
   $account = user_load_by_name($form_state['values']['name']);
 
-  if($state){
-    $og_roles = og_roles('node', false, $form_state['values']['gid']);
+  if ($state) {
+    $og_roles = og_roles('node', FALSE, $form_state['values']['gid']);
     $vsite_user_role = array_search('vsite user', $og_roles);
 
     // Grant them the vsite user role
@@ -203,14 +205,14 @@ function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('switch'),
       '#default_value' => 1,
       '#type' => 'hidden',
-      '#attributes' => array('id'=>'switch'),
+      '#attributes' => array('id' => 'switch'),
     );
     // Remove the password field, we don't want users setting passwords for other users.
-    if(isset($form['account']) && isset($form['account']['pass'])) {
+    if (isset($form['account']) && isset($form['account']['pass'])) {
       unset($form['account']['pass']);
       // Remove the notify option as we will force notify all new users.
-      if(isset($form['account']['notify'])) {
-      	unset($form['account']['notify']);
+      if (isset($form['account']['notify'])) {
+        unset($form['account']['notify']);
       }
       // Add a new validation function to update the password.
       $form['#validate'][] = 'cp_user_no_password_validate';
@@ -244,17 +246,17 @@ function cp_user_no_password_validate($form, &$form_state) {
  */
 function cp_user_user_register_submit($form, &$form_state) {
   $space = spaces_get_space();
-  if(!empty($form_state['user']->uid)) {
+  if (!empty($form_state['user']->uid)) {
     og_group('node', $space->id, array('entity' => $form_state['user']->uid));
 
-    $og_roles = og_roles('node', false, $space->id);
+    $og_roles = og_roles('node', FALSE, $space->id);
     $vsite_user_role = array_search('vsite user', $og_roles);
 
     // Grant them the vsite user role
     og_role_grant('node', $space->id, $form_state['user']->uid, $vsite_user_role);
 
     // drupal_set_message to inform the user has been added to the group.
-    drupal_set_message(t('!user has been added to the website: !website',array('!user'=>$form_state['user']->name, '!website'=>$space->group->title)));
+    drupal_set_message(t('!user has been added to the website: !website', array('!user' => $form_state['user']->name, '!website' => $space->group->title)));
     // Redirect the user after they add/create someone.
     $form_state['redirect'] = 'cp/users';
   }
@@ -275,7 +277,8 @@ function user_id_load($user_id) {
  * Implements hook_form_BASE_FORM_ID_alter();
  */
 function cp_user_form_cp_settings_form_alter(&$form, &$form_state) {
-  if(isset($form['admin-menu'])) {
-	$form['admin-menu']['#access'] = FALSE;
+  if (isset($form['admin-menu'])) {
+    $form['admin-menu']['#access'] = FALSE;
   }
 }
+
