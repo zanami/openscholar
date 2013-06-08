@@ -3,11 +3,22 @@
 
 body  {
 	font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+    font-size: 14px;
+ 
 }
+
+.not-front #content-column {
+    font-size: 14px;
+}
+
 #header {
      background: none repeat scroll 0px 0px #EBEBEB;
      border-bottom: 2px solid #DDDDDD;
      color: #303030;
+}
+
+.not-front.two-sidebars #content-column .content-inner {
+    border-right: none;
 }
 
 #menu-bar {
@@ -43,14 +54,17 @@ border-top-right-radius: 3px;
     background-position:2px -406px;
 }
 
+.section-nav .menu-depth-1 > a {
+    background: none repeat scroll 0 0 #52854C !important;
+}
 
 
 #boxes-box-site_info, #boxes-box-site_info a {
      font-family: 'Roboto',helvetica,arial;
 }
 
-#page-title, .node-title, .page-search .title a, #content-column .block.block-boxes-os_boxes_manual_list .links.inline a, .not-front #content-column ul li, .not-front #content-column ol li, .more-link, .page-search #content-column p, .not-front #content-column p, .links a, #footer ul.menu a, .boxes-box-content h2, .section-nav a, #content-column h2, #content-column h3, #content-column h4 {
-     font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+#page-title, .node-title, .page-search .title a, #content-column .block.block-boxes-os_boxes_manual_list .links.inline a, .not-front #content-column ul li, .not-front #content-column ol li, .more-link, .page-search #content-column p, .not-front #content-column p, .links a, #footer ul.menu a, .boxes-box-content h2, .section-nav a, #content-column h2, #content-column h3, #content-column h4, #content-column .field-name-body {
+    font-family: 'Roboto',serif;
 }
 
 .sidebar .block, .front #content-column .block, .node-person .block-inner, .comment-wrapper {
