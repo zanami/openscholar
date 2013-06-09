@@ -52,6 +52,12 @@ function os_biocv_field_default_fields() {
           'type' => 'text_default',
           'weight' => 0,
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
@@ -124,6 +130,12 @@ function os_biocv_field_default_fields() {
           'module' => 'os_files',
           'settings' => array(),
           'type' => 'os_files_image_list',
+          'weight' => '3',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
           'weight' => 0,
         ),
         'teaser' => array(
@@ -232,7 +244,13 @@ function os_biocv_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 1,
+          'weight' => 0,
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -241,7 +259,7 @@ function os_biocv_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => 1,
+          'weight' => 0,
         ),
       ),
       'entity_type' => 'node',
@@ -260,7 +278,7 @@ function os_biocv_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '2',
+        'weight' => '0',
       ),
     ),
   );
@@ -308,6 +326,12 @@ function os_biocv_field_default_fields() {
           'type' => 'file_default',
           'weight' => 1,
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -317,7 +341,7 @@ function os_biocv_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_biocv_pdf_upload',
-      'label' => 'PDF Upload',
+      'label' => 'CV upload',
       'required' => 0,
       'settings' => array(
         'description_field' => 0,
@@ -351,14 +375,17 @@ function os_biocv_field_default_fields() {
           'allowed_schemes' => array(
             'embed' => 0,
             'oembed' => 0,
+            'private' => 0,
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 'audio',
-            'default' => 'default',
-            'html' => 'html',
-            'image' => 'image',
-            'video' => 'video',
+            'audio' => 0,
+            'document' => 'document',
+            'executable' => 0,
+            'html' => 0,
+            'image' => 0,
+            'undefined' => 0,
+            'video' => 0,
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
@@ -369,7 +396,7 @@ function os_biocv_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'media_generic',
-        'weight' => '1',
+        'weight' => '31',
       ),
     ),
   );
@@ -378,7 +405,7 @@ function os_biocv_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Attach Files');
   t('Body');
-  t('PDF Upload');
+  t('CV');
 
   return $fields;
 }

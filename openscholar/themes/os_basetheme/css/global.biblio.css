@@ -107,7 +107,7 @@ dl.bibliomultiselect .form-item {
 .biblio-title-chicago a {
   font-weight: bold !important;
   text-decoration: none !important;
-  font-style: normal !important;
+  font-style: inherit !important;
   line-height: normal;
   text-align: left;
   font-family: inherit;

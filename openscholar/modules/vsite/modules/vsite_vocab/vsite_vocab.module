@@ -72,13 +72,14 @@ function vsite_vocab_term_page_access($term) {
 
   // Check if user has access to the group.
   $group = entity_load_single($relation->group_type, $relation->gid);
+  $space = spaces_get_space();
 
-  // If we are in a vsite make sure this vocab belongs to the active site.
-  if($relation->group_type == 'node' && ($space = spaces_get_space()) && $space->id != $relation->gid){
+  // If the vocab belongs to a vsite, make sure we are in that vsite.
+  if($relation->group_type == 'node' && (!$space || $space->id != $relation->gid)){
 		return FALSE;
   }
 
-  return vsite_access_user_access($group);
+  return node_access('view', $group);
 }
 
 /**
@@ -341,4 +342,13 @@ function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
 function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
   $path = 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/add';
   $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
+  $form['#submit'][] = 'vsite_vocab_invalidate_entitycache';
+}
+
+/**
+ * When updating the weight of the vocabulary terms we need to invalidate
+ * the entity cache for the taxonomy terms.
+ */
+function vsite_vocab_invalidate_entitycache($form, $form_state) {
+  cache_clear_all('*', 'cache_entity_taxonomy_term', TRUE);
 }

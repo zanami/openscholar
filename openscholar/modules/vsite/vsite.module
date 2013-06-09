@@ -54,8 +54,48 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
     $form['comment_settings']['#access'] = FALSE;
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
+  // Prepares the node form for alias preview with some markup customizations.
+  $form['#after_build'][] = 'vsite_node_form_after_build';
+  drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
 }
 
+/**
+ * After build callback for node_form().
+ *
+ * Customizes path alias fields to match user expectations.
+ *
+ * @see vsite_form_node_form_alter()
+ */
+function vsite_node_form_after_build($form) {
+  if (!module_exists('vsite_domain')) {
+    return;
+  }
+  // Prepares a field prefix to store this site's path.
+  $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
+  // Adds the prefix to the custom alias field on the node form.
+  $form['path']['alias']['#field_prefix'] = "$field_prefix/";
+  // Removes part of the default description provided by pathauto.
+  // Originally it advises users to "use relative paths",
+  // but the field prefix makes that clear.
+  // Also, it originally says "don't use trailing slash or it won't work",
+  // but this type of input is automatically removed via javascript.
+  // @see vsite.pathauto.js
+  $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
+  // If this is a vsite...
+  if (module_exists('vsite') && $purl = vsite_get_purl()) {
+    // And if this node form contains an existing alias value...
+    if ($original = $form['path']['alias']['#value']) {
+      // Removes the purl from the editable field value
+      // in order to match user expectations: the purl must in the alias,
+      // so the user should not appear to have the option to remove it.
+      // Even if the purl is not part of the field value, it will be added.
+      // @see _vsite_alter_node_path_settings()
+      $new = substr($original, strlen($purl) + 1);
+      $form['path']['alias']['#value'] = $new;
+    }
+  }
+  return $form;
+}
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -511,7 +551,7 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group($bundle){
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
-  og_create_field(OG_ACCESS_FIELD, 'node', $bundle);
+  og_create_field(VSITE_ACCESS_FIELD, 'node', $bundle);
 
   if (! field_info_field('field_site_address')) {
     // field_site_address.
@@ -1059,24 +1099,12 @@ function vsite_user_view_alter(&$build){
   if(isset($build['field_first_name']) && isset($build['field_last_name'])) {
     $title = $first_name . ' ' . $last_name;
     drupal_set_title($title);
-  }elseif(user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
-    // Let's add a link to inform them to add their full name.
-    $edit_path = 'user/'.$user->uid.'/edit';
-    $add_full_name_link = l(t('Add full name'), $edit_path, array('attributes' => array('class' => 'user-add-name')));
-    $build['add_full_name'] = array(
-      '#title' => '',
-      '#prefix' => '<div class="user-add-name-block">',
-      '#suffix' => '</div>',
-      '#type' => 'user_profile_item',
-      '#markup' => $add_full_name_link,
-      '#weight' => '5',
-    );
   }
 
 
   // Additions section.
   // Add in an "Add website" link if user has permissions to create vsites.
-  // Make sure they're logged in and it's their user page theyre viewing.
+  // Make sure they're logged in and it's their user page they're viewing.
   if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
     $create_new_link = l(t('Add a new site'), 'site/register', array('attributes' => array('class' => 'user-add-website')));
     $build['add_new_site'] = array(
@@ -1158,15 +1186,62 @@ function vsite_user_view_alter(&$build){
  * Change the title of the "edit" tab on the user page to "Edit Account".
  */
 function vsite_preprocess_page(&$vars) {
+  global $user;
   $item = menu_get_item();
+
   // Only make the change to the local menu tab in the /user page.
+  // Add in the "Add full name" link only on the /user page.
   if(isset($item) && (strpos($item['path'], 'user') === 0)) {
-    if (is_array($vars['tabs']['#primary'])) {
+    if (isset($vars['tabs']['#primary']) && is_array($vars['tabs']['#primary'])) {
       foreach ($vars['tabs']['#primary'] as $delta => $tab) {
         if (in_array($tab['#link']['title'], array("Edit"))) {
           $vars['tabs']['#primary'][$delta]['#link']['title'] = "Edit Account";
         }
       }
+    }
+
+    // Retrieve the user of the /user page we're viewing.
+    if(isset($item['map'][1]) && is_object($item['map'][1])) {
+      $view_user = $item['map'][1];
+    }
+
+    // Make sure the user is logged in and they are viewing their own /user page.
+    if(user_is_logged_in() && isset($view_user->uid) && ($user->uid == $view_user->uid)) {
+      // Get the first and last name.
+      $first_name = field_get_items('user',$view_user,'field_first_name');
+      $last_name = field_get_items('user',$view_user,'field_last_name');
+
+      // No need for the Add full name link if they already have a full name.
+      if(isset($first_name) && isset($last_name) && is_array($first_name) && is_array($last_name)) {
+        return;
+      }
+
+      // Don't show the link on the user/%/edit page either, redundant.
+      if(strpos($item['path'], 'edit') !== false) {
+        return;
+      }
+
+      // Put the "Add Full Name" link in a container.
+      $vars['title_suffix']['add_full'] = array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array(
+            'add-full-name-wrapper',
+          ),
+        ),
+      );
+      $vars['title_suffix']['add_full']['add_full_name'] = array(
+        '#theme' => 'link',
+        '#text' => t('Add full name'),
+        '#path' => 'user/'.$user->uid.'/edit',
+        '#options' => array(
+          'attributes' => array(
+            'class' => array('user-add-name'),
+          ),
+          'fragment' => 'user_first_name',
+          'html' => FALSE,
+        ),
+      );
     }
   }
 }
@@ -1292,7 +1367,12 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
       $print_name = $first_name[0]['value'] . ' ' . $last_name[0]['value'];
       drupal_set_title($print_name);
     }
+  }
 
+  // Add an anchor to the first name field.
+  if(isset($form['field_first_name'])) {
+    $form['field_first_name']['#prefix'] = '<a name="user_first_name" class="field_first_name_anchor">';
+    $form['field_first_name']['#suffix'] = '</a>';
   }
 }
 
@@ -1340,75 +1420,6 @@ function vsite_redirect_reset_submit($form, &$form_state){
     else {
       drupal_goto('user/' . $form['#user']->uid);
     }
-  }
-}
-
-/**
- * Implements hook_cp_settings().
- *
- * Add the vsite privacy form element to CP settings.
- */
-function vsite_cp_settings(){
-  $form = array();
-  $space = spaces_get_space();
-  $annon_contact = variable_get('vsite_users_contact_form_anonymous', '1');
-  if (! empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
-    $annon_contact = $space->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
-    $node = node_load($space->group->nid);
-
-    $form['vsite_private'] = array(
-      'group' => array(
-        '#id' => 'privacy',
-        '#title' => t('Privacy'),
-        '#weight' => 10
-      ),
-      'form' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Make your site Private'),
-        '#default_value' => $node->group_access[LANGUAGE_NONE][0]['value'],
-        '#description' => "If private your vsite will only be avalible when you are logged in, regular users will see a message and be giving the choice to login."
-      ),
-      'submit' => array(
-        'vsite_cp_settings_node_submit'
-      )
-    );
-  }
-
-  $form['vsite_users_contact_form_anonymous'] = array(
-    'group' => array(
-      '#id' => 'privacy',
-      '#title' => t('Privacy'),
-      '#weight' => 10
-    ),
-    'form' => array(
-      '#type' => 'checkbox',
-      '#title' => t('Anonymous Contact'),
-      '#default_value' => $annon_contact,
-      '#description' => "When this is checked a user does not need to be logged in to contact you."
-    )
-  );
-  return $form;
-}
-
-/**
- * Submit callback for cp/settings form.
- *
- * Sets vsite_privacy value for the node.
- *
- * @see vsite_cp_settings()
- */
-function vsite_cp_settings_node_submit($form, &$form_state){
-  // Get the current vsite.
-  $space = spaces_get_space();
-  // Node load the vsite.
-  $node = node_load($space->group->nid);
-  // Get the vsite_privacy value.
-  if (isset($form_state['values']['vsite_private']) && module_exists('vsite_access')) {
-    // Set the new group_access for the node.
-    $node->group_access[LANGUAGE_NONE][0]['value'] = $form_state['values']['vsite_private'];
-    // Resave the node.
-    node_save($node);
   }
 }
 
@@ -1861,4 +1872,16 @@ function vsite_user_autocomplete($string = '') {
     }
   }
   drupal_json_output($matches);
+}
+
+/**
+ * Implements hook_og_tasks_info().
+ */
+function vsite_og_tasks_info($entity_type, $entity) {
+  $tasks = array();
+
+  $tasks['AboutSection'] = new vsiteTaskAboutSection($entity_type, $entity);
+  $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
+
+  return $tasks;
 }

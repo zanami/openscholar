@@ -67,14 +67,25 @@ class FeatureContext extends DrupalContext {
       throw new Exception("Password not found for '$username'.");
     }
 
-    // Log in.
-    // Go to the user page.
-    $element = $this->getSession()->getPage();
-    $this->getSession()->visit($this->locatePath('/user'));
-    $element->fillField('Username', $username);
-    $element->fillField('Password', $password);
-    $submit = $element->findButton('Log in');
-    $submit->click();
+    if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
+      // We are using a cli, log in with meta step.
+      return array(
+        new Step\When('I visit "/user"'),
+        new Step\When('I fill in "Username" with "' . $username . '"'),
+        new Step\When('I fill in "Password" with "' . $password . '"'),
+        new Step\When('I press "edit-submit"'),
+      );
+    }
+    else {
+      // Log in.
+      // Go to the user page.
+      $element = $this->getSession()->getPage();
+      $this->getSession()->visit($this->locatePath('/user'));
+      $element->fillField('Username', $username);
+      $element->fillField('Password', $password);
+      $submit = $element->findButton('Log in');
+      $submit->click();
+    }
   }
 
   /**
@@ -299,11 +310,11 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I publish a new blog entry$/
+   * @Given /^I add a comment "([^"]*)" using the comment form$/
    */
-  public function iPublishANewBlogEntry() {
+  public function iAddACommentUsingTheCommentForm($comment) {
     return array(
-      new Step\When('I fill in "Comment" with "Lorem ipsum john doe"'),
+      new Step\When('I fill in "Comment" with "' . $comment . '"'),
       new Step\When('I press "Save"'),
     );
   }
@@ -455,10 +466,11 @@ class FeatureContext extends DrupalContext {
    *  @param $arguments
    *    Array contain the arguments for function.
    *  @param $debug
-   *    Set as TRUE/FALSE to diplay the output the function print on the screen.
+   *    Set as TRUE/FALSE to display the output the function print on the screen.
    */
-  private function invoke_code($function, $arguments, $debug = FALSE) {
-    $code = "$function(" . implode(',', $arguments) . ");";
+  private function invoke_code($function, $arguments = NULL, $debug = FALSE) {
+    $code = !empty($arguments) ? "$function(" . implode(',', $arguments) . ");" : "$function();";
+
     $output = $this->getDriver()->drush("php-eval \"{$code}\"");
 
     if ($debug) {
@@ -627,7 +639,7 @@ class FeatureContext extends DrupalContext {
    * @Given /^I invalidate cache$/
    */
   public function iInvalidateCache() {
-    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 
@@ -774,11 +786,85 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I should see the text "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldSeeTheTextUnder($text, $container) {
+    if (!$this->searchForTextUnderElement($text, $container)) {
+      throw new Exception(sprintf("The element with %s wasn't found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * @Then /^I should not see the text "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeTheTextUnder($text, $container) {
+    if ($this->searchForTextUnderElement($text, $container)) {
+      throw new Exception(sprintf("The element with %s was found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * Searching text under an element with class
+   */
+  private function searchForTextUnderElement($text, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//*[contains(., '{$text}')]");
+
+    return $element;
+  }
+
+  /**
+   * @Given /^I should see the link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldSeeTheLinkUnder($text, $container) {
+    if (!$this->searchForLinkUnderElement($text, $container)) {
+      throw new Exception(sprintf("The link %s wasn't found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * @Then /^I should not see the link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeTheLinkUnder($text, $container) {
+    if ($this->searchForLinkUnderElement($text, $container)) {
+      throw new Exception(sprintf("The link %s was found in %s", $text, $container));
+    }
+  }
+
+  /**
+   * Searching text under an element with class
+   */
+  private function searchForLinkUnderElement($text, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//a[.='{$text}']");
+
+    return $element;
+  }
+
+  /**
    * @When /^I visit the original page for the term "([^"]*)"$/
    */
   public function iVisitTheOriginalPageForTheTerm($term) {
     $code = "os_migrate_demo_get_term_id('$term');";
     $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
     $this->getSession()->visit($this->locatePath('taxonomy/term/' . $tid));
+  }
+
+  /**
+   * @Given /^I reindex the search$/
+   */
+  public function iReindexTheSearch() {
+    $this->getDriver()->drush("search-index");
+  }
+
+  /**
+   * @Given /^I wait for page actions to complete$/
+   */
+  public function waitForPageActionsToComplete() {
+    // Waits 5 seconds i.e. for any javascript actions to complete.
+    // @todo configure selenium for JS, see step 6 of the following link.
+    // @see http://xavierriley.co.uk/blog/2012/10/12/test-driving-prestashop-with-behat/
+    $duration = 5000;
+    $this->getSession()->wait($duration);
   }
 }

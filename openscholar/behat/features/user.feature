@@ -12,7 +12,7 @@ Feature: User page access
 
   @api
   Scenario: User pages are accessible to the logged in user.
-    Given I am logged in as a user with the "administrator" role
+    Given I am logged in as "john"
      When I visit "/user"
      Then I should see "View"
       And I should see "Edit"

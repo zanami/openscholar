@@ -108,18 +108,18 @@ hide($content['links']);
   <?php print render($title_prefix); ?>
 
   <?php if(!empty($event_start)): ?>
-    <div id="event-start">
+    <div class="event-start">
       <span class="event-start-month"><?php print $event_start['month']; ?></span>
       <span class="event-start-day"><?php print $event_start['day']; ?></span>
     </div>
   <?php endif; ?>
 
-  <div id="event-content">
+  <div class="event-content">
     <?php if ($title && !$page): ?>
       <header<?php print $header_attributes; ?>>
         <?php if ($title): ?>
           <h1<?php print $title_attributes; ?>>
-            <a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a>
+            <a href="<?php print $node_url; ?>" rel="bookmark" title="<?php print $link_title_text; ?>"><?php print $title; ?></a>
           </h1>
         <?php endif; ?>
       </header>

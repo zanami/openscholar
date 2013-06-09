@@ -52,6 +52,13 @@ function os_events_field_default_fields() {
           'type' => 'text_default',
           'weight' => '0',
         ),
+        'ical' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -126,6 +133,20 @@ function os_events_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'above',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '1',
+        ),
+        'ical' => array(
           'label' => 'above',
           'module' => 'date',
           'settings' => array(
@@ -238,7 +259,14 @@ function os_events_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 6,
+          'weight' => '6',
+        ),
+        'ical' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '6',
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
@@ -404,6 +432,13 @@ function os_events_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'os_files',
+          'settings' => array(),
+          'type' => 'os_files_image_list',
+          'weight' => '2',
+        ),
+        'ical' => array(
           'label' => 'hidden',
           'module' => 'os_files',
           'settings' => array(),

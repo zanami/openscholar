@@ -16,8 +16,11 @@ function os_events_os_app_info() {
     ),
     'views tabs' => array(
       'os_events' => array(
-        'page_1', //Main Cal
-        'page_4', //Upcoming
+        'page_1' => array('calendar'), // Month display
+        'page_2' => array('calendar'), // Week display
+        'page_3' => array('calendar'), // Year display
+        'page_4', // Upcoming
+        'feed_1', // iCal
       ),
     ),
   );
@@ -107,8 +110,16 @@ function os_events_process_node(&$variables) {
     }
   }
 
-  // Display the day of the event without leading zero.
-  $variables['event_start']['day'] = date('j', strtotime($variables['field_date'][0]['value']));
+  $variables['link_title_text'] = '';
+  if (isset($variables['date_id'])) {
+    list(,,$field,$delta) = explode('.', $variables['date_id']);
+    $date = field_get_items('node', $variables['node'], $field);
+    $date = $date[$delta]['value'];
+    $variables['link_title_text'] = t('On @date', array('@date' => gmdate('D M j', strtotime($date))));
+    if (isset($variables['content']['links']['node']['#links']['node-readmore'])) {
+      $variables['content']['links']['node']['#links']['node-readmore']['attributes']['title'] .= ' on '.gmdate('D M j', strtotime($date));
+    }
+  }
 }
 
 /**
@@ -232,6 +243,28 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $variables['prev_options']['query'] = array($granularity => $prev_arg, 'type' => $granularity);
   $next_url = $_GET['q'];
   $prev_url = $_GET['q'];
+}
+
+/**
+ * Implements hook_views_query_alter().
+ *
+ * Setting a default value to the $_GET['month'] or $_GET['type'] if not exists.
+ *
+ * When filtering by terms there could be a case when the type or the month are
+ * not defined in the $_GET variables.
+ */
+function os_events_views_query_alter($view, $query) {
+  if ($view->name != 'os_events' ) {
+    return;
+  }
+  $format = array('year' => 'Y', 'month' => 'Y-m', 'week' => 'Y-\W', 'day' => 'Y-m-d');
+
+  // Determine the type of the displayed month by the argument from the address.
+  $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : 'month';
+
+  // Determine the value of the calendar view mode(day, year, month) argument
+  // value.
+  $_GET[$_GET['type']] = isset($_GET[$_GET['type']]) ? $_GET[$_GET['type']] : date($format[$_GET['type']], time());
 }
 
 /**

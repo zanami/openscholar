@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '.nav-util',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
         ),
       ),
       'mobi-search' => array(
@@ -58,7 +58,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '.dept-search',
+          'data-target' => '#block-os-search-db-site-search, #block-os-search-solr-site-search',
         )
       )
     )
@@ -150,9 +150,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
-          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'], 'html' => TRUE)) . '<br />';
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], $item) . '<br />';
         }
       }
 
@@ -233,7 +231,17 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
 
     if (isset($build['og_vocabulary'])) {
-      $terms = taxonomy_term_load_multiple($build['og_vocabulary']['#items']);
+      $terms = array();
+      foreach ($build['og_vocabulary']['#items'] as $i) {
+        if (isset($i['target_id'])) {
+          $terms[] = $i['target_id'];
+        }
+        else {
+          $terms[] = $i;
+        }
+      }
+
+      $terms = taxonomy_term_load_multiple($terms);
       $ordered_terms = array();
 
       foreach ($terms as $term) {

@@ -245,3 +245,19 @@ function _vsite_domain_processed_purls($purl = FALSE) {
   return $processed;
 }
 
+/**
+ * Implements hook_robotstxt().
+ *
+ * Adds additional lines to the site's robots.txt file.
+ */
+function vsite_domain_robotstxt() {
+  $lines = array();
+
+  $domains = db_select();
+
+  foreach ($domains as $domain) {
+    $lines[] = "Disallow: /$domain";
+  }
+
+  return $lines;
+}

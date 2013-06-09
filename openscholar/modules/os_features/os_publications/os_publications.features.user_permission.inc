@@ -23,6 +23,7 @@ function os_publications_user_default_permissions() {
       3 => 'manager',
       4 => 'vsite admin',
       5 => 'vsite user',
+      6 => 'content editor',
     ),
     'module' => 'biblio',
   );
@@ -120,6 +121,7 @@ function os_publications_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -141,6 +143,7 @@ function os_publications_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -150,6 +153,7 @@ function os_publications_user_default_permissions() {
     'name' => 'edit any biblio content',
     'roles' => array(
       0 => 'administrator',
+      1 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -162,6 +166,7 @@ function os_publications_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -176,6 +181,7 @@ function os_publications_user_default_permissions() {
       '3' => 'manager',
       '4' => 'vsite admin',
       '5' => 'vsite user',
+      '6' => 'content editor',
     ),
     'module' => 'biblio',
   );

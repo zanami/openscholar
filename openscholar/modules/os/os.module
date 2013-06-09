@@ -92,6 +92,10 @@ function os_menu_alter(&$items) {
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
   }
+  // Displays 404 Not Found instead of default /node page.
+  if (isset($items['node'])) {
+    unset($items['node']);
+  }
 }
 
 /**
@@ -438,15 +442,31 @@ function os_process_node(&$vars) {
     return;
   }
 
+  // Only continues to process if all the following are true:
+  // 1. The node has a body value.
+  // 2. The view mode is teaser (may contain read-more link)
+  // 3. The render array contains a read more link.
   // Compares what will be displayed to the user against the full body value.
   $body_item      = array_shift($body_items);
   $body_full      = isset($body_item['safe_value']) ? trim($body_item['safe_value']) : trim($body_item['value']);
   $body_display   = isset($vars['content']['body'][0]['#markup']) ? trim($vars['content']['body'][0]['#markup']) : '';
   $body_shortened = (bool)(strlen($body_full) > strlen($body_display));
 
+  // Checks if there is a break tag inserted at the end of the content.
+  // If this is the case, there is no need to add a "read more" link.
+  $trailing_break_tag = FALSE;
+  $split_break_tag = explode('<!--break-->', $body_full, 2);
+  // Only checks for a trailing break tag if all the following are true:
+  // 1. There is a break tag in the body.
+  // 2. There is HTML text after the break tag.
+  if (isset($split_break_tag[1])) {
+    $text_after_break = strip_tags($split_break_tag[1]);
+    $trailing_break_tag = (bool) strlen($text_after_break) == 0;
+  }
+
   // Exits now if the body will be displayed shortened, this means there is
   // more body content to read by clicking "Read more", so we display the link.
-  if ($body_shortened) {
+  if ($body_shortened && !$trailing_break_tag) {
     return;
   }
 
@@ -483,6 +503,16 @@ function _os_process_node_links_comment_add_class(&$vars) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function os_preprocess_page(&$vars) {
+  // Add the dismiss messages JS.
+  drupal_add_js(drupal_get_path('module', 'os') . "/theme/os_dismiss.js", "file");
+
+  // Add the dismiss messages CSS.
+  drupal_add_css(drupal_get_path('module', 'os') . "/theme/os_dismiss.css", array(
+    'type' => 'file',
+    'weight' => 100,
+    'group' => CSS_THEME,
+  ));
+
 
   //hide useless tabs
   if (is_array($vars['tabs']['#primary'])) {
@@ -634,6 +664,24 @@ function os_preprocess_page(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_html().
+ */
+function os_preprocess_html(&$vars) {
+  // Get the header status.
+  $status = drupal_get_http_header('status');
+  if(!isset($status)) {
+    return;
+  }
+  // For Access Denied pages we want to add a custom CSS class to the body tag.
+  // Use switch in the case more styles are to be added on for other status'.
+  switch($status) {
+    case "403 Forbidden":
+      $vars['classes_array'][] = 'denied';
+      break;
+  }
+}
+
+/**
  * Implements hook_preprocess_menu_link
  * @param array $variables
  */
@@ -756,7 +804,7 @@ function os_date_formats() {
     ),
     array(
       'type' => 'os_date_abbreviated',
-      'format' => 'M d, g:ia',
+      'format' => 'M j, g:ia',
     ),
     array(
       'type' => 'os_date',

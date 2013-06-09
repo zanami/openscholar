@@ -1,4 +1,4 @@
-; Drupal.org release file.
+; Drupal.org MakeFile for OpenScholar.
 core = 7.x
 api = 2
 
@@ -32,6 +32,8 @@ projects[colorbox][version] = 2.4
 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
+projects[comment_sources][download][branch] = 7.x-2.x
+projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
 ; patches needed
@@ -58,6 +60,9 @@ projects[date][subdir] = "contrib"
 projects[date][version] = 2.6
 projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 
+projects[date_ical][subdir] = "contrib"
+projects[date_ical][version] = 2.7
+
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
@@ -66,16 +71,18 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
+projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
 projects[dyntextfield][download][type] = git
+projects[dyntextfield][download][tag] = 1.0
 projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.git"
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
 projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
+projects[entity][patch][] = http://drupal.org/files/entity-file_entity_access-1831578-9.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
@@ -88,7 +95,10 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.3
+; projects[entityreference_prepopulate][version] = 1.3
+projects[entityreference_prepopulate][download][type] = git
+projects[entityreference_prepopulate][download][revision] = e2c2811
+projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -107,12 +117,14 @@ projects[facetapi][version] = 1.1
 ;projects[facetapi][download][type] = git
 ;projects[facetapi][download][branch] = 7.x-1.0
 ;projects[facetapi][download][revision] = f7b7168
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-1.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
+projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/fb_social.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
@@ -271,11 +283,14 @@ projects[olark][version] = 1.0-beta1
 projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
 projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
-projects[password_hustle][subdir] = "contrib"
-projects[password_hustle][version] = 1.0
-
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
+
+projects[pinserver][subdir] = "contrib"
+projects[pinserver][type] = module
+projects[pinserver][download][type] = git
+projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
+projects[pinserver][tag] = 7.x-3.1
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -291,6 +306,9 @@ projects[registration][version] = 1.1
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
+
+projects[robotstxt][subdir] = "contrib"
+projects[robotstxt][version] = "1.1"
 
 projects[restws][subdir] = "contrib"
 projects[restws][version] = "2.0-alpha3"
@@ -343,9 +361,17 @@ projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
 projects[views_og_cache][download][revision] = 059a845
 
-
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0
+
+projects[views_litepager][subdir] = "contrib"
+projects[views_litepager][version] = 3.0
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-off_by_one-2006992-1.patch"
+
+projects[views_infinite_scroll][subdir] = "contrib"
+projects[views_infinite_scroll][version] = 1.1
+projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -359,6 +385,10 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
+
+libraries[iCalcreator][type] = "libraries"
+libraries[iCalcreator][download][type] = "file"
+libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
@@ -394,3 +424,12 @@ libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/
 libraries[twitter-api-php][type] = "libraries"
 libraries[twitter-api-php][download][type] = "file"
 libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"
+
+libraries[git][type] = "libraries"
+libraries[git][download][type] = "git"
+libraries[git][download][url] = "https://github.com/cpliakas/git-wrapper.git"
+
+libraries[autopager][type] = "libraries"
+libraries[autopager][download][type] = "file"
+libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
+libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"

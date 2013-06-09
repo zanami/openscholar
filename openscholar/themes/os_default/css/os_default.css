@@ -248,15 +248,29 @@ text-decoration:none;
 }
 
 
-.page-site-register #content a,
 .logged-in.no-sidebars.page-user #content a {
 	color:#3A72AB;
 }
 
-.logged-in.no-sidebars.page-user .user-add-name {
+.add-full-name-wrapper {
+	position:absolute;
+	right:0px;
+	top:20px;
+	font-size: 14px;
+	}
+	
+	
+.logged-in.no-sidebars.page-user.page-user-edit #content-column input.form-text {
+width: 48%;
+}
+
+.user-add-name {
 	text-decoration:underline;
 }
 
+.logged-in.no-sidebars.page-user #content a.field_first_name_anchor {
+	color: #555555;
+}
 
 .page-site-register #preset-wrapper .form-item,
 .page-site-register .form-item-domain,
@@ -299,6 +313,8 @@ text-decoration:none;
 	
 }
 
+
+
 .logged-in.no-sidebars.page-user #content .delete-link {
 margin-right:-3px;
 }
@@ -326,7 +342,8 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 }
 
 .page-site-register .form-submit,
-.logged-in.no-sidebars.page-user #content .user-add-website {
+.logged-in.no-sidebars.page-user #content .user-add-website,
+.os-green-button {
 	padding: 5px 10px;
     border:none;
 	font-size:13px;

@@ -76,3 +76,20 @@ function os_events_update_7001() {
 
   return "field_date has been updated to it's exported configuration.";
 }
+
+/**
+ * Enabling the iCal module.
+ */
+function os_events_update_7002() {
+  module_enable(array('date_ical'));
+}
+
+/**
+ * Removes the old abbreviated date date type format.
+ */
+function os_events_update_7003() {
+  db_delete('date_formats')
+    ->condition('format', 'M d, g:ia')
+    ->condition('type', 'os_date_abbreviated')
+    ->execute();
+}

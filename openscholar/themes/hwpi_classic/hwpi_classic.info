@@ -22,7 +22,7 @@ os[theme_access] = 'public'
 
   
   stylesheets[screen][] = css/hwpi_classic.css
-  stylesheets[screen][] = css/hwpi_classic.layout.css
+  stylesheets[screen][] = css/responsive.classic.css
 
 
 

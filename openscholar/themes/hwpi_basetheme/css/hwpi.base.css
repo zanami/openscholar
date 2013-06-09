@@ -11,7 +11,15 @@ body {
 
 a,
 a:visited {
-  color: #2769AC;
+  color: #215990;
+}
+
+#columns a:hover {
+     text-decoration: underline;
+}
+
+#columns .block-boxes-os_slideshow_box a:hover {
+     text-decoration: none;
 }
 
 #columns .block ul {
@@ -45,14 +53,14 @@ table caption {
 
 #powered-by a {
     margin-right: 15px;
-    color:#2769AC;
+    color:#215990;
 
 }
 
 #footer .footer-login {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
-  color: #2769AC;
+  color: #215990;
   float: right;
   font-size: 12px;
   font-style: normal;
@@ -90,7 +98,7 @@ table caption {
 .node-type-page .breadcrumb, 
 .breadcrumb,
 .breadcrumb a {
-	color:#2769AC;
+	color:#215990;
 	text-transform:uppercase;
 	font-size:12px;
 	font-weight:bold;
@@ -180,9 +188,13 @@ ol.search-results li.search-result:last-child {
 }
 
 .no-sidebars .view .date-nav-wrapper .date-prev {
-    right: 900px;
+    right: 90%;
 }
 
+
+.content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
+    right: auto;
+}
 
 .view .date-nav-wrapper .date-prev a {
     overflow: hidden;
@@ -337,7 +349,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .calendar-calendar div.date-nav a {
-  color: #2769AC;
+  color: #215990;
 }
 
 .view-os-events ul li .node {
@@ -370,7 +382,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* Event nodes */
-#event-start {
+.event-start .event-start {
   width: 55px;
   height: 67px;
   background: url(../images/event-shield.png) no-repeat 0 0 transparent;
@@ -378,7 +390,7 @@ ol.search-results li.search-result:last-child {
   margin-top: 3px;
 }
 
-#event-start span {
+.event-start .event-start span {
   display: block;
   font-weight: bold;
   text-align: center;
@@ -397,7 +409,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-.event-start #event-content {
+.event-start .event-content {
   margin-left: 70px;
 }
 
@@ -418,7 +430,7 @@ ol.search-results li.search-result:last-child {
 	margin-bottom: 15px;
 }
 
-#event-content .node-header h1.node-title {
+.event-content .node-header h1.node-title {
 	margin-bottom: 0;
 }
 
@@ -697,7 +709,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #2769AC;
+  border-bottom: 1px solid #215990;
 }
 
 
@@ -787,8 +799,12 @@ ul.pager li {
   margin: 0;
 }
 
+ul.pager li.pager-ellipsis {
+  padding:.7em 2px;
+}
+
 ul.pager li a {
-  padding: 4px;
+  padding: 3px;
 }
 
 
@@ -803,4 +819,6 @@ ul.pager li.pager-item {
   clear: both;
   float: left;
 }
+
+
 

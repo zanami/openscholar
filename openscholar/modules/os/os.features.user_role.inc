@@ -34,5 +34,11 @@ function os_user_default_roles() {
     'weight' => '5',
   );
 
+  // Exported role: content editor.
+  $roles['content editor'] = array(
+    'name' => 'content editor',
+    'weight' => '6',
+  );
+
   return $roles;
 }

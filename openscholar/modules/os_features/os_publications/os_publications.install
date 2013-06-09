@@ -337,3 +337,67 @@ function os_publications_update_7007() {
 
   return t('Extra biblio contributors have been removed.');
 }
+
+/**
+ * Set biblio to use views_litepager
+ */
+function os_publications_update_7008() {
+  variable_set('biblio_pager', 'pager_lite'); 
+}
+
+/**
+ * Update the biblio_citeproc_style table with altered csl files to account for proper patent citations.
+ * Also update any existing patents to use the new style, add a default country (US) if one does not exist.
+ */
+function os_publications_update_7009() {
+  if(!module_exists('biblio_citeproc')) {
+    return;
+  }
+  $output = '';
+  $dir = drupal_get_path('module', 'biblio_citeproc') . '/style';
+  // Only update the following CSL files.
+  $csl_file_array = array(
+    'APA' => 'apa.csl',
+    'Chicago' => 'chicago-author-date.csl',
+    'CSE' => 'cse.csl',
+    'IEEE' => 'ieee.csl',
+    'MLA' => 'mla.csl',
+    'NLM' => 'nlm.csl',
+  );
+
+  // Loop the csl file array and update each style.
+  foreach($csl_file_array as $style => $file_name) {
+    $file_path = '/' . $file_name;
+    $file = $dir . $file_path;
+    // Check to make sure the csl file exists.
+    if(!file_exists($file)) {
+      continue;
+    }
+
+    $csl = file_get_contents($file);
+    $name = basename($file_path);
+    // Use citeproc's function to update the db.
+    biblio_citeproc_install_style($name, $csl);
+
+    $output .= $style . ', ';
+  }
+
+  // After the CSL files are updated, check for any existing Patents and add in the Patent Country Support.
+  // Default to US and users can change if not the case.
+  $patent_id = db_query('SELECT tid FROM {biblio_types} WHERE name = :pub_type', array(':pub_type' => 'Patent'))->fetchField();
+  if(!$patent_id) {
+    return t('@files CSL file(s) has been replaced and no existing patents updated.', array('@files' => $output));
+  }
+  // Update each existing patent to include default US patent country.
+  $patent_country_update = db_update('biblio')
+    ->fields(array(
+      'biblio_section' => 'US',
+      'biblio_edition' => 'United States of America',
+    ))
+    ->condition('biblio_type', $patent_id, '=')
+    ->condition(db_or()->condition('biblio_section', '')->condition('biblio_section', NULL))
+    ->execute();
+
+
+  return t('@files CSL file(s) has been replaced and existing patents updated.', array('@files' => $output));
+}
