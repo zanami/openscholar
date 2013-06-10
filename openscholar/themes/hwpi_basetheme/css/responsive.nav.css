@@ -228,7 +228,7 @@ ul.primary li a {
     overflow: scroll; 
 } 
 #search-block-form .container-inline .form-item .form-text {
-    height: 34px;
+    height: 32px!important;
 }
 /*Footer*/
 #footer .os-custom-menu {
@@ -250,7 +250,10 @@ ul.primary li a {
     width: 99% !important;
     z-index: 3;
 }	
+.region-header-third #block-os-search-solr-site-search.opened {
+    top: 44px!important;
 
+}
 	
 }
 @media (max-width:400px){
