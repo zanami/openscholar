@@ -105,7 +105,7 @@ display:none;
     text-align: left;
     top: 59px;
     width: 100%;
-    z-index: 1;
+    z-index: 3;
 }
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #2A527A;
@@ -247,19 +247,22 @@ ul.primary li a {
 }
 .region-header-third #block-os-secondary-menu.opened {
     top: 44px!important;
-    width: 99% !important;
+    width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
     top: 44px!important;
-
 }
+
 	
 }
 @media (max-width:400px){
 	
 .region-header-third #block-os-secondary-menu.opened {
-	width: 95.5% !important;
+	width: 99.99% !important;
 }	
+#search-block-form .container-inline .form-item .form-text {
+    width: 75% !important;
+}
 
 }
