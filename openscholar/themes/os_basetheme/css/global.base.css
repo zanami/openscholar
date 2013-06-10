@@ -401,9 +401,23 @@ ul ul ul ul {
     display: block;
 }
 
-.view-os-events .attachment-after .links {
+.view-os-events.view-id-os_events {
+  position: relative;
+}
+
+.view-display-id-page_4 .view-content,
+.view-display-id-page_5 .view-content {
   padding-top: 10px;
-  text-align: right; /* LTR */
+}
+
+.view-os-events.view-id-os_events .view-header {
+  padding-top: 20px;
+}
+
+.view-os-events.view-id-os_events .attachment-before {
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }
 
 /* BOOK NAVS */
