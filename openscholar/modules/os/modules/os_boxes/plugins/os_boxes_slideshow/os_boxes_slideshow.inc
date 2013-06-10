@@ -167,7 +167,7 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
-    if (!vsite_get_vsite()) {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
       return;
     }
     $block = parent::render();

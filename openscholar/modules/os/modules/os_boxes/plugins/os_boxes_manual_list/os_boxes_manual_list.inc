@@ -95,7 +95,7 @@ class os_boxes_manual_list extends os_boxes_default {
   }
 
   public function render() {
-    if (!vsite_get_vsite()) {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
       return;
     }
     $block = parent::render();
