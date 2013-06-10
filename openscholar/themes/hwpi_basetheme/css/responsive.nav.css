@@ -85,7 +85,7 @@
     padding-left: 15px !important;
 }
 /*Secondary menu*/
-.region-header-third .at-panel.gpanel.panel-display.three-col.clearfix {
+.at-panel.gpanel.panel-display.three-col.clearfix {
     padding-right: 30px;
 }
 .region-header-third  #block-os-secondary-menu{
@@ -135,6 +135,9 @@ display:none;
 	padding:12px 15px !important;
 }
 /*Search*/
+#search-block-form .container-inline .form-item, #search-block-form .form-submit {
+    float: none!important;
+}
 .region-header-third #search-block-form .form-item label {
     display: none !important;
 }
