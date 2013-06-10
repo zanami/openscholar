@@ -10,13 +10,17 @@
 }
 #boxes-box-site_info {
     margin-bottom: -15px;
-    padding-top: 39px !important;
+    padding-top: 0;
 }
 #search-block-form .form-item label {
     display: none;
 }
+#search-block-form {
+    margin-left: 12px;
+    padding-bottom: 0!important;
 }
 
+}
 
 @media (max-width: 768px) {
 
