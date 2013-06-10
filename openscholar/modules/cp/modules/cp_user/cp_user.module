@@ -6,6 +6,13 @@
  */
 
 /**
+ * Defines the three vsite role names.
+ */
+define('OS_USER_ROLE_ADMIN', 'vsite admin');
+define('OS_USER_ROLE_EDITOR', 'content editor');
+define('OS_USER_ROLE_BASIC', 'vsite user');
+
+/**
  * Implements hook_menu().
  */
 function cp_user_menu() {
