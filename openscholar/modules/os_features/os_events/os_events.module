@@ -387,3 +387,40 @@ function os_events_preprocess_link(&$variables) {
     $variables['options']['attributes']['class'][] = 'active';
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_events_form_registration_entity_settings_form_alter(&$form, $form_state) {
+  $form['status']['#title'] = t('Enable registrations');
+  $form['status']['#description'] = t('Users must register their attendance in advance.');
+
+  $open_date = $form['scheduling']['open']['#default_value'];
+  $close_date = $form['scheduling']['close']['#default_value'];
+  $reminder_date = $form['reminder']['reminder_settings']['reminder_date']['#default_value'];
+
+  // Replace textual date fields in favor of date popup.
+  $form['scheduling']['open'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Open date'),
+    '#description' => t('When to automatically open registrations'),
+    '#default_value' => empty($open_date) ? '' : date('Y-m-d H:i', strtotime($open_date)),
+    '#date_format' => 'Y-m-d H:i',
+  );
+
+  $form['scheduling']['close'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Close date'),
+    '#description' => t('When to automatically close registrations.'),
+    '#default_value' => empty($close_date) ? '' : date('Y-m-d H:i', strtotime($close_date)),
+    '#date_format' => 'Y-m-d H:i',
+  );
+
+  $form['reminder']['reminder_settings']['reminder_date'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Reminder Date'),
+    '#description' => t('When to send reminders.'),
+    '#default_value' => empty($reminder_date) ? '' : date('Y-m-d H:i', strtotime($reminder_date)),
+    '#date_format' => 'Y-m-d H:i',
+  );
+}
