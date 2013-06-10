@@ -227,6 +227,9 @@ ul.primary li a {
 .table-wrap {
     overflow: scroll; 
 } 
+#search-block-form .container-inline .form-item .form-text {
+    height: 34px;
+}
 /*Footer*/
 #footer .os-custom-menu {
     display: block !important;
@@ -243,10 +246,11 @@ ul.primary li a {
     min-height: 20px;
 }
 .region-header-third #block-os-secondary-menu.opened {
-    top: 44px;
+    top: 44px!important;
     width: 99% !important;
     z-index: 3;
 }	
+
 	
 }
 @media (max-width:400px){
