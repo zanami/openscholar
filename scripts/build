@@ -56,3 +56,10 @@ cd $ROOT
 (
   cp -R temporary/* openscholar/modules/contrib/
 )
+
+# Download the git wrapper library using the composer.
+(
+  cd openscholar
+  curl -s https://getcomposer.org/installer | php
+  php composer.phar install
+)
