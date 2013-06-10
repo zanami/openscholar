@@ -9,7 +9,7 @@
 }
 .region-header-third {
     margin-left: 0 !important;
-    width: 100%;
+    width: 100%!important;
 }    
 .region-header-third ul.menu {
     float: left!important;
@@ -85,6 +85,9 @@
     padding-left: 15px !important;
 }
 /*Secondary menu*/
+.region-header-third .at-panel.gpanel.panel-display.three-col.clearfix {
+    padding-right: 30px;
+}
 .region-header-third  #block-os-secondary-menu{
 display:none;
 }
@@ -96,9 +99,13 @@ display:none;
     background-color: #1E1E1E;
     display: block;
     left: 15px;
+    margin-bottom: 0 !important;
+    padding: 12px;
     position: absolute;
+    text-align: left;
     top: 59px;
     width: 100%;
+    z-index: 1;
 }
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #2A527A;
