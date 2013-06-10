@@ -130,6 +130,10 @@ display:none;
     border-top: 1px solid #25496C !important;
     margin-left:0!important;
 }
+.logged-in .region-header-third #block-os-secondary-menu.opened {
+
+    z-index: 19;
+}
 .region-header-third #block-os-secondary-menu li a{
 	padding:12px 15px !important;
 }
