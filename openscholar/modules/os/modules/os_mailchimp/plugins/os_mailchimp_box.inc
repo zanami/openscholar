@@ -94,15 +94,11 @@ class os_boxes_mailchimp extends os_boxes_default {
         if ($info['data']) {
           foreach ($info['data'] as $list_info) {
             if ($list_info['id'] == $this->options['list']) {
-              $render = array(
-                '#type' => 'markup',
-                '#markup' => t('<iframe src="@url" width="@width", height="@height"></iframe>', array(
-                  '@url' => $list_info['subscribe_url_long'],
-                  '@width' => "640px",
-                  '@height' => (intval($this->options['mailchimp_iframe_height']) > 0) ? $this->options['mailchimp_iframe_height'] : $defaults['mailchimp_iframe_height'],
-                 )),  
-              );
-              $block['content'] = drupal_render($render);
+              $block['content'] = t('<iframe src="@url" width="@width", height="@height"></iframe>', array(
+                '@url' => $list_info['subscribe_url_long'],
+                '@width' => "640px",
+                '@height' => (intval($this->options['mailchimp_iframe_height']) > 0) ? $this->options['mailchimp_iframe_height'] : $defaults['mailchimp_iframe_height'],
+              ));
               break;
             }
           }
