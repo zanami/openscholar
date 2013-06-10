@@ -96,6 +96,17 @@ ul.menu {
     border-radius: 0 0 0 0;
     box-shadow: 0 ;
 }
+.region-header-third #block-os-secondary-menu.opened {
+    background-color: #F7F7F7!important;
+}
+.region-header-third #block-os-secondary-menu li{
+  border-bottom: 1px solid #DEDEDC!important;
+    border-top: medium none!important;
+    margin-left:0!important;
+}
+.region-header-third ul.nice-menu a {
+    color: #3A72AB!important;
+}
 .mobile-buttons a {
     font: bold 16px arial,sans-serif !important;
 }
