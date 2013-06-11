@@ -138,9 +138,9 @@ function os_files_upload_replace_submit($form, &$form_state) {
       $form_state['commands'][] = ajax_command_invoke('#media-item-'.$existing->fid, 'click');
       $form_state['commands'][] = ajax_command_invoke('.media-item-new', 'removeClass', array('media-item-new'));
       $form_state['commands'][] = ajax_command_invoke('#media-item-'.$existing->fid, 'addClass', array('media-item-new'));
-      $form_state['commands'][] = ajax_command_invoke('#file-edit-section', 'empty');
       break;
     case t('No, rename it.'):
+      $file->status = 1;
       file_move($file, _os_files_perm_url($file->uri));
       module_load_include('inc', 'media', 'includes/media.browser');
       media_browser_build_media_item($file);
@@ -148,12 +148,12 @@ function os_files_upload_replace_submit($form, &$form_state) {
       $form_state['commands'][] = ajax_command_invoke('.media-item-new', 'removeClass', array('media-item-new'));
       $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
       $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
-      $form_state['commands'][] = ajax_command_invoke('#file-edit-section', 'empty');
       break;
     case t('I don\'t want to upload this after all.'):
       file_delete($file);
       break;
   }
+  $form_state['commands'][] = ajax_command_invoke('#file-edit-section', 'empty');
   // clear our the file input field
   //$form_state['commands'][] = ajax_command_invoke('#os-files-upload', 'reset');
 
