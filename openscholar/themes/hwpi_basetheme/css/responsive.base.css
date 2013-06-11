@@ -25,7 +25,7 @@
     margin-left: 25%;
     padding: 0 !important;
 }
-.no-sidebars .page-node #content-column .content-inner {
+.no-sidebars.page-node #content-column .content-inner {
     margin-left: 0;
     padding: 0 !important;
 }
