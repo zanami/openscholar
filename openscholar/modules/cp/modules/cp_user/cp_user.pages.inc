@@ -161,18 +161,25 @@ function cp_user_user_management_page($gid) {
 function cp_user_remove_membership_confirm($form_state, $user_load) {
   $space = spaces_get_space();
   // Form sets.
+  $user = $user_load['build_info']['args'][0];
+  $user_name = _cp_user_get_full_name($user);
+  $site_name = $space->group->title;
   $form['gid'] = array('#type' => 'value', '#value' => $space->group->nid);
-  $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
-  $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
-  $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
-  // Return hook_confirm_form();
-  return confirm_form($form,
-    t('Are you sure you want to remove !name from the website: %title?', array('!name' => $user_load['build_info']['args'][0]->name, '%title' => $space->group->title)),
-    "cp/users",
-    ' ',
-    t('Remove'),
-    t('Cancel')
-  );
+  $form['uid'] = array('#type' => 'value', '#value' => $user->uid);
+  $form['user_name'] = array('#type' => 'value', '#value' => $user_name);
+  $form['site_name'] = array('#type' => 'value', '#value' => $site_name);
+
+  // Prepares necessary values for confirm_form().
+  $user_name = $user_load['build_info']['args'][0]->name;
+
+  $question = t('Remove member <em>@user</em> from site <em>@site</em>?',
+    array('@user' => $user_name, '@site' => $site_name));
+  $path = 'cp/users';
+  $description = t('You may add a removed member back to your site at any time.');
+  $yes = t('Remove');
+  $no = t('Cancel');
+
+  return confirm_form($form, $question, $path, $description, $yes, $no);
 }
 
 /**
@@ -180,9 +187,14 @@ function cp_user_remove_membership_confirm($form_state, $user_load) {
  */
 function cp_user_remove_membership_confirm_submit($form, &$form_state) {
   // Ungroup the user from the node
-  og_ungroup('node', $form_state['values']['gid'], 'user', $form_state['values']['account']);
+  $gid = $form_state['values']['gid'];
+  $uid = $form_state['values']['uid'];
+  og_ungroup('node', $gid, 'user', $uid);
+
+  $user_name = $form_state['values']['user_name'];
+  $site_name = $form_state['values']['site_name'];
   // Set the message and redirect back to the cp/users page
-  drupal_set_message(t('!user has been removed from !website', array('!user' => $form_state['values']['username'], '!website' => $form_state['values']['site_name'])));
+  drupal_set_message(t('Member <em>@user</em> has been removed from <em>@site</em>', array('@user' => $user_name, '@site' => $site_name)));
   drupal_goto('cp/users');
 }
 
@@ -248,7 +260,7 @@ function cp_user_edit_membership_form_submit($form, &$form_state) {
   // Set the message and redirect back to the cp/users page
   $user = $form_state['values']['user_name'];
   $site = $form_state['values']['site_name'];
-  drupal_set_message(t('User <em>@user\'s</em> role on site @site was updated successfully.', array('@user' => $user, '@site' => $site)));
+  drupal_set_message(t('User <em>@user\'s</em> role on site <em>@site</em> was updated successfully.', array('@user' => $user, '@site' => $site)));
   drupal_goto('cp/users');
 }
 
