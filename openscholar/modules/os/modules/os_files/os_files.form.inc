@@ -34,7 +34,6 @@ function os_files_upload($form, $form_state) {
     '#required' => TRUE,
     '#pre_render' => array('file_managed_file_pre_render', 'file_entity_upload_validators_pre_render'),
   );
-  dpm($form['upload']['#upload_location']);
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -65,6 +64,12 @@ function os_files_upload_submit($form, &$form_state) {
     $form = drupal_get_form('os_files_upload_replace', $file);
     $form_state['commands'][] = ajax_command_html('#file-edit-section', drupal_render($form));
     $form_state['no_redirect'] = true;
+  }
+  else {
+    media_browser_build_media_item($file);
+    drupal_add_js(array('media' => array('files' => array($file))), 'setting');
+
+    $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
   }
 }
 
@@ -137,16 +142,20 @@ function os_files_upload_replace_submit($form, &$form_state) {
       break;
     case t('No, rename it.'):
       file_move($file, _os_files_perm_url($file->uri));
-      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
+      module_load_include('inc', 'media', 'includes/media.browser');
+      media_browser_build_media_item($file);
+      drupal_add_js(array('media' => array('files' => array($file))), 'setting');
       $form_state['commands'][] = ajax_command_invoke('.media-item-new', 'removeClass', array('media-item-new'));
-      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'addClass', array('media-item-new'));
+      $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
+      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
       $form_state['commands'][] = ajax_command_invoke('#file-edit-section', 'empty');
       break;
     case t('I don\'t want to upload this after all.'):
       file_delete($file);
       break;
   }
-  $form_state['commands'][] = ajax_command_invoke('#edit-upload-upload', 'val', array());
+  // clear our the file input field
+  //$form_state['commands'][] = ajax_command_invoke('#os-files-upload', 'reset');
 
   $form_state['no_redirect'] = true;
 }
