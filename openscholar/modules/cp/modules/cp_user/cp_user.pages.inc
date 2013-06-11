@@ -10,66 +10,87 @@
  *
  * @return array $columns
  */
-function cp_user_get_member_row($uid) {
-  $columns = array();
+function cp_user_get_member_rows($gid) {
+  $rows = array();
 
-  // Loads the user object to get first and last names if available.
-  $user = user_load($uid);
-  $status = t('Active');
+  // Defines end-user text for these values.
+  $default_status = t('Active');
+  $owner_role = t('Manager');
+  $role_edit_text = t('edit');
+  $status_edit_text = t('remove');
 
-  $name = _cp_user_get_full_name($user);
+  // Loads information for each member of the vsite.
+  $member_uids = cp_user_get_member_uids($gid);
+  foreach ($member_uids as $uid) {
 
-  // Checks to see if the user is the admin of this group.
-  $vsite = spaces_get_space();
-  // Checks if the current user is this vsite's author (owner).
-  $is_owner = (bool) ($vsite->group->uid == $uid);
-  // If the user is the owner, return a special row with no edit links.
-  if ($is_owner) {
-    $role = t('Manager');
-    $role_edit = '';
-    $status_edit = '';
+    // Loads the user object in order to get first and last names if available.
+    $user = user_load($uid);
+
+    // Loads the user's name without the optional appended (username) suffix.
+    $include_username = FALSE;
+    $name = _cp_user_get_full_name($user, $include_username);
+
+    // Checks to see if the user is the admin of this group.
+    $vsite = spaces_get_space();
+    // Checks if the current user is this vsite's author (owner).
+    $is_owner = (bool) ($vsite->group->uid == $uid);
+
+    // If the user is the owner, return a special row with no edit links.
+    if ($is_owner) {
+      $role = $owner_role;
+      $role_edit_link = '';
+      $status_edit_link = '';
+    }
+
+    // Otherwise, checks the current user's OG roles.
+    // The member's role could be one of: Vsite admin, Content Editor, or Member.
+    else {
+      $human_name = TRUE;
+      $role = _cp_user_get_role($uid, $vsite->group->nid, $human_name);
+      $options = array('attributes' => array('class' => array('cp-user-float-right')));
+      $role_edit_link = l($role_edit_text, "cp/users/edit_membership/{$uid}", $options);
+      $status_edit_link = l($status_edit_text, "cp/users/delete_membership/{$uid}", $options);
+    }
+
+    // Prepare the row to be used by theme_table().
+    // @see cp_user_user_management_page()
+    $row = array(
+      'name' => $name,
+      'username' => $user->name,
+      'role' => $role . $role_edit_link,
+      'status' => $default_status . $status_edit_link,
+    );
+
+    $rows[] = $row;
   }
 
-  // Otherwise, checks the current user's OG roles.
-  // The member's role could be one of: Vsite admin, Content Editor, or Member.
-  else {
-    $human_name = TRUE;
-    $role = _cp_user_get_role($uid, $vsite->group->nid, $human_name);
-    $role_edit = l('Edit', "cp/users/edit_membership/{$uid}");
-    $status_edit = l('Remove', "cp/users/delete_membership/{$uid}");
-  }
-
-  $columns = array(
-    'name' => $name,
-    'role' => $role . $role_edit,
-    'status' => $status . $status_edit,
-  );
-
-  return $columns;
+  return $rows;
 }
 
 /**
- * Returns an array containing the given vsite's members names and roles.
+ * Returns an array containing the given vsite's members User IDs.
  *
  * @param int $gid
  *   The specified vsite object's OG group Node ID.
  *
  * @return array $members
- *   The list of members in the specified vsite.
+ *   The list of members' User IDs in the specified vsite.
  */
-function cp_user_get_members($gid) {
-  $query = db_select("og_membership", "ogm");
-  $query->condition("ogm.gid", $gid, "=");
-  $query->condition("entity_type", "user", "=");
-  $query->fields("ogm", array("entity_type", "etid"));
+function cp_user_get_member_uids($gid) {
+  $query = db_select('og_membership', 'ogm');
+  $query->condition('ogm.gid', $gid);
+  $query->condition('entity_type', 'user');
+  $query->fields('ogm', array('etid'));
   $results = $query->execute()->fetchAll();
 
-  $members = array();
+  $member_uids = array();
   foreach ($results as $record => $values) {
-    $uid = $values->etid;
-    $members[] = cp_user_get_member_row($uid);
+    if (isset($values->etid) && $values->etid != 0) {
+      $member_uids[] = $values->etid;
+    }
   }
-  return $members;
+
+  return $member_uids;
 }
 
 /**
@@ -79,30 +100,60 @@ function cp_user_get_members($gid) {
  *   The specified vsite object's OG group Node ID.
  */
 function cp_user_user_management_page($gid) {
-  // Loads information for each member of the vsite.
-  $members = cp_user_get_members($gid);
+  // Prepares end user strings for the page.
+  $add_new_user_link_title = t('+ Add a member');
+  $header = array(t('Name'), t('Username'), t('Role'), t('Status'));
+  $rows = cp_user_get_member_rows($gid);
+  $attached_css = drupal_get_path('module', 'cp_user') . '/cp_user.css';
 
-  // Prepares the member table.
-  $header = array('Name', 'Role', 'Status');
-  $rows = array();
-  foreach ($members as $row => $columns) {
-    $rows[] = array(
-      $columns['name'],
-      $columns['role'],
-      $columns['status'],
-    );
-  }
-  $table = theme('table', array('header' => $header, 'rows' => $rows));
+  $build = array(
+    'cp_user' => array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'cp-user',
+        'class' => array('cp-manage-users-wrapper'),
+      ),
+      'cp_user_actions' => array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array('cp-add-new-user')
+        ),
+        'cp_user_add_new' => array(
+          '#theme' => 'links',
+          '#links' => array(
+            array(
+              'title' => $add_new_user_link_title,
+              'href' => 'cp/users/add',
+              'attributes' => array(
+                'class' => array('os-green-button', 'cp-user-float-right'),
+              ),
+            ),
+          ),
+        ),
+        '#weight' => 0,
+      ),
+      'cp_user_main' => array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array('cp-manager-user-content')
+        ),
+        'cp_user_list' => array(
+          '#theme' => 'table',
+          '#header' => $header,
+          '#rows' => $rows,
+        ),
+        '#weight' => 1,
+      ),
+    ),
+    '#attached' => array(
+      'css' => array(
+        'type' => 'file',
+        'data' => $attached_css,
+      ),
+    ),
+  );
 
-  // Prepares the add new user link.
-  $add_new_link = l(t('+ Add a user to your site'), 'cp/users/add');
-
-  // Prepares the page content to output.
-  $output = '<div class="cp-manage-users-wrapper"><div class="cp-add-new-user"><ul><li>' . $add_new_link . '</li></ul></div><div class="cp-manager-user-content">';
-  $output .= $table;
-  $output .= '</div></div>';
-
-  return $output;
+  return $build;
 }
 
 /**
@@ -346,15 +397,22 @@ function _cp_user_list_roles($mode = 'names', $bundle = NULL) {
  * @param string $role_name
  */
 function _cp_user_set_role($uid, $gid, $role_name, $bundle = 'personal') {
+  // Gets a map of group roles with (key) role machine name => (value) role ID.
   $roles = _cp_user_list_roles('rids', $bundle);
-  foreach ($roles as $machine_name => $human_name) {
-    $rid = $roles[$role_name];
+
+  // Loops over each possible OG role...
+  foreach ($roles as $machine_name => $rid) {
+    // If this is the new role to grant the user...
     if ($role_name == $machine_name) {
+      // Checks the user's current roles in this group.
       $user_roles = og_get_user_roles('node', $gid, $uid);
+      // Only grants the role if the user doesn't have the role yet.
       if (empty($user_roles[$rid])) {
         og_role_grant('node', $gid, $uid, $rid);
       }
     }
+    // Otherwise, we remove the non-specified role.
+    // Only one role per-user-per-group allowed at a time.
     else {
       og_role_revoke('node', $gid, $uid, $rid);
     }

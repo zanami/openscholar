@@ -9,7 +9,7 @@
  * Defines the three vsite role names.
  */
 define('OS_USER_ROLE_ADMIN', 'vsite admin');
-define('OS_USER_ROLE_EDITOR', 'Content editor');
+define('OS_USER_ROLE_EDITOR', 'content editor');
 define('OS_USER_ROLE_BASIC', 'vsite user');
 
 /**
@@ -122,13 +122,13 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   $form['og_user']['name']['#title'] = t('User');
   // The new autocomplete is for vsites, only switch the autocomplete if vsite is enabled.
   if (module_exists('vsite')) {
-    $form['og_user']['name']['#description'] = t('Type in a persons name, login, or e-mail address to search for their account.');
+    $form['og_user']['name']['#description'] = t('Type in a person\'s name, username, or e-mail address to search for their existing account.');
     // Add the new user autocomplete function.
     $form['og_user']['name']['#autocomplete_path'] = 'vsite/autocomplete/user';
   }
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
-    '#markup' => '<div id="cp-user-create-new">' . t('If you can\'t find their account, click "!create_new" to create a new account.',
+    '#markup' => '<div id="cp-user-create-new">' . t('Can\'t find their account above? !create_new.',
       array('!create_new' => $ajax_link)
     ) . '</div>',
     '#weight' => 2,
