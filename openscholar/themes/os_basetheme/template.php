@@ -184,7 +184,16 @@ function os_basetheme_link(array $variables) {
 }
 
 /**
- * Returns HTML for a wrapper for a menu sub-tree.
+ * The adaptive theme implements a hook_menu_tree but return a rendered ul
+ * wrapped with a ul - this will cause to the menu html to be"
+ *  <ul...>
+ *    <ul ...>
+ *      ...
+ *    </ul>
+ *  </ul>
+ *
+ * We need to implement our own hook_menu_tree to prevent a double ul tag
+ * wrapping.
  */
 function os_basetheme_menu_tree(&$variables) {
   return $variables['tree'];
