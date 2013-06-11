@@ -25,6 +25,10 @@
     margin-left: 25%;
     padding: 0 !important;
 }
+.no-sidebars .page-node #content-column .content-inner {
+    margin-left: 0;
+    padding: 0 !important;
+}
 /*Calendar controls*/
 .view .date-nav-wrapper .date-prev {
     right: 94%;
