@@ -26,12 +26,14 @@
     padding: 0 !important;
 }
 /*Calendar controls*/
-.view .date-nav-wrapper .date-prev,
+.view .date-nav-wrapper .date-prev {
+    right: 94%;
+}
 .region-sidebar-first .date-prev {
-    right: 94%!important;
+    right: 90%;
 }
 .region-sidebar-second .date-prev {
-    right: 90% !important;
+    right: 90% ;
 }
 }
 
