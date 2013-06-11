@@ -867,4 +867,14 @@ class FeatureContext extends DrupalContext {
     $duration = 5000;
     $this->getSession()->wait($duration);
   }
+
+  /**
+   * @Given /^I publish a new blog entry$/
+   */
+  public function iPublishANewBlogEntry() {
+    return array(
+      new Step\When('I fill in "Comment" with "Lorem ipsum john doe"'),
+      new Step\When('I press "Save"'),
+    );
+  }
 }
