@@ -32,7 +32,6 @@ function cp_user_get_member_row($uid) {
 
   // Otherwise, checks the current user's OG roles.
   // The member's role could be one of: Vsite admin, Content Editor, or Member.
-  // @fixme determine better name for non-admin, non-content-editor
   else {
     $human_name = TRUE;
     $role = _cp_user_get_role($uid, $vsite->group->nid, $human_name);
@@ -158,10 +157,15 @@ function cp_user_edit_membership_form($form_state, $user_load) {
   $form['uid'] = array('#type' => 'value', '#value' => $user->uid);
   $form['user_name'] = array('#type' => 'value', '#value' => $name);
   $form['site_name'] = array('#type' => 'value', '#value' => $site);
+  $form['title'] = array(
+    '#type' => 'markup',
+    '#markup' => t('<h2>Editing member <em>@name</em></h2>', array('@name' => $name)),
+    '#weight' => 0,
+  );
   $form['edit_membership'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Edit membership'),
-    '#weight' => 0,
+    '#title' => t('Role:'),
+    '#weight' => 10,
   );
   // Prepares the list mode to generate verbose role descriptions on options.
   $list_mode = 'options';
@@ -169,11 +173,11 @@ function cp_user_edit_membership_form($form_state, $user_load) {
     '#type' => 'radios',
     '#options' => _cp_user_list_roles($list_mode),
     '#default_value' => _cp_user_get_role($user->uid, $space->group->nid),
-    '#weight' => 10,
+
   );
 
   // Builds and returns a confirmation form.
-  $question = t('Edit user <em>@name\'s</em> role on site <em>@site</em>', array('@name' => $name, '@site' => $site));
+  $question = t('Editing members for site <em>@site</em>', array('@name' => $name, '@site' => $site));
   $path = 'cp/users';
   $description = ' ';
   $yes = t('Save');
@@ -184,12 +188,12 @@ function cp_user_edit_membership_form($form_state, $user_load) {
 /**
  * Submit callback; updates roles after user confirms action.
  */
-function cp_user_edit_membership_confirm_submit($form, &$form_state) {
+function cp_user_edit_membership_form_submit($form, &$form_state) {
   // Accesses values from the form.
   $bundle = $form_state['values']['bundle'];
-  $new_role = $form_state['values']['edit_role']['#value'];
+  $new_role = $form_state['values']['edit_role'];
   $gid = $form_state['values']['gid'];
-  $uid = $form_state['values']['account'];
+  $uid = $form_state['values']['uid'];
   // Grants the new role and revokes other roles.
   _cp_user_set_role($uid, $gid, $new_role, $bundle);
 
@@ -254,7 +258,11 @@ function _cp_user_role_option($label, $description) {
 }
 
 /**
- * Returns the user's current role for this group
+ * Returns the user's current role for this group.
+ *
+ * @param bool $human_name
+ *   If TRUE, returns the human-readable name (i.e. "Administrator")
+ *   If FALSE, returns the machine name (i.e. "vsite admin")
  */
 function _cp_user_get_role($uid, $gid, $human_name = FALSE) {
   // Loads the user's roles with this group node.
@@ -264,7 +272,7 @@ function _cp_user_get_role($uid, $gid, $human_name = FALSE) {
     $role = OS_USER_ROLE_ADMIN;
   }
   // Handles non-admins...
-  else if (in_array('Content editor', $user_roles)) {
+  else if (in_array('content editor', $user_roles)) {
     $role = OS_USER_ROLE_EDITOR;
   }
   else if (in_array('vsite user', $user_roles)) {
@@ -342,7 +350,10 @@ function _cp_user_set_role($uid, $gid, $role_name, $bundle = 'personal') {
   foreach ($roles as $machine_name => $human_name) {
     $rid = $roles[$role_name];
     if ($role_name == $machine_name) {
-      og_role_grant('node', $gid, $uid, $rid);
+      $user_roles = og_get_user_roles('node', $gid, $uid);
+      if (empty($user_roles[$rid])) {
+        og_role_grant('node', $gid, $uid, $rid);
+      }
     }
     else {
       og_role_revoke('node', $gid, $uid, $rid);

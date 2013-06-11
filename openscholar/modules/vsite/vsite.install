@@ -16,6 +16,7 @@ function vsite_install() {
       'non-member',
       'vsite user',
       'vsite admin',
+      'content editor',
     );
 
     foreach ($vsite_roles as $name) {
