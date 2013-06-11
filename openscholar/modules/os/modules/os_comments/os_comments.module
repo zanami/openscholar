@@ -253,7 +253,7 @@ function os_comments_node_view($node, $view_mode) {
     return;
   }
 
-  // Only allows site members to see Drupal (Private) comment links.
+  // Does nothing if the Drupal comment settings are already set to open.
   if ($node->comment == COMMENT_NODE_OPEN) {
     return;
   }
@@ -428,9 +428,15 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
 
 /**
  * Implements hook_form_FORM_ID_alter for comment_form.
+ *
+ * Restricts comment form to just the current vsite's users.
  */
 function os_comments_form_comment_form_alter(&$form, &$form_state, $form_id) {
-  // Removes comment link for non-member authenticated users.
+  // Since only certain roles (and not anonymous) users may post comments,
+  // This form would only ever appear to authorized roles.
+  // But we still want to restrict comments to just the current vsite's users.
+
+  // Removes comment form for non-member authenticated users.
   $wrapper = entity_metadata_wrapper('node', $form['#node']);
   if (isset($wrapper->{OG_AUDIENCE_FIELD}) &&
     $gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
