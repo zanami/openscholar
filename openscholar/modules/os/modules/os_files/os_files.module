@@ -58,7 +58,7 @@ function os_files_menu(){
     'title' => 'Replace File Dialog',
     'page callback' => 'os_files_replace_page',
     'page arguments' => array(3),
-    'file' => 'os_ffiles.form.inc',
+    'file' => 'os_files.form.inc',
     'access arguments' => array('create file')
   );
 
@@ -951,7 +951,7 @@ function os_files_media_browser_plugins_alter(&$output){
   unset($output['upload']);
   unset($output['media_internet']);
   unset($output['media_default--media_browser_my_files']);
-  $output['upload']['#title'] = t('My Computer');
+ // $output['upload']['#title'] = t('My Computer');
   $output['media_default--media_browser_1']['#title'] = t('My Library');
   
   // add an area to the views form to put the file edit form
@@ -993,8 +993,8 @@ function os_files_views_pre_render(&$view) {
       )
     );
 
-    $output['upload']['actions']['save']['#attributes']['class'][] = 'ctools-use-ajax-submit';
-    $output['internet']['form']['actions']['submit']['#attributes']['class'][] = 'ctools-use-ajax-submit';
+    $output['upload']['actions']['save']['#attributes']['class'][] = 'use-ajax-submit';
+    $output['internet']['form']['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
     $view->attachment_before = drupal_render($output);
   }
 }
