@@ -65,13 +65,13 @@ foreach ($nodes as $node) {
     }
   }
 
-  // The node has been changed, saving him.
+  // The node has changed, saving him.
   if ($changed) {
+    node_save($node);
     drush_log(dt("Updating the node @title. @deleted_files were deleted.", array(
       '@title' => $node->title,
       '@deleted_files' => $deleted_files,
     )), 'success');
-    node_save($node);
   }
 }
 
