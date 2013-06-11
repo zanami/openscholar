@@ -84,6 +84,9 @@
     font-size: 20px;
     padding-left: 15px !important;
 }
+#menu-bar #block-os-primary-menu  li ul li a{
+	font-size:13px!important;
+}
 /*Secondary menu*/
 .at-panel.gpanel.panel-display.three-col.clearfix {
     padding-right: 30px;
@@ -131,7 +134,6 @@ display:none;
     margin-left:0!important;
 }
 .logged-in .region-header-third #block-os-secondary-menu.opened {
-
     z-index: 19;
 }
 .region-header-third #block-os-secondary-menu li a{
