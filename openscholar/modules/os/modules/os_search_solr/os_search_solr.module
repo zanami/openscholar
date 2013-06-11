@@ -183,7 +183,7 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  if (!$gid = $wrapper->{OG_ACCESS_FIELD}->value(array('identifier' => TRUE))) {}
+  if (!$gid = $wrapper->{OG_ACCESS_FIELD}->value(array('identifier' => TRUE))) {
     // Entity is not assigned to a group.
     return;
   }
