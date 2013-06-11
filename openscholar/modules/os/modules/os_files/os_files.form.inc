@@ -168,3 +168,21 @@ function _os_files_replace_from_temporary($file) {
   file_unmanaged_copy($file->uri, _os_files_perm_url($file->uri), FILE_EXISTS_REPLACE);
   file_delete($file);
 }
+
+/**
+ * Adds ajax return behavior to the Internet add form
+ */
+function os_files_internet_ajax($form, $form_state) {
+  $file = $form_state['file'];
+
+  module_load_include('inc', 'media', 'includes/media.browser');
+  media_browser_build_media_item($file);
+  drupal_add_js(array('media' => array('files' => array($file))), 'setting');
+  $form_state['commands'][] = ajax_command_invoke('.media-item-new', 'removeClass', array('media-item-new'));
+  $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
+  $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
+  $form_state['commands'][] = ajax_command_invoke('#media-internet-add textarea', 'val', array(''));
+
+  print ajax_render($form_state['commands']);
+  exit;
+}

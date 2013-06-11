@@ -513,6 +513,10 @@ function os_files_form_media_internet_add_alter(&$form, &$form_state) {
       '@sites' => implode(', ', media_embed_get_whitelist())
     )
   );
+
+  if (function_exists('os_files_internet_ajax')) {
+    $form['#submit'][] = 'os_files_internet_ajax';
+  }
 }
 
 /**
