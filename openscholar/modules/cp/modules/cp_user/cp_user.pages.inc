@@ -26,9 +26,8 @@ function cp_user_get_member_rows($gid) {
     // Loads the user object in order to get first and last names if available.
     $user = user_load($uid);
 
-    // Loads the user's name without the optional appended (username) suffix.
-    $include_username = FALSE;
-    $name = _cp_user_get_full_name($user, $include_username);
+    // Loads the user's full name-- first and last name.
+    $name = _cp_user_get_full_name($user);
 
     // Checks to see if the user is the admin of this group.
     $vsite = spaces_get_space();
@@ -198,8 +197,7 @@ function cp_user_edit_membership_form($form_state, $user_load) {
   $user = $user_load['build_info']['args'][0];
 
   // Prepares replacement value text for the modal form.
-  $include_username = FALSE;
-  $name = _cp_user_get_full_name($user, $include_username);
+  $name = _cp_user_get_full_name($user);
   $site = $space->group->title;
 
   // Form sets.
@@ -224,7 +222,6 @@ function cp_user_edit_membership_form($form_state, $user_load) {
     '#type' => 'radios',
     '#options' => _cp_user_list_roles($list_mode),
     '#default_value' => _cp_user_get_role($user->uid, $space->group->nid),
-
   );
 
   // Builds and returns a confirmation form.
@@ -260,14 +257,11 @@ function cp_user_edit_membership_form_submit($form, &$form_state) {
  *
  * @param object $user
  *   The fully loaded user object.
- * @param bool $include_username
- *   If FALSE, users with full names will return "$first $last".
- *   If TRUE, users with full names will return "$first $last ($username)".
  *
  * @return string $name
  *   The user's full name, or username if none found.
  */
-function _cp_user_get_full_name($user, $include_username = TRUE) {
+function _cp_user_get_full_name($user) {
   // Tries to get the user's first and last name, otherwise uses username.
   // Gets the first name field's safe value.
   $items = field_get_items('user', $user, 'field_first_name');
@@ -287,12 +281,7 @@ function _cp_user_get_full_name($user, $include_username = TRUE) {
   }
   // Uses either the full name, or the username if first and last not available.
   if ($first_name && $last_name) {
-    if ($include_username) {
-      $name = "$first_name $last_name ({$user->name})";
-    }
-    else {
-      $name = "$first_name $last_name";
-    }
+    $name = "$first_name $last_name";
   }
   else {
     $name = $user->name;

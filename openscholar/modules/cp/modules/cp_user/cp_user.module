@@ -95,10 +95,6 @@ function cp_user_admin($op = 'list') {
       $build['user_register'] = drupal_get_form('user_register_form');
       break;
 
-    case 'edit':
-      $build = array('#type' => 'markup', '#markup' => "Markup!");
-      break;
-
     case 'list':
     default:
       $build = cp_user_user_management_page($vsite->id);
