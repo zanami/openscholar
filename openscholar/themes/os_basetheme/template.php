@@ -182,3 +182,10 @@ function os_basetheme_link(array $variables) {
   $href = ($variables['path'] === false)?'':'href="' . check_plain(url($variables['path'], $variables['options'])) . '" ';
   return '<a ' . $href . drupal_attributes($variables['options']['attributes']) . '>' . ($variables['options']['html'] ? $variables['text'] : check_plain($variables['text'])) . '</a>';
 }
+
+/**
+ * Returns HTML for a wrapper for a menu sub-tree.
+ */
+function os_basetheme_menu_tree(&$variables) {
+  return $variables['tree'];
+}
