@@ -49,7 +49,7 @@
 }
 .region-header-third {
     margin: 0 !important;
-    width: 100%;
+    width: 100%!important;
 }
 .region-header-second table {
     margin-bottom: 0;
@@ -185,11 +185,6 @@ table p {
     padding: 0 !important;
     width: 100% !important;
 }
-#header-panels .block-boxes-os_boxes_html td img[style]{
-	float:none!important;
-
-}
-
 .region-content-first,
 .region-content-second {
     float: none!important;
@@ -290,11 +285,6 @@ table p {
     margin-left: 0;
     max-width: 100%;
     text-align: center;
-}
-
-.boxes-box-content img[style] {
-    float: none !important;
-    padding-bottom: 0 !important;
 }
 .footer-left.footer.footer-right .region-footer-first, 
 .footer-left.footer.footer-right .region-footer-third,
