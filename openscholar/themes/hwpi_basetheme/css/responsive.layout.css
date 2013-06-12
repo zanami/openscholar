@@ -50,6 +50,7 @@
 .region-header-third {
     margin: 0 !important;
     width: 100%!important;
+    text-align:left!important;
 }
 .region-header-second table {
     margin-bottom: 0;
