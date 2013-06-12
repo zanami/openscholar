@@ -47,7 +47,6 @@ class FeatureContext extends DrupalContext {
    */
   public function __construct(array $parameters) {
     if (isset($parameters['drupal_users'])) {
-      print_r($this->drupal_users);
       $this->drupal_users = $parameters['drupal_users'];
     }
 
@@ -65,7 +64,6 @@ class FeatureContext extends DrupalContext {
     try {
       $password = $this->drupal_users[$username];
     } catch (Exception $e) {
-      print_r($this->drupal_users[$username]);
       throw new Exception("Password not found for '$username'.");
     }
 
