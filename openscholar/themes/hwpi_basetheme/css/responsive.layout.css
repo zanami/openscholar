@@ -171,7 +171,7 @@ table[style] {
 
 @media (max-width: 768px) {
 
-#header-panels .block-boxes-os_boxes_html table {
+/*#header-panels .block-boxes-os_boxes_html table {
     margin-bottom: 55px;
     margin-left: 15px;
     width: 100%;
@@ -185,7 +185,7 @@ table p {
     max-height: 60px;
     padding: 0 !important;
     width: 100% !important;
-}
+}*/
 .region-content-first,
 .region-content-second {
     float: none!important;
