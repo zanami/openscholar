@@ -118,7 +118,7 @@ function os_files_upload_replace($form, $form_state) {
     ),
     'cancel' => array(
       '#type' => 'submit',
-      '#value' => t('I don\'t want to upload this after all.'),
+      '#value' => t('Nevermind, delete it.'),
     )
   );
 
@@ -149,7 +149,7 @@ function os_files_upload_replace_submit($form, &$form_state) {
       $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
       $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
       break;
-    case t('I don\'t want to upload this after all.'):
+    case t('Nevermind, delete it.'):
       file_delete($file);
       break;
   }
