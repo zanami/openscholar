@@ -2,11 +2,13 @@
 
 /**
  * Searches through textareas and file fields for references to this file
+ * We need the full file for its fid and uri
  *
- * @param $file: a fully loaded file object
+ * @param $file   Fully loaded file entity
+ * @return array  All entities that use this file, grouped by entity type
  */
 function _os_files_install_find_nodes($file) {
-  $fields = &drupal_static(__FUNCTION, array());
+  $fields = &drupal_static(__FUNCTION__, array());
   $file_field_types = array(
     'file',
     'imagefield_crop',
@@ -18,14 +20,14 @@ function _os_files_install_find_nodes($file) {
 
   if (empty($fields)) {
     $q = db_select('field_config', 'fc')
-      ->fields(array('field_name', 'field_type'))
+      ->fields('fc', array('field_name', 'type'))
       ->condition('active', 1)
       ->condition('deleted', 0)
-      ->condition('field_type', $file_field_types + $text_field_types)
+      ->condition('type', $file_field_types + $text_field_types)
       ->execute();
 
     foreach ($q as $r) {
-      $fields[$r->field_name] = $r->field_type;
+      $fields[$r->field_name] = $r->type;
     }
   }
 
@@ -34,7 +36,7 @@ function _os_files_install_find_nodes($file) {
     $table = 'field_data_'.$f;
 
     $q = db_select($table, 'ft')
-      ->fields(array('entity_type', 'entity_id'));
+      ->fields('ft', array('entity_type', 'entity_id'));
     if (in_array($t, $file_field_types)) {
       $q->condition($f.'_fid', $file->fid);
     }

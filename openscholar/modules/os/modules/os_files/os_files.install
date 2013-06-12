@@ -453,7 +453,8 @@ function os_files_update_7005(&$sb) {
 
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
 
-  foreach ($rs as $fid) {
+  foreach ($rs as $obj) {
+    $fid = $obj->fid;
     $file = file_load($fid);
 
     // Update file_usage
@@ -470,7 +471,7 @@ function os_files_update_7005(&$sb) {
     }
 
     // Update group membership if necessary
-    if (module_exists('vsite') && $space = _os_files_install_find_space($file, $eids)) {
+    if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $eids)) {
       $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
       file_save($file);
     }
