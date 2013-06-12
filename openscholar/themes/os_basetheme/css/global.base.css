@@ -418,6 +418,11 @@ ul ul ul ul {
   position: relative;
 }
 
+/* Don't display the ical link in the floating box. */
+#cboxWrapper .node-event .links {
+  display: none;
+}
+
 .node-event .links {
   position: absolute;
   top: 0px;
