@@ -422,13 +422,24 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
     '#description' => t('When to send reminders.'),
     '#default_value' => empty($reminder_date) ? '' : date('Y-m-d H:i', strtotime($reminder_date)),
     '#date_format' => 'Y-m-d H:i',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="reminder[send_reminder]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   // Remove the template, reminder date is no longer inside a container.
-  $form['reminder']['reminder_settings']['reminder_template']['#access'] = FALSE;
+  $form['reminder']['reminder_settings']['reminder_template'] = $form['reminder']['reminder_settings']['reminder_template'] + array(
+    '#access' => FALSE,
+    '#value' => variable_get('os_reminder_template', "
+Hello [registration:author:name],
+
+You request to send a reminder for the event <a href='[node:url]'>[node:title]</a>.
+    "),
+  );
   $form['reminder']['reminder_settings']['token_tree']['#access'] = FALSE;
   $form['reminder']['reminder_settings']['#type'] = 'container';
   $form['reminder']['#type'] = 'container';
   $form['settings']['#access'] = FALSE;
-  $form['reminder']['#tree'] = FALSE;
 }
