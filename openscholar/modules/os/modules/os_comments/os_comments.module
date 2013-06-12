@@ -312,13 +312,13 @@ function os_comments_preprocess_node(&$vars) {
       //$vars['content']['links']['comment']['#links']['comment-add']['fragment'] = 'disqus_thread';
       //$vars['content']['links']['comment']['#links']['comment-add']['title'] = t('Add new comment');
     }
-    else if ($vars['node']->os_comments == 'fb_social:Facebook Comments') {
+    elseif ($vars['node']->os_comments == 'fb_social:Facebook Comments') {
       unset($vars['content']['links']['comment']['#links']['comment-add']['fragment']);
     }
   }
   // Removes the "Add new comment" form title when users don't have access.
   // @see os_comments_form_comment_form_alter()
-  else if ($vars['view_mode'] == 'full') {
+  elseif ($vars['view_mode'] == 'full') {
     if (isset($vars['content']['comments']['comment_form']['#access'])) {
       if ($vars['content']['comments']['comment_form']['#access'] === FALSE) {
         unset($vars['content']['comments']['comment_form']);
@@ -427,23 +427,28 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter for comment_form.
+ * Implements hook_form_FORM_ID_alter() for comment_form.
  *
  * Restricts comment form to just the current vsite's users.
+ *
+ * Since only certain roles (and not anonymous) users may post comments,
+ * This form would only ever appear to authorized roles.
+ * But we still want to restrict comments to just the current vsite's users.
  */
 function os_comments_form_comment_form_alter(&$form, &$form_state, $form_id) {
-  // Since only certain roles (and not anonymous) users may post comments,
-  // This form would only ever appear to authorized roles.
-  // But we still want to restrict comments to just the current vsite's users.
-
-  // Removes comment form for non-member authenticated users.
-  $wrapper = entity_metadata_wrapper('node', $form['#node']);
-  if (isset($wrapper->{OG_AUDIENCE_FIELD}) &&
-    $gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
-    $is_member = og_is_member('node', $gid[0]);
-    if ($is_member) {
-      $form = array();
-      $form['#access'] = FALSE;
-    }
+  // Only looks for users of other groups if vsite module is enabled.
+  if (!module_exists('vsite')) {
+    return;
   }
+
+  // Allows site member's to access the comment form.
+  $node = $form['#node'];
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $gid = $wrapper->{OG_AUDIENCE_FIELD}[0]->value(array('identifier' => TRUE));
+  if (og_is_member('node', $gid)) {
+    return;
+  }
+
+  // Denies non-members from accessing the form.
+  $form['#access'] = FALSE;
 }
