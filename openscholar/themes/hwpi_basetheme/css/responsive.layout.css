@@ -49,11 +49,13 @@
 }
 .region-header-third {
     margin: 0 !important;
-    text-align: left;
     width: 100%;
 }
 .region-header-second table {
     margin-bottom: 0;
+}
+.region-header-third .block-boxes-os_boxes_html {
+    display: none;
 }
 #menu-bar {
     margin: 0;
@@ -158,6 +160,9 @@ table[style] {
 }
 .not-logged-in.page-user #footer {
     width: 100%!important;
+}
+#footer .footer-login {
+    margin-right: 15px;
 }
 
 }
