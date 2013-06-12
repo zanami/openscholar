@@ -377,3 +377,18 @@ function os_events_preprocess_link(&$variables) {
     $variables['options']['attributes']['class'][] = 'active';
   }
 }
+
+/**
+ * Implements hook_node_preprocess().
+ *
+ * Adding a link to the iCal in the event page.
+ */
+function os_events_preprocess_node(&$variables) {
+  if ($variables['type'] != 'event') {
+    return;
+  }
+
+  $variables['content']['ical'] = array(
+    '#markup' => "<div class='links'>" . l(t('iCal'), 'calendar/export.ics', array('attributes' => array('class' => array('ical')))) . "</div>",
+  );
+}

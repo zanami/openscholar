@@ -414,6 +414,20 @@ ul ul ul ul {
   padding-top: 30px;
 }
 
+.node-event {
+  position: relative;
+}
+
+.node-event .links {
+  position: absolute;
+  top: 0px;
+  right: 0px; /* LTR */
+}
+
+.node-event .node-content {
+  padding-top: 30px;
+}
+
 .view-os-events.view-id-os_events .attachment-before {
   position: absolute;
   top: 0px;
