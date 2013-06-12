@@ -42,6 +42,10 @@
 .region-sidebar-second .date-prev {
     right: 90% ;
 }
+iframe {
+    max-width: 100%;
+}	
+	
 }
 
 @media (max-width: 768px) {
@@ -104,8 +108,5 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
 .one-sidebar.sidebar-second #content-panels {
     border-right: 0!important;
 }	
-iframe {
-    max-width: 100%;
-}	
-	
+
 }
