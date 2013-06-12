@@ -442,4 +442,8 @@ You request to send a reminder for the event <a href='[node:url]'>[node:title]</
   $form['reminder']['reminder_settings']['#type'] = 'container';
   $form['reminder']['#type'] = 'container';
   $form['settings']['#access'] = FALSE;
+
+  $form['reminder']['#weight'] = 9;
+  $form['scheduling']['#weight'] = 10;
+  $form['save']['#weight'] = 11;
 }
