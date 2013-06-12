@@ -419,5 +419,5 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
-libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/master.zip"
+libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
 

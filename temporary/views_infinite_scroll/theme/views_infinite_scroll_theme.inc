@@ -15,6 +15,7 @@ function theme_views_infinite_scroll_pager($variables) {
   $parameters = $variables['parameters'];
   $quantity = $variables['quantity'];
   $no_autoscroll = $variables['no_autoscroll'];
+  $load_previous = $variables['load_previous'];
 
   $PAGER_CLASS = 'pager';
   global $pager_page_array, $pager_total;
@@ -82,6 +83,7 @@ function theme_views_infinite_scroll_pager($variables) {
           'items_selector' => $items_selector,
           'img_path' => $img_path,
           'no_autoscroll' => $no_autoscroll,
+          'link_prev' => ($load_previous) ? '#content li.pager-previous>a' : NULL,
         ),
       ),
     );

@@ -39,6 +39,7 @@ function _os_add_infinite_scroll($name, $next_link = 'li.pager-next>a', $content
        'loading_image' => $img,
        'pager' => '#content ul.pager',
        'noAutoScroll' => 4,
+       'link_prev' => '#content li.pager-previous>a',
      ),   
    );
   

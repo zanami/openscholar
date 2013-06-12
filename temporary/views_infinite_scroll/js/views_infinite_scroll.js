@@ -45,6 +45,7 @@ Drupal.behaviors.views_infinite_scroll = {
                 Drupal.attachBehaviors(this);
               },
               noAutoScroll: noAutoScroll,
+              link_prev: settings.link_prev
             });
 
             // Trigger autoload if content height is less than doc height already

@@ -48,12 +48,13 @@ class views_plugin_pager_infinite_scroll extends views_plugin_pager_full {
         break;
     }
     $pager_theme = views_theme_functions('views_infinite_scroll_pager', $this->view, $this->display);
-    return theme($pager_theme, array('tags' => $input, 'quantity' => $this->options['items_per_page'], 'view_name' => $this->view->name, 'current_display' => $this->view->current_display, 'content_selector' => $content_selector, 'items_selector' => $items_selector, 'img_path' => $img_path, 'element' => $this->options['id'], 'no_autoscroll' => $this->options['no_autoscroll']));
+    return theme($pager_theme, array('tags' => $input, 'quantity' => $this->options['items_per_page'], 'view_name' => $this->view->name, 'current_display' => $this->view->current_display, 'content_selector' => $content_selector, 'items_selector' => $items_selector, 'img_path' => $img_path, 'element' => $this->options['id'], 'no_autoscroll' => $this->options['no_autoscroll'], 'load_previous' => $this->options['load_previous']));
   }
   
   function option_definition() {
     $options = parent::option_definition();
     $options['no_autoscroll'] = array('default' => 4);
+    $options['load_previous'] = array('default' => FALSE);
     return $options;
   }
   
@@ -65,6 +66,13 @@ class views_plugin_pager_infinite_scroll extends views_plugin_pager_full {
       '#type' => 'textfield',
       '#description' => t('Every N pages, stop automatically scrolling.  Use 0 for no limit.'),
       '#default_value' => $this->options['no_autoscroll'],
+    );
+    
+    $form['load_previous'] = array(
+      '#title' => t('Show link to load previous'),
+      '#type' => 'checkbox',
+      '#description' => t('When user skips content by loading a page with ?page=N, show a link above content to show earlier pages.'),
+      '#default_value' => $this->options['load_previous'],
     );
   }
 }
