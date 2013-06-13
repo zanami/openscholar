@@ -572,46 +572,14 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   $form['#validate'][] = 'cp_appearance_no_ajax_git_clone';
 
   if ($repository_address) {
-    $wrapper = new GitWrapper();
-    $wrapper->setPrivateKey('.');
+    $git = cp_appearance_form_clone_repository($repository_address, $form_state);
 
-    if (empty($form_state['#git_path'])) {
-      $path = drupal_realpath('public://') . '/git/' . time();
-      $form_state['#git_path'] = $path;
-
-      // Clone the repo.
-      $clone = TRUE;
-    }
-    else {
-      $path = $form_state['#git_path'];
-      // Don't clone the repo. We already have it.
-      $clone = FALSE;
-    }
-
-    $git = $wrapper->workingCopy($path);
-
-    // This will let us know if the repo. was cloned and will not clone the
-    // repo. every time the user change the branch.
-    if ($clone) {
-      $git->clone($repository_address);
-    }
-
-    $branches = array();
-
-    foreach ($git->getBranches()->remote() as $branch) {
-      if (strpos($branch, ' -> ') !== FALSE) {
-        // A branch named "origin/HEAD  -> xyz" is provided by the class, we
-        // don't need him.
-        continue;
-      }
-
-      $branches[str_replace(" ", "_", $branch)] = $branch;
-    }
+    $branches = cp_appearance_form_build_branches($git);
 
     $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $branches;
 
     $subtheme = new SubTheme();
-    $subtheme->path = $path;
+    $subtheme->path = $form_state['#git_path'];
     $form_state['subtheme'] = $subtheme;
   }
 
@@ -630,6 +598,69 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   );
 
   return $form;
+}
+
+/**
+ * Clone the repository.
+ *
+ * @param $address
+ *  The address of the repository.
+ * @param $form_state
+ *  The form $form_state variable. Used for passing the path of the path of the
+ *  cloned repository.
+ *
+ * @return \GitWrapper\GitWorkingCopy
+ *  The git wrapper class variable. Will be used for build a list of the
+ *  repository branches.
+ */
+function cp_appearance_form_clone_repository($address, &$form_state) {
+  $wrapper = new GitWrapper();
+  $wrapper->setPrivateKey('.');
+
+  if (empty($form_state['#git_path'])) {
+    $path = drupal_realpath('public://') . '/git/' . time();
+    $form_state['#git_path'] = $path;
+
+    // Clone the repo.
+    $clone = TRUE;
+  }
+  else {
+    $path = $form_state['#git_path'];
+    // Don't clone the repo. We already have it.
+    $clone = FALSE;
+  }
+
+  $git = $wrapper->workingCopy($path);
+
+  // This will let us know if the repo. was cloned and will not clone the
+  // repo. every time the user change the branch.
+  if ($clone) {
+    $git->clone($address);
+  }
+
+  return $git;
+}
+
+/**
+ * Build a list of the git branches.
+ *
+ * @param \GitWrapper\GitWorkingCopy $git
+ *  The git object.
+ * @return
+ *  A list of branches.
+ */
+function cp_appearance_form_build_branches(\GitWrapper\GitWorkingCopy $git) {
+  foreach ($git->getBranches()->remote() as $branch) {
+    if (strpos($branch, ' -> ') !== FALSE) {
+      // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+      // don't need him.
+      continue;
+    }
+
+    $branches[str_replace(" ", "_", $branch)] = $branch;
+  }
+
+  return $branches;
 }
 
 /**
