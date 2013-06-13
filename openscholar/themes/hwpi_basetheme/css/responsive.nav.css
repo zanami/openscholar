@@ -7,10 +7,7 @@
 #branding_footer, #branding_header {
     width: 100%;
 }
-.region-header-third {
-    margin-left: 0 !important;
-    width: 100%!important;
-}    
+  
 .region-header-third ul.menu {
     float: left!important;
 }
@@ -103,12 +100,12 @@ display:none;
     display: block;
     left: 15px;
     margin-bottom: 0 !important;
-    padding: 12px 0 12px;
+    padding: 12px 0;
     position: absolute;
     text-align: left;
     top: 59px;
     width: 100%;
-    z-index: 3;
+    z-index: 19;
 }
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #2A527A;
@@ -259,7 +256,10 @@ ul.primary li a {
 .region-header-third #block-os-search-solr-site-search.opened {
     top: 44px!important;
 }
-
+.region-header-third {
+    margin-left: 0 !important;
+    width: 100%!important;
+}  
 	
 }
 @media (max-width:400px){
