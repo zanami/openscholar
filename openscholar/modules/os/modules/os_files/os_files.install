@@ -436,3 +436,68 @@ function os_files_update_7004(&$sb) {
     return t('Set @num files to the executable type.', array('@num' => $sb['fixed']));
   }
 }
+
+
+/**
+ * Clears out duplicate files
+ */
+function os_files_update_7006(&$sb) {
+
+  if (!isset($sb['progress'])) {
+    $dupes = db_select('file_managed', 'fm')
+      ->fields('fm', array('origname'))
+      ->groupBy('origname')
+      ->having('dupes > 0');
+    $dupes->addExpression('COUNT(origname)-1', 'dupes');
+
+    $dr = $dupes->execute();
+    foreach ($dr as $r) {
+      $sb['data'][] = $r->origname;
+    }
+
+    $sb['limit'] = 10;
+    $sb['progress'] = 0;
+  }
+
+  $set = array_slice($sb['data'], $sb['progress'], $sb['limit']);
+
+  foreach ($set as $origname) {
+    // tasks to perform:
+    // find the first upload, this is the master
+    // find the last upload, this is the latest update
+    // update all the nodes that use everything but the first
+    // update the master with the latest update
+    // delete everything but the master
+    $bounds = db_select('file_managed', 'fm')
+      ->condition('origname', $origname);
+    $bounds->addExpression('MAX(`timestamp`)', 'max');
+    $bounds->addExpression('MIN(`timestamp`)', 'min');
+    $bounds = $bounds->execute()->fetch();
+
+    $latest = db_select('file_managed', 'fm')
+      ->field('fm')
+      ->condition('origname', $origname)
+      ->condition('timestamp', $bounds->max)
+      ->fetch();
+    $original = db_select('file_managed', 'fm')
+      ->fields('fm')
+      ->condition('origname', $origname)
+      ->condition('timestamp', $bounds->min)
+      ->fetch();
+
+    file_unmanaged_copy($latest->uri, $original->uri, FILE_EXISTS_REPLACE);
+
+    $todelete = db_select('file_usage', 'fu');
+    $todelete->join('file_managed', 'fm', 'fu.fid = fm.fid');
+    $todelete->condition('origname', $origname)
+      ->condition('fm.fid', $original->fid, '<>')
+      ->fields('fu')
+      ->fields('fm');
+    $todelete = $todelete->execute();
+
+    foreach ($todelete as $f) {
+      $node = node_load($f->entity_id);
+      
+    }
+  }
+}
