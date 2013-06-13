@@ -442,6 +442,14 @@ function os_files_update_7004(&$sb) {
  * Clears out duplicate files
  */
 function os_files_update_7006(&$sb) {
+  $filefields = array(
+    'file',
+    'imagefield_crop',
+  );
+  $textfields = array(
+    'text_with_summary',
+    'text_long',
+  );
 
   if (!isset($sb['progress'])) {
     $dupes = db_select('file_managed', 'fm')
@@ -455,12 +463,24 @@ function os_files_update_7006(&$sb) {
       $sb['data'][] = $r->origname;
     }
 
-    $sb['limit'] = 10;
+    $fields = db_select('field_config', 'fc')
+      ->fields('fc', array('field_name', 'type'))
+      ->condition('active', 1)
+      ->condition('deleted', 0)
+      ->condition('type', $filefields + $textfields)
+      ->execute();
+
+    foreach ($fields as $r) {
+      $data['fields'][$r->field_name] = $r->type;
+    }
+
+    $sb['limit'] = 5;
     $sb['progress'] = 0;
   }
 
   $set = array_slice($sb['data'], $sb['progress'], $sb['limit']);
 
+  module_load_include('inc', 'os_files', 'os_files.install_helpers');
   foreach ($set as $origname) {
     // tasks to perform:
     // find the first upload, this is the master
@@ -475,7 +495,7 @@ function os_files_update_7006(&$sb) {
     $bounds = $bounds->execute()->fetch();
 
     $latest = db_select('file_managed', 'fm')
-      ->field('fm')
+      ->fields('fm')
       ->condition('origname', $origname)
       ->condition('timestamp', $bounds->max)
       ->fetch();
@@ -495,9 +515,40 @@ function os_files_update_7006(&$sb) {
       ->fields('fm');
     $todelete = $todelete->execute();
 
+    // all the duplicates and the nodes they're used in
     foreach ($todelete as $f) {
       $node = node_load($f->entity_id);
-      
+
+      foreach ($fields as $field => $type) {
+        if (empty($node->{$field})) continue;
+
+        if (in_array($type, $textfields)) {
+          _os_files_install_replace_file_in_text($node->{$field}[LANGUAGE_NONE][0]['value'], $f, $original);
+        }
+        elseif (in_array($type, $filefields)) {
+          foreach ($node->{field}[LANGUAGE_NONE] as $d => $f2) {
+            if ($f2['fid'] == $f->fid) {
+              $node->{field}[LANGUAGE_NONE][$d]['fid'] = $original->fid;
+            }
+          }
+        }
+      }
+
+      node_save($node);
+
+      // attempt to delete the file
+      // it might be used in several nodes
+      // file_delete won't delete the file until all its usages are gone
+      // usages will be removed by node_save when we replace this file with the original
+      $file = file_load($f->fid);
+      file_delete($file);
     }
+    // all the duplicates have been taken care of, we're done
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/count($sb['data']);
+  if ($sb['#finished'] >= 1) {
+    return t('Removed all file duplicates from system.');
   }
 }
