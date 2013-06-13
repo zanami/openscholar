@@ -259,6 +259,7 @@ ul.primary li a {
 .region-header-third {
     margin-left: 0 !important;
     width: 100%!important;
+    float:left!important;
 }  
 	
 }
