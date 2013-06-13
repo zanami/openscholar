@@ -325,7 +325,7 @@ function cp_appearance_cp_settings() {
     ),
     'form' => array(
       '#type' => 'checkbox',
-      '#default_value' => variable_get('disable_responsive', false),
+      '#default_value' => variable_get('disable_responsive', FALSE),
       '#title' => t('Disable responsive behaviors'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
@@ -337,7 +337,7 @@ function cp_appearance_cp_settings() {
 }
 
 function cp_appearance_page_alter(&$page) {
-  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', false)) {
+  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', FALSE)) {
     $path = drupal_get_path('theme', 'hwpi_basetheme').'/css/';
     drupal_add_css($path.'responsive.base.css');
     drupal_add_css($path.'responsive.layout.css');
@@ -569,6 +569,8 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     ),
   );
 
+  $form['#validate'][] = 'cp_appearance_no_ajax_git_clone';
+
   if ($repository_address) {
     $wrapper = new GitWrapper();
     $wrapper->setPrivateKey('.');
@@ -662,6 +664,16 @@ function cp_appearance_manage_git_validate($form, $form_state) {
   $info = $subtheme->parseInfo();
 
   cp_appearance_validate_subtheme($info, 'branch');
+}
+
+/**
+ *
+ */
+function cp_appearance_no_ajax_git_clone(&$form, $form_state) {
+  if ($form_state['values']['branch'] == 'nojs') {
+    $form_pause = &drupal_static('form_set_error', array());
+    $form_pause['pause'] = 'pause the form';
+  }
 }
 
 /**
