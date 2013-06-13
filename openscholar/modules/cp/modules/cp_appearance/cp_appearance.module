@@ -325,7 +325,7 @@ function cp_appearance_cp_settings() {
     ),
     'form' => array(
       '#type' => 'checkbox',
-      '#default_value' => variable_get('disable_responsive', false),
+      '#default_value' => variable_get('disable_responsive', FALSE),
       '#title' => t('Disable responsive behaviors'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
@@ -337,7 +337,7 @@ function cp_appearance_cp_settings() {
 }
 
 function cp_appearance_page_alter(&$page) {
-  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', false)) {
+  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', FALSE)) {
     $path = drupal_get_path('theme', 'hwpi_basetheme').'/css/';
     drupal_add_css($path.'responsive.base.css');
     drupal_add_css($path.'responsive.layout.css');
@@ -461,6 +461,10 @@ function cp_appearance_manage_base($form, &$form_state) {
  */
 function cp_appearance_manage_base_validate($form, $form_state) {
   $subtheme = new SubTheme($form_state['values']['file']);
+
+  if (!$vsite = vsite_get_vsite()) {
+    form_set_error('file', t("You're not in a vsite."));
+  }
 
   $subtheme->extract();
   $info = $subtheme->parseInfo();
@@ -650,6 +654,10 @@ function cp_appearance_manage_git_validate($form, $form_state) {
     return;
   }
 
+  if (!$vsite = vsite_get_vsite()) {
+    form_set_error('repository', t("You're not in a vsite."));
+  }
+
   if (empty($form_state['subtheme'])) {
     return;
   }
@@ -691,6 +699,7 @@ function cp_appearance_manage_git_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'cp/appearance';
 }
+
 
 /**
  * Search of the flavors uploaded to the vsite.
