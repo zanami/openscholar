@@ -150,6 +150,9 @@ footer{position:relative;
     max-width: 100%;
     padding: 0 15px!important;
 }
+span[style] {
+    max-width: 100%;
+}
 
 table[style] {
     max-width: 100% !important;

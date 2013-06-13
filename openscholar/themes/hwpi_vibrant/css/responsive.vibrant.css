@@ -62,7 +62,7 @@
 	background-color:#24527a!important;
 }
 #block-os-primary-menu li {
-    border-bottom: 1px solid #E8E8E8!important;
+    border-bottom: 1px solid #f4f4f4!important;
     border-top: none!important;
         display: block;
 }
@@ -116,7 +116,9 @@ ul.menu {
 }
 /* column layouts */
 
-
+.page-node #content-column .content-inner {
+    padding: 0 2% !important;
+}
 .one-sidebar.sidebar-second .region-sidebar-second {
     padding-top: 65px!important;
 
