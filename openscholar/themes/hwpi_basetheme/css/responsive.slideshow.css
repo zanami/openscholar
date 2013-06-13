@@ -9,8 +9,24 @@
     width: auto !important;
 
 }
+/*layout_16_9_below*/
 #layout_16_9_below .rslides li {
     background-color:#444444;
+}
+#layout_16_9_side .caption.hero-copy {
+    padding: 12px 30px 48px;
+    width: 100%;
+}
+#layout_16_9_side .rslides img {
+    float: none!important;
+    margin: 0 auto;
+}
+#layout_16_9_side{
+	
+	margin-top:-12px;
+}
+#layout_16_9_side .slidecontrol.rslides_tabs.rslides1_tabs{
+	left:0!important;
 }
 #layout_16_9_below .hero{
 	margin:0!important;
