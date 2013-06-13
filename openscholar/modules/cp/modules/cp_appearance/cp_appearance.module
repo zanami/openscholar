@@ -657,10 +657,6 @@ function cp_appearance_manage_git_validate($form, $form_state) {
     return;
   }
 
-  if (!$vsite = vsite_get_vsite()) {
-    form_set_error('repository', t("You're not in a vsite."));
-  }
-
   if (empty($form_state['subtheme'])) {
     return;
   }
