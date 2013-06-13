@@ -79,7 +79,7 @@ display:none;
     width: 22.4%;
 }
 .one-sidebar.sidebar-first .content-inner {
-    margin-left: 24.5%;
+    margin-left: 24.5%!important;
     margin-right: 0;
 
 }
@@ -164,6 +164,9 @@ table[style] {
 }
 #footer .footer-login {
     margin-right: 15px;
+}
+.one-sidebar.sidebar-second .region-content-second .region-inner {
+    padding-right: 15px;
 }
 
 }
