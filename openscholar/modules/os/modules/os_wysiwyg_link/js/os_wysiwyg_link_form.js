@@ -72,10 +72,10 @@ Drupal.behaviors.osLinkUpload = {
     Drupal.ajax.prototype.commands.switchTab = function (ajax, response, settings) {
       jQuery('#'+response.tab).data('verticalTab').tabShow();
     };
-    
     Drupal.ajax.prototype.commands.clickOn = function (ajax, response, settings) {
       jQuery(response.target).bind('click', Drupal.media.browser.views.click).click();
     }
+
     
     $('#file-entity-add-upload input[value="Next"]').addClass('use-ajax-submit');
     Drupal.behaviors.AJAX.attach(ctx, settings);

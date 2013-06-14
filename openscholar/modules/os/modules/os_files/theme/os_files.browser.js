@@ -6,6 +6,9 @@
   Drupal.behaviors.osFilesMediaBrowser = {
     attach: function (ctx, s) {
       if ($('#file-edit-section', ctx).length) {
+        Drupal.ajax.prototype.commands.clickOn = function (ajax, response, settings) {
+          $(response.target).bind('click', Drupal.media.browser.views.click).click();
+        }
       
         var $items = $('.media-item:not(.os-files-processed)', ctx),
             forms = {};
