@@ -51,7 +51,8 @@ body {
 }
 
 
-#content /* Wraps the content region. */ {
+#content .contextual-links-region {
+	min-height: 10px;
 }
 
 

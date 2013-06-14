@@ -14,27 +14,21 @@
                     if (alias.length) {
                         var base_url = Drupal.settings.alias_preview.prefix;
                         var description = '<strong>Link URL:</strong> ' + base_url + '/' + alias + ' <a id="pathauto-extra-edit-path" href="#path[pathauto]">edit</a>';
+                        alias_preview_description_init();
                         $('.form-item-title .description').html(description);
                         alias_preview_scroll();
                     }
                 }
 
-                // On node add forms, prompt users to hit return and see preview.
-                // For graceful degradation, the default behavior is a static
-                // "no preview" message when javascript is not working.
-                $('.page-node-add #edit-title').focus(function () {
-                    if ($('#edit-title').val().length == 0) {
-                        var description = '<strong>Link URL:</strong> <em>Enter text and press return to update preview.</em>';
-                        $('.form-item-title .description').html(description);
-                    }
-                });
-
                 // On node add forms, use AJAX callback to generate alias preview.
                 $('.page-node-add #edit-title').change(function () {
+                    alias_preview_description_init();
                     alias_preview_ajax_handler();
                 });
 
-                // Provides a smooth animation when the user clicks "edit"
+                /**
+                 * Provides a smooth animation when the user clicks "edit"
+                 */
                 function alias_preview_scroll() {
                     // Brings the user to the custom alias field with proper settings checked.
                     $('.form-item-title .description a').click(function () {
@@ -46,7 +40,9 @@
                     });
                 }
 
-                // Adds the AJAX handler to generate pathauto aliases for preview.
+                /**
+                 * Adds the AJAX handler to generate pathauto aliases for preview.
+                 */
                 function alias_preview_ajax_handler() {
                     // Verifies settings before continuing...
                     if (Drupal.settings.alias_preview && Drupal.settings.alias_preview.make_alias) {
@@ -85,6 +81,17 @@
                                 }
                             });
                         }
+                    }
+                }
+
+                /**
+                 * Ensures that the description <div> exists below the title.
+                 *
+                 * It won't exist at first when the page loads.
+                 */
+                function alias_preview_description_init() {
+                    if (! $('.form-item-title .description').length) {
+                        $('<div class="description"></div>').insertAfter('#edit-title');
                     }
                 }
             });

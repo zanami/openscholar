@@ -168,14 +168,13 @@ ul.nice-menu ul {
 
 .region-header-third ul.nice-menu li {
     margin-left: 13px;
-    float:right;
 }
 
 .region-header-third ul.nice-menu a {
     font: bold 13px arial,sans-serif;
     text-decoration: none;
     text-transform: uppercase;
-    color: #2769AC;
+    color: #215990;
     padding: 0.3em 0 0.3em 10px;
 }
 
@@ -252,7 +251,6 @@ ul.primary li a {
 ul.primary li.active a {
   border-color: #cacaca #cacaca #fff;
 }
-
 
 
 

@@ -136,7 +136,7 @@ function os_profiles_field_display_node_alter(&$display, $context) {
  * @return boolean
  */
 function os_profiles_field_access($op, $field, $entity_type, $entity, $account) {
-  if ($field['field_name'] == 'field_url' && $entity_type == 'node' && $entity->type == 'person' && $op == 'edit') {
+  if (!empty($entity) && $field['field_name'] == 'field_url' && $entity_type == 'node' && $entity->type == 'person' && $op == 'edit') {
     return user_access('bypass redirection', $account);
   }
   return TRUE;
@@ -159,3 +159,24 @@ function _os_profiles_person_node_title($node) {
   return $title;
 }
 
+/**
+ * Adds alt and title text where appropriate
+ */
+function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
+  if ($entity_type == 'node') {
+    foreach ($entities as $e_id => $e) {
+      if ($e->type != 'person') continue;
+
+      if (!empty($e->field_person_photo)) {
+        $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
+        $e->field_person_photo[LANGUAGE_NONE][0]['title'] = $e->title;
+      }
+
+      if (!empty($e->field_website[LANGUAGE_NONE])) {
+        foreach ($e->field_website[LANGUAGE_NONE] as $k => $l) {
+          $e->field_website[LANGUAGE_NONE][$k]['attributes']['title'] = $e->title.'\'s website';
+        }
+      }
+    }
+  }
+}

@@ -91,7 +91,7 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = FALSE){
  * @return
  *   the SPACE object if created or FALSE.
  */
-function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE, $parent = NULL) {
+function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE, $parent = NULL, $visibility = FALSE) {
   $node = new stdClass();
   $node->type = $bundle;
   node_object_prepare($node);
@@ -106,6 +106,7 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
   $node->uid = $uid;
   $node->spaces_preset_og = $preset;
   $node->language = LANGUAGE_NONE;
+  // Sets the parent relationship if this is a subsite with a parent specified.
   if (isset($parent) && $parent_node = node_load($parent)) {
     $node->field_group_parent = array(
       LANGUAGE_NONE => array(
@@ -116,6 +117,18 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
         )
       )
     );
+  }
+  // Sets the site visibility value if the module is available and specified.
+  if (module_exists('vsite_access')) {
+    if (isset($visibility)) {
+      $node->{VSITE_ACCESS_FIELD} = array(
+        LANGUAGE_NONE => array(
+          array(
+            'value' => $visibility,
+          )
+        )
+      );
+    }
   }
   node_save($node);
 
@@ -143,7 +156,7 @@ function vsite_get_vsite_by_owner($uid = NULL) {
     $uid = $user->uid;
   }
 
-  if(empty($uid)) {
+  if (empty($uid)) {
   	return array();
   }
 

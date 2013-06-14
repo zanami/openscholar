@@ -770,6 +770,7 @@ function os_image_gallery_field_default_fields() {
             'audio' => 'audio',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
           ),
           'browser_plugins' => array(),
           'progress_indicator' => 'throbber',

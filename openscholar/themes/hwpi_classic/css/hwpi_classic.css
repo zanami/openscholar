@@ -155,6 +155,7 @@ padding: 10px 0;
 .node-person .block-inner,
 .comment-wrapper {
 	border-top: 3px solid #4384C4;
+	margin-top:20px;
 }
 
 .block-boxes block-boxes-os_sv_list_box,
