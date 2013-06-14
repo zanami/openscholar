@@ -123,6 +123,9 @@ display:none;
     padding: 0 15px;
     position: relative;
 }
+.two-sidebars #content-panels, .one-sidebar.sidebar-first #content-panels {
+    border-left: medium none;
+}
 .not-front.two-sidebars #content-column .content-inner {
     border-right: medium none!important;
 }
@@ -154,7 +157,6 @@ span[style] {
     float: none !important;
     max-width: 100%;
 }
-
 table[style] {
     max-width: 100% !important;
 }
