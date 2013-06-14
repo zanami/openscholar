@@ -869,12 +869,37 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I publish a new blog entry$/
+   * @Given /^I set the event capacity to "([^"]*)"$/
    */
-  public function iPublishANewBlogEntry() {
+  public function iSetTheEventCapacityTo($capacity) {
     return array(
-      new Step\When('I fill in "Comment" with "Lorem ipsum john doe"'),
-      new Step\When('I press "Save"'),
+      new Step\When('I click "Manage Registrations"'),
+      new Step\When('I click on link "Settings" under "main-content-header"'),
+      new Step\When('I fill in "edit-capacity" with "' . $capacity . '"'),
+      new Step\When('I press "Save Settings"'),
+    );
+  }
+
+  /**
+   * @Given /^I click on link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iClickOnLinkUnder($link, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@id, '{$container}')]//a[contains(., '{$link}')]");
+    $element->press();
+  }
+
+  /**
+   * @Then /^I delete "([^"]*)" registration$/
+   */
+  public function iDeleteRegistration($arg1) {
+    return array(
+      new Step\When('I am not logged in'),
+      new Step\When('I am logged in as "john"'),
+      new Step\When('I visit "john/event/halleys-comet"'),
+      new Step\When('I click "Manage Registrations"'),
+      new Step\When('I click "Delete"'),
+      new Step\When('I press "Delete"'),
     );
   }
 }
