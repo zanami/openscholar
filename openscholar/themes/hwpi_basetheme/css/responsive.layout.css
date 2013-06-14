@@ -151,6 +151,7 @@ footer{position:relative;
     padding: 0 15px!important;
 }
 span[style] {
+    float: none !important;
     max-width: 100%;
 }
 
