@@ -119,11 +119,9 @@ ul.menu {
 .page-node #content-column .content-inner {
     padding: 0 2% !important;
 }
-.one-sidebar.sidebar-second .region-sidebar-second {
-    padding-top: 65px!important;
-
+.two-sidebars #content-panels, .one-sidebar.sidebar-first #content-panels {
+    border-left: medium none;
 }
-
 .two-sidebars .region-sidebar-second {
     padding-top: 65px;
    
