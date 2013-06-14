@@ -63,14 +63,14 @@ function os_files_upload_submit($form, &$form_state) {
     // a file with this uri already exist. Prompt to replace
     $form = drupal_get_form('os_files_upload_replace', $file);
     $form_state['commands'][] = ajax_command_html('#file-edit-section', drupal_render($form));
-    $form_state['no_redirect'] = true;
   }
   else {
     media_browser_build_media_item($file);
     drupal_add_js(array('media' => array('files' => array($file))), 'setting');
 
-    $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
+    $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
   }
+  $form_state['no_redirect'] = true;
 }
 
 function os_files_replace_page($file) {
