@@ -65,6 +65,8 @@ function os_files_upload_submit($form, &$form_state) {
     $form_state['commands'][] = ajax_command_html('#file-edit-section', drupal_render($form));
   }
   else {
+    $file->uri = _os_files_perm_url($file->uri);
+    file_save($file);
     media_browser_build_media_item($file);
     drupal_add_js(array('media' => array('files' => array($file))), 'setting');
 

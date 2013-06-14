@@ -37,7 +37,7 @@
           }
         };
       }
-        
+
       // prevents views filter form from submitting when Enter is pressed
       $('.ctools-auto-submit-full-form').submit(function (e) {e.preventDefault();});
       
