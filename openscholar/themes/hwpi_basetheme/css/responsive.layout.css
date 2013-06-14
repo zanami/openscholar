@@ -124,7 +124,7 @@ display:none;
     position: relative;
 }
 .two-sidebars #content-panels, .one-sidebar.sidebar-first #content-panels {
-    border-left: medium none;
+    border-left: medium none!important;
 }
 .not-front.two-sidebars #content-column .content-inner {
     border-right: medium none!important;
