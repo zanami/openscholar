@@ -447,3 +447,11 @@ You request to send a reminder for the event <a href='[node:url]'>[node:title]</
   $form['scheduling']['#weight'] = 10;
   $form['save']['#weight'] = 11;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_events_form_event_node_form_alter(&$form, $form_state) {
+  $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#title'] = t('Signup');
+  $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
+}
