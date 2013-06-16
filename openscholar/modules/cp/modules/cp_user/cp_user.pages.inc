@@ -343,55 +343,6 @@ function _cp_user_get_role($uid, $gid, $human_name = FALSE) {
 }
 
 /**
- * Returns an associative array mapping role names to human readable names.
- *
- * @param bool $verbose
- *   If TRUE, formats a 2-line label with descriptive help text for each role.
- *
- * @return array $roles
- */
-function _cp_user_list_roles($mode = 'names', $bundle = NULL) {
-  $roles = array();
-
-  $machine_names = array(
-    OS_USER_ROLE_BASIC,
-    OS_USER_ROLE_EDITOR,
-    OS_USER_ROLE_ADMIN,
-  );
-  $human_names = array(
-    t('Basic member'),
-    t('Content editor'),
-    t('Administrator'),
-  );
-
-  switch ($mode) {
-    case 'names':
-      $roles = array_combine($machine_names, $human_names);
-      break;
-
-    case 'options':
-      $descriptions = array(
-        t('<em>Basic members</em> may only add new posts and edit their own posts.'),
-        t('<em>Content editors</em> may add and edit posts, and also edit others\' posts.'),
-        t('<em>Administrators</em> may add, edit or delete any post, and change site settings.'),
-      );
-      for ($i = 0; $i < sizeof($machine_names); $i++) {
-        $roles[$machine_names[$i]] = _cp_user_role_option($human_names[$i], $descriptions[$i]);
-      }
-      break;
-
-    case 'rids':
-      $og_roles = og_roles('node', $bundle);
-      for ($i = 0; $i < sizeof($machine_names); $i++) {
-        $roles[$machine_names[$i]] = array_search($machine_names[$i], $og_roles);
-      }
-      break;
-  }
-
-  return $roles;
-}
-
-/**
  * Grants the specified role for this user on this group, and revokes others.
  * @param int $uid
  * @param int $gid

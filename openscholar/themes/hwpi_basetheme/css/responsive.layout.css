@@ -79,7 +79,7 @@ display:none;
     width: 22.4%;
 }
 .one-sidebar.sidebar-first .content-inner {
-    margin-left: 24.5%;
+    margin-left: 24.5%!important;
     margin-right: 0;
 
 }
@@ -123,6 +123,9 @@ display:none;
     padding: 0 15px;
     position: relative;
 }
+.two-sidebars #content-panels, .one-sidebar.sidebar-first #content-panels {
+    border-left: medium none!important;
+}
 .not-front.two-sidebars #content-column .content-inner {
     border-right: medium none!important;
 }
@@ -150,7 +153,10 @@ footer{position:relative;
     max-width: 100%;
     padding: 0 15px!important;
 }
-
+span[style] {
+    float: none !important;
+    max-width: 100%;
+}
 table[style] {
     max-width: 100% !important;
 }
@@ -164,6 +170,9 @@ table[style] {
 }
 #footer .footer-login {
     margin-right: 15px;
+}
+.one-sidebar.sidebar-second .region-content-second .region-inner {
+    padding-right: 15px;
 }
 
 }

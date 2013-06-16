@@ -37,11 +37,10 @@
    min-height: 35px;
     
 }
-
-
 #search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
     margin: 0 0 0 -49px !important;
 }
+
 }
 @media (max-width: 768px) {
 
@@ -49,5 +48,7 @@
     width: 100%;
 }
 
-
+#content-column .block.block-boxes-os_boxes_manual_list {
+    padding: 0!important;
+}
 }

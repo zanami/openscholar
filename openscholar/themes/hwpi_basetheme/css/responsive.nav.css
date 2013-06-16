@@ -53,7 +53,7 @@
 #menu-bar #block-os-primary-menu a {
     -moz-box-sizing: border-box;
     border: medium none !important;
-    color: white !important;
+    color: #fff;
     display: block;
     margin: 0 auto;
     max-width: 1008px;
@@ -259,6 +259,7 @@ ul.primary li a {
 .region-header-third {
     margin-left: 0 !important;
     width: 100%!important;
+    float:left!important;
 }  
 	
 }
