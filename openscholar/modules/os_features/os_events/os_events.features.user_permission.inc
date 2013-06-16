@@ -11,8 +11,8 @@ function os_events_user_default_permissions() {
   $permissions = array();
 
   // Exported permission: administer event registration.
-  $permissions['administer event registration'] = array(
-    'name' => 'administer event registration',
+  $permissions['administer event_signup_simple registration'] = array(
+    'name' => 'administer event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -22,8 +22,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: administer own event registration.
-  $permissions['administer own event registration'] = array(
-    'name' => 'administer own event registration',
+  $permissions['administer own event_signup_simple registration'] = array(
+    'name' => 'administer own event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -80,8 +80,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: create event registration.
-  $permissions['create event registration'] = array(
-    'name' => 'create event registration',
+  $permissions['create event_signup_simple registration'] = array(
+    'name' => 'create event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -92,8 +92,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: create event registration other anonymous.
-  $permissions['create event registration other anonymous'] = array(
-    'name' => 'create event registration other anonymous',
+  $permissions['create event_signup_simple registration other anonymous'] = array(
+    'name' => 'create event_signup_simple registration other anonymous',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -103,8 +103,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: create event registration other users.
-  $permissions['create event registration other users'] = array(
-    'name' => 'create event registration other users',
+  $permissions['create event_signup_simple registration other users'] = array(
+    'name' => 'create event_signup_simple registration other users',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -123,8 +123,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: delete any event registration.
-  $permissions['delete any event registration'] = array(
-    'name' => 'delete any event registration',
+  $permissions['delete any event_signup_simple registration'] = array(
+    'name' => 'delete any event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -147,8 +147,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: delete own event registration.
-  $permissions['delete own event registration'] = array(
-    'name' => 'delete own event registration',
+  $permissions['delete own event_signup_simple registration'] = array(
+    'name' => 'delete own event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -169,8 +169,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: edit event registration state.
-  $permissions['edit event registration state'] = array(
-    'name' => 'edit event registration state',
+  $permissions['edit event_signup_simple registration state'] = array(
+    'name' => 'edit event_signup_simple registration state',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -194,8 +194,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: update any event registration.
-  $permissions['update any event registration'] = array(
-    'name' => 'update any event registration',
+  $permissions['update any event_signup_simple registration'] = array(
+    'name' => 'update any event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -205,8 +205,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: update own event registration.
-  $permissions['update own event registration'] = array(
-    'name' => 'update own event registration',
+  $permissions['update own event_signup_simple registration'] = array(
+    'name' => 'update own event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -217,8 +217,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: view event registration.
-  $permissions['view event registration'] = array(
-    'name' => 'view event registration',
+  $permissions['view event_signup_simple registration'] = array(
+    'name' => 'view event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',
@@ -229,8 +229,8 @@ function os_events_user_default_permissions() {
   );
 
   // Exported permission: view own event registration.
-  $permissions['view own event registration'] = array(
-    'name' => 'view own event registration',
+  $permissions['view own event_signup_simple registration'] = array(
+    'name' => 'view own event_signup_simple registration',
     'roles' => array(
       0 => 'content editor',
       1 => 'manager',

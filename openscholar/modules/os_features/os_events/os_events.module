@@ -78,9 +78,9 @@ function os_events_vsite_og_node_type_info() {
  */
 function os_events_default_registration_type() {
   $items = array();
-  $items['event'] = entity_import('registration_type', '{
-    "name" : "event",
-    "label" : "Event",
+  $items['event_signup_simple'] = entity_import('registration_type', '{
+    "name" : "event_signup_simple",
+    "label" : "Event signup",
     "locked" : "0",
     "weight" : "0",
     "data" : null,
