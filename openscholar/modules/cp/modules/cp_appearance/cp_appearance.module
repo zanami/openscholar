@@ -549,6 +549,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     ),
   );
 
+  $branches = array();
 
   if ($repository_address = !empty($form_state['values']['repository']) ? $form_state['values']['repository'] : FALSE) {
     $wrapper = new GitWrapper();
@@ -579,38 +580,46 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     );
 
     try {
-      $branches = array('' => t('Select a branch'));
-
       foreach ($git->getBranches()->remote() as $branch) {
         if (strpos($branch, ' -> ') !== FALSE) {
           // A branch named "origin/HEAD  -> xyz" is provided by the class, we
           // don't need it.
           continue;
         }
-
         $branches[str_replace(' ', '_', $branch)] = $branch;
       }
-
-      $form['branch'] = array(
-        '#type' => 'select',
-        '#title' => t('Branch'),
-        '#description' => t('Enter the branch of the git repository'),
-        '#options' => $branches,
-        '#ajax' => array(
-          'callback' => 'cp_appearance_git_method_get_valid_branches',
-          'wrapper' => 'branches',
-        ),
-        '#prefix' => '<div id="branches">',
-        '#suffix' => '</div>',
-      );
     }
     catch (GitException $e) {
-      $form['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
     }
 
     $subtheme = new SubTheme();
     $subtheme->path = $path;
     $form_state['subtheme'] = $subtheme;
+  }
+
+  if ($branches) {
+    $form['branch'] = array(
+      '#type' => 'select',
+      '#title' => t('Branch'),
+      '#description' => t('Enter the branch of the git repository'),
+      '#options' => array('' => t('Select a branch')) + $branches,
+      '#ajax' => array(
+        'callback' => 'cp_appearance_git_method_get_valid_branches',
+        'wrapper' => 'branches',
+      ),
+      '#prefix' => '<div id="branches">',
+      '#suffix' => '</div>',
+    );
+  }
+  elseif (!$branches && $repository_address) {
+    $form['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
+  }
+  else {
+    // Place holder for Ajax.
+    $form['branch'] = array(
+      '#prefix' => '<div id="branches">',
+      '#suffix' => '</div>',
+    );
   }
 
   $repository_branch = !empty($form_state['values']['branch']) ? $form_state['values']['branch'] : 0;
