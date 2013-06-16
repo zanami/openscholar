@@ -10,7 +10,7 @@
 function os_events_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: administer event registration.
+  // Exported permission: administer event_signup_simple registration.
   $permissions['administer event_signup_simple registration'] = array(
     'name' => 'administer event_signup_simple registration',
     'roles' => array(
@@ -21,7 +21,7 @@ function os_events_user_default_permissions() {
     'module' => 'registration',
   );
 
-  // Exported permission: administer own event registration.
+  // Exported permission: administer own event_signup_simple registration.
   $permissions['administer own event_signup_simple registration'] = array(
     'name' => 'administer own event_signup_simple registration',
     'roles' => array(
@@ -79,19 +79,20 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: create event registration.
+  // Exported permission: create event_signup_simple registration.
   $permissions['create event_signup_simple registration'] = array(
     'name' => 'create event_signup_simple registration',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
 
-  // Exported permission: create event registration other anonymous.
+  // Exported permission: create event_signup_simple registration other anonymous.
   $permissions['create event_signup_simple registration other anonymous'] = array(
     'name' => 'create event_signup_simple registration other anonymous',
     'roles' => array(
@@ -102,13 +103,14 @@ function os_events_user_default_permissions() {
     'module' => 'registration',
   );
 
-  // Exported permission: create event registration other users.
+  // Exported permission: create event_signup_simple registration other users.
   $permissions['create event_signup_simple registration other users'] = array(
     'name' => 'create event_signup_simple registration other users',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
     ),
     'module' => 'registration',
   );
@@ -122,7 +124,7 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: delete any event registration.
+  // Exported permission: delete any event_signup_simple registration.
   $permissions['delete any event_signup_simple registration'] = array(
     'name' => 'delete any event_signup_simple registration',
     'roles' => array(
@@ -146,14 +148,15 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: delete own event registration.
+  // Exported permission: delete own event_signup_simple registration.
   $permissions['delete own event_signup_simple registration'] = array(
     'name' => 'delete own event_signup_simple registration',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -168,14 +171,15 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit event registration state.
+  // Exported permission: edit event_signup_simple registration state.
   $permissions['edit event_signup_simple registration state'] = array(
     'name' => 'edit event_signup_simple registration state',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -193,7 +197,7 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: update any event registration.
+  // Exported permission: update any event_signup_simple registration.
   $permissions['update any event_signup_simple registration'] = array(
     'name' => 'update any event_signup_simple registration',
     'roles' => array(
@@ -204,19 +208,20 @@ function os_events_user_default_permissions() {
     'module' => 'registration',
   );
 
-  // Exported permission: update own event registration.
+  // Exported permission: update own event_signup_simple registration.
   $permissions['update own event_signup_simple registration'] = array(
     'name' => 'update own event_signup_simple registration',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
 
-  // Exported permission: view event registration.
+  // Exported permission: view event_signup_simple registration.
   $permissions['view event_signup_simple registration'] = array(
     'name' => 'view event_signup_simple registration',
     'roles' => array(
@@ -228,14 +233,15 @@ function os_events_user_default_permissions() {
     'module' => 'registration',
   );
 
-  // Exported permission: view own event registration.
+  // Exported permission: view own event_signup_simple registration.
   $permissions['view own event_signup_simple registration'] = array(
     'name' => 'view own event_signup_simple registration',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );

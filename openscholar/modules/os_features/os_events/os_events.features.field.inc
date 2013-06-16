@@ -519,7 +519,7 @@ function os_events_field_default_fields() {
 
 
   // Exported field: 'registration-event-field_department'.
-  $fields['registration-event_signup_simple-field_department'] = array(
+  $fields['registration-event-field_department'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -548,7 +548,7 @@ function os_events_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'event_signup_simple',
+      'bundle' => 'event',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -582,7 +582,7 @@ function os_events_field_default_fields() {
   );
 
   // Exported field: 'registration-event-field_full_name'.
-  $fields['registration-event_signup_simple-field_full_name'] = array(
+  $fields['registration-event-field_full_name'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -611,7 +611,7 @@ function os_events_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'event_signup_simple',
+      'bundle' => 'event',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -649,6 +649,8 @@ function os_events_field_default_fields() {
   t('Attach Files');
   t('Body');
   t('Date');
+  t('Department');
+  t('Full name');
   t('Location');
   t('Registration');
 
