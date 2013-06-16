@@ -479,19 +479,22 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
   $form['actions']['cancel']['#access'] = FALSE;
   $form['actions']['submit']['#value'] = t('Signup');
 
+  $form['anon_mail']['#access'] = TRUE;
+
   $form['event_register'] = array(
     '#type' => 'fieldset',
     '#title' => t('Sign up for Department Site Building with OpenScholar'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
 
-    'actions' => $form['actions'],
     'field_full_name' => $form['field_full_name'],
     'field_department' => $form['field_department'],
     'anon_mail' => $form['anon_mail'],
+    'captcha' => $form['captcha'],
+    'actions' => $form['actions'],
   );
 
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail']);
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha']);
 }
 
 /**

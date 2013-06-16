@@ -4,6 +4,7 @@ core = 7.x
 package = Features
 php = 5.2.4
 project = os_events
+dependencies[] = captcha
 dependencies[] = calendar
 dependencies[] = colorbox
 dependencies[] = context

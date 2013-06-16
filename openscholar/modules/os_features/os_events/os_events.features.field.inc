@@ -517,7 +517,6 @@ function os_events_field_default_fields() {
     ),
   );
 
-
   // Exported field: 'registration-event-field_department'.
   $fields['registration-event-field_department'] = array(
     'field_config' => array(
@@ -548,7 +547,7 @@ function os_events_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'event',
+      'bundle' => 'event_signup_simple',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -611,7 +610,7 @@ function os_events_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'event',
+      'bundle' => 'event_signup_simple',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',

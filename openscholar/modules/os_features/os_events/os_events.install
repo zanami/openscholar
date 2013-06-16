@@ -12,6 +12,15 @@ function os_events_install() {
 
   //Use colorbox for the calendar
   variable_set('calendar_add_colorbox', 1);
+
+  // Define the captcha for the event registration form.
+  db_insert('captcha_points')
+    ->fields(array(
+      'form_id' => 'registration_form',
+      'captcha_type' => 'default',
+      'module' => 'os_events',
+    ))
+    ->execute();
 }
 
 /**
@@ -98,5 +107,14 @@ function os_events_update_7003() {
  * Enable the registration module.
  */
 function os_events_update_7004() {
-  module_enable(array('registration'));
+  module_enable(array('registration', 'captcha'));
+
+  // Define the captcha for the event registration form.
+  db_insert('captcha_points')
+    ->fields(array(
+      'form_id' => 'registration_form',
+      'captcha_type' => 'default',
+      'module' => 'os_events',
+    ))
+    ->execute();
 }
