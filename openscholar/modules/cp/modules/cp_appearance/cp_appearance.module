@@ -549,13 +549,18 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     ),
   );
 
-  $path = drupal_realpath('Public://') . 'subtheme';
 
   if ($repository_address = !empty($form_state['values']['repository']) ? $form_state['values']['repository'] : FALSE) {
     $wrapper = new GitWrapper();
 
-    $path .= '/' . $repository_address;
-    $path = str_replace(array('http://', 'https://'), '', $path);
+    $path = variable_get('file_public_path', conf_path() . '/files') . '/subtheme/' . $repository_address;
+
+    // @todo: Remove the github hardcoding.
+    $path = str_replace(array('http://', 'https://', '.git', 'git@github.com:'), '', $path);
+
+    if (!file_exists($path)) {
+      drupal_mkdir($path, NULL, TRUE);
+    }
 
     $git = $wrapper->workingCopy($path);
     if (!$git->isCloned()) {
