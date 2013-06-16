@@ -399,29 +399,30 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
   $close_date = $form['scheduling']['close']['#default_value'];
   $reminder_date = $form['reminder']['reminder_settings']['reminder_date']['#default_value'];
 
+  $format = 'M d Y H:i';
   // Replace textual date fields in favor of date popup.
   $form['scheduling']['open'] = array(
     '#type' => 'date_popup',
     '#title' => t('Open date'),
     '#description' => t('When to automatically open registrations'),
-    '#default_value' => empty($open_date) ? '' : date('Y-m-d H:i', strtotime($open_date)),
-    '#date_format' => 'Y-m-d H:i',
+    '#default_value' => empty($open_date) ? '' : date($format, strtotime($open_date)),
+    '#date_format' => $format,
   );
 
   $form['scheduling']['close'] = array(
     '#type' => 'date_popup',
     '#title' => t('Close date'),
     '#description' => t('When to automatically close registrations.'),
-    '#default_value' => empty($close_date) ? '' : date('Y-m-d H:i', strtotime($close_date)),
-    '#date_format' => 'Y-m-d H:i',
+    '#default_value' => empty($close_date) ? '' : date($format, strtotime($close_date)),
+    '#date_format' => $format,
   );
 
   $form['reminder']['reminder_settings']['reminder_date'] = array(
     '#type' => 'date_popup',
     '#title' => t('Reminder Date'),
     '#description' => t('When to send reminders.'),
-    '#default_value' => empty($reminder_date) ? '' : date('Y-m-d H:i', strtotime($reminder_date)),
-    '#date_format' => 'Y-m-d H:i',
+    '#default_value' => empty($reminder_date) ? '' : date($format, strtotime($reminder_date)),
+    '#date_format' => $format,
     '#states' => array(
       'visible' => array(
         ':input[name="reminder[send_reminder]"]' => array('checked' => TRUE),
@@ -452,9 +453,11 @@ You request to send a reminder for the event <a href='[node:url]'>[node:title]</
  * Implements hook_form_FORM_ID_alter().
  */
 function os_events_form_event_node_form_alter(&$form, $form_state) {
+  // $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#type'] = 'checkbox';
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#title'] = t('Signup');
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
 }
+
 
 /**
  * Implements hook_module_implements_alter().
@@ -479,4 +482,40 @@ function os_events_module_implements_alter(&$implementations, $hook) {
  */
 function os_events_entity_info_alter(&$info) {
   $info['registration_type']['admin ui']['path'] = 'admin/structure/registration/event_signup_simple';
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function os_events_menu_alter(&$items) {
+  $items['node/%entity_object/register']['access callback'] = FALSE;
+  $items['admin/structure/registration/registration_states']['access callback'] = FALSE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_events_form_registration_form_alter(&$form, $form_state) {
+  $form['who_is_registering'] = array(
+    '#type' => 'value',
+    '#value' => 'registration_registrant_type_anon',
+  );
+  $form['user']['#access'] = FALSE;
+
+  $form['actions']['cancel']['#access'] = FALSE;
+  $form['actions']['submit']['#value'] = t('Signup');
+
+  $form['event_register'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Sign up for Department Site Building with OpenScholar'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+
+    'actions' => $form['actions'],
+    'field_full_name' => $form['field_full_name'],
+    'field_department' => $form['field_department'],
+    'anon_mail' => $form['anon_mail'],
+  );
+
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail']);
 }
