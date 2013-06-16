@@ -7,6 +7,7 @@
  */
 
 use GitWrapper\GitWrapper;
+use GitWrapper\GitException;
 
 /**
  * Implements hook_menu().
@@ -191,7 +192,7 @@ function cp_appearance_theme_picker_form_validate($form, &$form_state){
 
 /**
  * Processes all the flavors a theme has.
- * 
+ *
  * @param array $theme_flavors
  *  	List of flavors used by this theme
  * @param array $info
@@ -588,19 +589,27 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     // This will let us know if the repo. was cloned and will not clone the
     // repo. every time the user change the branch.
     if ($clone) {
-      $git->clone($repository_address);
+      try {
+        $git->clone($repository_address);
+      }
+      catch (GitException $e) {
+      }
     }
 
     $branches = array();
 
-    foreach ($git->getBranches()->remote() as $branch) {
-      if (strpos($branch, ' -> ') !== FALSE) {
-        // A branch named "origin/HEAD  -> xyz" is provided by the class, we
-        // don't need him.
-        continue;
-      }
+    try {
+      foreach ($git->getBranches()->remote() as $branch) {
+        if (strpos($branch, ' -> ') !== FALSE) {
+          // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+          // don't need it.
+          continue;
+        }
 
-      $branches[str_replace(" ", "_", $branch)] = $branch;
+        $branches[str_replace(" ", "_", $branch)] = $branch;
+      }
+    }
+    catch (GitException $e) {
     }
 
     $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $branches;
@@ -613,7 +622,11 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   $repository_branch = !empty($form_state['values']['branch']) ? $form_state['values']['branch'] : 0;
 
   if ($repository_branch != '---') {
-    $git->checkout($repository_branch);
+    try {
+      $git->checkout($repository_branch);
+    }
+    catch (GitException $e) {
+    }
   }
 
   $form['actions'] = array(
