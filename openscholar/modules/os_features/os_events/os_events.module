@@ -455,3 +455,28 @@ function os_events_form_event_node_form_alter(&$form, $form_state) {
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#title'] = t('Signup');
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
 }
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function os_events_module_implements_alter(&$implementations, $hook) {
+  if ($hook != 'entity_info_alter') {
+    return;
+  }
+
+  // Switch the orders of the implementations.
+  $os_events = $implementations['os_events'];
+  $registration = $implementations['registration'];
+
+  unset($implementations['os_events'], $implementations['registration']);
+
+  $implementations['registration'] = $registration;
+  $implementations['os_events'] = $os_events;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function os_events_entity_info_alter(&$info) {
+  $info['registration_type']['admin ui']['path'] = 'admin/structure/registration/event_signup_simple';
+}
