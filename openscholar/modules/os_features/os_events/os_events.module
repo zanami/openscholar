@@ -450,11 +450,22 @@ You request to send a reminder for the event <a href='[node:url]'>[node:title]</
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter().
  */
-function os_events_form_event_node_form_alter(&$form, $form_state) {
-  $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#title'] = t('Signup');
-  $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
+function os_events_field_widget_registration_select_form_alter(&$element, &$form_state, $context) {
+  $element['registration_type']['#type'] = 'checkbox';
+
+  // Set the "return value" to our default signup.
+  $element['registration_type']['#return_value'] = 'event_signup_simple';
+
+  $items = $context['items'];
+  $element['registration_type']['#default_value'] = !empty($items[0]['registration_type']);
+
+  // Remove the options, so they won't fail our validation.
+  unset($element['registration_type']['#options']);
+
+  $element['registration_type']['#title'] = t('Signup');
+  $element['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
 }
 
 /**
