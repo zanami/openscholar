@@ -160,6 +160,11 @@ span[style] {
 table[style] {
     max-width: 100% !important;
 }
+.block.block-boxes-os_boxes_manual_list article {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+}
 /*Footer*/
 #footer{
 	z-index:1;
@@ -180,25 +185,19 @@ table[style] {
 
 @media (max-width: 768px) {
 
-/*#header-panels .block-boxes-os_boxes_html table {
-    margin-bottom: 55px;
-    margin-left: 15px;
-    width: 100%;
-}
-table p {
-    font-size: 100%;
-}
-#header-panels .block-boxes-os_boxes_html td {
-    display: block;
-    margin: 0 !important;
-    max-height: 60px;
-    padding: 0 !important;
-    width: 100% !important;
-}*/
 .region-content-first,
 .region-content-second {
     float: none!important;
     width: 100%!important;
+}
+.region-header-second div {
+    width: 100%;
+}
+.region-header-second h2,
+.region-header-second h3,
+.region-header-second img {
+    padding-left: 15px;
+
 }
 .region-content-second{
 	margin-top:50px!important;
