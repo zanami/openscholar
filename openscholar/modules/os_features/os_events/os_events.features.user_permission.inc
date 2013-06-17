@@ -100,6 +100,7 @@ function os_events_user_default_permissions() {
       1 => 'content editor',
       2 => 'manager',
       3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -196,6 +197,16 @@ function os_events_user_default_permissions() {
       4 => 'vsite user',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: skip CAPTCHA.
+  $permissions['skip CAPTCHA'] = array(
+    'name' => 'skip CAPTCHA',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'vsite admin',
+    ),
+    'module' => 'captcha',
   );
 
   // Exported permission: update any event_signup_simple registration.

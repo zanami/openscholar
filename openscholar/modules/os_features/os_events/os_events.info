@@ -55,6 +55,7 @@ features[user_permission][] = delete own event_signup_simple registration
 features[user_permission][] = edit any event content
 features[user_permission][] = edit event_signup_simple registration state
 features[user_permission][] = edit own event content
+features[user_permission][] = skip CAPTCHA
 features[user_permission][] = update any event_signup_simple registration
 features[user_permission][] = update own event_signup_simple registration
 features[user_permission][] = view event_signup_simple registration
