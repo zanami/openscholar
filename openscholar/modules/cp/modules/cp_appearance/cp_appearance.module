@@ -7,6 +7,7 @@
  */
 
 use GitWrapper\GitWrapper;
+use GitWrapper\GitException;
 
 /**
  * Implements hook_menu().
@@ -191,7 +192,7 @@ function cp_appearance_theme_picker_form_validate($form, &$form_state){
 
 /**
  * Processes all the flavors a theme has.
- * 
+ *
  * @param array $theme_flavors
  *  	List of flavors used by this theme
  * @param array $info
@@ -548,72 +549,90 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     ),
   );
 
-  $repository_address = !empty($form_state['values']['repository']) ? $form_state['values']['repository'] : 0;
+  $branches = array();
 
-  $form['branch'] = array(
-    '#type' => 'select',
-    '#title' => t('Branch'),
-    '#description' => t('Enter the branch of the git repository'),
-    '#prefix' => '<div id="branches">',
-    '#suffix' => '</div>',
-    '#options' => array(
-      '---' => t(' --- Select a branch --- '),
-    ),
-
-    '#ajax' => array(
-      'callback' => 'cp_appearance_git_method_get_valid_branches',
-      'wrapper' => 'branches',
-    ),
-  );
-
-  if ($repository_address) {
+  if ($repository_address = !empty($form_state['values']['repository']) ? $form_state['values']['repository'] : FALSE) {
     $wrapper = new GitWrapper();
     $wrapper->setPrivateKey('.');
 
-    if (empty($form_state['#git_path'])) {
-      $path = drupal_realpath('public://') . '/git/' . time();
-      $form_state['#git_path'] = $path;
+    $path = variable_get('file_public_path', conf_path() . '/files') . '/subtheme/' . $repository_address;
 
-      // Clone the repo.
-      $clone = TRUE;
-    }
-    else {
-      $path = $form_state['#git_path'];
-      // Don't clone the repo. We already have it.
-      $clone = FALSE;
+    // @todo: Remove the github hardcoding.
+    $path = str_replace(array('http://', 'https://', '.git', 'git@github.com:'), '', $path);
+
+    if (!file_exists($path)) {
+      drupal_mkdir($path, NULL, TRUE);
     }
 
     $git = $wrapper->workingCopy($path);
-
-    // This will let us know if the repo. was cloned and will not clone the
-    // repo. every time the user change the branch.
-    if ($clone) {
-      $git->clone($repository_address);
-    }
-
-    $branches = array();
-
-    foreach ($git->getBranches()->remote() as $branch) {
-      if (strpos($branch, ' -> ') !== FALSE) {
-        // A branch named "origin/HEAD  -> xyz" is provided by the class, we
-        // don't need him.
-        continue;
+    if (!$git->isCloned()) {
+      try {
+        $git->clone($repository_address);
       }
-
-      $branches[str_replace(" ", "_", $branch)] = $branch;
+      catch (GitException $e) {
+        // Can't clone the repo.
+      }
     }
 
-    $form['branch']['#options'] = array('---' => t(' --- Select a branch --- ')) + $branches;
+    $form['branch'] = array(
+      '#prefix' => '<div id="branches">',
+      '#suffix' => '</div>',
+    );
+
+    try {
+      foreach ($git->getBranches()->remote() as $branch) {
+        if (strpos($branch, ' -> ') !== FALSE) {
+          // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+          // don't need it.
+          continue;
+        }
+        $branches[str_replace(' ', '_', $branch)] = $branch;
+      }
+    }
+    catch (GitException $e) {
+    }
 
     $subtheme = new SubTheme();
     $subtheme->path = $path;
     $form_state['subtheme'] = $subtheme;
   }
 
+  if ($branches) {
+    $form['branch'] = array(
+      '#type' => 'select',
+      '#title' => t('Branch'),
+      '#description' => t('Enter the branch of the git repository'),
+      '#options' => array('' => t('Select a branch')) + $branches,
+      '#ajax' => array(
+        'callback' => 'cp_appearance_git_method_get_valid_branches',
+        'wrapper' => 'branches',
+      ),
+      '#prefix' => '<div id="branches">',
+      '#suffix' => '</div>',
+    );
+  }
+  elseif (!$branches && $repository_address) {
+    $form['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
+  }
+  else {
+    // Place holder for Ajax.
+    $form['branch'] = array(
+      '#prefix' => '<div id="branches">',
+      '#suffix' => '</div>',
+    );
+  }
+
   $repository_branch = !empty($form_state['values']['branch']) ? $form_state['values']['branch'] : 0;
 
   if ($repository_branch != '---') {
-    $git->checkout($repository_branch);
+    try {
+      $git
+        ->checkout($repository_branch)
+        // We pull, in case the user wants to reload a subtheme.
+        ->pull();
+    }
+    catch (GitException $e) {
+    }
   }
 
   $form['actions'] = array(
@@ -676,10 +695,6 @@ function cp_appearance_manage_git_submit($form, &$form_state) {
 
   // Parse the info.
   $info = $file->parseInfo();
-
-  // When cloning via git the path os not relative. Remove the DRUPAL_ROOT from
-  // the path.
-  $file->path = str_replace(DRUPAL_ROOT . '/', '', $file->path);
 
   // Save the path of the extracted theme for later.
   $flavors[$info['theme name']] = array(
