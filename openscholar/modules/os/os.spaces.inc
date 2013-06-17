@@ -24,7 +24,8 @@ function os_spaces_presets() {
       'vsiteTaskResearchSection',
       'vsiteTaskResourcesSection',
       'vsiteTaskNewsEventsSection',
-      'vsiteTaskAboutSection'
+      'vsiteTaskAboutSection',
+      'vsiteTaskContactPage',
     ),
     'variable' => array(
       'spaces_features' => array(
