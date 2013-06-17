@@ -44,7 +44,7 @@ function cp_appearance_menu(){
   $items['cp/appearance/add-subtheme'] = array(
     'title' => 'Add subtheme',
     'page callback' => 'cp_appearance_select_method',
-    'access arguments' => array('manage subtheme'),
+    'access callback' => 'cp_appearance_sub_theme_access',
     'type' => MENU_LOCAL_ACTION,
   );
 
@@ -56,11 +56,18 @@ function cp_appearance_menu(){
       'title' => $info->name,
       'page callback' => 'drupal_get_form',
       'page arguments' => array($form_id, 3),
-      'access arguments' => array('manage subtheme'),
+      'access callback' => 'cp_appearance_sub_theme_access',
     );
   }
 
   return $items;
+}
+
+/**
+ * Access callback.
+ */
+function cp_appearance_sub_theme_access() {
+  return module_exists('vsite') && vsite_get_vsite() && user_access('manage subtheme');
 }
 
 /**
@@ -326,7 +333,7 @@ function cp_appearance_cp_settings() {
     ),
     'form' => array(
       '#type' => 'checkbox',
-      '#default_value' => variable_get('disable_responsive', false),
+      '#default_value' => variable_get('disable_responsive', FALSE),
       '#title' => t('Disable responsive behaviors'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
@@ -338,7 +345,7 @@ function cp_appearance_cp_settings() {
 }
 
 function cp_appearance_page_alter(&$page) {
-  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', false)) {
+  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', FALSE)) {
     $path = drupal_get_path('theme', 'hwpi_basetheme').'/css/';
     drupal_add_css($path.'responsive.base.css');
     drupal_add_css($path.'responsive.layout.css');
@@ -706,6 +713,7 @@ function cp_appearance_manage_git_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'cp/appearance';
 }
+
 
 /**
  * Search of the flavors uploaded to the vsite.
