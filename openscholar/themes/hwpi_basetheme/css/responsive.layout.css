@@ -393,6 +393,9 @@ padding: 0.3em 0.1em;
 .region-header-second table p span[style]{
 	margin-top:0!important;
 }
+.region-header-second table p br{
+	margin-top:30px!important;
+}
 .region-header-second table p{
 	margin-left:15px!important;
 	
