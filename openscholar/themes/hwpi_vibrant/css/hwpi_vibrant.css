@@ -303,7 +303,7 @@ div.contextual-links-wrapper a,
   border-radius: 0 !important;
 }
 
-#menu-bar ul.menu ul ul {
+#menu-bar ul.nice-menu ul {
     background: #282828;
     min-width: 200px;
 }

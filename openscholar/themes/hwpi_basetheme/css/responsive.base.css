@@ -10,7 +10,7 @@
     margin-right: 0;
 }
 /*Menu*/
-#menu-bar ul.menu ul ul {
+#menu-bar ul.nice-menu ul {
     background: none repeat scroll 0 0 #24527A;
 }
 .region-header-third .block-os-search-solr,
