@@ -158,6 +158,10 @@ table[style] {
     padding-left: 15px;
     padding-right: 15px;
 }
+.block.block-boxes-os_boxes_manual_list h2{
+	  padding-left: 15px;
+}
+}
 /*Footer*/
 #footer{
 	z-index:1;
