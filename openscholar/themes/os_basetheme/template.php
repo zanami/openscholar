@@ -164,10 +164,15 @@ function os_basetheme_preprocess_node(&$vars) {
       list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
     }
     if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
- //     date_default_timezone_set($vars['field_date'][$delta]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][$delta]['value']);
-      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
-      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
+      // Define the time zone in the DB as a UTC.
+      $date = new DateTime($vars['field_date'][$delta]['value'], new DateTimeZone('utc'));
+
+      // Get the timezone of the site and apply it on the date object.
+      $time_zone = date_default_timezone();
+      $date->setTimezone(new DateTimeZone($time_zone));
+
+      $vars['event_start']['month'] = check_plain($date->format('M'));
+      $vars['event_start']['day'] = check_plain($date->format('d'));
       $vars['classes_array'][] = 'event-start';
     }
   }
