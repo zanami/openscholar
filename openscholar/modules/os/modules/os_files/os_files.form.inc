@@ -57,7 +57,7 @@ function os_files_upload($form, $form_state) {
 function os_files_upload_submit($form, &$form_state) {
   $file = file_load($form_state['values']['upload']);
 
-  $uri = str_replace('/temporary', '', $file->uri);
+  $uri = _os_files_perm_url($file->uri);
   $existing = file_uri_to_object($uri);
   if (isset($existing->fid)) {
     // a file with this uri already exist. Prompt to replace
@@ -65,12 +65,13 @@ function os_files_upload_submit($form, &$form_state) {
     $form_state['commands'][] = ajax_command_html('#file-edit-section', drupal_render($form));
   }
   else {
-    $file->uri = _os_files_perm_url($file->uri);
-    file_save($file);
-    media_browser_build_media_item($file);
-    drupal_add_js(array('media' => array('files' => array($file))), 'setting');
+    $file->status = 1;
+    if ($file = file_move($file, _os_files_perm_url($file->uri))) {
+      media_browser_build_media_item($file);
+      drupal_add_js(array('media' => array('files' => array($file))), 'setting');
 
-    $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
+      $form_state['commands'][] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$file->fid.'" class="media-item-new">'.$file->preview.'</li>');
+    }
   }
   $form_state['no_redirect'] = true;
 }
@@ -135,15 +136,15 @@ function os_files_upload_replace_submit($form, &$form_state) {
   $file = $form_state['build_info']['args'][0];
   switch ($form_state['values']['op']) {
     case t('Yes, replace it.'):
-      $existing = file_uri_to_object(_os_files_perm_url($file->uri));
-      _os_files_replace_from_temporary($file);
-      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$existing->fid, 'click');
+      $file->status = 1;
+      $file = file_move($file, _os_files_perm_url($file->uri), FILE_EXISTS_REPLACE);
+      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'click');
       $form_state['commands'][] = ajax_command_invoke('.media-item-new', 'removeClass', array('media-item-new'));
-      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$existing->fid, 'addClass', array('media-item-new'));
+      $form_state['commands'][] = ajax_command_invoke('#media-item-'.$file->fid, 'addClass', array('media-item-new'));
       break;
     case t('No, rename it.'):
       $file->status = 1;
-      file_move($file, _os_files_perm_url($file->uri));
+      $file = file_move($file, _os_files_perm_url($file->uri));
       module_load_include('inc', 'media', 'includes/media.browser');
       media_browser_build_media_item($file);
       drupal_add_js(array('media' => array('files' => array($file))), 'setting');
