@@ -190,6 +190,7 @@ table[style] {
     width: 100% !important;
 }
 .region-header-second div {
+    float: left;
     width: 100%;
 }
 .region-header-second h2,
