@@ -405,7 +405,7 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
     '#type' => 'date_popup',
     '#title' => t('Open date'),
     '#description' => t('When to automatically open registrations'),
-    '#default_value' => empty($open_date) ? '' : date($format, strtotime($open_date)),
+    '#default_value' => empty($open_date) ? '' : date('Y-m-d H:i', strtotime($open_date)),
     '#date_format' => $format,
   );
 
@@ -413,7 +413,7 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
     '#type' => 'date_popup',
     '#title' => t('Close date'),
     '#description' => t('When to automatically close registrations.'),
-    '#default_value' => empty($close_date) ? '' : date($format, strtotime($close_date)),
+    '#default_value' => empty($close_date) ? '' : date('Y-m-d H:i', strtotime($close_date)),
     '#date_format' => $format,
   );
 
@@ -421,7 +421,7 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
     '#type' => 'date_popup',
     '#title' => t('Reminder Date'),
     '#description' => t('When to send reminders.'),
-    '#default_value' => empty($reminder_date) ? '' : date($format, strtotime($reminder_date)),
+    '#default_value' => date('Y-m-d H:i', strtotime($reminder_date)),
     '#date_format' => $format,
     '#states' => array(
       'visible' => array(
@@ -469,6 +469,8 @@ function os_events_menu_alter(&$items) {
  * Implements hook_form_FORM_ID_alter().
  */
 function os_events_form_registration_form_alter(&$form, $form_state) {
+  $node = node_load($form['#entity']->entity_id);
+
   $form['who_is_registering'] = array(
     '#type' => 'value',
     '#value' => 'registration_registrant_type_anon',
@@ -479,7 +481,7 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
 
   $form['event_register'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Sign up for Department Site Building with OpenScholar'),
+    '#title' => t('Sign up for @label', array('@label' => $node->title)),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
 

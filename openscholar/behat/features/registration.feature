@@ -11,7 +11,7 @@ Feature:
       And I am not logged in
      When I am logged in as "michelle"
       And I visit "john/event/halleys-comet"
-      And I should not see "Sign up for Department Site Building with OpenScholar"
+      And I should not see "Sign up for Halley's Comet"
      Then I delete "john" registration
 
   @api
@@ -24,5 +24,5 @@ Feature:
       And I am not logged in
      When I am logged in as "michelle"
       And I visit "john/event/halleys-comet"
-      And I should see "Sign up for Department Site Building with OpenScholar"
+      And I should see "Sign up for Halley's Comet"
      Then I delete "john" registration
