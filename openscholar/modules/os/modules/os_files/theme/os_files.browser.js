@@ -5,7 +5,10 @@
 (function ($, undefined) {
   Drupal.behaviors.osFilesMediaBrowser = {
     attach: function (ctx, s) {
-      if ($('#file-edit-section', ctx).length) {
+      if ($('.media-item', ctx).length) {
+        Drupal.ajax.prototype.commands.clickOn = function (ajax, response, settings) {
+          $(response.target).bind('click', Drupal.media.browser.views.click).click();
+        }
       
         var $items = $('.media-item:not(.os-files-processed)', ctx),
             forms = {};
@@ -34,14 +37,7 @@
           }
         };
       }
-        
-      // makes the browser open the current tab by default when the form is reloaded
-      $('#media-browser-tabset').tabs('option', 'select', function (event, ui) {
-        if (ui.tab.hash) {
-          window.location.hash = ui.tab.hash;
-        }
-      });
-      
+
       // prevents views filter form from submitting when Enter is pressed
       $('.ctools-auto-submit-full-form').submit(function (e) {e.preventDefault();});
       

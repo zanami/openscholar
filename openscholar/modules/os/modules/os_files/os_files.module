@@ -47,6 +47,21 @@ function os_files_menu(){
     'type' => MENU_CALLBACK
   );
 
+  $items['os/files/upload'] = array(
+    'title' => 'Upload File',
+    'page callback' => 'os_files_upload_page',
+    'file' => 'os_files.form.inc',
+    'access arguments' => array('create file')
+  );
+
+  $items['os/files/replace/%file'] = array(
+    'title' => 'Replace File Dialog',
+    'page callback' => 'os_files_replace_page',
+    'page arguments' => array(3),
+    'file' => 'os_files.form.inc',
+    'access arguments' => array('create file')
+  );
+
   return $items;
 }
 
@@ -498,6 +513,10 @@ function os_files_form_media_internet_add_alter(&$form, &$form_state) {
       '@sites' => implode(', ', media_embed_get_whitelist())
     )
   );
+
+  if (function_exists('os_files_internet_ajax')) {
+    $form['#submit'][] = 'os_files_internet_ajax';
+  }
 }
 
 /**
@@ -933,8 +952,10 @@ function os_files_form_node_form_alter(&$form, &$form_state) {
  * Alters the titles of the Media Browser tabs to more friendly terms
  */
 function os_files_media_browser_plugins_alter(&$output){
+  unset($output['upload']);
+  unset($output['media_internet']);
   unset($output['media_default--media_browser_my_files']);
-  $output['upload']['#title'] = t('My Computer');
+ // $output['upload']['#title'] = t('My Computer');
   $output['media_default--media_browser_1']['#title'] = t('My Library');
   
   // add an area to the views form to put the file edit form
@@ -961,6 +982,24 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
       }
       $view_modes = $temp;
       break;
+  }
+}
+
+function os_files_views_pre_render(&$view) {
+  if ($view->name == 'media_default') {
+    module_load_include('inc', 'os_files', 'os_files.form');
+    $output = array(
+      'upload' => drupal_get_form('os_files_upload'),
+      'internet' => array(
+        '#prefix' => '<div id="media-internet-wrapper"><div class="media-internet-btn">Web</div>',
+        '#suffix' => '</div>',
+        'form' => drupal_get_form('media_internet_add'),
+      )
+    );
+
+    $output['upload']['actions']['save']['#attributes']['class'][] = 'use-ajax-submit';
+    $output['internet']['form']['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
+    $view->attachment_before = drupal_render($output);
   }
 }
 
