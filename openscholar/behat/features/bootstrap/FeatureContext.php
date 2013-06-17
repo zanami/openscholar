@@ -8,7 +8,6 @@ use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
 
-
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
@@ -68,14 +67,25 @@ class FeatureContext extends DrupalContext {
       throw new Exception("Password not found for '$username'.");
     }
 
-    // Log in.
-    // Go to the user page.
-    $element = $this->getSession()->getPage();
-    $this->getSession()->visit($this->locatePath('/user'));
-    $element->fillField('Username', $username);
-    $element->fillField('Password', $password);
-    $submit = $element->findButton('Log in');
-    $submit->click();
+    if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
+      // We are using a cli, log in with meta step.
+      return array(
+        new Step\When('I visit "/user"'),
+        new Step\When('I fill in "Username" with "' . $username . '"'),
+        new Step\When('I fill in "Password" with "' . $password . '"'),
+        new Step\When('I press "edit-submit"'),
+      );
+    }
+    else {
+      // Log in.
+      // Go to the user page.
+      $element = $this->getSession()->getPage();
+      $this->getSession()->visit($this->locatePath('/user'));
+      $element->fillField('Username', $username);
+      $element->fillField('Password', $password);
+      $submit = $element->findButton('Log in');
+      $submit->click();
+    }
   }
 
   /**
@@ -629,7 +639,7 @@ class FeatureContext extends DrupalContext {
    * @Given /^I invalidate cache$/
    */
   public function iInvalidateCache() {
-    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 
@@ -856,5 +866,40 @@ class FeatureContext extends DrupalContext {
     // @see http://xavierriley.co.uk/blog/2012/10/12/test-driving-prestashop-with-behat/
     $duration = 5000;
     $this->getSession()->wait($duration);
+  }
+
+  /**
+   * @Given /^I set the event capacity to "([^"]*)"$/
+   */
+  public function iSetTheEventCapacityTo($capacity) {
+    return array(
+      new Step\When('I click "Manage Registrations"'),
+      new Step\When('I click on link "Settings" under "main-content-header"'),
+      new Step\When('I fill in "edit-capacity" with "' . $capacity . '"'),
+      new Step\When('I press "Save Settings"'),
+    );
+  }
+
+  /**
+   * @Given /^I click on link "([^"]*)" under "([^"]*)"$/
+   */
+  public function iClickOnLinkUnder($link, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@id, '{$container}')]//a[contains(., '{$link}')]");
+    $element->press();
+  }
+
+  /**
+   * @Then /^I delete "([^"]*)" registration$/
+   */
+  public function iDeleteRegistration($arg1) {
+    return array(
+      new Step\When('I am not logged in'),
+      new Step\When('I am logged in as "john"'),
+      new Step\When('I visit "john/event/halleys-comet"'),
+      new Step\When('I click "Manage Registrations"'),
+      new Step\When('I click "Delete"'),
+      new Step\When('I press "Delete"'),
+    );
   }
 }
