@@ -391,7 +391,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
   // Try to find this app's info...
   $app_info = os_app_info();
   foreach ($app_info as $app => $info) {
-    if (in_array($node->type, $info['nodetypes'])) {
+    if (!empty($info['nodetypes']) && in_array($node->type, $info['nodetypes'])) {
       // We found the app! Break now and $app is the module's machine name.
       break;
     }
@@ -421,6 +421,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
     '#weight' => 10,
   );
 
+  $form['comment_settings']['no_comment']['#options'] = empty($form['comment_settings']['no_comment']['#options']) ? array() : $form['comment_settings']['no_comment']['#options'];
   if ($source == 'comment' && isset($form['comment_settings']['comment_status']['#title'])) {
     $form['comment_settings']['comment_status']['#title'] = t('Private comments');
   }
