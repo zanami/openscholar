@@ -331,7 +331,11 @@ function os_events_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'event',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'registration_type' => 'event_signup_simple',
+        ),
+      ),
       'deleted' => '0',
       'description' => '',
       'display' => array(
