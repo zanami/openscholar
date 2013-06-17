@@ -371,4 +371,30 @@ padding: 0.3em 0.1em;
 #branding_footer{
     padding-bottom: 20px;
 }
+.region-header-second tr, 
+.region-header-second td {
+    display: inline !important;
+} 
+.region-header-second td{
+	display:block!important;
+	padding:0!important;
+}
+.region-header-second .media-element[style]{
+	
+	display:table;
+	max-width:50%!important;
+}
+.region-header-second table p[style]{
+	
+	position:relative;
+	margin-top:0!important;
+	margin-bottom:0!important;
+}
+.region-header-second table p span[style]{
+	margin-top:0!important;
+}
+.region-header-second table p{
+	margin-left:15px!important;
+	
+}
 }
