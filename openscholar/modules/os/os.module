@@ -1479,14 +1479,14 @@ function os_restws_resource_info_alter(&$info){
 
 }
 
-if (!function_exists('vsite_get_vsite') && !module_exists('vsite')) {
+if (!variable_get('os_profile_type', 'vsite')) {
   /**
    * A stub function to replace vsite_get_vsite() when VSite module is disabled.
    *
    * @return
    *  Always returns FALSE.
    */
-  function vsite_get_vsite($vsite = FALSE){
+  function vsite_get_vsite() {
     return FALSE;
   }
 }
