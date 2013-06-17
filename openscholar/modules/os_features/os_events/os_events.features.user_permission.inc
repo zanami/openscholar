@@ -96,9 +96,10 @@ function os_events_user_default_permissions() {
   $permissions['create event_signup_simple registration other anonymous'] = array(
     'name' => 'create event_signup_simple registration other anonymous',
     'roles' => array(
-      0 => 'content editor',
-      1 => 'manager',
-      2 => 'vsite admin',
+      0 => 'anonymous user',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
     ),
     'module' => 'registration',
   );

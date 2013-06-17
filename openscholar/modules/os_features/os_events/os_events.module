@@ -453,7 +453,6 @@ You request to send a reminder for the event <a href='[node:url]'>[node:title]</
  * Implements hook_form_FORM_ID_alter().
  */
 function os_events_form_event_node_form_alter(&$form, $form_state) {
-  // $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#type'] = 'checkbox';
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#title'] = t('Signup');
   $form['field_event_registration'][LANGUAGE_NONE][0]['registration_type']['#description'] = t('If checked, users will be able to signup for this event.');
 }
@@ -474,12 +473,9 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     '#type' => 'value',
     '#value' => 'registration_registrant_type_anon',
   );
-  $form['user']['#access'] = FALSE;
 
   $form['actions']['cancel']['#access'] = FALSE;
   $form['actions']['submit']['#value'] = t('Signup');
-
-  $form['anon_mail']['#access'] = TRUE;
 
   $form['event_register'] = array(
     '#type' => 'fieldset',
@@ -497,11 +493,11 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     $form['event_register']['captcha'] = $form['captcha'];
   }
 
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha']);
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user']);
 }
 
 /**
- * Implements hook_preprocess_HOOK().
+ * Implements hook_preprocess_table().
  */
 function os_events_preprocess_table(&$variables) {
   $menu = menu_get_item();
@@ -510,12 +506,15 @@ function os_events_preprocess_table(&$variables) {
     return;
   }
 
+  // Change the title of the registrations table.
   $variables['caption'] = t('List of registrations for %title.', array(
     '%title' => entity_label('node', $menu['map'][1]),
   ));
 
+  // Remove the "count" and the "states" from the table head.
   unset($variables['header'][4], $variables['header'][6]);
 
+  // Remove the "count" and the "states" from each table row.
   foreach (array_keys($variables['rows']) as $delta) {
     unset($variables['rows'][$delta][4], $variables['rows'][$delta][6]);
   }
