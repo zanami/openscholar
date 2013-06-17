@@ -159,9 +159,10 @@ a.rslides_nav.prev {
 }
 
  #layout_3_1_overlay .hero-copy {
-    filter:alpha(opacity=60);
-    background:#000;
-     -moz-opacity:0.6;
+    -moz-opacity: 0.60;
+	opacity:.60;
+	filter: alpha(opacity=60);
+    background:#333;
      background: none repeat scroll 0 0 rgba(30, 30, 30, 0.6);
     position: relative;
     width: 420px;
@@ -219,9 +220,10 @@ a.rslides_nav.prev {
 
 
 #layout_16_9_overlay .hero-copy {
-	filter:alpha(opacity=60);
-    background:#000;
-     -moz-opacity:0.6;
+	 -moz-opacity: 0.60;
+	opacity:.60;
+	filter: alpha(opacity=60);
+    background:#333;
     background: none repeat scroll 0 0 rgba(30, 30, 30, 0.6);
     bottom: 0;
     padding-bottom: 48px;
