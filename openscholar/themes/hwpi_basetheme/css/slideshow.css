@@ -213,7 +213,6 @@ a.rslides_nav.prev {
 }
 
 #layout_16_9_overlay .hero {
-    min-height: 430px;
     padding: 0 !important;
     z-index: 1;
 }	
