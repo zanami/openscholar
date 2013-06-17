@@ -1216,46 +1216,52 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
         }
       }
 
-      $elements['images'] = array(
-        '#theme' => 'links',
-        '#links' => $images,
-        '#attributes' => array(
-          'class' => array(
-            'os-files-image-list',
-            'jcarousel-skin-default'
+      if (!empty($images)) {
+        $elements['images'] = array(
+          '#theme' => 'links',
+          '#links' => $images,
+          '#attributes' => array(
+            'class' => array(
+              'os-files-image-list',
+              'jcarousel-skin-default'
+            )
           )
-        )
-      );
-      if (module_exists('jcarousel')) {
-        $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
+        );
+        if (module_exists('jcarousel')) {
+          $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
+        }
       }
 
-      $elements['videos'] = array(
-        '#type' => 'container',
-        '#attributes' => array(
-          'class' => array('os-files-videos-list'),
-        )
-      );
-      foreach ($videos as $v) {
-        $elements['videos'][] = array(
+      if (!empty($videos)) {
+        $elements['videos'] = array(
           '#type' => 'container',
           '#attributes' => array(
-            'class' => array('os-files-video-single'),
-          ),
-          'video' => $v,
+            'class' => array('os-files-videos-list'),
+          )
         );
+        foreach ($videos as $v) {
+          $elements['videos'][] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array('os-files-video-single'),
+            ),
+            'video' => $v,
+          );
+        }
       }
 
-      $elements['other'] = array(
-        '#theme' => 'table',
-        '#rows' => $other,
-        '#header' => array(),
-        '#attributes' => array(
-          'class' => array(
-            'os-files-other-list'
+      if (!empty($other)) {
+        $elements['other'] = array(
+          '#theme' => 'table',
+          '#rows' => $other,
+          '#header' => array(),
+          '#attributes' => array(
+            'class' => array(
+              'os-files-other-list'
+            )
           )
-        )
-      );
+        );
+      }
       break;
   }
 

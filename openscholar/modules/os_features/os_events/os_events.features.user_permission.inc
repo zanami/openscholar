@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * os_events.features.user_permission.inc
@@ -11,17 +10,107 @@
 function os_events_user_default_permissions() {
   $permissions = array();
 
+  // Exported permission: administer event registration.
+  $permissions['administer event registration'] = array(
+    'name' => 'administer event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: administer own event registration.
+  $permissions['administer own event registration'] = array(
+    'name' => 'administer own event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: administer registration.
+  $permissions['administer registration'] = array(
+    'name' => 'administer registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: administer registration states.
+  $permissions['administer registration states'] = array(
+    'name' => 'administer registration states',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: administer registration types.
+  $permissions['administer registration types'] = array(
+    'name' => 'administer registration types',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
   // Exported permission: create event content.
   $permissions['create event content'] = array(
     'name' => 'create event content',
     'roles' => array(
       0 => 'administrator',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: create event registration.
+  $permissions['create event registration'] = array(
+    'name' => 'create event registration',
+    'roles' => array(
+      0 => 'content editor',
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
-      4 => 'content editor',
     ),
-    'module' => 'node',
+    'module' => 'registration',
+  );
+
+  // Exported permission: create event registration other anonymous.
+  $permissions['create event registration other anonymous'] = array(
+    'name' => 'create event registration other anonymous',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: create event registration other users.
+  $permissions['create event registration other users'] = array(
+    'name' => 'create event registration other users',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
   );
 
   // Exported permission: delete any event content.
@@ -33,17 +122,40 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: delete any event registration.
+  $permissions['delete any event registration'] = array(
+    'name' => 'delete any event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
   // Exported permission: delete own event content.
   $permissions['delete own event content'] = array(
     'name' => 'delete own event content',
     'roles' => array(
       0 => 'administrator',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: delete own event registration.
+  $permissions['delete own event registration'] = array(
+    'name' => 'delete own event registration',
+    'roles' => array(
+      0 => 'content editor',
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
-      4 => 'content editor',
     ),
-    'module' => 'node',
+    'module' => 'registration',
   );
 
   // Exported permission: edit any event content.
@@ -56,17 +168,76 @@ function os_events_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: edit event registration state.
+  $permissions['edit event registration state'] = array(
+    'name' => 'edit event registration state',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'registration',
+  );
+
   // Exported permission: edit own event content.
   $permissions['edit own event content'] = array(
     'name' => 'edit own event content',
     'roles' => array(
       0 => 'administrator',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: update any event registration.
+  $permissions['update any event registration'] = array(
+    'name' => 'update any event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: update own event registration.
+  $permissions['update own event registration'] = array(
+    'name' => 'update own event registration',
+    'roles' => array(
+      0 => 'content editor',
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
-      4 => 'content editor',
     ),
-    'module' => 'node',
+    'module' => 'registration',
+  );
+
+  // Exported permission: view event registration.
+  $permissions['view event registration'] = array(
+    'name' => 'view event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'registration',
+  );
+
+  // Exported permission: view own event registration.
+  $permissions['view own event registration'] = array(
+    'name' => 'view own event registration',
+    'roles' => array(
+      0 => 'content editor',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'registration',
   );
 
   return $permissions;

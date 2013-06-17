@@ -74,6 +74,22 @@ function os_events_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_default_registration_type().
+ */
+function os_events_default_registration_type() {
+  $items = array();
+  $items['event'] = entity_import('registration_type', '{
+    "name" : "event",
+    "label" : "Event",
+    "locked" : "0",
+    "weight" : "0",
+    "data" : null,
+    "rdf_mapping" : []
+  }');
+  return $items;
+}
+
+/**
  * Implements hook_process_node().
  */
 function os_events_process_node(&$variables) {
@@ -94,8 +110,16 @@ function os_events_process_node(&$variables) {
     }
   }
 
-  // Display the day of the event without leading zero.
-  $variables['event_start']['day'] = date('j', strtotime($variables['field_date'][0]['value']));
+  $variables['link_title_text'] = '';
+  if (isset($variables['date_id'])) {
+    list(,,$field,$delta) = explode('.', $variables['date_id']);
+    $date = field_get_items('node', $variables['node'], $field);
+    $date = $date[$delta]['value'];
+    $variables['link_title_text'] = t('On @date', array('@date' => gmdate('D M j', strtotime($date))));
+    if (isset($variables['content']['links']['node']['#links']['node-readmore'])) {
+      $variables['content']['links']['node']['#links']['node-readmore']['attributes']['title'] .= ' on '.gmdate('D M j', strtotime($date));
+    }
+  }
 }
 
 /**
@@ -362,4 +386,64 @@ function os_events_preprocess_link(&$variables) {
   if (isset($cases[$_GET['type']]) && $cases[$_GET['type']] == $variables['path']) {
     $variables['options']['attributes']['class'][] = 'active';
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_events_form_registration_entity_settings_form_alter(&$form, $form_state) {
+  $form['status']['#title'] = t('Enable registrations');
+  $form['status']['#description'] = t('Users must register their attendance in advance.');
+
+  $open_date = $form['scheduling']['open']['#default_value'];
+  $close_date = $form['scheduling']['close']['#default_value'];
+  $reminder_date = $form['reminder']['reminder_settings']['reminder_date']['#default_value'];
+
+  // Replace textual date fields in favor of date popup.
+  $form['scheduling']['open'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Open date'),
+    '#description' => t('When to automatically open registrations'),
+    '#default_value' => empty($open_date) ? '' : date('Y-m-d H:i', strtotime($open_date)),
+    '#date_format' => 'Y-m-d H:i',
+  );
+
+  $form['scheduling']['close'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Close date'),
+    '#description' => t('When to automatically close registrations.'),
+    '#default_value' => empty($close_date) ? '' : date('Y-m-d H:i', strtotime($close_date)),
+    '#date_format' => 'Y-m-d H:i',
+  );
+
+  $form['reminder']['reminder_settings']['reminder_date'] = array(
+    '#type' => 'date_popup',
+    '#title' => t('Reminder Date'),
+    '#description' => t('When to send reminders.'),
+    '#default_value' => empty($reminder_date) ? '' : date('Y-m-d H:i', strtotime($reminder_date)),
+    '#date_format' => 'Y-m-d H:i',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="reminder[send_reminder]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  // Remove the template, reminder date is no longer inside a container.
+  $form['reminder']['reminder_settings']['reminder_template'] = $form['reminder']['reminder_settings']['reminder_template'] + array(
+    '#access' => FALSE,
+    '#value' => variable_get('os_reminder_template', "
+Hello [registration:author:name],
+
+You request to send a reminder for the event <a href='[node:url]'>[node:title]</a>.
+    "),
+  );
+  $form['reminder']['reminder_settings']['token_tree']['#access'] = FALSE;
+  $form['reminder']['reminder_settings']['#type'] = 'container';
+  $form['reminder']['#type'] = 'container';
+  $form['settings']['#access'] = FALSE;
+
+  $form['reminder']['#weight'] = 9;
+  $form['scheduling']['#weight'] = 10;
+  $form['save']['#weight'] = 11;
 }

@@ -182,3 +182,19 @@ function os_basetheme_link(array $variables) {
   $href = ($variables['path'] === false)?'':'href="' . check_plain(url($variables['path'], $variables['options'])) . '" ';
   return '<a ' . $href . drupal_attributes($variables['options']['attributes']) . '>' . ($variables['options']['html'] ? $variables['text'] : check_plain($variables['text'])) . '</a>';
 }
+
+/**
+ * The adaptive theme implements a hook_menu_tree but return a rendered ul
+ * wrapped with a ul - this will cause to the menu html to be"
+ *  <ul...>
+ *    <ul ...>
+ *      ...
+ *    </ul>
+ *  </ul>
+ *
+ * We need to implement our own hook_menu_tree to prevent a double ul tag
+ * wrapping.
+ */
+function os_basetheme_menu_tree(&$variables) {
+  return $variables['tree'];
+}

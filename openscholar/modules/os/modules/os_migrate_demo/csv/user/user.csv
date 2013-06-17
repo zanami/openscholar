@@ -1,2 +1,3 @@
-ID,Site,Username,Password,Email,First name,Last name
-user1,personal2,michelle,FourMoreYears,michelle@whitehouse.gov,Michelle,Obama
+ID,Username,Password,Email,First name,Last name,Role
+user1,michelle,FourMoreYears,michelle@whitehouse.gov,Michelle,Obama,vsite user
+user2,john,jfk,jfk@whitehouse.gov,John,Kennedy,vsite admin

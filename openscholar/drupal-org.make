@@ -1,4 +1,4 @@
-; Drupal.org release file.
+; Drupal.org MakeFile for OpenScholar.
 core = 7.x
 api = 2
 
@@ -33,7 +33,7 @@ projects[colorbox][version] = 2.4
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
 projects[comment_sources][download][branch] = 7.x-2.x
-projects[comment_sources][download][revision] = 6b9ee8d2787dda840dc2353a2a571c27f7376060
+projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
 ; patches needed
@@ -71,7 +71,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
+projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -98,6 +98,7 @@ projects[entityreference_prepopulate][subdir] = "contrib"
 ; projects[entityreference_prepopulate][version] = 1.3
 projects[entityreference_prepopulate][download][type] = git
 projects[entityreference_prepopulate][download][revision] = e2c2811
+projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
 ; projects[entity_dependency][subdir] = "contrib"
 ; projects[entity_dependency][version] = 1.x-dev
@@ -123,6 +124,7 @@ projects[fb_social][subdir] = "contrib"
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
+projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/fb_social.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
@@ -299,6 +301,9 @@ projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
 
+projects[registration][subdir] = "contrib"
+projects[registration][version] = 1.1
+
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
 
@@ -366,7 +371,8 @@ projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-of
 
 projects[views_infinite_scroll][subdir] = "contrib"
 projects[views_infinite_scroll][version] = 1.1
-projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
+;projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
+;projects[views_infinite_scroll][patch][] = "http://localhost/patch/views_infinite_scroll-no_auto_scroll-2012910-1.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -420,11 +426,6 @@ libraries[twitter-api-php][type] = "libraries"
 libraries[twitter-api-php][download][type] = "file"
 libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-api-php/archive/master.zip"
 
-libraries[git][type] = "libraries"
-libraries[git][download][type] = "git"
-libraries[git][download][url] = "https://github.com/cpliakas/git-wrapper.git"
-
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
-libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
-libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"
+libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
