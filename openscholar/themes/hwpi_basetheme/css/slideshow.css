@@ -160,6 +160,8 @@ a.rslides_nav.prev {
 
  #layout_3_1_overlay .hero-copy {
     background: none repeat scroll 0 0 rgba(30, 30, 30, 0.6);
+    filter:alpha(opacity=60);
+     -moz-opacity:0.6;
     position: relative;
     width: 420px;
     z-index: 2;
@@ -217,6 +219,8 @@ a.rslides_nav.prev {
 
 #layout_16_9_overlay .hero-copy {
     background: none repeat scroll 0 0 rgba(30, 30, 30, 0.6);
+    filter:alpha(opacity=60);
+    -moz-opacity:0.6;
     bottom: 0;
     padding-bottom: 48px;
     position: absolute;
