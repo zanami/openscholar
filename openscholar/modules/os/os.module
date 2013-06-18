@@ -191,6 +191,7 @@ function os_block_view_alter(&$block, &$data) {
       '#theme' => $theme,
       '#menu_name' => $data->delta,
       '#region' => $data->region,
+        '#test' => 'flag',
     );
   }
 
@@ -374,6 +375,15 @@ function os_theme() {
       ),
     ),
   );
+}
+
+/**
+ * Implements hook_theme_registry_alter
+ *
+ * Removes template_preprocess_menu_tree so that os_basetheme_preprocess_menu_tree has access to all vars.
+ */
+function os_theme_registry_alter(&$reg) {
+  $reg['menu_tree']['preprocess functions'] = array_diff($reg['menu_tree']['preprocess functions'], array('template_preprocess_menu_tree'));
 }
 
 /**
