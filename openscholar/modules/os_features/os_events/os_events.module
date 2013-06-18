@@ -160,7 +160,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
         $path .= str_replace('calendar', '', $_GET['q']);
       }
 
-      $view->attachment_before = "<div class='links'>" . l(t($label), $path, array('attributes' => array('class' => array(strtolower($label))))) . "</div>";
+      $view->attachment_before .= "<div class='links'>" . l(t($label), $path, array('attributes' => array('class' => array(strtolower($label))))) . "</div>";
     }
   }
 
