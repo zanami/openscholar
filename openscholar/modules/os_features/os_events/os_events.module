@@ -21,6 +21,7 @@ function os_events_os_app_info() {
         'page_3' => array('calendar'), // Year display
         'page_4', // Upcoming
         'feed_1', // iCal
+        'feed_2', // rss
       ),
     ),
   );
@@ -149,17 +150,18 @@ function os_events_preprocess_calendar_datebox(&$vars) {
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
   if (!in_array($display_id, array('block_2', 'block_1'))) {
-    $path = 'calendar/export.ics';
+    foreach (array('iCal' => 'calendar/export.ics', 'rss' => 'calendar/rss.xml') as $label => $path) {
 
-    // When the user is filtering events by taxonomy term we need to add the
-    // path to the iCal export path.
-    if (os_taxonomy_in_taxonomy_term_context($view)) {
-      // Get the current taxonomy term path from the $_GET['q'] and remove the
-      // word calendar for prevent duplication of the word.
-      $path .= str_replace('calendar', '', $_GET['q']);
+      // When the user is filtering events by taxonomy term we need to add the
+      // path to the iCal/rss export path.
+      if (os_taxonomy_in_taxonomy_term_context($view)) {
+        // Get the current taxonomy term path from the $_GET['q'] and remove the
+        // word calendar for prevent duplication of the word.
+        $path .= str_replace('calendar', '', $_GET['q']);
+      }
+
+      $view->attachment_before .= "<div class='links'>" . l(t($label), $path, array('attributes' => array('class' => array(strtolower($label))))) . "</div>";
     }
-
-    $view->attachment_before = "<div class='links'>" . l(t('iCal'), $path, array('attributes' => array('class' => array('ical')))) . "</div>";
   }
 
   if (empty($view->display_handler->display->display_options['pager']['options']['date_id'])) {
@@ -414,6 +416,9 @@ function os_events_preprocess_node(&$variables) {
 
   $variables['content']['ical'] = array(
     '#markup' => "<div class='links'>" . l(t('iCal'), 'calendar/export.ics', array('attributes' => array('class' => array('ical')))) . "</div>",
+  );
+  $variables['content']['rss'] = array(
+    '#markup' => "<div class='links'>" . l(t('rss'), 'calendar/rss.xml', array('attributes' => array('class' => array('rss')))) . "</div>",
   );
 }
 
