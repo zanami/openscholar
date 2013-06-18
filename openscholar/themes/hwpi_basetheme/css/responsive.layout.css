@@ -376,14 +376,6 @@ padding: 0.3em 0.1em;
 	margin-left:15px!important;
 
 }
-}
-
-/*--------------------------------------------------------*/
-@media (max-width:400px){
-	/*Header*/
-.branding-left img {
-   width:85%;
-}
 
 .file-os-files-large,
 .file-os-files-xlarge,
@@ -391,6 +383,14 @@ padding: 0.3em 0.1em;
 .file-os-files-small,
 .file-os-files-medium {
     padding-right: 0px!important;
+}
+}
+
+/*--------------------------------------------------------*/
+@media (max-width:400px){
+	/*Header*/
+.branding-left img {
+   width:85%;
 }
 
 /*Footer*/
