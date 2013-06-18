@@ -39,7 +39,6 @@ projects[comment_sources][download][branch] = 7.x-2.x
 projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
-; patches needed
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
