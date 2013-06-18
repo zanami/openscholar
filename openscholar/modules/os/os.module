@@ -191,7 +191,6 @@ function os_block_view_alter(&$block, &$data) {
       '#theme' => $theme,
       '#menu_name' => $data->delta,
       '#region' => $data->region,
-        '#test' => 'flag',
     );
   }
 
