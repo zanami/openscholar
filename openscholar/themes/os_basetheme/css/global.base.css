@@ -462,8 +462,19 @@ ul ul ul ul {
   top: -10px;
   right: 0px;
 }
+
+.view-os-events.view-id-os_events .attachment-before .links {
+ display:inline-block;
+ margin-left:8px;
+}
+
 .view-os-events.view-id-os_events .attachment-before .ical {
 background:url('../images/ical_icon.gif') no-repeat;
+padding:2px 0 2px 25px;
+}
+
+.view-os-events.view-id-os_events .attachment-before .rss {
+background:url('../images/rss_icon.gif') no-repeat;
 padding:2px 0 2px 25px;
 }
 
