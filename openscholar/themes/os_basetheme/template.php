@@ -198,8 +198,24 @@ function os_basetheme_link(array $variables) {
  *  </ul>
  *
  * We need to implement our own hook_menu_tree to prevent a double ul tag
- * wrapping.
+ * wrapping.  But when we're not using nice menus, use the original adaptive theme.
  */
 function os_basetheme_menu_tree(&$variables) {
-  return $variables['tree'];
+  if (isset($variables['os_nice_menus']) && $variables['os_nice_menus']) {
+    return $variables['tree'];
+  }
+  
+  return adaptivetheme_menu_tree($variables);
+}
+
+/**
+ * Implements template_preprocess_HOOK() for theme_menu_tree().
+ * 
+ * template_preprocess_menu_tree has been removed.  This replaces it and sets a flag
+ * when we're using nice_menus.
+ */
+function os_basetheme_preprocess_menu_tree(&$variables) {
+  $variables['os_nice_menus'] = ($variables['tree']['#theme'] == 'os_nice_menus');
+  $variables['tree'] = $variables['tree']['#children'];
+  
 }

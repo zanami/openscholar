@@ -377,6 +377,15 @@ function os_theme() {
 }
 
 /**
+ * Implements hook_theme_registry_alter
+ *
+ * Removes template_preprocess_menu_tree so that os_basetheme_preprocess_menu_tree has access to all vars.
+ */
+function os_theme_registry_alter(&$reg) {
+  $reg['menu_tree']['preprocess functions'] = array_diff($reg['menu_tree']['preprocess functions'], array('template_preprocess_menu_tree'));
+}
+
+/**
  * Implements hook_module_implements_alter().
  *
  * Removes purl from hook_init's implementations queue since it was already run
