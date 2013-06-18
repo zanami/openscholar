@@ -53,7 +53,7 @@ class vsite extends space_og {
 
     //Check if the current user has access to activate this space.
     if(!$this->access_space()){
-      module_invoke_all('vsite_access_denied',$this->group);
+      module_invoke_all('vsite_access_denied',$this);
       drupal_access_denied();
       drupal_exit();
     }
