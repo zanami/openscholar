@@ -258,12 +258,12 @@ ul.primary li a {
     min-height: 20px;
 }
 .region-header-third #block-os-secondary-menu.opened {
-    top: 55px!important;
+    top: 65px!important;
     width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
-    top: 55px!important;
+    top: 65px!important;
 }
 .region-header-third {
     margin-left: 0 !important;
@@ -271,6 +271,15 @@ ul.primary li a {
     float:left!important;
 }  
 
+}
+/*--------------------------------------------------------*/
+@media (max-width: 479px) {
+.region-header-third #block-os-secondary-menu.opened {
+    top: 57px!important;
+
+}		
+	
+	
 }
 
 /*--------------------------------------------------------*/
