@@ -79,6 +79,10 @@ class os_boxes_mailchimp extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
+      return;
+    }
+
     $block = parent::render();
     global $user;
     $defaults = $this->options_defaults();
