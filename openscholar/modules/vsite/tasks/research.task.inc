@@ -51,7 +51,7 @@ class vsiteTaskResearchSection extends vsite_task {
         'link_title' => 'Research',
         'description' => '',
         'parent' => 'primary-menu',
-        'weight' => 0,
+        'weight' => 10,
         'new_window' => '',
         'dirty' => 1
       ),

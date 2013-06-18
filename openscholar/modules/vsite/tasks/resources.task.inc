@@ -32,7 +32,7 @@ class vsiteTaskResourcesSection extends vsite_task {
         'plid' => 0,
         'mlid' => 0,
         'has_children' => 0,
-        'weight' => 0,
+        'weight' => 20,
         'module' => 'book',
         'options' => array(),
         'parent_depth_limit' => 8

@@ -50,7 +50,7 @@ class vsiteTaskNewsEventsSection extends vsite_task {
         'link_title' => 'News & Events',
         'description' => '',
         'parent' => 'primary-menu',
-        'weight' => 0,
+        'weight' => 90,
         'new_window' => '',
         'dirty' => 1
       ),
@@ -58,6 +58,9 @@ class vsiteTaskNewsEventsSection extends vsite_task {
 
     ctools_include('menu','os');
     $ne_mlid = vsite_menu_get_link_path('primary-menu', 'node/'.$ne_node->nid);
+
+    $old_news_mlid = vsite_menu_get_link_path('primary-menu', 'news');
+    os_menu_link_delete_link('primary-menu', $old_news_mlid);
 
     $news_item = array(
       'link_path' => 'news',

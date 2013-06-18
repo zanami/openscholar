@@ -73,7 +73,7 @@ function os_spaces_presets() {
           'link_title' => 'HOME',
           'options' => array(),
           'external' => 0,
-          'weight' => 0,
+          'weight' => -90,
           'hidden' => 0,
           'has_children' => 0,
           'expanded' => 0,
