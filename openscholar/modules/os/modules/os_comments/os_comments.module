@@ -436,7 +436,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
  * This form would only ever appear to authorized roles.
  * But we still want to restrict comments to just the current vsite's users.
  */
-function os_comments_form_comment_form_alter(&$form, &$form_state, $form_id) {
+function os_comments_form_comment_form_alter(&$form, &$form_state) {
   // Only looks for users of other groups if vsite module is enabled.
   if (!module_exists('vsite')) {
     return;
