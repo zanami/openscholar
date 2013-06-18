@@ -10,22 +10,7 @@
  */
 
 // Get a list of fields that may contain files: files and image crop.
-$field_instances = field_info_instances('node');
-$file_fields = array();
-
-foreach ($field_instances as $bundle => $instances) {
-  foreach ($instances as $instance) {
-    $field_info = field_info_field($instance['field_name']);
-
-    if (!in_array($field_info['type'], array('file', 'imagefield_crop'))) {
-      continue;
-    }
-
-    $file_fields[] = $instance['field_name'];
-  }
-}
-
-$file_fields = array_unique($file_fields);
+$file_fields = os_files_file_fields();
 
 // Run through the nodes.
 $nid = drush_get_option('nid', variable_get('os_files_last_nid', 0));
