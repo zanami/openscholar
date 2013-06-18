@@ -401,6 +401,43 @@ ul ul ul ul {
     display: block;
 }
 
+.view-os-events.view-id-os_events {
+  position: relative;
+}
+
+.view-display-id-page_4 .view-content,
+.view-display-id-page_5 .view-content {
+  padding-top: 10px;
+}
+
+.view-os-events.view-id-os_events .view-header {
+  padding-top: 30px;
+}
+
+.node-event {
+  position: relative;
+}
+
+/* Don't display the ical link in the floating box. */
+#cboxWrapper .node-event .links {
+  display: none;
+}
+
+.node-event .links {
+  position: absolute;
+  top: 0px;
+  right: 0px; /* LTR */
+}
+
+.node-event .node-content {
+  padding-top: 30px;
+}
+
+.view-os-events.view-id-os_events .attachment-before {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
 
 /* BOOK NAVS */
 .book-menu {
