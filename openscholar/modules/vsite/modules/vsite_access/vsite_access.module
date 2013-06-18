@@ -357,6 +357,10 @@ function vsite_access_update_robots($group, $privacy) {
 
     // Also hides other vsites from any custom domain for this vsite.
     if ($has_custom_domain) {
+      // Ensures that the array for this domain's directives exists.
+      if (!isset($directives[$vsite_domain])) {
+        $directives[$vsite_domain] = array();
+      }
       // Uses Allow and Disallow directive to hide only other vsite's files.
       // First, makes an exception to override the Disallow and include this site.
       // Then, excludes all individual sites' files directories based on pattern.
