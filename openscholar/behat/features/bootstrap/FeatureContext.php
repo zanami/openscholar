@@ -903,3 +903,18 @@ class FeatureContext extends DrupalContext {
     );
   }
 }
+
+/**
+ * @Given /^no boxes display outside the site context$/
+ */
+function noBoxesDisplayOutsideTheSiteContext() {
+  // Runs a test of loading all existing boxes and checking if they have output.
+  // @todo ideally we would actually create a box of each kind and test each.
+  $code = 'include_once("profiles/openscholar/modules/os/modules/os_boxes/tests/os_boxes.behat.inc");';
+  $code .= '_os_boxes_test_load_all_boxes_outside_vsite_context();';
+  $error = $this->getDriver()->drush("php-eval \"{$code}\"");
+  if ($error) {
+    throw new Exception(sprintf("At least one box returned output outside of a vsite: %s", $key));
+  }
+}
+
