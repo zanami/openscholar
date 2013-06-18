@@ -459,8 +459,12 @@ ul ul ul ul {
 
 .view-os-events.view-id-os_events .attachment-before {
   position: absolute;
-  top: 0px;
+  top: -10px;
   right: 0px;
+}
+.view-os-events.view-id-os_events .attachment-before .ical {
+background:url('../images/ical_icon.gif') no-repeat;
+padding:2px 0 2px 25px;
 }
 
 /* BOOK NAVS */
