@@ -1,13 +1,11 @@
 @media (max-width: 1008px) {
 	
-
 .link-count-mobi-util {
     width: 20%;
 }
 .link-count-mobi-search {
     width: 20%;
 }
-
 ul.primary li a {
     background-color: #F3F3F1;
     border-color: #E4E4E4;
@@ -29,7 +27,6 @@ ul.primary li a {
 .block-boxes-os_boxes_slideshow{
 	border-top:none!important;
 }
- 
 .front #content-column .block, 
 .node-person .block-inner, 
 .comment-wrapper {
@@ -56,8 +53,9 @@ ul.primary li a {
 #block-os-primary-menu a:focus{
 	background-color:#24527a!important;
 }
-
 }
+
+/*--------------------------------------------------------*/
 @media (max-width: 768px) {
 .front #content-column .block.block-boxes-os_boxes_manual_list {
     margin-bottom: 20px;

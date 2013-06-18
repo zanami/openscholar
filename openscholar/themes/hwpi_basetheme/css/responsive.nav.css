@@ -153,7 +153,6 @@ display:none;
 .region-header-third ol {
     margin: 0 !important;
 }
-/**/
 .flexslider {
     background: none repeat scroll 0 0 transparent;
     min-height: 315px;
@@ -261,8 +260,10 @@ ul.primary li a {
     width: 100%!important;
     float:left!important;
 }  
-	
+
 }
+
+/*--------------------------------------------------------*/
 @media (max-width:400px){
 	
 .region-header-third #block-os-secondary-menu.opened {
