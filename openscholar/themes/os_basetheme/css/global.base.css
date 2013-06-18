@@ -201,12 +201,11 @@ a, a:visited {
 
 #autopager-load-more:hover, #autopager-load-prev:hover {
      background-color: #FFFFFF;
-     cursor: pointer;
 }
 
 #autopager-load-prev a,
 #autopager-load-more a {
-     background: none repeat scroll 0% 0% #EBEBEB;
+     background: #f1f1f1;
      border-radius: 4px 4px 4px 4px;
      border: 1px solid #CCCCCC;
      color: #215990;
@@ -214,8 +213,14 @@ a, a:visited {
      font-size: 13px;
      font-weight: bold;
      margin: 0px auto;
-     padding: 5px 20px;
-     width: 30%;
+     padding: 3px;
+     width: 25%;
+}
+
+#autopager-load-prev a:hover,
+#autopager-load-more a:hover {
+    text-decoration:none !important;
+    cursor: pointer;
 }
 
 em,
