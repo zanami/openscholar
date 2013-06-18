@@ -1,8 +1,13 @@
 @media (max-width: 1059px) {
 .branding-left {
-    margin: 10px 0 0 0!important;}
-
+    margin: 10px 0 0 0!important;
 }
+.region-header-second {
+    max-height: 120px;
+}
+}
+
+/*--------------------------------------------------------*/
 @media (max-width: 1008px){
 
 .media-element[style] {
@@ -360,7 +365,7 @@ padding: 0.3em 0.1em;
 }
 .region-header-second .media-element[style]{
 	display:table;
-	max-width:50%!important;
+	max-width:30%!important;
 }
 .region-header-second table p[style]{
 	position:relative;
@@ -383,6 +388,9 @@ padding: 0.3em 0.1em;
 .file-os-files-small,
 .file-os-files-medium {
     padding-right: 0px!important;
+}
+.branding-left img {
+   width:65%!important;
 }
 }
 

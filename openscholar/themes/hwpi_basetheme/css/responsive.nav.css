@@ -103,7 +103,7 @@ display:none;
     padding: 12px 0;
     position: absolute;
     text-align: left;
-    top: 160px;
+    top: 59px;
     width: 100%;
     z-index: 19;
 }
@@ -112,7 +112,7 @@ display:none;
     display: block;
     left: 15px;
     position: absolute;
-    top: 160px;
+    top: 59px;
     z-index: 3;
     width:100%;
 }
@@ -248,12 +248,12 @@ ul.primary li a {
     min-height: 20px;
 }
 .region-header-third #block-os-secondary-menu.opened {
-    top: 44px!important;
+    top: 170px!important;
     width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
-    top: 44px!important;
+    top: 170px!important;
 }
 .region-header-third {
     margin-left: 0 !important;
