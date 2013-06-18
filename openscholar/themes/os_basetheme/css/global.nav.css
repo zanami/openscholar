@@ -480,15 +480,17 @@ color: #FFF !important;
 /** CONTEXTUAL ADD NEW AND CONFIG DROPDOWN LINK CONTROLS **/
 .contextual-controls-wrapper {
     margin: 15px 0 10px;
-    position: absolute;
-    right: 0;
-    top: 0;
+    /*position: absolute;*/
+    position: relative;
+    /*right: 0;
+    top: 0;*/
     width: auto;
     z-index: 18;
 }
 
 #content-column div.contextual-links-wrapper.contextual-links-processed {
-   right: -15px;
+   /*right: -15px;*/
+   right: 0;
    z-index: 19;
 }
 
