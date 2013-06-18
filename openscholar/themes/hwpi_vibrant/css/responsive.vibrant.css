@@ -1,9 +1,6 @@
 @media (max-width: 1008px) {
-	
-	
+		
 	/* menus */
-	
-	
 .link-count-mobi-main a {
     background-color: #fff!important;
     color: #000!important;
@@ -83,7 +80,6 @@
 ul.menu {
     margin-left: 15px !important;
 }
-
 #menu-bar ul.nice-menu li {
     background-color: #FFFFFF !important;
     margin-right: 30px !important;
@@ -115,7 +111,6 @@ ul.menu {
     margin: -40px 0 35px!important;
 }
 /* column layouts */
-
 .page-node #content-column .content-inner {
     padding: 0 2% !important;
 }
@@ -126,13 +121,8 @@ ul.menu {
 }
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none repeat scroll 0 0 #24527A !important;
-
 }
-
-
 /* calendar arrows */
-
-
 .one-sidebar #main-content .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
