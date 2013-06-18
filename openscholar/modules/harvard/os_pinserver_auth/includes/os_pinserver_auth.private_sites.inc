@@ -45,7 +45,8 @@ function _os_pinserver_auth_vsite_access_denied($vsite){
       case OS_PINSERVER_INTRANET_ACCESS :
       case OS_PINSERVER_ACCESS :
         // Private group.
-        if (! user_access('administer group') && ! og_is_member('node', $vsite->group->nid, 'user', $account)) {
+        global $user;
+        if (! user_access('administer group') && ! og_is_member('node', $vsite->group->nid, 'user', $user) && !pinserver_check_system_settings()) {
           //Load custom pinserver variables
           $vsite->controllers->variable->init_overrides();
 
