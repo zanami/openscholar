@@ -373,6 +373,13 @@ padding: 0.3em 0.1em;
 #branding_footer{
     padding-bottom: 20px;
 }
+.file-os-files-large,
+.file-os-files-xlarge,
+.file-os-files-xxlarge,
+.file-os-files-small,
+.file-os-files-medium {
+    padding-right: 0px;
+}
 .region-header-second tr, 
 .region-header-second td {
     display: inline !important;
