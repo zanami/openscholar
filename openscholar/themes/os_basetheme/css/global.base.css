@@ -194,6 +194,30 @@ a, a:visited {
     color: #005C9C;
 }
 
+/* INFINITE SCROLL BUTTON */
+#autopager-load-more, #autopager-load-prev {
+     text-align: center;
+}
+
+#autopager-load-more:hover, #autopager-load-prev:hover {
+     background-color: #FFFFFF;
+     cursor: pointer;
+}
+
+#autopager-load-prev a,
+#autopager-load-more a {
+     background: none repeat scroll 0% 0% #EBEBEB;
+     border-radius: 4px 4px 4px 4px;
+     border: 1px solid #CCCCCC;
+     color: #215990;
+     display: block;
+     font-size: 13px;
+     font-weight: bold;
+     margin: 0px auto;
+     padding: 5px 20px;
+     width: 30%;
+}
+
 em,
 dfn {
   font-style: italic;
