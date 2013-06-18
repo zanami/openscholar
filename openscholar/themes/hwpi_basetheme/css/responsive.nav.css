@@ -103,7 +103,7 @@ display:none;
     padding: 12px 0;
     position: absolute;
     text-align: left;
-    top: 59px;
+    top: 160px;
     width: 100%;
     z-index: 19;
 }
@@ -112,7 +112,7 @@ display:none;
     display: block;
     left: 15px;
     position: absolute;
-    top: 59px;
+    top: 160px;
     z-index: 3;
     width:100%;
 }
@@ -272,5 +272,6 @@ ul.primary li a {
 #search-block-form .container-inline .form-item .form-text {
     width: 75% !important;
 }
+
 
 }
