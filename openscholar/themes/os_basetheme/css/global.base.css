@@ -468,17 +468,18 @@ ul ul ul ul {
   right: 0px;
 }
 
+.node-event.article .node-content .links,
 .view-os-events.view-id-os_events .attachment-before .links {
  display:inline-block;
  margin-left:8px;
 }
 
-.view-os-events.view-id-os_events .attachment-before .ical {
+.ical {
 background:url('../images/ical_icon.gif') no-repeat;
 padding:2px 0 2px 25px;
 }
 
-.view-os-events.view-id-os_events .attachment-before .rss {
+.rss {
 background:url('../images/rss_icon.gif') no-repeat;
 padding:2px 0 2px 25px;
 }
