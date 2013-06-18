@@ -30,7 +30,7 @@ ul.primary li a {
 .front #content-column .block, 
 .node-person .block-inner, 
 .comment-wrapper {
-    margin-top: -10px;
+    margin-top: 10px;
 }
 
 /*Dropdown menu*/
