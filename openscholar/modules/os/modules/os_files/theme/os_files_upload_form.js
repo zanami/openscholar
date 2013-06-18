@@ -1,3 +1,5 @@
+
+(function () {
 /**
  * Adds a new button for uploading and submits the form automatically
  */
@@ -26,7 +28,7 @@ Drupal.behaviors.os_upload_form = {
       
       function changeHandler (e) {
         if (!('result' in e) || e.result) {
-          $('#file-entity-add-upload .form-actions #edit-next', ctx).click();
+          $('#file-entity-add-upload .form-actions #edit-next, #os-files-upload .use-ajax-submit', ctx).click();
         }
         $file_select.removeClass('focus');
       }
@@ -35,3 +37,4 @@ Drupal.behaviors.os_upload_form = {
     }
   }
 };
+})();

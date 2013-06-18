@@ -1,22 +1,27 @@
-#file-entity-add-upload .form-item-upload {
+#file-entity-add-upload .form-item-upload,
+#os-files-upload .form-item-upload {
 	text-align: center;
 	margin: 50px 0;
 }
 
-#file-entity-add-upload .form-item-upload input {
+#file-entity-add-upload .form-item-upload input,
+#os-files-upload .form-item-upload input {
 	display: none;
 }
 
-#file-entity-add-upload label[for="edit-upload"] {
+#file-entity-add-upload label[for="edit-upload"],
+#os-files-upload label[for="edit-upload"] {
 	display: inline-block;
 	vertical-align: top;
 }
 
-#file-entity-add-upload .form-required {
+#file-entity-add-upload .form-required,
+#os-files-upload .form-required {
 	display: none;
 }
 
-#file-entity-add-upload .form-help {
+#file-entity-add-upload .form-help,
+#os-files-upload .form-help {
 	background: url('../../../../../themes/os_basetheme/images/scholarbase-sprite.png') no-repeat 0 -150px;
 	width: 20px;
 	height: 20px;
@@ -26,33 +31,40 @@
 	margin: 0 5px;
 }
 
-#file-entity-add-upload .form-item-upload .form-help:hover {
+#file-entity-add-upload .form-item-upload .form-help:hover,
+#os-files-upload .form-item-upload .form-help:hover {
 	background-position: 0 -170px;
 }
 
-#file-entity-add-upload .form-item-upload .form-file {
+#file-entity-add-upload .form-item-upload .form-file,
+#os-files-upload .form-item-upload .form-file {
 	display: block;
 	position: absolute;
 	top: -1000000px;
 }
 
-#file-entity-add-upload .form-item-upload input.file-select {
+#file-entity-add-upload .form-item-upload input.file-select,
+#os-files-upload .form-item-upload input.file-select {
 	display: inline-block;
 }
 
-#file-entity-add-upload .form-item-upload .description {
+#file-entity-add-upload .form-item-upload .description,
+#os-files-upload .form-item-upload .description {
 	visibility: hidden;
 }
 
-#file-entity-add-upload .form-item-upload .form-help:hover ~ .description {
+#file-entity-add-upload .form-item-upload .form-help:hover ~ .description,
+#os-files-upload .form-item-upload .form-help:hover ~ .description{
 	visibility: visible;
 }
 
-#file-entity-add-upload .form-actions {
+#file-entity-add-upload .form-actions,
+#os-files-upload .form-actions{
 	text-align: right;
 }
 
-#file-entity-add-upload #edit-upload-ajax-wrapper ~ .form-actions input {
+#file-entity-add-upload #edit-upload-ajax-wrapper ~ .form-actions input,
+#os-files-upload #edit-upload-ajax-wrapper ~ .form-actions input{
 	display: none;
 }
 
@@ -80,4 +92,110 @@
 	color: #fff;
 	border-color: #555;
 	text-shadow: #222 0 -1px 0;
+}
+
+#os-files-upload {
+   position: absolute;
+   top: -2px;
+   z-index: 5;
+   height: 40px;
+ }
+
+#os-files-upload:after {
+  content: 'Or';
+  position: absolute;
+  top: 1.7em;
+  left: 95px;
+}
+
+#os-files-upload .form-item-upload {
+  margin: 0;
+}
+
+#os-files-upload .form-actions {
+  display: none;
+}
+
+#os-files-upload label[for="edit-upload"] {
+  display: none;
+}
+
+#os-files-upload .form-help {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#os-files-upload .description {
+  position: absolute;
+  background: white;
+  padding: 5px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  width: 200px;
+  bottom: -125px;
+  left: 0;
+}
+
+.messages {
+  float: right;
+  width: 45%;
+}
+
+#os-files-upload #edit-upload .file-select,
+#media-internet-wrapper .media-internet-btn {
+  padding: 13px 13px;
+  background: #A1D4A1;
+  border-radius: 5px;
+  border: 1px solid #8B8;
+  color: #293552;
+}
+
+#os-files-upload .form-item-upload .form-file {
+  left: -500px;
+}
+
+.view-filters {
+  border-bottom: 1px solid lightgrey;
+  margin-bottom: 0.75em;
+}
+
+.view-filters .views-exposed-form .views-exposed-widgets {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.ctools-auto-submit-full-form {
+  margin-left: 235px;
+}
+
+#media-internet-wrapper {
+  position: absolute;
+  left: 128px;
+  top: 7px;
+  z-index: 5;
+}
+
+#media-internet-wrapper:after {
+  content: 'Or';
+  position: absolute;
+  top: 1em;
+  left: 75px;
+}
+
+#media-internet-add {
+  position: absolute;
+  background: white;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  top: 47px;
+  left: 0px;
+  width: 450px;
+  padding: 5px 15px;
+  display: none;
+}
+
+#media-internet-wrapper:hover #media-internet-add {
+  display: block;
 }
