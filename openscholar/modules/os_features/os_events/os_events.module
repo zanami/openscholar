@@ -149,6 +149,10 @@ function os_events_preprocess_calendar_datebox(&$vars) {
  * Implements hook_views_pre_view().
  */
 function os_events_views_pre_view(&$view, &$display_id, &$args) {
+  if ($view->name != 'os_events') {
+    return;
+  }
+
   if (!in_array($display_id, array('block_2', 'block_1'))) {
     foreach (array('iCal' => 'calendar/export.ics', 'rss' => 'calendar/rss.xml') as $label => $path) {
 
@@ -410,15 +414,25 @@ function os_events_preprocess_link(&$variables) {
  * Adding a link to the iCal in the event page.
  */
 function os_events_preprocess_node(&$variables) {
-  if ($variables['type'] != 'event') {
+  if ($variables['type'] != 'event' || !$variables['page']) {
     return;
   }
 
-  $variables['content']['ical'] = array(
-    '#markup' => "<div class='links'>" . l(t('iCal'), 'calendar/export.ics', array('attributes' => array('class' => array('ical')))) . "</div>",
-  );
-  $variables['content']['rss'] = array(
-    '#markup' => "<div class='links'>" . l(t('rss'), 'calendar/rss.xml', array('attributes' => array('class' => array('rss')))) . "</div>",
+  $variables['content']['links'] = array(
+    '#theme' => 'links',
+    '#links' => array(
+      array(
+        'title' => t('iCal'),
+        'href' => 'calendar/export.ics',
+        'attributes' => array('class' => array('ical')),
+      ),
+      array(
+        'title' => t('rss'),
+        'href' => 'calendar/rss.xml',
+        'attributes' => array('class' => array('rss')),
+      ),
+    ),
+    "attributes" => array('class' => array('link')),
   );
 }
 

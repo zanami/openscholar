@@ -482,7 +482,7 @@ color: #FFF !important;
     margin: 15px 0 10px;
     position: absolute;
     right: 0;
-    /*top: 0;*/
+    top: 0;
     width: auto;
     z-index: 18;
 }
