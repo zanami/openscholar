@@ -10,12 +10,12 @@ function hwpi_update_7001(&$sandbox) {
 /**
  * Grants anonymous users access to create department sites.
  */
-function hwpi_update_7002() {
-  $permissions = array(
-    'create department content',
-  );
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, $permissions);
-}
+//function hwpi_update_7002() {
+//  $permissions = array(
+//    'create department content',
+//  );
+//  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, $permissions);
+//}
 
 /**
  * Sets action menu order to be correct after css change reversed it
