@@ -437,7 +437,6 @@ function os_files_update_7004(&$sb) {
   }
 }
 
-
 /**
  * Remove file reference to file which no longer exists.
  */
@@ -470,7 +469,6 @@ function os_files_update_7005(&$sandbox) {
   $nodes = node_load_multiple(array_keys($result['node']));
   foreach ($nodes as $node) {
     $changed = FALSE;
-    $deleted_files = 0;
     foreach ($file_fields as $file_field) {
 
       if (empty($node->{$file_field}[LANGUAGE_NONE])) {
@@ -482,7 +480,6 @@ function os_files_update_7005(&$sandbox) {
 
         if (empty($file_info)) {
           unset($node->{$file_field}[LANGUAGE_NONE][$delta]);
-          $deleted_files++;
           $changed = TRUE;
         }
       }
@@ -491,6 +488,11 @@ function os_files_update_7005(&$sandbox) {
     // The node has changed, saving him.
     if ($changed) {
       node_save($node);
+      if (drupal_is_cli()) {
+        drush_log(dt("Updating the node @title.", array(
+          '@title' => $node->title,
+        )), 'success');
+      }
     }
 
     $sandbox['progress']++;
