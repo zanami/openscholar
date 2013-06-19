@@ -604,7 +604,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     $form_state['subtheme'] = $subtheme;
   }
 
-  $form['branches-wrapper'] = array(
+  $form['branches_wrapper'] = array(
     '#prefix' => '<div id="branches-wrapper">',
     '#suffix' => '</div>',
   );
@@ -612,7 +612,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   $valid_repo = FALSE;
 
   if ($branches) {
-    $form['branches-wrapper']['branch'] = array(
+    $form['branches_wrapper']['branch'] = array(
       '#type' => 'select',
       '#title' => t('Branch'),
       '#description' => t('Enter the branch of the git repository'),
@@ -623,10 +623,10 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     $valid_repo = TRUE;
   }
   elseif (!$branches && $repository_address) {
-    $form['branches-wrapper']['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
+    $form['branches_wrapper']['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
   }
   if ($valid_repo) {
-    $form['branches-wrapper']['actions'] = array(
+    $form['branches_wrapper']['actions'] = array(
       '#type' => 'actions',
       'submit' => array(
         '#type' => 'submit',
@@ -636,7 +636,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   }
   else {
     // Place holder for Ajax.
-    $form['branches-wrapper']['actions'] = array(
+    $form['branches_wrapper']['actions'] = array(
       '#type' => 'actions',
       'submit' => array(
         '#markup' => '<a href="#">' . t('Fetch branches') . '</a>',
@@ -651,7 +651,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
  * Return piece of the form for AJAX rendering.
  */
 function cp_appearance_git_method_get_ajax_branches($form, $form_state) {
-  return $form['branches-wrapper'];
+  return $form['branches_wrapper'];
 }
 
 /**
