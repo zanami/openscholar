@@ -447,6 +447,10 @@ ul ul ul ul {
   position: relative;
 }
 
+.attachment.attachment-before ul li {
+  border-bottom: none;
+}
+
 /* Don't display the ical link in the floating box. */
 #cboxWrapper .node-event .links {
   display: none;
