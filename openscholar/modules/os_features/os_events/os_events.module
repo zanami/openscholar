@@ -566,3 +566,33 @@ function os_events_preprocess_table(&$variables) {
     unset($variables['rows'][$delta][4], $variables['rows'][$delta][6]);
   }
 }
+
+/**
+ * Implements hook_mollom_form_list().
+ */
+function os_events_mollom_form_list() {
+  $forms = array();
+  $forms['registration_form'] = array(
+    'title' => t('Registration form'),
+    'entity' => 'registration',
+    'bundle' => 'event_signup_simple',
+  );
+  return $forms;
+}
+
+/**
+ * Implements hook_mollom_form_info().
+ */
+function os_events_mollom_form_info($form_id) {
+  $form_info = array(
+    'bundle' => 'event_signup_simple',
+    'elements' => array(),
+    'mapping' => array(
+      'author_email' => 'anon_email',
+    ),
+  );
+
+  mollom_form_info_add_fields($form_info, 'registration', 'event_signup_simple');
+
+  return $form_info;
+}
