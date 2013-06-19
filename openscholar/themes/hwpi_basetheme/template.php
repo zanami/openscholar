@@ -64,13 +64,17 @@ function hwpi_basetheme_page_alter(&$page) {
     )
   );
   
-  if (context_isset('context', 'os_public') && !variable_get('disable_responsive', false)) {
+  if (context_isset('context', 'os_public') && variable_get('enable_responsive', false)) {
     $path = drupal_get_path('theme', 'hwpi_basetheme').'/css/';
     drupal_add_css($path.'responsive.base.css');
     drupal_add_css($path.'responsive.layout.css');
     drupal_add_css($path.'responsive.nav.css');
     drupal_add_css($path.'responsive.slideshow.css');
     drupal_add_css($path.'responsive.widgets.css');
+
+    $theme = $GLOBALS['theme'];
+    $theme_path = drupal_get_path('theme', $theme).'/css/';
+    drupal_add_css($theme_path.'responsive.'.str_replace('hwpi_', '', $theme).'.css');
   }
 }
 

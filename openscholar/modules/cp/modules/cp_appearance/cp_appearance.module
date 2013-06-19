@@ -318,15 +318,15 @@ function cp_appearance_swap_screenshot($form, &$state){
 
 
 function cp_appearance_cp_settings() {
-  $setting['disable_responsive'] = array(
+  $setting['enable_responsive'] = array(
     'group' => array(
       '#title' => t('Responsive'),
       '#id' => 'responsive',
     ),
     'form' => array(
       '#type' => 'checkbox',
-      '#default_value' => variable_get('disable_responsive', false),
-      '#title' => t('Disable responsive behaviors'),
+      '#default_value' => variable_get('enable_responsive', false),
+      '#title' => t('Enable responsive behaviors'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
         on smaller devices.'),
