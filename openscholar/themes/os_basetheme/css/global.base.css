@@ -452,11 +452,6 @@ ul ul ul ul {
   display: none;
 }
 
-.node-event .links {
-  position: absolute;
-  top: 0px;
-  right: 0px; /* LTR */
-}
 
 .node-event .node-content {
   padding-top: 30px;
