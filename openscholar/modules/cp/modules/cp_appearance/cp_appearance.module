@@ -67,7 +67,9 @@ function cp_appearance_menu(){
  * Access callback.
  */
 function cp_appearance_sub_theme_access() {
-  return module_exists('vsite') && vsite_get_vsite() && user_access('manage subtheme');
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    return og_user_access('node', $vsite->group->nid, 'manage subtheme');
+  }
 }
 
 /**
@@ -369,9 +371,9 @@ function cp_appearance_admin_paths() {
 }
 
 /**
- * Implements hook_permission().
+ * Implements hook_og_permission().
  */
-function cp_appearance_permission() {
+function cp_appearance_og_permission() {
   return array(
     'manage subtheme' => array(
       'title' => t('Add subtheme'),
