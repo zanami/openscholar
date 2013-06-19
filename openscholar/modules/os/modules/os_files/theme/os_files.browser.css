@@ -3,8 +3,10 @@
  */
 
 /** Inline block is much cleaner looking than float */
-#media-browser-tabset .item-list .ui-tabs-nav {
-  display: none;
+#media-browser-library-list li {
+	display: inline-block;
+	float: none;
+	vertical-align: top;
 }
 
 .ui-tabs .media-browser-tab.ui-tabs-panel {
@@ -14,7 +16,6 @@
 .view-media-default {
 	margin-right: 230px;
 	border-right: 1px solid lightgray;
-  min-height: 517px;
 }
 
 #file-edit-section {
@@ -70,7 +71,6 @@
 .views-exposed-form .views-widget-filter-filename {
 	display: block;
 	padding-top: 0.5em;
-  float: none;
 }
 
 .form-actions {
@@ -81,27 +81,4 @@
   border-top: 1px solid lightgray;
   padding-top: 10px;
   margin-bottom: 0;
-  position: absolute;
-  bottom: 7px;
-  right: 0;
-  width: 244px;
-  text-align: center;
-
-}
-
-#os-files-upload-replace .form-actions {
-  text-align: left;
-}
-
-#media-browser-library-list li {
-  position: relative;
-  float: none;
-  display: inline-block;
-  vertical-align: top;
-}
-
-#media-browser-library-list li .ajax-progress {
-  position: absolute;
-  bottom: -7px;
-  left: -7px;
 }
