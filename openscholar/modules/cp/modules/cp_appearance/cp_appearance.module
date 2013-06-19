@@ -537,7 +537,7 @@ function cp_appearance_manage_base_submit($form, &$form_state) {
 /**
  * Adding a theme - git.
  */
-function cp_appearance_manage_git($form, $form_state, $type) {
+function cp_appearance_manage_git($form, &$form_state, $type) {
   // Adding the git library.
   require_once libraries_get_path('git') . '/autoload.php';
 
@@ -572,31 +572,35 @@ function cp_appearance_manage_git($form, $form_state, $type) {
 
     $git = $wrapper->workingCopy($path);
 
-    $form['git'] = array(
-      '#type' => 'value',
-      '#value' => $git,
-    );
-
     if (!$git->isCloned()) {
       try {
         $git->clone($repository_address);
+        $git->setCloned(TRUE);
       }
       catch (GitException $e) {
         // Can't clone the repo.
+        drupal_set_message(t('Could not clone @repository, error @error', array('@repository' => $repository_address, '@error' => $e->getMessage(), 'warning')));
       }
     }
 
-    try {
-      foreach ($git->getBranches()->remote() as $branch) {
-        if (strpos($branch, ' -> ') !== FALSE) {
-          // A branch named "origin/HEAD  -> xyz" is provided by the class, we
-          // don't need it.
-          continue;
+    $form['path'] = array(
+      '#type' => 'value',
+      '#value' => $path,
+    );
+
+    if ($git->isCloned()) {
+      try {
+        foreach ($git->getBranches()->remote() as $branch) {
+          if (strpos($branch, ' -> ') !== FALSE) {
+            // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+            // don't need it.
+            continue;
+          }
+          $branches[str_replace(' ', '_', $branch)] = $branch;
         }
-        $branches[str_replace(' ', '_', $branch)] = $branch;
       }
-    }
-    catch (GitException $e) {
+      catch (GitException $e) {
+      }
     }
 
     $subtheme = new SubTheme();
@@ -658,17 +662,32 @@ function cp_appearance_git_method_get_ajax_branches($form, $form_state) {
  * Validate handler - verify the user selected a branch.
  */
 function cp_appearance_manage_git_validate($form, $form_state) {
-  $branch = $form_state['values']['branch'];
-  $git = $form_state['values']['git'];
+  if (empty($form_state['values']['branch'])) {
+    return;
+  }
 
+  require_once libraries_get_path('git') . '/autoload.php';
+
+  $repository = $form_state['values']['repository'];
+  $branch = $form_state['values']['branch'];
+
+  $path = $form_state['values']['path'];
+
+  $wrapper = new GitWrapper();
+  $wrapper->setPrivateKey('.');
+  $git = $wrapper->workingCopy($path);
+
+  // We pull, in case the user wants to reload a subtheme.
   try {
-    $git
-      ->checkout($branch)
-      // We pull, in case the user wants to reload a subtheme.
-      ->pull();
+    $git->checkout($branch, array('t' => TRUE));
   }
   catch (GitException $e) {
-    form_set_error('branch', t('Could not checkout and pull @branch', array('@branch' => $branch)));
+  }
+
+  try {
+    $git->pull();
+  }
+  catch (GitException $e) {
   }
 
   if (empty($form_state['subtheme'])) {
