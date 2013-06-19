@@ -611,7 +611,7 @@ function cp_appearance_manage_git($form, $form_state, $type) {
       '#description' => t('Enter the branch of the git repository'),
       '#options' => array('' => t('Select a branch')) + $branches,
       '#ajax' => array(
-        'callback' => 'cp_appearance_git_method_get_valid_branches',
+        'callback' => 'cp_appearance_git_method_get_ajax_branches',
         'wrapper' => 'branches',
       ),
       '#prefix' => '<div id="branches">',
@@ -657,13 +657,6 @@ function cp_appearance_manage_git($form, $form_state, $type) {
  * Return piece of the form for AJAX rendering.
  */
 function cp_appearance_git_method_get_ajax_branches($form, $form_state) {
-  return $form['branch'];
-}
-
-/**
- * Return piece of the form for AJAX rendering.
- */
-function cp_appearance_git_method_get_valid_branches($form, $form_state) {
   return $form['branch'];
 }
 
