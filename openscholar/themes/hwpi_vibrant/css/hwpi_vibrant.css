@@ -28,6 +28,11 @@ body.front #columns {
 }
 
 
+#content-panels {
+    border-right: none;
+    border-left: none;
+}
+
 /* Conditional backgrounds for the slideshow */
 body.no-sidebars .content-top-slideshow-enabled .region-content-top {
   position: relative;
