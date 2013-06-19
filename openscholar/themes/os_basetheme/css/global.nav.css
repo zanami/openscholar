@@ -479,7 +479,7 @@ color: #FFF !important;
 
 /** CONTEXTUAL ADD NEW AND CONFIG DROPDOWN LINK CONTROLS **/
 .contextual-controls-wrapper {
-    margin: 15px 0 10px;
+    /*margin: 15px 0 10px;*/
     position: absolute;
     right: 0;
     /*top: 0;*/
