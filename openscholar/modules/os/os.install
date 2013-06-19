@@ -106,7 +106,7 @@ function os_update_7009() {
 /**
  * June 20 updates - Enable views_infinite_scroll and views_litepager modules, retire quinn theme, revert infinite scorll views
  */
-function os_update_7013() {
+function os_update_7010() {
   //enable infinite scrolling and revert the features that use it
   module_enable(array('views_infinite_scroll', 'views_litepager'));
   features_revert(array_fill_keys(array('os_faq','os_links','os_news','os_people'), array('view')));
