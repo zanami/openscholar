@@ -102,10 +102,6 @@ projects[entityreference_prepopulate][download][type] = git
 projects[entityreference_prepopulate][download][revision] = e2c2811
 projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
-; projects[entity_dependency][subdir] = "contrib"
-; projects[entity_dependency][version] = 1.x-dev
-; projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
-
 projects[elysia_cron][subdir] = "contrib"
 projects[elysia_cron][version] = 2.1
 
