@@ -537,7 +537,7 @@ function cp_appearance_manage_base_submit($form, &$form_state) {
 /**
  * Adding a theme - git.
  */
-function cp_appearance_manage_git($form, $form_state, $type) {
+function cp_appearance_manage_git($form, &$form_state, $type) {
   // Adding the git library.
   require_once libraries_get_path('git') . '/autoload.php';
 
@@ -546,13 +546,12 @@ function cp_appearance_manage_git($form, $form_state, $type) {
   $form['repository'] = array(
     '#type' => 'textfield',
     '#title' => t('Git repository address'),
-    '#description' => t('Enter the repository address'),
     '#required' => TRUE,
-
     '#ajax' => array(
       'callback' => 'cp_appearance_git_method_get_ajax_branches',
-      'wrapper' => 'branches',
+      'wrapper' => 'branches-wrapper',
       'method' => 'replace',
+      'keypress' => TRUE,
     ),
   );
 
@@ -572,31 +571,36 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     }
 
     $git = $wrapper->workingCopy($path);
+
     if (!$git->isCloned()) {
       try {
         $git->clone($repository_address);
+        $git->setCloned(TRUE);
       }
       catch (GitException $e) {
         // Can't clone the repo.
+        drupal_set_message(t('Could not clone @repository, error @error', array('@repository' => $repository_address, '@error' => $e->getMessage(), 'warning')));
       }
     }
 
-    $form['branch'] = array(
-      '#prefix' => '<div id="branches">',
-      '#suffix' => '</div>',
+    $form['path'] = array(
+      '#type' => 'value',
+      '#value' => $path,
     );
 
-    try {
-      foreach ($git->getBranches()->remote() as $branch) {
-        if (strpos($branch, ' -> ') !== FALSE) {
-          // A branch named "origin/HEAD  -> xyz" is provided by the class, we
-          // don't need it.
-          continue;
+    if ($git->isCloned()) {
+      try {
+        foreach ($git->getBranches()->remote() as $branch) {
+          if (strpos($branch, ' -> ') !== FALSE) {
+            // A branch named "origin/HEAD  -> xyz" is provided by the class, we
+            // don't need it.
+            continue;
+          }
+          $branches[str_replace(' ', '_', $branch)] = $branch;
         }
-        $branches[str_replace(' ', '_', $branch)] = $branch;
       }
-    }
-    catch (GitException $e) {
+      catch (GitException $e) {
+      }
     }
 
     $subtheme = new SubTheme();
@@ -604,51 +608,45 @@ function cp_appearance_manage_git($form, $form_state, $type) {
     $form_state['subtheme'] = $subtheme;
   }
 
+  $form['branches_wrapper'] = array(
+    '#prefix' => '<div id="branches-wrapper">',
+    '#suffix' => '</div>',
+  );
+
+  $valid_repo = FALSE;
+
   if ($branches) {
-    $form['branch'] = array(
+    $form['branches_wrapper']['branch'] = array(
       '#type' => 'select',
       '#title' => t('Branch'),
       '#description' => t('Enter the branch of the git repository'),
-      '#options' => array('' => t('Select a branch')) + $branches,
-      '#ajax' => array(
-        'callback' => 'cp_appearance_git_method_get_valid_branches',
-        'wrapper' => 'branches',
-      ),
-      '#prefix' => '<div id="branches">',
-      '#suffix' => '</div>',
+      '#options' => $branches,
+      '#required' => TRUE,
     );
+
+    $valid_repo = TRUE;
   }
   elseif (!$branches && $repository_address) {
-    $form['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
+    $form['branches_wrapper']['branch'] = array('#markup' => '<div id="branches">' .  t('Git repository is wrong.') . '</div>');
+  }
+  if ($valid_repo) {
+    $form['branches_wrapper']['actions'] = array(
+      '#type' => 'actions',
+      'submit' => array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+      ),
+    );
   }
   else {
     // Place holder for Ajax.
-    $form['branch'] = array(
-      '#prefix' => '<div id="branches">',
-      '#suffix' => '</div>',
+    $form['branches_wrapper']['actions'] = array(
+      '#type' => 'actions',
+      'submit' => array(
+        '#markup' => '<a href="#">' . t('Fetch branches') . '</a>',
+      ),
     );
   }
-
-  $repository_branch = !empty($form_state['values']['branch']) ? $form_state['values']['branch'] : 0;
-
-  if ($repository_branch != '---') {
-    try {
-      $git
-        ->checkout($repository_branch)
-        // We pull, in case the user wants to reload a subtheme.
-        ->pull();
-    }
-    catch (GitException $e) {
-    }
-  }
-
-  $form['actions'] = array(
-    '#type' => 'actions',
-    'submit' => array(
-      '#type' => 'submit',
-      '#value' => t('Save'),
-    ),
-  );
 
   return $form;
 }
@@ -657,23 +655,39 @@ function cp_appearance_manage_git($form, $form_state, $type) {
  * Return piece of the form for AJAX rendering.
  */
 function cp_appearance_git_method_get_ajax_branches($form, $form_state) {
-  return $form['branch'];
-}
-
-/**
- * Return piece of the form for AJAX rendering.
- */
-function cp_appearance_git_method_get_valid_branches($form, $form_state) {
-  return $form['branch'];
+  return $form['branches_wrapper'];
 }
 
 /**
  * Validate handler - verify the user selected a branch.
  */
 function cp_appearance_manage_git_validate($form, $form_state) {
-  if ($form_state['values']['branch'] == '---') {
-    form_set_error('branch', t('Select a branch.'));
+  if (empty($form_state['values']['branch'])) {
     return;
+  }
+
+  require_once libraries_get_path('git') . '/autoload.php';
+
+  $repository = $form_state['values']['repository'];
+  $branch = $form_state['values']['branch'];
+
+  $path = $form_state['values']['path'];
+
+  $wrapper = new GitWrapper();
+  $wrapper->setPrivateKey('.');
+  $git = $wrapper->workingCopy($path);
+
+  // We pull, in case the user wants to reload a subtheme.
+  try {
+    $git->checkout($branch, array('t' => TRUE));
+  }
+  catch (GitException $e) {
+  }
+
+  try {
+    $git->pull();
+  }
+  catch (GitException $e) {
   }
 
   if (empty($form_state['subtheme'])) {
