@@ -625,6 +625,10 @@ table video {
   max-width: none;
 }
 
+.lt-ie9 div img,
+.lt-ie9 div object,
+.lt-ie9 div embed,
+.lt-ie9 div video,
 .lt-ie9 table img,
 .lt-ie9 table object,
 .lt-ie9 table embed,
