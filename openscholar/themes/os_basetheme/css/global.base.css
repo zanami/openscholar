@@ -476,12 +476,12 @@ ul ul ul ul {
 
 .ical {
 background:url('../images/ical_icon.gif') no-repeat;
-padding:2px 0 2px 25px;
+padding:2px 0 2px 25px !important;
 }
 
 .rss {
 background:url('../images/rss_icon.gif') no-repeat;
-padding:2px 0 2px 25px;
+padding:2px 0 2px 25px !important;
 }
 
 /* BOOK NAVS */
