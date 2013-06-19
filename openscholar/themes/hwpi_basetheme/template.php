@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '#block-os-quick-links',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
         ),
       ),
       'mobi-search' => array(
@@ -163,9 +163,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
-          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'], 'html' => TRUE)) . '<br />';
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], $item) . '<br />';
         }
       }
 

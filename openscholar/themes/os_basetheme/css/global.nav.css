@@ -479,7 +479,7 @@ color: #FFF !important;
 
 /** CONTEXTUAL ADD NEW AND CONFIG DROPDOWN LINK CONTROLS **/
 .contextual-controls-wrapper {
-    margin: 15px 0 10px;
+    /*margin: 15px 0 10px;*/
     position: absolute;
     right: 0;
     top: 0;
@@ -488,7 +488,8 @@ color: #FFF !important;
 }
 
 #content-column div.contextual-links-wrapper.contextual-links-processed {
-   right: -15px;
+   /*right: -15px;*/
+   right: 0;
    z-index: 19;
 }
 
@@ -511,13 +512,13 @@ padding: 5px 10px;
 border:none;
 font-size:13px;
 font-weight:bold;
-color: rgb(230, 230, 230);
+color: #FFF !important;
 text-shadow: 0px -1px 0px rgba(30, 30, 30, 0.25);
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
 border-radius: 4px;
 background: rgb(61, 155, 19);
-
+text-decoration:none !important;
     }
 
 .contextual-controls-wrapper .add_new:hover {
