@@ -110,7 +110,7 @@ function os_update_7009() {
 function os_update_7010() {
   //enable infinite scrolling and revert the features that use it
   module_enable(array('views_infinite_scroll', 'views_litepager'));
-  features_revert(array_fill_keys(array('os_faq','os_links','os_news','os_people'), array('view')));
+  features_revert(array_fill_keys(array('os_faq','os_links','os_news','os_profiles'), array('view')));
 
   //enable mollom on event signup pages
   _os_update_event_registration_mollom();
