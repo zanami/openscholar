@@ -23,7 +23,7 @@ function _os_files_install_find_nodes($file) {
       ->fields('fc', array('field_name', 'type'))
       ->condition('active', 1)
       ->condition('deleted', 0)
-      ->condition('type', $file_field_types + $text_field_types)
+      ->condition('type', array_merge($file_field_types, $text_field_types))
       ->execute();
 
     foreach ($q as $r) {
@@ -34,6 +34,7 @@ function _os_files_install_find_nodes($file) {
   $eids = array();
   foreach ($fields as $f => $t) {
     $table = 'field_data_'.$f;
+    $module = 'file';
 
     $q = db_select($table, 'ft')
       ->fields('ft', array('entity_type', 'entity_id'));
@@ -47,12 +48,16 @@ function _os_files_install_find_nodes($file) {
         ->condition($f.'_value', '%"fid":"'.$file->fid.'"%', 'LIKE')
         ->condition($f.'_value', '%data-fid="'.$file->fid.'"%', 'LIKE')
         ->condition($f.'_value', '%'.$filename.'%', 'LIKE');
-      $q->where($or);
+      $q->condition($or);
+      $module = 'media';
     }
     $q = $q->execute();
 
     foreach ($q as $r) {
-      $eids[$r->entity_type][] = $r->entity_id;
+      $eids[$r->entity_type][] = array(
+        'id' => $r->entity_id,
+        'module' => $module
+      );
     }
   }
 

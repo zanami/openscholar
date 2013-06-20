@@ -12,13 +12,7 @@
 #menu-bar ul.nice-menu ul {
     background: none repeat scroll 0 0 #24527A;
 }
-.region-header-third .block-os-search-solr,
-.region-header-third .block-os-search-db {
-    left: 30px;
-    margin-bottom: -80px;
-    position: relative;
-    top: 55px;
-}
+
 #search-block-form .container-inline .form-item .form-text {
     border-radius: 0 0 0 0 !important;
 }
