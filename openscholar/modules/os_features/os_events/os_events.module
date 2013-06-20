@@ -509,7 +509,12 @@ function os_events_menu_alter(&$items) {
  * Implements hook_form_FORM_ID_alter().
  */
 function os_events_form_registration_form_alter(&$form, $form_state) {
-  $node = node_load($form['#entity']->entity_id);
+  // Remove the entity from the form - we don't need it and it disable the
+  // header.
+  // @TODO: figure out why the $form['#entity'] disable the header.
+  unset($form['#entity']);
+
+  $node = node_load($form_state['registration']->entity_id);
 
   $form['who_is_registering'] = array(
     '#type' => 'value',
