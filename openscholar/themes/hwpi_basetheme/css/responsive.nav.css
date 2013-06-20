@@ -101,22 +101,14 @@ display:none;
 .region-header-third #block-os-search-solr-site-search.opened {
     background-color: #1E1E1E;
     display: block;
-    left: 15px;
-    margin-bottom: 0 !important;
     padding: 12px 0;
-    position: absolute;
-    text-align: left;
-    top: 59px;
+    position: static;
     width: 100%;
-    z-index: 19;
 }
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #2A527A;
     display: block;
-    left: 15px;
-    position: absolute;
-    top: 59px;
-    z-index: 3;
+    position: static;
     width:100%;
 }
 .region-header-third #block-os-secondary-menu{
@@ -132,9 +124,6 @@ display:none;
 	border-bottom: 1px solid #2E5A86;
     border-top: 1px solid #25496C !important;
     margin-left:0!important;
-}
-.logged-in .region-header-third #block-os-secondary-menu.opened {
-    z-index: 19;
 }
 .region-header-third #block-os-secondary-menu li a{
 	padding:12px 15px !important;
@@ -277,6 +266,9 @@ ul.primary li a {
 .region-header-third #block-os-secondary-menu.opened {
     top: 57px!important;
 
+}
+.region-header-third #block-os-search-solr-site-search.opened {
+    top: 57px!important;
 }		
 	
 	

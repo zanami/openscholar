@@ -49,9 +49,8 @@
     position: relative;
 }
 .region-header-third {
-    margin: 0 !important;
+    margin:0 0 0 15px!important;
     width: 100%!important;
-    text-align:left!important;
 }
 .region-header-second table {
     margin-bottom: 0;
