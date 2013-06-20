@@ -128,7 +128,7 @@ function os_update_7010() {
     'quinn_white' => 'outsidesidebars_white',
     'theme_04_dark_grey' => 'outsidesidebars_darkgrey',
     'theme_04_sage' => 'outsidesidebars_sage',
-    'default' => 'outsidebars_grey',
+    'default' => 'outsidesidebars_grey',
   );
   
   $query = db_select('spaces_overrides', 'theme');
