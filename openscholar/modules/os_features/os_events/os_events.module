@@ -511,6 +511,7 @@ function os_events_menu_alter(&$items) {
 function os_events_form_registration_form_alter(&$form, $form_state) {
   // Remove the entity from the form - we don't need it and it disable the
   // header.
+  // @TODO: figure out why the $form['#entity'] disable the header.
   unset($form['#entity']);
 
   $node = node_load($form_state['registration']->entity_id);
