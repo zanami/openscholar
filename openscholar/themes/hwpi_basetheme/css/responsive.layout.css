@@ -329,6 +329,14 @@ padding:0!important;
     padding: 0 !important;
 }
 }
+/*--------------------------------------------------------*/
+@media (max-width: 600px) {
+	
+.region-header-second tr, 
+.region-header-second td {
+    display: inline !important;
+} 
+}
 
 /*--------------------------------------------------------*/
 @media (max-width: 479px) {
@@ -363,10 +371,7 @@ padding: 0.3em 0.1em;
     margin-left: 10px !important;
     width: 100%;
 }
-.region-header-second tr, 
-.region-header-second td {
-    display: inline !important;
-} 
+
 .region-header-second td{
 	padding:0!important;
 }
