@@ -255,31 +255,15 @@ ul.primary li a {
     top: 65px!important;
 }
 .region-header-third {
-    margin-left: 0 !important;
+    margin-left: 15px!important;
     width: 100%!important;
     float:left!important;
 }  
-
-}
-/*--------------------------------------------------------*/
-@media (max-width: 479px) {
-.region-header-third #block-os-secondary-menu.opened {
-    top: 57px!important;
-
-}
-.region-header-third #block-os-search-solr-site-search.opened {
-    top: 57px!important;
-}		
-	
-	
 }
 
 /*--------------------------------------------------------*/
 @media (max-width:400px){
 	
-.region-header-third #block-os-secondary-menu.opened {
-	width: 99.99% !important;
-}	
 #search-block-form .container-inline .form-item .form-text {
     width: 75% !important;
 }
