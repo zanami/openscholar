@@ -162,6 +162,10 @@ table[style] {
 .block.block-boxes-os_boxes_manual_list h2{
 	  padding-left: 15px;
 }
+
+.region-header-second img {
+    padding-left: 15px;
+}
 /*Footer*/
 #footer{
 	z-index:1;
@@ -180,6 +184,11 @@ table[style] {
 /*--------------------------------------------------------*/
 @media (max-width: 768px) {
 
+.region-header-second h2,
+.region-header-second h3,
+.region-header-second img {
+    padding-left: 15px;
+}
 .region-content-first,
 .region-content-second {
     float: none!important;
@@ -193,11 +202,7 @@ table[style] {
     float: left;
     width: 100%;
 }
-.region-header-second h2,
-.region-header-second h3,
-.region-header-second img {
-    padding-left: 15px;
-}
+
 .region-content-second{
 	margin-top:50px!important;
 }
