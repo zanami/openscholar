@@ -385,9 +385,17 @@ a.rslides_nav.prev {
     left: 550px;
 }
 
+.one-sidebar #layout_16_9_side .rslides_tabs {
+    display:none;
+}
+
 .lt-ie9 #layout_16_9_side .rslides_tabs {
 position: absolute;
 top: 250px;
+}
+
+.lt-ie9 .one-sidebar #layout_16_9_side .rslides_tabs {
+    display:none;
 }
 
 @-moz-document url-prefix() { 
