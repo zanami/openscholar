@@ -183,10 +183,12 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  if (!$gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
+  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+  if (!count($gids)) {
     // Entity is not assigned to a group.
     return;
   }
+  $gid = current($gids);
 
   if (module_exists('vsite_access') && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
     // Private group.

@@ -507,6 +507,15 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ * 
+ * Hide the tokens list for sending messages to registrants
+ */
+function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {
+  unset($form['token_tree']);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
  */
 function os_events_form_registration_form_alter(&$form, $form_state) {
   // Remove the entity from the form - we don't need it and it disable the
@@ -536,11 +545,13 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     'actions' => $form['actions'],
   );
 
-  if (!empty($form['captcha'])) {
-    $form['event_register']['captcha'] = $form['captcha'];
+  foreach (array('captcha', 'mollom') as $captcha) {
+    if (!empty($form[$captcha])) {
+      $form['event_register'][$captcha] = $form[$captcha];
+    }
   }
 
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user']);
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user'], $form['mollom']);
 }
 
 /**
