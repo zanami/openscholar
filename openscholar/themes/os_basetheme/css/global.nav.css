@@ -488,7 +488,8 @@ color: #FFF !important;
 }
 
 #content-column div.contextual-links-wrapper.contextual-links-processed {
-   right: -15px;
+   /*right: -15px;*/
+   right: 0;
    z-index: 19;
 }
 

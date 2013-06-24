@@ -436,3 +436,68 @@ function os_files_update_7004(&$sb) {
     return t('Set @num files to the executable type.', array('@num' => $sb['fixed']));
   }
 }
+
+
+/**
+ * Remove file reference to file which no longer exists.
+ */
+function os_files_update_7005(&$sandbox) {
+  $file_fields = os_files_file_fields();
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    // Get the total amounts of nodes.
+    $query = new entityFieldQuery();
+    $sandbox['max'] = $query
+      ->entityCondition('entity_type', 'node')
+      ->propertyOrderBy('nid')
+      ->count()
+      ->execute();
+  }
+
+  // Run through the nodes.
+  $nid = empty($sandbox['nid']) ? 0 : $sandbox['nid'];
+  $batch = 250;
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('nid', $nid, '>=')
+    ->propertyOrderBy('nid')
+    ->range(0, $batch)
+    ->execute();
+
+  $nodes = node_load_multiple(array_keys($result['node']));
+  foreach ($nodes as $node) {
+    $changed = FALSE;
+    $deleted_files = 0;
+    foreach ($file_fields as $file_field) {
+
+      if (empty($node->{$file_field}[LANGUAGE_NONE])) {
+        continue;
+      }
+
+      foreach ($node->{$file_field}[LANGUAGE_NONE] as $delta => $value) {
+        $file_info = @file_load($value['fid']);
+
+        if (empty($file_info)) {
+          unset($node->{$file_field}[LANGUAGE_NONE][$delta]);
+          $deleted_files++;
+          $changed = TRUE;
+        }
+      }
+    }
+
+    // The node has changed, saving him.
+    if ($changed) {
+      node_save($node);
+    }
+
+    $sandbox['progress']++;
+    $sandbox['nid'] = $node->nid;
+  }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+
+  return t('Deleting references to no longer existed file has performed successfully.');
+}
