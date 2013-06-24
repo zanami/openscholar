@@ -507,7 +507,7 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
- * 
+ *
  * Hide the tokens list for sending messages to registrants
  */
 function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {
@@ -545,13 +545,7 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     'actions' => $form['actions'],
   );
 
-  foreach (array('captcha', 'mollom') as $captcha) {
-    if (!empty($form[$captcha])) {
-      $form['event_register'][$captcha] = $form[$captcha];
-    }
-  }
-
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user'], $form['mollom']);
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['user']);
 }
 
 /**
