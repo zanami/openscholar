@@ -449,4 +449,31 @@ text-transform:none;
     height: 13px;
 }
 
+/* FOR IQSS SITE. IQSS FLAVOR ISN'T LOADING TO ANON USERS, SO LEAVING THIS IN UNTIL 
+IT CAN BE RESOLVED */
 
+.og-context-node-6235 #iqss-weekly ul {margin-left:0;}
+.og-context-node-6235 #iqss-weekly ul li {list-style-type:none;}
+.og-context-node-6235 #iqss-weekly h4 {margin: 1.5em 0 0.22em .1em; color:#666;}
+.og-context-node-6235 #iqss-weekly h4:nth-child(1) {margin: .1em 0 0.22em .1em;}
+.og-context-node-6235 #iqss-weekly-cal {display:none;}
+
+.og-context-node-6235 .region-content-bottom .block-boxes-os_boxes_html  h2.block-title {
+  background: url('images/eventsIcon.png') no-repeat;
+  padding-left: 42px;
+   } 
+   
+
+.og-context-node-6235 #block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:1px;clear: both;}
+
+.og-context-node-6235 h5 {
+	font-family: georgia,arial;
+	font-size: 18px;
+	color:#8C8179;
+	font-weight:normal;
+}
+
+.og-context-node-6235 h5 span {
+	color:#A51C30;
+	
+}
