@@ -126,8 +126,8 @@ function os_update_7010() {
     'quinn_orange_palatino' => 'outsidesidebars_orangepalatino',
     'quinn_sage' => 'outsidesidebars_sage',
     'quinn_white' => 'outsidesidebars_white',
-    'theme_04_dark_grey' => 'outsidesidebars_darkgrey',
-    'theme_04_sage' => 'outsidesidebars_sage',
+    'theme_04_dark_grey' => 'outsidesidebars_grey',
+    'theme_04_sage' => 'outsidesidebars_grey',
     'default' => 'outsidesidebars_grey',
   );
   
