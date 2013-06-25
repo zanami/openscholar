@@ -211,7 +211,7 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
 
   foreach ($result as $row) {
     $features = unserialize($row->value);
-    if ($features[$feature] != 1) {
+    if (empty($features[$feature]) || $features[$feature] != 1) {
       // Disabled or private feature.
       return TRUE;
     }
