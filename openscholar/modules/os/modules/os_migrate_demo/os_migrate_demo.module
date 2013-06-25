@@ -360,4 +360,57 @@ function os_migrate_demo_delete_node($title) {
   if (!empty($result['node'])) {
     node_delete_multiple(array_keys($result['node']));
   }
+
+}
+/**
+ * Adding a subtheme to a site.
+ */
+function os_migrate_demo_add_subtheme($subtheme, $vsite) {
+  $path = drupal_get_path('profile', 'openscholar') . '/behat/' . $subtheme;
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('title', $vsite)
+    ->range(0, 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = array_keys($result['node']);
+  $vsite = vsite_get_vsite(reset($nid));
+
+  $flavors = $vsite->controllers->variable->get('flavors');
+
+  $flavors[$subtheme] = array(
+    'path' => $path,
+    'name' => $subtheme,
+  );
+
+  $vsite->controllers->variable->set('flavors', $flavors);
+}
+
+/**
+ * Define a subtheme for a vsite.
+ */
+function os_migrate_demo_define_subtheme($theme, $subtheme, $vsite) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('title', $vsite)
+    ->range(0, 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = array_keys($result['node']);
+  $vsite = vsite_get_vsite(reset($nid));
+  $flavor_key = 'os_appearance_cleanblue_flavor';
+
+  $vsite->controllers->variable->set('theme_default', $theme);
+  $vsite->controllers->variable->set('os_appearance_cleanblue_flavor', $subtheme);
 }
