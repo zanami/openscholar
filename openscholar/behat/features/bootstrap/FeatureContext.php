@@ -973,7 +973,7 @@ class FeatureContext extends DrupalContext {
     $element = $page->find('xpath', "//link[@type='text/css' and contains(@href, '{$asset}')]");
 
     if (!$element) {
-      throw new Exception(sprintf("The CSS asset %s wasn't found."));
+      throw new Exception(sprintf("The CSS asset %s wasn't found.", $asset));
     }
   }
 
@@ -985,7 +985,7 @@ class FeatureContext extends DrupalContext {
     $element = $page->find('xpath', "//script[contains(@src, '{$asset}')]");
 
     if (!$element) {
-      throw new Exception(sprintf("The JS asset %s wasn't found."));
+      throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
 }
