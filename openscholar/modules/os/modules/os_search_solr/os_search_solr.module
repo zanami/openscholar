@@ -191,7 +191,9 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   $gid = current($gids);
 
   if (module_exists('vsite_access') && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
-    // Private group.
+    // Private group. Exclude it, and remove it from the index
+    // in case it was there.
+    apachesolr_remove_entity($env_id, $entity_type, $entity_id);
     return TRUE;
   }
 
@@ -212,7 +214,9 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   foreach ($result as $row) {
     $features = unserialize($row->value);
     if (empty($features[$feature]) || $features[$feature] != 1) {
-      // Disabled or private feature.
+      // Disabled or private feature, exclude it, and remove it from the index
+      // in case it was there.
+      apachesolr_remove_entity($env_id, $entity_type, $entity_id);
       return TRUE;
     }
   }
