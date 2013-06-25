@@ -239,3 +239,62 @@ function os_search_solr_apachesolr_process_results(&$arg) {
   }
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_search_solr_form_spaces_features_form_alter(&$form, &$form_state) {
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  $form['vsite_id'] = array(
+    '#type' => 'value',
+    '#value' => $vsite->id,
+  );
+
+  $form['#submit'][] = 'os_search_solr_form_spaces_features_form_submit';
+}
+
+function os_search_solr_form_spaces_features_form_submit($form, &$form_state) {
+  // Get the pre-changed values.
+  $spaces_features = variable_get('spaces_features', array());
+
+  if (!$features = array_diff_assoc($form_state['values']['spaces_features'], $spaces_features)) {
+    return;
+  }
+
+  $bundles = array();
+  foreach ($features as $feature => $value) {
+    if ($value == 1 || $spaces_features[$feature] != 1) {
+      continue;
+    }
+
+    $app_info = os_app_info($feature);
+    $bundles = array_merge($bundles, $app_info['nodetypes']);
+  }
+
+  if (!$bundles) {
+    return;
+  }
+
+  // Get all the group-content bundles from the features.
+
+  $vsite_id = $form_state['values']['vsite_id'];
+
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $bundles, 'IN')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $env_id = apachesolr_default_environment();
+
+  foreach (array_keys($result['node']) as $nid) {
+    apachesolr_remove_entity($env_id, 'node', $nid);
+  }
+}
