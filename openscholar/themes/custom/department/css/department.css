@@ -459,11 +459,10 @@ IT CAN BE RESOLVED */
 .og-context-node-6235 #iqss-weekly-cal {display:none;}
 
 .og-context-node-6235 .region-content-bottom .block-boxes-os_boxes_html  h2.block-title {
-  background: url('images/eventsIcon.png') no-repeat;
+  background: url('/profiles/openscholar/themes/custom/department/flavors/iqss/images/eventsIcon.png') no-repeat;
   padding-left: 42px;
    } 
-   
-
+  
 .og-context-node-6235 #block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:1px;clear: both;}
 
 .og-context-node-6235 h5 {
