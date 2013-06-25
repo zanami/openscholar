@@ -194,7 +194,7 @@ function os_activity_message_node_create($node, $op) {
   $wrapper->field_group->set($group_wrapper->value());
 
   if (isset($group_wrapper->{VSITE_ACCESS_FIELD})) {
-    $is_private = ($group_wrapper->{VSITE_ACCESS_FIELD}->value() != VSITE_ACCESS_PUBLIC);
+    $is_private = (int) ($group_wrapper->{VSITE_ACCESS_FIELD}->value() != VSITE_ACCESS_PUBLIC);
   }
   else {
     $is_private = TRUE;
