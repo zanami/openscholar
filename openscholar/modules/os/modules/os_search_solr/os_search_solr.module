@@ -263,38 +263,57 @@ function os_search_solr_form_spaces_features_form_submit($form, &$form_state) {
     return;
   }
 
-  $bundles = array();
+  $bundle_types = array('delete' => array(), 'insert' => array());
   foreach ($features as $feature => $value) {
-    if ($value == 1 || $spaces_features[$feature] != 1) {
+    if ($value != 1 && $spaces_features[$feature] != $value) {
+      // Private changed to disabled or vice versa. Anway we can keep this.
       continue;
     }
 
-    $app_info = os_app_info($feature);
-    $bundles = array_merge($bundles, $app_info['nodetypes']);
-  }
+    $type = ($value == 1 && $spaces_features[$feature] != 1)|| $spaces_features[$feature] != 1 ? 'insert' : 'delete';
 
-  if (!$bundles) {
-    return;
+    $app_info = os_app_info($feature);
+    $bundle_types[$type] = array_merge($bundle_types[$type], $app_info['nodetypes']);
   }
 
   // Get all the group-content bundles from the features.
 
   $vsite_id = $form_state['values']['vsite_id'];
 
-  $query = new EntityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', $bundles, 'IN')
-    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
-    ->execute();
+  foreach ($bundle_types as $type => $bundles) {
+    if (empty($bundles)) {
+      continue;
+    }
 
-  if (empty($result['node'])) {
-    return;
+    $query = new EntityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', $bundles, 'IN')
+      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+      ->execute();
+
+    if (empty($result['node'])) {
+      continue;
+    }
+
+    if ($type == 'insert') {
+      // Pre-load all nodes.
+      node_load_multiple(array_keys($result['node']));
+    }
+
+    $env_id = apachesolr_default_environment();
+
+    foreach (array_keys($result['node']) as $nid) {
+      if ($type == 'delete') {
+        apachesolr_remove_entity($env_id, 'node', $nid);
+      }
+      else {
+        $node = node_load($nid);
+        apachesolr_entity_update($node, 'node');
+      }
+
+    }
   }
 
-  $env_id = apachesolr_default_environment();
 
-  foreach (array_keys($result['node']) as $nid) {
-    apachesolr_remove_entity($env_id, 'node', $nid);
-  }
 }
