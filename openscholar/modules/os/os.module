@@ -650,6 +650,17 @@ function os_preprocess_page(&$vars) {
       }
     }
 
+    if (isset($flavor['scripts'])) {
+      foreach ($flavor['scripts'] as $script) {
+        drupal_add_js($flavor['path'] . '/' . $script, array(
+          'type' => 'file',
+          'preprocess' => FALSE,
+          'weight' => 100,
+          'group' => JS_THEME,
+        ));
+      }
+    }
+
     // Conditional css provided by: conditional-stylesheets[if lte IE 7][all][]
     // = orange-ie.css
     if (isset($flavor['conditional-stylesheets'])) {
