@@ -118,7 +118,7 @@ function os_news_field_default_fields() {
         'tz_handling' => 'none',
       ),
       'translatable' => '0',
-      'type' => 'datestamp',
+      'type' => 'datetime',
     ),
     'field_instance' => array(
       'bundle' => 'news',
@@ -428,6 +428,8 @@ function os_news_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
