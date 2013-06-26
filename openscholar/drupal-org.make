@@ -362,7 +362,7 @@ projects[views_slideshow][version] = 3.0
 projects[views_litepager][subdir] = "contrib"
 projects[views_litepager][version] = 3.0
 projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
-projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-off_by_one-2006992-1.patch"
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-off_by_one-2006992-2.patch"
 
 projects[views_infinite_scroll][subdir] = "contrib"
 projects[views_infinite_scroll][version] = 1.1
