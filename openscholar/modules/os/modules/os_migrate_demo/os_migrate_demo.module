@@ -362,8 +362,14 @@ function os_migrate_demo_delete_node($title) {
   }
 
 }
+
 /**
  * Adding a subtheme to a site.
+ *
+ * @param $subtheme
+ *  The name of the subtheme(a theme flavor) which located in the behat folder.
+ * @param $vsite
+ *  The name of the vsite.
  */
 function os_migrate_demo_add_subtheme($subtheme, $vsite) {
   $path = drupal_get_path('profile', 'openscholar') . '/behat/' . $subtheme;
@@ -394,6 +400,13 @@ function os_migrate_demo_add_subtheme($subtheme, $vsite) {
 
 /**
  * Define a subtheme for a vsite.
+ *
+ * @param $theme
+ *  The name of the theme which the new subtheme is her flavor.
+ * @param $subtheme
+ *  The name of the subtheme which located in the behat folder.
+ * @param $vsite
+ *  The name of the vsite.
  */
 function os_migrate_demo_define_subtheme($theme, $subtheme, $vsite) {
   $query = new entityFieldQuery();

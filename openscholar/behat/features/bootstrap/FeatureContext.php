@@ -959,9 +959,9 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @When /^I defined the subtheme "([^"]*)" of the theme "([^"]*)" as the theme of "([^"]*)"$/
+   * @Given /^I define the subtheme "([^"]*)" of the theme "([^"]*)" as the theme of "([^"]*)"$/
    */
-  public function iDefinedTheSubthemeOfTheThemeAsTheThemeOf($subtheme, $theme, $vsite) {
+  public function iDefineTheSubthemeOfTheThemeAsTheThemeOf($subtheme, $theme, $vsite) {
     $this->invoke_code('os_migrate_demo_define_subtheme', array("'{$theme}'", "'{$subtheme}'", "'{$vsite}'"));
   }
 
@@ -970,7 +970,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldVerifyTheExistenceOfTheCss($asset) {
     $page = $this->getSession()->getPage();
-    $element = $page->find('xpath', "//link[@type='text/css' and contains(@href, '{$asset}')]");
+    $element = $page->find('xpath', "//link[contains(@href, '{$asset}')]");
 
     if (!$element) {
       throw new Exception(sprintf("The CSS asset %s wasn't found.", $asset));
