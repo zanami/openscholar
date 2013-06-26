@@ -507,7 +507,7 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
- * 
+ *
  * Hide the tokens list for sending messages to registrants
  */
 function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {
@@ -517,7 +517,7 @@ function os_events_form_registration_registrations_broadcast_form_alter(&$form, 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function os_events_form_registration_form_alter(&$form, $form_state) {
+function os_events_form_registration_form_alter(&$form, &$form_state) {
   // Remove the entity from the form - we don't need it and it disable the
   // header.
   // @TODO: figure out why the $form['#entity'] disable the header.
@@ -537,7 +537,7 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     '#type' => 'fieldset',
     '#title' => t('Sign up for @label', array('@label' => $node->title)),
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => empty($form_state['input']),
 
     'field_full_name' => $form['field_full_name'],
     'field_department' => $form['field_department'],
@@ -545,13 +545,11 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     'actions' => $form['actions'],
   );
 
-  foreach (array('captcha', 'mollom') as $captcha) {
-    if (!empty($form[$captcha])) {
-      $form['event_register'][$captcha] = $form[$captcha];
-    }
-  }
+  // Make sure the form it rebuilt, so if there's a validation error, we can
+  // keep the event registration fieldset open.
+  $form_state['rebuild'] = TRUE;
 
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user'], $form['mollom']);
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['user']);
 }
 
 /**
