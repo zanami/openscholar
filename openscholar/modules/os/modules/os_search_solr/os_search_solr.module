@@ -314,3 +314,45 @@ function os_search_solr_form_spaces_features_form_submit($form, &$form_state) {
     }
   }
 }
+
+/**
+ * Mark nodes for Solr index.
+ *
+ * @param $vsite_id
+ *   The VSite ID.
+ * @param $bundles
+ *   Array of bundles to process.
+ * @param int $last_nid
+ *   The last processed node ID.
+ * @param int $range
+ *   Range of nodes to process in a single operation.
+ */
+function os_search_solr_mark_entity_by_bundles($vsite_id, $bundles = array(), $last_nid = 0, $range = 200) {
+  $values = variable_get('os_search_solr_reindex_by_bundles', array());
+
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $bundles, 'IN')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+    ->propertyCondition('nid', $last_nid, '>')
+    ->propertyOrderBy('nid')
+    ->range(0, $range)
+    ->execute();
+
+  if (empty($result['node'])) {
+    // All nodes have been processed, so we can remove it from future
+    // processing.
+    unset($values[$vsite_id]);
+    variable_set('os_search_solr_reindex_by_bundles', $values);
+    return;
+  }
+
+  foreach (array_keys($result['node']) as $nid) {
+    apachesolr_mark_entity('node', $nid);
+  }
+
+  // Set last processed node ID.
+  $values[$vsite_id]['last_nid'] = $nid;
+  variable_set('os_search_solr_reindex_by_bundles', $values);
+}
