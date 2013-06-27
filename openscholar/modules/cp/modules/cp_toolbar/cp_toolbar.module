@@ -96,16 +96,33 @@ function cp_toolbar_view() {
 
   $base_domain = variable_get('purl_base_domain');
 
-  $links = array(
-    'help' => array(
-      'title' => t('Help'),
-      // 'href' => 'admin/help',
-      'href' => !empty($base_domain) ? $base_domain . '/help/os_help/User-Documentation' : 'help/os_help/User-Documentation',
- 	  // 'query' => array('popup'=>'1'),
-      'html' => TRUE,
-      'description' => t('Get help on various topics'),
-    ),
-  );
+  if (variable_get('vsite_register_welcome_message', FALSE)) {
+    $links = array(
+      'help' => array(
+        'title' => t('Help'),
+        // 'href' => 'admin/help',
+        'href' => '',
+        // 'query' => array('popup'=>'1'),
+        'fragment' => 'overlay=cp/welcome',
+        'external' => TRUE,
+        'html' => TRUE,
+        'description' => t('Get help on various topics'),
+      ),
+    );
+  }
+  else {
+    $links = array(
+      'help' => array(
+        'title' => t('Help'),
+        // 'href' => 'admin/help',
+        'href' => !empty($base_domain) ? $base_domain . '/help/os_help/User-Documentation' : 'help/os_help/User-Documentation',
+        // 'query' => array('popup'=>'1'),
+        'html' => TRUE,
+        'description' => t('Get help on various topics'),
+      ),
+    );
+  }
+
   $build['toolbar_right']['toolbar_help'] = array(
     '#theme' => 'links',
     '#links' => $links,
