@@ -11,7 +11,7 @@ Feature:
       And I press "Signup"
       And I am not logged in
      When I am logged in as "michelle"
-      And I visit "john/halleys-comet"
+      And I visit "john/event/halleys-comet"
       And I should not see "Sign up for Halley's Comet"
      Then I delete "john" registration
 
@@ -24,6 +24,6 @@ Feature:
       And I press "Signup"
       And I am not logged in
      When I am logged in as "michelle"
-      And I visit "john/halleys-comet"
+      And I visit "john/event/halleys-comet"
       And I should see "Sign up for Halley's Comet"
      Then I delete "john" registration
