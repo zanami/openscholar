@@ -118,7 +118,7 @@ function os_news_field_default_fields() {
         'tz_handling' => 'none',
       ),
       'translatable' => '0',
-      'type' => 'datetime',
+      'type' => 'datestamp',
     ),
     'field_instance' => array(
       'bundle' => 'news',
