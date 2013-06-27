@@ -189,8 +189,9 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
     return;
   }
   $gid = current($gids);
+  $group_wrapper = entity_metadata_wrapper('node', $gid);
 
-  if (module_exists('vsite_access') && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
+  if (module_exists('vsite_access') && !empty($group_wrapper->{VSITE_ACCESS_FIELD}) && $group_wrapper->{VSITE_ACCESS_FIELD}->value()) {
     // Private group, exclude it.
     return TRUE;
   }
@@ -290,13 +291,14 @@ function os_search_solr_node_update($node) {
     return;
   }
 
-  if ($wrapper->{VSITE_ACCESS_FIELD}->value() && !$wrapper->original->{VSITE_ACCESS_FIELD}->value()) {
-    // Node changed from public to private.
-    os_search_solr_add_vsite_to_reindex($node->nid);
-  }
+  $wrapper_original = entity_metadata_wrapper('node', $node->original);
 
-  if (!$wrapper->{VSITE_ACCESS_FIELD}->value() && $wrapper->original->{VSITE_ACCESS_FIELD}->value()) {
-    // Node changed from private to public.
+  $value = $wrapper->{VSITE_ACCESS_FIELD}->value();
+  $value_original = $wrapper_original->{VSITE_ACCESS_FIELD}->value();
+
+
+  if (($value && !$value_original) || (!$value && $value_original)) {
+    // Node changed from public to private, or vice versa.
     os_search_solr_add_vsite_to_reindex($node->nid);
   }
 }
