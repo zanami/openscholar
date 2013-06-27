@@ -264,8 +264,8 @@ function os_search_solr_form_spaces_features_form_submit($form, &$form_state) {
 
   $bundles = array();
   foreach ($features as $feature => $value) {
-    if ($value != 1 && $spaces_features[$feature] != $value && $spaces_features[$feature] != 1) {
-      // Private changed to disabled or vice versa. Anway we can keep this.
+    if (!empty($spaces_features[$feature]) && $value != 1 && $spaces_features[$feature] != $value && $spaces_features[$feature] != 1) {
+      // Private changed to disabled or vice versa.
       continue;
     }
 
