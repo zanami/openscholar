@@ -943,5 +943,28 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("At least one box returned output outside of a vsite: %s", $key));
     }
   }
+
+  /**
+   * @When /^I editing the node "([^"]*)"$/
+   */
+  public function iEditingTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
+    }
+  }
 }
 
