@@ -194,7 +194,7 @@ function os_pinserver_auth_vsite_private_file_settings_submit(&$form, &$form_sta
   }
 
   // Set or Unset a custom pinserver app.
-  if($form_state['values']['pinserver_app_name']){
+  if($form_state['values']['pinserver_app_name'] && $form_state['values']['pinserver_app_name'] != $vsite->controllers->variable->get('pinserver_app_name','original')){
     // The pinserver domain should match the site's custom domain.
     $vsite->controllers->variable->set('os_pinserver_custom_domain', $vsite_domain);
     //Store pin settings for this domain for use on the os_fast callback outside a space.
