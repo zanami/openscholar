@@ -5,7 +5,7 @@ Feature:
   Scenario: Limit the registration capacity to 1 and verify it for a normal user.
     Given I am logged in as "john"
       And I turn on event registration on "Halley's Comet"
-     When I visit "john/halleys-comet"
+     When I visit "john/event/halleys-comet"
       And I set the event capacity to "1"
       And I fill in "Email" with "g@gmail.com"
       And I press "Signup"
@@ -18,7 +18,7 @@ Feature:
   @api
   Scenario: Limit the registration capacity to 2 and verify it for a normal user.
     Given I am logged in as "john"
-     When I visit "john/halleys-comet"
+     When I visit "john/event/halleys-comet"
       And I set the event capacity to "2"
       And I fill in "Email" with "g@gmail.com"
       And I press "Signup"
