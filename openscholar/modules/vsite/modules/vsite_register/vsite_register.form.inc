@@ -58,8 +58,11 @@ function vsite_register_form($form, &$state) {
   // Sets the form bundle option to the default value.
   $default_bundle = 'personal';
   $default_bundle = variable_get('os_default_group_bundle', $default_bundle);
+  // If the default bundle is not available among the available options,
+  // Instead default to the first available bundle in the options list.
   if (!isset($bundles[$default_bundle])) {
-    $default_bundle = current($bundles);
+    // Gets the bundle machine name from the options array keys.
+    $default_bundle = current(array_keys($bundles));
   }
 
   $form['bundle'] = array(
