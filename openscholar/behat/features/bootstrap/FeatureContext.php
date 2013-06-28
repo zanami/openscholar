@@ -943,5 +943,50 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("At least one box returned output outside of a vsite: %s", $key));
     }
   }
+
+  /**
+   * @Given /^I am adding the subtheme "([^"]*)" in "([^"]*)"$/
+   */
+  public function iAmAddingTheSubthemeIn($subtheme, $vsite) {
+    $this->invoke_code('os_migrate_demo_add_subtheme', array("'{$subtheme}'", "'{$vsite}'"));
+  }
+
+  /**
+   * @When /^I defined the "([^"]*)" as the theme of "([^"]*)"$/
+   */
+  public function iDefinedTheAsTheThemeOf($subtheme, $vsite) {
+    $this->invoke_code('os_migrate_demo_define_subtheme', array("'{$subtheme}'", "'{$vsite}'"));
+  }
+
+  /**
+   * @Given /^I define the subtheme "([^"]*)" of the theme "([^"]*)" as the theme of "([^"]*)"$/
+   */
+  public function iDefineTheSubthemeOfTheThemeAsTheThemeOf($subtheme, $theme, $vsite) {
+    $this->invoke_code('os_migrate_demo_define_subtheme', array("'{$theme}'", "'{$subtheme}'", "'{$vsite}'"));
+  }
+
+  /**
+   * @Then /^I should verify the existence of the css "([^"]*)"$/
+   */
+  public function iShouldVerifyTheExistenceOfTheCss($asset) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//link[contains(@href, '{$asset}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The CSS asset %s wasn't found.", $asset));
+    }
+  }
+
+  /**
+   * @Given /^I should verify the existence of the js "([^"]*)"$/
+   */
+  public function iShouldVerifyTheExistenceOfTheJs($asset) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//script[contains(@src, '{$asset}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
+    }
+  }
 }
 
