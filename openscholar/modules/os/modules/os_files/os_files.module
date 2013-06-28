@@ -1297,7 +1297,9 @@ function os_files_file_default_types() {
     'mimetypes' => array(
       'application/x-msdos-program',
       'application/zip',
-      'application/octet-stream'
+      'application/octet-stream',
+      'application/x-gzip',
+      'application/x-compressed',
     ),
     'streams' => array(
       'public',
