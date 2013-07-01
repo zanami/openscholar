@@ -1,0 +1,5 @@
+name = OS Org
+description = An OS Org flavor of the OS Harvard theme
+screenshot = screenshot.png
+
+css[] = osorg.css
