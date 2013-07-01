@@ -71,7 +71,7 @@ function vsite_node_form_after_build($form) {
     return $form;
   }
   // Only continues if we have a node object.
-  if (isset($form['#node'])) {
+  if (!isset($form['#node'])) {
     return $form;
   }
   // Only continues to modify the node form for group content, not group types.
