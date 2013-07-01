@@ -162,18 +162,19 @@ function os_search_solr_block_view_alter(&$data,$block) {
 }
 
 /**
- * Implements hook_apachesolr_exclude().
- *
- * Exclude items from the search index.
+ * Implements hook_apachesolr_entity_info_alter().
  */
-function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_id) {
+function os_search_solr_apachesolr_entity_info_alter(&$entity_info) {
+  $entity_info['node']['status callback'][] = 'os_search_solr_apachesolr_index_node_status_callback';
+}
+
+
+/**
+ * Status callback for ApacheSolr, for nodes.
+ */
+function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entity_type) {
   if (!module_exists('vsite')) {
     // We don't have groups.
-    return;
-  }
-
-  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $row->bundle)){
-    // Entity is not a node, or not a group content.
     return;
   }
 
@@ -183,6 +184,13 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  $bundle = $wrapper->getBundle();
+
+  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $bundle)){
+    // Entity is not a node, or not a group content.
+    return;
+  }
+
   $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
   if (!count($gids)) {
     // Entity is not assigned to a group.
@@ -197,7 +205,7 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   $map = features_get_component_map('node');
-  if (!$feature = !empty($map[$row->bundle]) ? reset($map[$row->bundle]) : NULL) {
+  if (!$feature = !empty($map[$bundle]) ? reset($map[$bundle]) : NULL) {
     return;
   }
 
