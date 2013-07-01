@@ -17,7 +17,7 @@ EOF
 
 DOCROOT="www"
 OPSDIR=
-while getopts Ò:hd:o:Ó OPTION
+while getopts ":hd:o:" OPTION
 do
      case $OPTION in
          h ) usage
