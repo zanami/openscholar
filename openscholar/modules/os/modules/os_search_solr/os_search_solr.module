@@ -175,7 +175,7 @@ function os_search_solr_apachesolr_entity_info_alter(&$entity_info) {
 function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entity_type) {
   if (!module_exists('vsite')) {
     // We don't have groups.
-    return;
+    return TRUE;
   }
 
   if (!$entity = entity_load_single($entity_type, $entity_id)) {
@@ -188,25 +188,25 @@ function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entit
 
   if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $bundle)){
     // Entity is not a node, or not a group content.
-    return;
+    return TRUE;
   }
 
   $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
   if (!count($gids)) {
     // Entity is not assigned to a group.
-    return;
+    return TRUE;
   }
   $gid = current($gids);
   $group_wrapper = entity_metadata_wrapper('node', $gid);
 
   if (module_exists('vsite_access') && !empty($group_wrapper->{VSITE_ACCESS_FIELD}) && $group_wrapper->{VSITE_ACCESS_FIELD}->value()) {
     // Private group, exclude it.
-    return TRUE;
+    return;
   }
 
   $map = features_get_component_map('node');
   if (!$feature = !empty($map[$bundle]) ? reset($map[$bundle]) : NULL) {
-    return;
+    return TRUE;
   }
 
   $arguments = array(
@@ -222,7 +222,7 @@ function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entit
     $features = unserialize($row->value);
     if (empty($features[$feature]) || $features[$feature] != 1) {
       // Disabled or private feature, exclude it.
-      return TRUE;
+      return;
     }
   }
 }
