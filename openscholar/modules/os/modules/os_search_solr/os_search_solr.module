@@ -225,6 +225,9 @@ function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entit
       return;
     }
   }
+
+  // If we reached this point, it means the node can be indexed.
+  return TRUE;
 }
 
 /**
