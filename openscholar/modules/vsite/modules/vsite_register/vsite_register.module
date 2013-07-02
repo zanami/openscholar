@@ -43,6 +43,27 @@ function vsite_register_menu() {
 }
 
 /**
+ * Implements hook_restws_resource_info().
+ */
+function vsite_register_restws_resource_info() {
+  $info = array(
+    'vsite' => array(
+      'label' => t('VSite'),
+      'class' => 'VsiteResourceController',
+    )
+  );
+
+  return $info;
+}
+
+function vsite_register_restws_request_alter(&$request) {
+  if ($request['resource']->resource() == 'vsite') {
+    // load user from payload
+    // log them in
+  }
+}
+
+/**
  * Gets the node title from the welcome message node.
  */
 function _vsite_register_welcome_title() {
