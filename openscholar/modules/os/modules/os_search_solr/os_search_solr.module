@@ -162,19 +162,20 @@ function os_search_solr_block_view_alter(&$data,$block) {
 }
 
 /**
- * Implements hook_apachesolr_exclude().
- *
- * Exclude items from the search index.
+ * Implements hook_apachesolr_entity_info_alter().
  */
-function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_id) {
+function os_search_solr_apachesolr_entity_info_alter(&$entity_info) {
+  $entity_info['node']['status callback'][] = 'os_search_solr_apachesolr_index_node_status_callback';
+}
+
+
+/**
+ * Status callback for ApacheSolr, for nodes.
+ */
+function os_search_solr_apachesolr_index_node_status_callback($entity_id, $entity_type) {
   if (!module_exists('vsite')) {
     // We don't have groups.
-    return;
-  }
-
-  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $row->bundle)){
-    // Entity is not a node, or not a group content.
-    return;
+    return TRUE;
   }
 
   if (!$entity = entity_load_single($entity_type, $entity_id)) {
@@ -183,21 +184,29 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
-  if (!count($gids)) {
-    // Entity is not assigned to a group.
-    return;
-  }
-  $gid = current($gids);
+  $bundle = $wrapper->getBundle();
 
-  if (module_exists('vsite_access') && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
-    // Private group.
+  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $bundle)){
+    // Entity is not a node, or not a group content.
     return TRUE;
   }
 
-  $map = features_get_component_map('node');
-  if (!$feature = !empty($map[$row->bundle]) ? reset($map[$row->bundle]) : NULL) {
+  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+  if (!count($gids)) {
+    // Entity is not assigned to a group.
+    return TRUE;
+  }
+  $gid = current($gids);
+  $group_wrapper = entity_metadata_wrapper('node', $gid);
+
+  if (module_exists('vsite_access') && !empty($group_wrapper->{VSITE_ACCESS_FIELD}) && $group_wrapper->{VSITE_ACCESS_FIELD}->value()) {
+    // Private group, exclude it.
     return;
+  }
+
+  $map = features_get_component_map('node');
+  if (!$feature = !empty($map[$bundle]) ? reset($map[$bundle]) : NULL) {
+    return TRUE;
   }
 
   $arguments = array(
@@ -211,11 +220,14 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
 
   foreach ($result as $row) {
     $features = unserialize($row->value);
-    if ($features[$feature] != 1) {
-      // Disabled or private feature.
-      return TRUE;
+    if (empty($features[$feature]) || $features[$feature] != 1) {
+      // Disabled or private feature, exclude it.
+      return;
     }
   }
+
+  // If we reached this point, it means the node can be indexed.
+  return TRUE;
 }
 
 /**
@@ -235,3 +247,149 @@ function os_search_solr_apachesolr_process_results(&$arg) {
   }
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_search_solr_form_spaces_features_form_alter(&$form, &$form_state) {
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  $form['vsite_id'] = array(
+    '#type' => 'value',
+    '#value' => $vsite->id,
+  );
+
+  $form['#submit'][] = 'os_search_solr_form_spaces_features_form_submit';
+}
+
+/**
+ * Submit handler; If a feature has changed mark its bundles for reindex.
+ */
+function os_search_solr_form_spaces_features_form_submit($form, &$form_state) {
+  // Get the pre-changed values.
+  $spaces_features = variable_get('spaces_features', array());
+
+  if (!$features = array_diff_assoc($form_state['values']['spaces_features'], $spaces_features)) {
+    return;
+  }
+
+  $bundles = array();
+  foreach ($features as $feature => $value) {
+    if (!empty($spaces_features[$feature]) && $value != 1 && $spaces_features[$feature] != $value && $spaces_features[$feature] != 1) {
+      // Private changed to disabled or vice versa.
+      continue;
+    }
+
+    $app_info = os_app_info($feature);
+    $bundles = array_merge($bundles, $app_info['nodetypes']);
+  }
+
+  $vsite_id = $form_state['values']['vsite_id'];
+  os_search_solr_add_vsite_to_reindex($vsite_id, $bundles);
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function os_search_solr_node_update($node) {
+  if (!module_exists('vsite_access')) {
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+  if (!isset($wrapper->{VSITE_ACCESS_FIELD})) {
+    return;
+  }
+
+  $wrapper_original = entity_metadata_wrapper('node', $node->original);
+
+  $value = $wrapper->{VSITE_ACCESS_FIELD}->value();
+  $value_original = $wrapper_original->{VSITE_ACCESS_FIELD}->value();
+
+
+  if (($value && !$value_original) || (!$value && $value_original)) {
+    // Node changed from public to private, or vice versa.
+    os_search_solr_add_vsite_to_reindex($node->nid);
+  }
+}
+
+
+/**
+ * Add a VSite to a variable that will be re-indexed in hook_cron().
+ *
+ * @param $vsite_id
+ *   The VSite ID.
+ * @param $bundles
+ *   Optional; Array of bundles to process. Defaults to an empty array.
+ *
+ * @see os_search_solr_cron()
+ */
+function os_search_solr_add_vsite_to_reindex($vsite_id, $bundles = array()) {
+  $values = variable_get('os_search_solr_reindex_by_bundles', array());
+  $values[$vsite_id] = array('bundles' => $bundles, 'last_nid' => 0);
+  variable_set('os_search_solr_reindex_by_bundles', $values);
+}
+
+/**
+ * Implements hook_cron().
+ */
+function os_search_solr_cron() {
+  if (!$values = variable_get('os_search_solr_reindex_by_bundles', array())) {
+    return;
+  }
+
+  foreach ($values as $vsite_id => $values) {
+    os_search_solr_mark_entity_by_bundles($vsite_id, $values['bundles'], $values['last_nid']);
+    return;
+  }
+}
+
+/**
+ * Mark nodes for Solr index.
+ *
+ * @param $vsite_id
+ *   The VSite ID.
+ * @param $bundles
+ *   Optional; Array of bundles to process. Defaults to an empty array, which
+ *   will result with processing all group-content bundles.
+ * @param $last_nid
+ *   Optional; The last processed node ID. Defaults to 0.
+ * @param $range
+ *   Optional; Range of nodes to process in a single operation. Defaults to 200.
+ */
+function os_search_solr_mark_entity_by_bundles($vsite_id, $bundles = array(), $last_nid = 0, $range = 200) {
+  $values = variable_get('os_search_solr_reindex_by_bundles', array());
+
+  if (empty($bundles)) {
+    // Get all the group content bundles.
+    $bundles = og_get_all_group_content_bundle();
+    $bundles = $bundles['node'];
+  }
+
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $bundles, 'IN')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+    ->propertyCondition('nid', $last_nid, '>')
+    ->propertyOrderBy('nid')
+    ->range(0, $range)
+    ->execute();
+
+  if (empty($result['node'])) {
+    // All nodes have been processed, so we can remove it from future
+    // processing.
+    unset($values[$vsite_id]);
+    variable_set('os_search_solr_reindex_by_bundles', $values);
+    return;
+  }
+
+  foreach (array_keys($result['node']) as $nid) {
+    apachesolr_mark_entity('node', $nid);
+  }
+
+  // Set last processed node ID.
+  $values[$vsite_id]['last_nid'] = $nid;
+  variable_set('os_search_solr_reindex_by_bundles', $values);
+}
