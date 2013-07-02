@@ -822,3 +822,40 @@ function os_publications_field_attach_load($entity_type, $entities, $view_mode) 
     }
   }
 }
+
+/**
+ * Implements hook_biblio_fields_info().
+ */
+function os_publications_biblio_fields_info() {
+  // URL title.
+  $items['biblio_url_title'] = array(
+    'description' => 'Biblio URL title',
+    'field' => array(
+      'cardinality' => '1',
+      'field_name' => 'biblio_url_title',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'type' => 'text',
+    ),
+    'instance' => array(
+      'label' => 'Biblio URL title',
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '-3',
+      ),
+    ),
+  );
+
+  return $items;
+}

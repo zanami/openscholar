@@ -770,14 +770,10 @@ class os_sv_list_box extends os_boxes_default {
   }
 
   function _biblio_types() {
-    $rows = db_select('biblio_types', 'bt')
-      ->fields('bt', array('tid', 'name'))
-      ->condition('tid', 0, '>')
-      ->condition('visible', 1)
-      ->execute();
-    $options = array('all' => 'Select All');
-    foreach ($rows as $r) {
-      $options[$r->tid] = $r->name;
+    // @TODO: Verify this is work as expected due to the change.
+    $options = array();
+    foreach (biblio_types() as $info => $data) {
+      $options[$info] = $data->name;
     }
 
     return $options;
