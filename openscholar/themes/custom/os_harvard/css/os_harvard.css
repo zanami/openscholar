@@ -314,11 +314,6 @@ ul.grid {
 }
 
 
-.front #header-container {
-  height: 58px;
-  }
-
-
 .front #content-panels li {
    padding: 0 0 7px;
 }
@@ -515,7 +510,7 @@ border-bottom-left-radius: 5px;
 
 #menu-bar ul.nice-menu li a,
 #menu-bar ul.nice-menu li a:visited {
-font-size: 20px;
+font-size: 15px;
 color:#000;
 } 
 
@@ -524,9 +519,9 @@ color:#000;
   color: #df0800 !important;
   }
 
-#menu-bar ul.nice-menu li.first a {
-  background:url('../images/download.png') no-repeat 0 29px transparent;
-  padding-left: 23px;
+#menu-bar ul.nice-menu li.last a {
+  background:url('../images/mainnav_sidearrow.png') no-repeat 208px 28px transparent;
+  padding-right: 23px;
   }
   
 #menu-bar ul.nice-menu li {
@@ -537,9 +532,9 @@ color:#000;
 
 #header-container h1 {
   width:285px;
-  height: 50px;
+  height: 74px;
   text-indent: -999em;
-  background: url('../images/logo.png') no-repeat 0 0 transparent;
+  background: url('../images/osatharvardlogo.png') no-repeat 0 0 transparent;
   margin: 0 0 0 5px;
   }
   
@@ -677,11 +672,5 @@ padding-top: 0;
 .navigation ul.menu li a.active {
 	font-style:normal;
 }
-
-
-
-
-
-
 
 

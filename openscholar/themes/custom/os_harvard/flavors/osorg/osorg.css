@@ -1,0 +1,85 @@
+body,
+#footer,
+#page-wrapper {
+    background: #EEE;
+    
+}
+
+
+#columns {
+    background: #FFF;
+}
+
+.front.no-sidebars .region-content-top:after {
+    background: none;
+}
+
+#header,
+#menu-bar,
+#header-container {
+background: #373737 !important;
+}
+
+#header-container h1 {
+  width:295px;
+  height: 50px;
+  text-indent: -999em;
+  background: url('../images/logo.png') no-repeat 0 0 transparent;
+  margin: 0 0 0 5px;
+  }
+  
+#header-container h1 a, #header-container h1 a:visited {
+  display:block;
+  width:279px;
+  height: 31px;
+  }
+  
+
+#menu-bar {
+    background: #FFF;
+    margin-top: -10px;
+}
+
+#menu-bar ul.nice-menu {
+    margin-bottom:0;
+    text-align: right;
+    float:right;
+}
+
+#menu-bar ul.nice-menu li a,
+#menu-bar ul.nice-menu li a:visited {
+font-size: 18px;
+color:#FFF;
+} 
+
+#menu-bar ul.nice-menu li a:hover,
+#menu-bar ul.nice-menu li a.active {
+  color: #df0800 !important;
+  }
+
+#menu-bar ul.nice-menu li.first a {
+  background:url('../images/download.png') no-repeat 0 29px transparent;
+  padding-left: 23px;
+  }
+  
+  
+#menu-bar ul.nice-menu li.last a {
+    background: none;
+    padding-right: 0;
+}  
+  
+#menu-bar ul.nice-menu li {
+    line-height: 75px;
+   display:inline-block;
+}  
+  
+#block-os-site_search.no-title, 
+.block-os-search-solr.no-title, 
+.block-os-search-db.no-title {
+    background: #555;
+   }
+
+
+#powered-by a {
+    background-position: 0 0;
+}

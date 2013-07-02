@@ -1,4 +1,3 @@
-
 ;----------// Theme Information
 
   name        = OS theme for Harvard use
@@ -8,13 +7,13 @@
   release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
-  flavor_name = "OS Harvard"
+  flavor_name = "OSHarvard"
   plugins[os][flavor] = flavors
 
 ;----------// OpenScholar
 
-os[theme_type]   = "vsite"
-os[theme_access] = "private"
+os[theme_type]   = 'vsite'
+os[theme_access] = 'private'
 
 ;----------// Stylesheets
   stylesheets[screen][] = css/os_harvard.responsive.layout.css
