@@ -62,9 +62,21 @@ class VsiteResourceController implements RestWSQueryResourceControllerInterface 
   }
 
   public function create(array $values) {
-    dpm($values);
+   if ($values['owner'] == -1) {
+      $values['owner'] = $GLOBALS['user']->uid;
+    }
+    elseif ($values['owner'] == 0) {
+      // create or find new user
+      // assign them as owner of new site
+    }
 
-
+    vsite_create_vsite($values['title'],
+                      $values['domain'],
+                      $values['owner'],
+                      $values['type'],
+                      $values['preset'],
+                      NULL,
+                      $values['visibility']);
   }
 
   public function update($id, array $values) {
@@ -88,10 +100,10 @@ class VsiteResourceController implements RestWSQueryResourceControllerInterface 
   }
 
   public function count($filters = array(), $meta_controls = array()) {
-
+    return 10;
   }
 
   public function limit($client_limit = NULL) {
-
+    return 10;
   }
 }
