@@ -22,6 +22,11 @@ projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
 projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919350643c8b26a3f639e935c1c6e802c6dd7/patches/boxes.load_from_spaces_and_fix_fatals.patch"
 
+projects[biblio][subfir] = "contrib"
+projects[biblio][download][type] = git
+projects[biblio][download][url] = "https://github.com/amitaibu/biblio"
+projects[biblio][download][branch] = 20
+
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 projects[calendar][patch][] = "http://raw.github.com/openscholar/openscholar/72d63ee3537c31505b7481975886ec13789feeb5/patches/calendar-fix-week-view-overflow.patch"
@@ -386,6 +391,10 @@ libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
+
+libraries[citeproc-php][type] = "libraries"
+libraries[citeproc-php][download][type] = "git"
+libraries[citeproc-php][download][url] = "https://github.com/gbv/citeproc-php.git"
 
 libraries[jquery.cycle][type] = "libraries"
 libraries[jquery.cycle][download][type] = "file"
