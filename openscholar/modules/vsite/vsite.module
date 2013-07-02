@@ -309,8 +309,6 @@ function vsite_spaces_registry_alter(&$registry){
  *
  * @param array $vsites
  *   An array as returned by vsite_get_vsite_by_user()
- * @param int $parent
- *   The Node ID of the parent vsite this site will be a subsite of.
  *
  * @return bool
  *   TRUE if the user has access to create a site under these conditions.
