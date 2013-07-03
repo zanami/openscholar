@@ -70,13 +70,15 @@ class VsiteResourceController implements RestWSQueryResourceControllerInterface 
       // assign them as owner of new site
     }
 
-    vsite_create_vsite($values['title'],
+    /*$vsite = vsite_create_vsite($values['title'],
                       $values['domain'],
                       $values['owner'],
                       $values['type'],
                       $values['preset'],
                       NULL,
                       $values['visibility']);
+
+    return $vsite->group->nid; */
   }
 
   public function update($id, array $values) {
