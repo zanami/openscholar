@@ -39,6 +39,13 @@ function vsite_register_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['site/purls'] = array(
+    'title' => 'Get PURLs',
+    'page callback' => 'vsite_register_get_purls',
+    'access callback' => 'vsite_register_purl_access',
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -269,3 +276,38 @@ function _vsite_register_form_error() {
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
 
+function vsite_register_purl_access() {
+  $master = variable_get('ossap_master_servers', array());
+  if (empty($master)) {
+    return true;
+  }
+  if (isset($_SERVER['HTTP_ORIGIN'])) {
+    foreach ($master as $name => $info) {
+      $domain = parse_url('http://'.$info['domain'], PHP_URL_HOST);
+      if ($_SERVER['HTTP_ORIGIN'] == $domain) {
+        drupal_add_http_header('Access-Control-Allow-Origin', $domain);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function vsite_register_get_purls() {
+  $q = db_select('purl', 'p')
+    ->fields('p', array('value'))
+    ->condition('provider', 'spaces_og')
+    ->execute();
+
+  $purls = array();
+  foreach ($q as $r) {
+    $purls[] = $r->value;
+  }
+  $output = array(
+    'domain' => $GLOBALS['base_url'],
+    'purls' => $purls
+  );
+
+  print drupal_json_encode($output);
+  exit;
+}
