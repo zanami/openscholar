@@ -74,7 +74,16 @@ if (!class_exists('purl_vsite_path')) {
       // If we are asking for the absolute url then return the correct base url for a path provider
       if (array_key_exists('absolute', $options) && $options['absolute']) {
         if ($element->id && $vsite = spaces_load('og', $element->id)) {
-          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
+          // Sets the environment to 'space' so that we only check the value
+          // possibly overridden on the destination vsite.
+          // If this parameter were omitted, it would be possible for a node
+          // that belongs on a vsite with no custom domain to be loaded and
+          // viewed from a custom domain.
+          // i.e. http://custom.com/othersite/my-post would return "custom.com",
+          // even if the node didn't belong to a site with domain "custom.com".
+          // @see spaces_controller.inc
+          $environment = 'space';
+          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name', $environment);
         }
 
         if ($vsite_domain) {
