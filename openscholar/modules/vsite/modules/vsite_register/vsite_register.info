@@ -5,5 +5,3 @@ package = OpenScholar vsite
 dependencies[] = vsite
 
 configure = admin/config/openscholar/vsite_register
-
-files[] = plugins/vsite.rest.inc
