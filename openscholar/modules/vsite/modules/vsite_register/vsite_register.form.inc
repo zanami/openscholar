@@ -844,18 +844,22 @@ function vsite_register_validate($type, $value) {
 
   switch ($type) {
     case 'name':
-      $message = user_validate_name($value);
-      if ($message) {
+      if ($message = user_validate_name($value)) {
         $output['message'] = $message;
+      }
+      elseif ($user = user_load_by_name($value)) {
+        $output['message'] = t('User name is not available.');
       }
       else {
         $output['valid'] = true;
       }
       break;
     case 'email':
-      $message = user_validate_email($value);
-      if ($message) {
+      if ($message = user_validate_email($value)) {
         $output['message'] = $message;
+      }
+      elseif (user_load_by_mail($value)) {
+        $output['message'] = t('Email already in use.');
       }
       else {
         $output['valid'] = true;
