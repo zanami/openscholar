@@ -1,0 +1,123 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+
+#branding_footer, #branding_header {
+    display:none;
+}
+
+body  {
+	font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+    font-size: 14px;
+    background: #F6F6F6;
+ 
+}
+
+
+.hg-container {
+    width: 100%;
+}
+
+body.front.no-sidebars #content-panels .block-inner {
+    margin: 0 auto;
+    width: 980px;
+}
+
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+    background: #373737;
+    bottom: auto;
+    content: "";
+    display: block;
+    height: 100%;
+    left: -1000px;
+    position: absolute;
+    right: auto;
+    top: 0;
+    width: 3000px;
+    z-index: 0;
+}
+
+#header,
+#menu-bar,
+#columns {
+    background:#F6F6F6;
+    background-image: none;
+}
+
+
+#header-container h1 {
+  width:292px;
+  height: 78px;
+  text-indent: -999em;
+  background: url('../images/osatharvardlogo.png') no-repeat 0 0 transparent;
+  margin: -20px 0 0 5px;
+  }
+  
+#header-container h1 a, #header-container h1 a:visited {
+  display:block;
+  width:279px;
+  height: 31px;
+  }
+
+#header-container h2, #header-container p {
+  display:none;
+  }  
+  
+  
+.region-header-third ul.nice-menu a {
+    font: normal 14px 'Roboto',sans-serif;
+    text-transform: none;
+}  
+
+.region-header-third ul.nice-menu li a {
+  background:url('../images/mainnav_sidearrow.png') no-repeat 222px 4px transparent;
+  padding-right: 23px;
+  }
+  
+#menu-bar {
+    padding: 0 0 10px;
+}  
+  
+#menu-bar nav {
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+}  
+
+#menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
+    font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
+   padding: 8px 15px;
+}
+
+
+#search-block-form input.form-submit, 
+#search-block-form #edit-submit, 
+#search-form #edit-submit {
+    background-position: 2px -373px;
+}
+
+
+.front #content-panels .block {
+    -moz-box-sizing: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+
+/* SLIDESHOW OVERRIDES */
+#layout_16_9_side .hero {
+    background: #373737 !important;
+}
+
+#layout_16_9_side .hero-copy h2 {
+    font: bold 25px arial,sans-serif;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
+    padding: 15px 0;
+}
+
+#layout_16_9_side .hero-copy {
+    padding-top: 25px;
+}
+
