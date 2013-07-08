@@ -42,8 +42,17 @@ function vsite_register_menu() {
   $items['site/purls'] = array(
     'title' => 'Get PURLs',
     'page callback' => 'vsite_register_get_purls',
-    'access callback' => 'vsite_register_purl_access',
+    'access callback' => 'vsite_register_cors_access',
     'type' => MENU_CALLBACK,
+  );
+
+  $items['site/register/validate/%/%'] = array(
+    'title' => 'Validate User Info',
+    'page callback' => 'vsite_register_validate',
+    'page arguments' => array(3, 4),
+    'access callback' => 'vsite_register_cors_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc'
   );
 
   return $items;
@@ -202,7 +211,7 @@ function vsite_register_message($form, $domain) {
   // Prepares an array of messages to display to the user,
   // to be rendered each as individual paragraph elements.
   $paragraphs = array();
-  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose)));
+  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose_site)));
   if ($user_is_anonymous) {
     $paragraphs[] = t('Check your email account for further details on how to login in to start adding features and content.');
   }
@@ -276,11 +285,8 @@ function _vsite_register_form_error() {
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
 
-function vsite_register_purl_access() {
+function vsite_register_cors_access() {
   $master = variable_get('ossap_master_servers', array());
-  if (empty($master)) {
-    return true;
-  }
   if (isset($_SERVER['HTTP_ORIGIN'])) {
     foreach ($master as $name => $info) {
       $domain = parse_url('http://'.$info['domain'], PHP_URL_HOST);
@@ -289,8 +295,9 @@ function vsite_register_purl_access() {
         return true;
       }
     }
+    return false;
   }
-  return false;
+  return true;
 }
 
 function vsite_register_get_purls() {

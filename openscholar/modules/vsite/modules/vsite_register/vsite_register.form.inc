@@ -836,3 +836,33 @@ function _vsite_register_notify_author_body_text($current_user, $author) {
 
   return $body_text;
 }
+
+function vsite_register_validate($type, $value) {
+  $output = array(
+    'valid' => false,
+  );
+
+  switch ($type) {
+    case 'name':
+      $message = user_validate_name($value);
+      if ($message) {
+        $output['message'] = $message;
+      }
+      else {
+        $output['valid'] = true;
+      }
+      break;
+    case 'email':
+      $message = user_validate_email($value);
+      if ($message) {
+        $output['message'] = $message;
+      }
+      else {
+        $output['valid'] = true;
+      }
+      break;
+  }
+
+  print drupal_json_encode($output);
+  exit;
+}
