@@ -842,29 +842,13 @@ function vsite_register_validate($type, $value) {
     'valid' => false,
   );
 
-  switch ($type) {
-    case 'name':
-      if ($message = user_validate_name($value)) {
-        $output['message'] = $message;
-      }
-      elseif ($user = user_load_by_name($value)) {
-        $output['message'] = t('User name is not available.');
-      }
-      else {
-        $output['valid'] = true;
-      }
-      break;
-    case 'email':
-      if ($message = user_validate_email($value)) {
-        $output['message'] = $message;
-      }
-      elseif (user_load_by_mail($value)) {
-        $output['message'] = t('Email already in use.');
-      }
-      else {
-        $output['valid'] = true;
-      }
-      break;
+  $values[$type] = $value;
+  $msg = _vsite_register_validate($type, $values);
+  if (is_array($msg)) {
+    $output['message'] = $msg;
+  }
+  else {
+    $output['valid'] = true;
   }
 
   print drupal_json_encode($output);
