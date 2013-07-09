@@ -141,6 +141,12 @@ p span {
   font-family: 'Oswald', arial;
    } 
   
+  
+ .front .sidebar h2.block-title {
+     background: none;
+     font-family: arial;
+     padding-left: 0;
+}
  
  .front .block-boxes-os_boxes_twitterfeed h2.block-title {
   background: url('../images/twitterIcon.png') 0 7px no-repeat;
