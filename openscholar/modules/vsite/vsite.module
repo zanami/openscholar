@@ -1394,6 +1394,12 @@ function vsite_node_insert($node){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
   }
+
+  if (og_is_group_type('node', $node->type)) {
+    module_load_include('inc', 'vsite', 'includes/user');
+    vsite_user_add($node->uid ,$node->nid);
+    vsite_role_grant($node->uid, 'vsite admin', $node->nid);
+  }
 }
 
 /**
@@ -1884,4 +1890,46 @@ function vsite_og_tasks_info($entity_type, $entity) {
   $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
 
   return $tasks;
+}
+
+/**
+ * Alter metadata for entity properties for use with entity module.
+ *
+ * Expose group entity properties to the entityAPI module
+ *
+ * @see hook_entity_property_info()
+ */
+function vsite_entity_property_info_alter(&$info) {
+
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  foreach ($group_types as $type) {
+    if(!isset($info['node']['bundles'][$type]['properties'])){
+      continue;
+    }
+    $properties = &$info['node']['bundles'][$type]['properties'];
+
+    $properties['spaces_preset_og'] = array(
+      'label' => t("Spaces Preset"),
+      'description' => t("The preset for a vsite."),
+      'type' => 'text',
+      'getter callback' => 'entity_metadata_node_get_properties',
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+    $properties['purl'] = array(
+      'label' => t("vsite PURL"),
+      'description' => t("The purl for a vsite."),
+      'type' => NULL,
+      'getter callback' => 'entity_metadata_node_get_properties',
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+  }
+
+  $info['user']['bundles']['user']['properties']['pass'] = array(
+    'label' => t("Password"),
+    'description' => t("The password for a user entity."),
+    'type' => 'text',
+    'getter callback' => 'entity_metadata_user_get_properties',
+    'setter callback' => 'entity_property_verbatim_set',
+  );
+
 }

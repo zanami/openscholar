@@ -48,6 +48,10 @@ function os_pinserver_auth_private_file_download(){
 
   //Use Pinserver Tokens to load user
   pinserver_authenticate_user();
+  if(pinserver_get_errors()){
+    $errors = "Error trying to authenticate for private files. ".implode(',', pinserver_get_errors());
+    watchdog('pinserver', "".$errors);
+  }
 
   $headers = os_pinserver_auth_file_download($uri);
   if (count($headers)) {

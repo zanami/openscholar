@@ -12,8 +12,15 @@ function vsite_register_form($form, &$state) {
   global $base_url;
   global $user;
   $form = array();
+
   $anonymous = ($user->uid == 0);
   $manager = (user_access('create vsite content on behalf') && user_access('administer users'));
+
+  /**
+   * @todo Enable manager and admin mode
+   */
+  $anonymous = true;
+  $manager = false;
 
   $parent = NULL;
   if (isset($_GET['parent']) && $parent = vsite_get_vsite($_GET['parent'])) {
@@ -300,11 +307,6 @@ function vsite_register_form_submit(&$form, &$state) {
   $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
   $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
   if ($vsite) {
-    // Adds the user to the new vsite.
-    module_load_include('inc', 'vsite', 'includes/user');
-    vsite_user_add($site_owner);
-
-    os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
 
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
