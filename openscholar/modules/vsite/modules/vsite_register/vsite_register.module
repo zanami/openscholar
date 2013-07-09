@@ -289,7 +289,7 @@ function vsite_register_cors_access() {
   $master = variable_get('ossap_master_servers', array());
   if (isset($_SERVER['HTTP_ORIGIN'])) {
     foreach ($master as $name => $info) {
-      $domain = parse_url('http://'.$info['domain'], PHP_URL_HOST);
+      $domain = 'http://'.parse_url('http://'.$info['domain'], PHP_URL_HOST);
       if ($_SERVER['HTTP_ORIGIN'] == $domain) {
         drupal_add_http_header('Access-Control-Allow-Origin', $domain);
         return true;
