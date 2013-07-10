@@ -89,7 +89,7 @@ function _os_pinserver_auth_file_download($uri) {
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-    if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
+    if (pinserver_get_user()) {
       $file = file_uri_to_object($uri, FALSE);
       return file_get_content_headers($file);
     }
@@ -198,7 +198,7 @@ function os_pinserver_auth_vsite_private_file_settings_submit(&$form, &$form_sta
   }
 
   // Set or Unset a custom pinserver app.
-  if($form_state['values']['pinserver_app_name']){
+  if($form_state['values']['pinserver_app_name'] && $form_state['values']['pinserver_app_name'] != $vsite->controllers->variable->get('pinserver_app_name','original')){
     // The pinserver domain should match the site's custom domain.
     $vsite->controllers->variable->set('os_pinserver_custom_domain', $vsite_domain);
     //Store pin settings for this domain for use on the os_fast callback outside a space.
