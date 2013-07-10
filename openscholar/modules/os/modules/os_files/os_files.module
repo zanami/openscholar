@@ -1344,8 +1344,10 @@ function os_files_file_default_types_alter(&$types){
     'audio/x-ogg',
     'application/x-ogg',
     // *.wmv files
-    'video/x-ms-wmv'
+    'video/x-ms-wmv',
+    'text/oembed'
   ));
+  $types['video']->streams[] = 'oembed';
 
   $types['audio']->mimetypes = array_merge($types['audio']->mimetypes, array(
     // *.mp3 files
@@ -1393,6 +1395,9 @@ function os_files_file_default_types_alter(&$types){
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
   ));
+
+  $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
+  $types['document']->mimetypes = array_diff($types['document']->streams, array('oembed'));
 }
 
 /**
