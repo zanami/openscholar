@@ -286,7 +286,7 @@ function _os_pinserver_auth_create_vsite_redirect() {
     // Can create new vsites; provide form to create a new vsite.
     return TRUE;
   }
-  else if (count($vsites)) {
+  else {
     // Can't create new sites; redirect user to existing vsite(s).
     return _os_pinserver_auth_existing_vsite_redirect($vsites);
   }
@@ -295,21 +295,30 @@ function _os_pinserver_auth_create_vsite_redirect() {
 }
 
 /*
- * Redirect to the proper vsite.
+ * Redirect to the proper destination after failing to create a vsite.
 */
-function _os_pinserver_auth_existing_vsite_redirect($vsites) {
-  // Redirects user to existing vsite(s).
-  $count = count($vsites);
+function _os_pinserver_auth_existing_vsite_redirect($vsites = array()) {
+  // First checks if the reason for access denied was due to domain mismatch.
+  global $base_url;
+  $purl_base_domain = variable_get('purl_base_domain');
+  // If there was a domain mismatch...
+  if ($base_url != $purl_base_domain) {
+    // Redirects to custom vsite's front page.
+    drupal_goto();
+  }
 
+  // Alerts the user that they have reached the maximum.
+  $sites = format_plural(count($vsites), '1 site', '@count sites');
   drupal_get_messages();  // Clear message queue.
-  drupal_set_message(t('You have already registered your maximum number of !count !websites.', array(
-  '!count' => "<i>$count</i>",
-  '!websites' => t('website' . ($count == 1 ? '' : 's')),
-  )));
+  drupal_set_message(t('You have already registered your maximum number of @sites.', array(
+  '@sites' => $sites,
+  )), 'warning');
 
+  // Redirects user to existing vsite(s) if available.
   if (count($vsites) == 1) {
     drupal_goto($vsites[0]->get_absolute_url());
   }
+  // Otherwise redirects to the user page, with the list of all a user's sites.
   else {
     drupal_goto('user');
   }
