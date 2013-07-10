@@ -277,7 +277,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 .block-boxes-os_boxes_twitterfeed h2.block-title {
 	background:url('../images/uploads/whytwittericon.png') no-repeat;
-	padding-top:90px;
+	padding: 90px 5px 0 5px;
 	color: #000000;
     font: 18px/1.2em "Helvetica","Arial","sans-serif";
 }
