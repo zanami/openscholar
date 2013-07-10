@@ -857,7 +857,7 @@ function vsite_register_validate($type, $value) {
 
 function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestamp, $token) {
   global $user;
-  $space = spaces_load('spaces_og', $site_id);
+  $space = spaces_load('og', $site_id);
 
   // When processing the one-time login link, we have to make sure that a user
   // isn't already logged in.
