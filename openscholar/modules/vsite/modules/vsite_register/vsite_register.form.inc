@@ -857,13 +857,20 @@ function vsite_register_validate($type, $value) {
 
 function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestamp, $token) {
   global $user;
+  $space = spaces_load('spaces_og', $site_id);
 
   // When processing the one-time login link, we have to make sure that a user
   // isn't already logged in.
   if ($user->uid) {
     // The existing user is already logged in.
     if ($user->uid == $uid) {
-      drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => $user->name, '!user_edit' => url("user/$user->uid/edit"))));
+      $purl_params = array(
+        'purl' => array(
+          'provider' => "spaces_{$space->type}",
+          'id' => $space->id,
+        )
+      );
+      purl_goto('<front>', $purl_params);
     }
     // A different user is already logged in on the computer.
     else {
@@ -883,7 +890,6 @@ function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestam
     // 86400 seconds.
     $timeout = variable_get('user_password_reset_timeout', 86400);
     $current = REQUEST_TIME;
-    $space = spaces_load('spaces_og', $site_id);
     // Some redundant checks for extra security ?
     $users = user_load_multiple(array($uid), array('status' => '1'));
     if ($timestamp <= $current && $account = reset($users)) {
@@ -892,8 +898,8 @@ function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestam
         drupal_set_message(t('You have tried to use a one-time login link that has expired. You must log in through the Admin Login link.'));
         $purl_params = array(
           'purl' => array(
-            'provider' => "spaces_{$this->type}",
-            'id' => $this->id,
+            'provider' => "spaces_{$space->type}",
+            'id' => $space->id,
           )
         );
         purl_goto('<front>', $purl_params);
@@ -906,18 +912,22 @@ function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestam
         // user, which invalidates further use of the one-time login link.
         user_login_finalize();
         watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
-        drupal_set_message(t('You have just used your one-time login link. It is no longer necessary to use this link to log in. Please change your password.'));
-        // Let the user's password be changed without the current password check.
-        $token = drupal_hash_base64(drupal_random_bytes(55));
-        $_SESSION['pass_reset_' . $user->uid] = $token;
-        drupal_goto('user/' . $user->uid . '/edit', array('query' => array('pass-reset-token' => $token)));
-      }
-      else {
-        drupal_set_message(t('You have tried to use a one-time login link that has either been used or is no longer valid. Please request a new one using the form below.'));
+        drupal_set_message(t('You have just used your one-time login link. It is no longer necessary to use this link to log in.'));
+
         $purl_params = array(
           'purl' => array(
-            'provider' => "spaces_{$this->type}",
-            'id' => $this->id,
+            'provider' => "spaces_{$space->type}",
+            'id' => $space->id,
+          )
+        );
+        purl_goto('<front>', $purl_params);
+      }
+      else {
+        drupal_set_message(t('You have tried to use a one-time login link that has either been used or is no longer valid. You must log in through the Admin Login link.'));
+        $purl_params = array(
+          'purl' => array(
+            'provider' => "spaces_{$space->type}",
+            'id' => $space->id,
           )
         );
         purl_goto('<front>', $purl_params);
