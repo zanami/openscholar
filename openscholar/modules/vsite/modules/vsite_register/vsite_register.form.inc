@@ -858,18 +858,19 @@ function vsite_register_validate($type, $value) {
 function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestamp, $token) {
   global $user;
   $space = spaces_load('og', $site_id);
+  $purl_params = array(
+    'purl' => array(
+      'provider' => "spaces_{$space->type}",
+      'id' => $space->id,
+    ),
+    'fragment' => 'overlay=cp/welcome'
+  );
 
   // When processing the one-time login link, we have to make sure that a user
   // isn't already logged in.
   if ($user->uid) {
     // The existing user is already logged in.
     if ($user->uid == $uid) {
-      $purl_params = array(
-        'purl' => array(
-          'provider' => "spaces_{$space->type}",
-          'id' => $space->id,
-        )
-      );
       purl_goto('<front>', $purl_params);
     }
     // A different user is already logged in on the computer.
@@ -896,12 +897,7 @@ function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestam
       // No time out for first time login.
       if ($account->login && $current - $timestamp > $timeout) {
         drupal_set_message(t('You have tried to use a one-time login link that has expired. You must log in through the Admin Login link.'));
-        $purl_params = array(
-          'purl' => array(
-            'provider' => "spaces_{$space->type}",
-            'id' => $space->id,
-          )
-        );
+
         purl_goto('<front>', $purl_params);
       }
       elseif ($account->uid && $timestamp >= $account->login && $timestamp <= $current && $token == user_pass_rehash($account->pass, $timestamp, $account->login)) {
@@ -912,24 +908,13 @@ function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestam
         // user, which invalidates further use of the one-time login link.
         user_login_finalize();
         watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
-        drupal_set_message(t('You have just used your one-time login link. It is no longer necessary to use this link to log in.'));
+        drupal_set_message(t('You have just used your one-time login link. You will no longer be able to use this link to log in.'));
 
-        $purl_params = array(
-          'purl' => array(
-            'provider' => "spaces_{$space->type}",
-            'id' => $space->id,
-          )
-        );
         purl_goto('<front>', $purl_params);
       }
       else {
         drupal_set_message(t('You have tried to use a one-time login link that has either been used or is no longer valid. You must log in through the Admin Login link.'));
-        $purl_params = array(
-          'purl' => array(
-            'provider' => "spaces_{$space->type}",
-            'id' => $space->id,
-          )
-        );
+
         purl_goto('<front>', $purl_params);
       }
     }
