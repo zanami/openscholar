@@ -15,35 +15,30 @@ function os_publications_install() {
     biblio_create_field('biblio_url_title', 'biblio', $type);
   }
 
-  if ($field = field_info_instance('node', 'body', 'biblio')) {
-    $field['display']['teaser'] = array(
-      'label' => 'hidden',
-      'type' => 'hidden',
-    );
-    field_update_instance($field);
-  }
 
-//  if(module_exists('biblio_citeproc')){
-//    //Remove Line indentation from citeproc styles
-//    foreach (biblio_get_styles() as $name => $desc){
-//      $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
-//      if (isset($csl->csl)) {
-//        $csl_file_contents = $csl->csl;
-//        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
-//          biblio_citeproc_install_style($name, $csl_file_contents);
-//        }
-//      }
-//    }
-//
-//    // Remove second biblio_secondary_title field mapping.
-//    $field_map = biblio_get_map('field_map','csl');
-//    if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
-//      if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
-//	    $field_map['collection-title'] = '';
-//	    biblio_set_map('field_map', 'csl', $field_map);
-//	  }
-//    }
-//  }
+  // Will be un use until the biblio citeproc will be back.
+  return;
+  if (module_exists('biblio_citeproc')) {
+    //Remove Line indentation from citeproc styles
+    foreach (biblio_get_styles() as $name => $desc){
+      $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
+      if (isset($csl->csl)) {
+        $csl_file_contents = $csl->csl;
+        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
+          biblio_citeproc_install_style($name, $csl_file_contents);
+        }
+      }
+    }
+
+    // Remove second biblio_secondary_title field mapping.
+    $field_map = biblio_get_map('field_map','csl');
+    if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
+      if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
+	    $field_map['collection-title'] = '';
+	    biblio_set_map('field_map', 'csl', $field_map);
+	  }
+    }
+  }
 }
 
 // Implements hook_update_N().
@@ -72,7 +67,7 @@ function os_publications_uninstall() {
 }
 
 function os_publications_enable() {
-  _os_publications_update_field_data();
+//  _os_publications_update_field_data();
 
   // place it behind import/export modules
   db_update('system')
@@ -101,26 +96,26 @@ function _os_publications_update_field_data() {
 
   list($biblio_field_type, $biblio_field_type_data, $biblio_contributor_type, $biblio_contributor_type_data) = include ($file);
 
-//  db_truncate('biblio_field_type')->execute();
-//  foreach ($biblio_field_type as $type) {
-//    drupal_write_record('biblio_field_type', $type);
-//  }
-//
-//  db_truncate('biblio_field_type_data')->execute();
-//  foreach ($biblio_field_type_data as $type_data) {
-//    drupal_write_record('biblio_field_type_data', $type_data);
-//  }
-//
-//  db_truncate('biblio_contributor_type')->execute();
-//  foreach ($biblio_contributor_type as $contrib_type) {
-//    drupal_write_record('biblio_contributor_type', $contrib_type);
-//  }
-//
-//  db_truncate('biblio_contributor_type_data')->execute();
-//  foreach ($biblio_contributor_type_data as $contrib_type_data) {
-//    //Run the query manually to override the serials
-//    drupal_write_record('biblio_contributor_type_data', $contrib_type_data);
-//  }
+  db_truncate('biblio_field_type')->execute();
+  foreach ($biblio_field_type as $type) {
+    drupal_write_record('biblio_field_type', $type);
+  }
+
+  db_truncate('biblio_field_type_data')->execute();
+  foreach ($biblio_field_type_data as $type_data) {
+    drupal_write_record('biblio_field_type_data', $type_data);
+  }
+
+  db_truncate('biblio_contributor_type')->execute();
+  foreach ($biblio_contributor_type as $contrib_type) {
+    drupal_write_record('biblio_contributor_type', $contrib_type);
+  }
+
+  db_truncate('biblio_contributor_type_data')->execute();
+  foreach ($biblio_contributor_type_data as $contrib_type_data) {
+    //Run the query manually to override the serials
+    drupal_write_record('biblio_contributor_type_data', $contrib_type_data);
+  }
 }
 
 /**
