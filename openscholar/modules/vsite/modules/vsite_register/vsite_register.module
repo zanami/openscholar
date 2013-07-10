@@ -48,6 +48,22 @@ function vsite_register_menu() {
     'file' => 'vsite_register.form.inc',
   );
 
+  $items['site/purls'] = array(
+    'title' => 'Get PURLs',
+    'page callback' => 'vsite_register_get_purls',
+    'access callback' => 'vsite_register_cors_access',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['site/register/validate/%/%'] = array(
+    'title' => 'Validate User Info',
+    'page callback' => 'vsite_register_validate',
+    'page arguments' => array(3, 4),
+    'access callback' => 'vsite_register_cors_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc'
+  );
+
   return $items;
 }
 
@@ -204,7 +220,7 @@ function vsite_register_message($form, $domain) {
   // Prepares an array of messages to display to the user,
   // to be rendered each as individual paragraph elements.
   $paragraphs = array();
-  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose)));
+  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose_site)));
   if ($user_is_anonymous) {
     $paragraphs[] = t('Check your email account for further details on how to login in to start adding features and content.');
   }
@@ -278,3 +294,36 @@ function _vsite_register_form_error() {
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
 
+function vsite_register_cors_access() {
+  $master = variable_get('ossap_master_servers', array());
+  if (isset($_SERVER['HTTP_ORIGIN'])) {
+    foreach ($master as $name => $info) {
+      $domain = 'http://'.parse_url('http://'.$info['domain'], PHP_URL_HOST);
+      if ($_SERVER['HTTP_ORIGIN'] == $domain) {
+        drupal_add_http_header('Access-Control-Allow-Origin', $domain);
+        return true;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+function vsite_register_get_purls() {
+  $q = db_select('purl', 'p')
+    ->fields('p', array('value'))
+    ->condition('provider', 'spaces_og')
+    ->execute();
+
+  $purls = array();
+  foreach ($q as $r) {
+    $purls[] = $r->value;
+  }
+  $output = array(
+    'domain' => $GLOBALS['base_url'],
+    'purls' => $purls
+  );
+
+  print drupal_json_encode($output);
+  exit;
+}

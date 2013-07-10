@@ -201,7 +201,7 @@ function os_pinserver_auth_module_implements_alter(&$implementations, $hook) {
  * Add Pinserver Site Privacy options
  */
 function os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options){
-  _os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options);
+  _os_pinserver_auth_vsite_access_privacy_values_alter($privacy_options);
 }
 
 /**

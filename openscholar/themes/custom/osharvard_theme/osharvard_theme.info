@@ -22,6 +22,7 @@
 
   stylesheets[screen][] = css/osharvard_theme.css
 
+scripts[] = js/osharvard_theme.js
 
 
 ;----------// Theme Settings

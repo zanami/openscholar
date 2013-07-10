@@ -16,6 +16,26 @@ body  {
     width: 100%;
 }
 
+#footer {
+    background: #202020 !important;
+}
+
+
+
+.front #content-panels .region {
+    clear: both !important;
+    float: none !important;
+    width:100% !important;
+    display: block !important;
+}
+
+.front #content-panels .region .region-inner[style] {
+    min-height: auto !important;
+}
+
+
+
+#menu-bar .block-boxes-os_boxes_html,
 body.front.no-sidebars #content-panels .block-inner {
     margin: 0 auto;
     width: 980px;
@@ -119,5 +139,58 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 #layout_16_9_side .hero-copy {
     padding-top: 25px;
+}
+
+/* SPECIAL CSS FOR CUSTOM BLOCKS FOR OSHARVARD SITE */
+/*.getsitenow {
+	margin:-50px 0 0 200px;
+	z-index: 1000;
+	position:relative;
+	}*/
+
+
+.custhtml h3.custheader {
+    text-align: center;
+}
+.custhtml h3.custheader a {
+    color: #000000;
+    font: 24px/1.4em "Helvetica","Arial","sans-serif";
+}
+
+.custhtml h4.benefheader {
+	color: #000000;
+    font: 18px/1.2em "Helvetica","Arial","sans-serif";
+}
+
+.region-content-first {
+	background:#F6F6F6 !important;
+	margin-top:-20px !important;}
+	
+.region-content-second {
+	background:#ff0000 !important;
+	margin-top:-20px !important;
+	}
+
+.whyuse .benef2colwrapper,
+.whyuse .activitywrapper {
+	display: inline-block;
+	text-align:center;
+	}
+.whyuse .benef2colwrapper {
+	width:69%;
+	}
+.whyuse .activitywrapper {
+	width:30%;
+	}
+
+
+.whyuse .benef2colwrapper .twocolleft,
+.whyuse .benef2colwrapper .twocolright {
+	display: inline-block;
+	width:48%;
+}
+
+.whyuse .benef2colwrapper .twocolright {
+	margin-left:15px;
 }
 
