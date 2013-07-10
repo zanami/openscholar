@@ -117,6 +117,7 @@ dependencies[] = os_taxonomy
 dependencies[] = diff
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
+dependencies[] = password_policy
 dependencies[] = shorten
 dependencies[] = respondjs
 dependencies[] = views_infinite_scroll

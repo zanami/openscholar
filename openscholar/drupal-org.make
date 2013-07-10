@@ -275,6 +275,9 @@ projects[olark][version] = 1.0-beta1
 projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
 projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
+projects[password_policy][subdir] = "contrib"
+projects[password_policy][version] = 2.0-alpha1
+
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
