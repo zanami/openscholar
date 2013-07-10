@@ -22,7 +22,7 @@ projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
 projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919350643c8b26a3f639e935c1c6e802c6dd7/patches/boxes.load_from_spaces_and_fix_fatals.patch"
 
-projects[biblio][subfir] = "contrib"
+projects[biblio][subdir] = "contrib"
 projects[biblio][download][type] = git
 projects[biblio][download][url] = "https://github.com/amitaibu/biblio"
 projects[biblio][download][branch] = 20

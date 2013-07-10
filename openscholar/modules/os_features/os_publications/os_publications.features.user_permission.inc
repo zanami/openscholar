@@ -126,9 +126,9 @@ function os_publications_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: delete any biblio content.
-  $permissions['delete any biblio content'] = array(
-    'name' => 'delete any biblio content',
+  // Exported permission: delete biblios.
+  $permissions['delete biblio entries'] = array(
+    'name' => 'delete biblio entries',
     'roles' => array(
       0 => 'administrator',
     ),
@@ -136,8 +136,8 @@ function os_publications_user_default_permissions() {
   );
 
   // Exported permission: delete own biblio content.
-  $permissions['delete own biblio content'] = array(
-    'name' => 'delete own biblio content',
+  $permissions['delete own biblio entries'] = array(
+    'name' => 'delete own biblio entries',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -148,9 +148,9 @@ function os_publications_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit any biblio content.
-  $permissions['edit any biblio content'] = array(
-    'name' => 'edit any biblio content',
+  // Exported permission: edit all biblio entries.
+  $permissions['edit all biblio entries'] = array(
+    'name' => 'edit all biblio entries',
     'roles' => array(
       0 => 'administrator',
       1 => 'content editor',
@@ -158,9 +158,9 @@ function os_publications_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit own biblio content.
-  $permissions['edit own biblio content'] = array(
-    'name' => 'edit own biblio content',
+  // Exported permission: edit own biblio entries.
+  $permissions['edit own biblio entries'] = array(
+    'name' => 'edit own biblio entries',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',

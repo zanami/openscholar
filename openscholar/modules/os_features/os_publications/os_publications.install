@@ -7,30 +7,13 @@ function os_publications_schema() {
   return $schema;
 }
 
-// Implements hook_install().
+/**
+ * Implements hook_install().
+ */
 function os_publications_install() {
-   db_add_field('biblio', 'biblio_url_title', array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => FALSE,
-      'description' => 'A title to go with the Relevant URL',
-    ));
-
-  // Insert the biblio_url_title into the biblio_fields table.
-  // Biblio_fields table is not auto increment, grab the last fid and increment it for our insert.
-  $field_id = db_query('SELECT fid FROM {biblio_fields} ORDER BY fid DESC LIMIT 1')->fetchField();
-  if(isset($field_id)) {
-    $field_id = $field_id+1;
+  foreach (array_keys(biblio_types()) as $type) {
+    biblio_create_field('biblio_url_title', 'biblio', $type);
   }
-  db_insert('biblio_fields')
-  ->fields(array(
-    'fid' => $field_id,
-    'name' => 'biblio_url_title',
-    'type' => 'textfield',
-    'size' => 60,
-    'maxsize' => 255,
-  ))
-  ->execute();
 
   if ($field = field_info_instance('node', 'body', 'biblio')) {
     $field['display']['teaser'] = array(

@@ -114,6 +114,13 @@ function _get_bibtex_field_map() {
 
 }
 
+/**
+ * For now...
+ */
+function biblio_save_map() {
+
+}
+
 function _save_bibtex_maps() {
   $typemap = _get_bibtex_type_map();
   $typenames = _get_bibtex_type_names();

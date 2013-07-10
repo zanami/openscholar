@@ -211,6 +211,7 @@ function _os_publications_filter_by_term(QueryAlterableInterface $query) {
  * Replaces biblio theme functions with our own.
  */
 function os_publications_theme_registry_alter(&$reg) {
+  return;
   $reg['biblio_tabular'] = array_merge($reg['biblio_tabular'], array(
       'file' => 'os_publications.theme.inc',
       'theme path' => drupal_get_path('module', 'os_publications'),
