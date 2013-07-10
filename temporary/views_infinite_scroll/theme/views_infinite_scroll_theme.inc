@@ -92,17 +92,18 @@ function theme_views_infinite_scroll_pager($variables) {
 
     // Add Autopager jQuery plugin
     // If libraries module is installed, check for the plugin in libraries dir.
-    if (module_exists('libraries') && file_exists(libraries_get_path('autopager') .'/jquery.autopager-1.0.0.js')) {
-      drupal_add_js(libraries_get_path('autopager') .'/jquery.autopager-1.0.0.js');
-      if (file_exists(libraries_get_path('autopager') .'/autopager.css')) {
-        drupal_add_css(libraries_get_path('autopager') .'/autopager.css');
-      } 
-    }
-    // else, load it from views_infinite_scroll/js dir.
-    else {
-      $autopager_module_path = drupal_get_path('module', 'views_infinite_scroll') . '/js/jquery.autopager-1.0.0.js';
-      drupal_add_js($autopager_module_path);
-    }
+//     if (module_exists('libraries') && file_exists(libraries_get_path('autopager') .'/jquery.autopager-1.0.0.js')) {
+//       drupal_add_js(libraries_get_path('autopager') .'/jquery.autopager-1.0.0.js');
+//       if (file_exists(libraries_get_path('autopager') .'/autopager.css')) {
+//         drupal_add_css(libraries_get_path('autopager') .'/autopager.css');
+//       } 
+//     }
+//     // else, load it from views_infinite_scroll/js dir.
+//     else {
+//       $autopager_module_path = drupal_get_path('module', 'views_infinite_scroll') . '/js/jquery.autopager-1.0.0.js';
+//       drupal_add_js($autopager_module_path);
+//     }
+    libraries_load('autopager');
 
     drupal_add_js(drupal_get_path('module', 'views_infinite_scroll') . '/js/views_infinite_scroll.js');
 

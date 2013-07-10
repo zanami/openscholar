@@ -422,6 +422,7 @@ function os_classes_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
@@ -698,11 +699,13 @@ function os_classes_field_default_fields() {
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 0,
-            'default' => 0,
-            'html' => 0,
+            'audio' => 'audio',
+            'default' => 'default',
+            'html' => 'html',
             'image' => 'image',
-            'video' => 0,
+            'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'library' => 0,
