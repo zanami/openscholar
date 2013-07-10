@@ -42,7 +42,7 @@ function vsite_register_menu() {
   $items['site/login/once/%/%/%/%'] = array(
     'title' => 'One-time login to website',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('vsite_register_site_login', 3, 4, 5),
+    'page arguments' => array('vsite_register_site_login', 3, 4, 5, 6),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'vsite_register.form.inc',
