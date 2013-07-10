@@ -18,6 +18,7 @@ body  {
 
 #footer {
     background: #202020 !important;
+    height:900px;
 }
 
 
@@ -30,7 +31,7 @@ body  {
 }
 
 .front #content-panels .region .region-inner[style] {
-    min-height: auto !important;
+    min-height: 200px !important;
 }
 
 
@@ -41,7 +42,7 @@ body.front.no-sidebars #content-panels .block-inner {
     width: 980px;
 }
 
-.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+.front.no-sidebars .region-content-top:after {
     background: #373737;
     bottom: auto;
     content: "";
@@ -83,12 +84,12 @@ body.front.no-sidebars #content-panels .block-inner {
   
   
 .region-header-third ul.nice-menu a {
-    font: normal 14px 'Roboto',sans-serif;
+    font: normal 16px 'Roboto',sans-serif;
     text-transform: none;
 }  
 
 .region-header-third ul.nice-menu li a {
-  background:url('../images/mainnav_sidearrow.png') no-repeat 222px 4px transparent;
+  background:url('../images/mainnav_sidearrow.png') no-repeat 283px 7px transparent;
   padding-right: 23px;
   }
   
@@ -105,6 +106,7 @@ body.front.no-sidebars #content-panels .block-inner {
 #menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
     font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
    padding: 8px 15px;
+   font-size: 18px;
 }
 
 
@@ -123,6 +125,11 @@ body.front.no-sidebars #content-panels .block-inner {
     box-shadow: none !important;
 }
 
+.front #content-panels .block-content, 
+.sidebar .block-content {
+border-top: none;
+}
+
 
 /* SLIDESHOW OVERRIDES */
 #layout_16_9_side .hero {
@@ -133,9 +140,11 @@ body.front.no-sidebars #content-panels .block-inner {
     font: bold 25px arial,sans-serif;
 }
 
+/*
 body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
     padding: 15px 0;
 }
+*/
 
 #layout_16_9_side .hero-copy {
     padding-top: 25px;
@@ -151,10 +160,49 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 .custhtml h3.custheader {
     text-align: center;
+    margin-bottom: 20px;
 }
 .custhtml h3.custheader a {
     color: #000000;
     font: 24px/1.4em "Helvetica","Arial","sans-serif";
+}
+
+.custhtml.sample h3.custheader a {
+    color: #FFF;
+}
+
+
+.getsite {
+	z-index:2;
+	position:relative;
+	color:#FFF;
+}
+
+.getsite a {
+	color:#FFF;
+	text-decoration:underline;
+}
+
+.getsite .slideside,
+.getsite .textside {width:48%;display:inline-block;}
+
+.getsite .textside {margin:-15px 0 0 20px;}
+
+.getsite h3 {
+	font: bold 25px arial,sans-serif;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
+}
+
+.getsite p {
+	font:18px arial,sans-serif;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
+}
+
+.getsite .sitecount {
+	font: bold 22px arial,sans-serif;
+
 }
 
 .custhtml h4.benefheader {
@@ -167,8 +215,9 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	margin-top:-20px !important;}
 	
 .region-content-second {
-	background:#ff0000 !important;
+	background:#3973ac !important;
 	margin-top:-20px !important;
+	color:#FFF;
 	}
 
 .whyuse .benef2colwrapper,
@@ -177,13 +226,20 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	text-align:center;
 	}
 .whyuse .benef2colwrapper {
-	width:69%;
+	padding-right: 15px;
+    width: 67%;
+    border-right:1px solid #D4D4D4;
 	}
 .whyuse .activitywrapper {
-	width:30%;
+	 margin-left: 18px;
+    width: 29%;
 	}
-
-
+	
+.whyuse .activityinner {
+	 top:-463px;
+	position:relative;
+	}
+	
 .whyuse .benef2colwrapper .twocolleft,
 .whyuse .benef2colwrapper .twocolright {
 	display: inline-block;
@@ -192,5 +248,37 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 .whyuse .benef2colwrapper .twocolright {
 	margin-left:15px;
+	top:7px;
+	position:relative;
+}
+
+@-moz-document url-prefix() {
+ .whyuse .benef2colwrapper .twocolright {
+	top:-12px;
+	}
+}
+
+.sample img {
+	margin:0 20px;
+}
+
+.block-boxes-os_boxes_twitterfeed {
+	margin: -1870px 0 0 768px;
+}
+
+.block-boxes-os_boxes_twitterfeed .block-content {
+	margin-left:-90px; 
+}
+
+
+.block-boxes-os_boxes_twitterfeed a {
+	color: #215990 !important;
+}
+
+.block-boxes-os_boxes_twitterfeed h2.block-title {
+	background:url('../images/uploads/whytwittericon.png') no-repeat;
+	padding-top:90px;
+	color: #000000;
+    font: 18px/1.2em "Helvetica","Arial","sans-serif";
 }
 
