@@ -30,3 +30,4 @@ Feature:
       And I visit "node/3/devel"
       And I click "Settings"
       And I should print page
+
