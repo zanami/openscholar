@@ -881,18 +881,15 @@ function vsite_register_validate($type, $value) {
   exit;
 }
 
-function vsite_register_user_exists($name, $password) {
-  $account = user_load_by_name($name);
+function vsite_register_user_exists($name) {
   $output = array(
     'uid' => 0,
   );
+  if ($account = user_load_by_name($name)) {}
+  elseif ($account = user_load_by_mail($name)) {}
+
   if ($account) {
-    // Allow alternate password hashing schemes.
-    require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
-    if (user_check_password($password, $account)) {
-      // Successful authentication.
-      $output['uid'] = $account->uid;
-    }
+    $output['uid'] = $account->uid;
   }
 
   echo drupal_json_encode($output);

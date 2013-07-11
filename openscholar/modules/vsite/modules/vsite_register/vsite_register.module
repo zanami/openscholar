@@ -55,10 +55,10 @@ function vsite_register_menu() {
     'file' => 'vsite_register.form.inc'
   );
 
-  $items['site/user/exists/%/%'] = array(
-    'title' => 'Validate Username/Password',
+  $items['site/user/exists/%'] = array(
+    'title' => 'Validate Username/Email',
     'page callback' => 'vsite_register_user_exists',
-    'page arguments' => array(3, 4),
+    'page arguments' => array(3),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'vsite_register.form.inc',
