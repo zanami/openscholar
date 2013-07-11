@@ -1020,7 +1020,7 @@ class FeatureContext extends DrupalContext {
     return array(
       new Step\When('I click "Settings"'),
       new Step\When($action),
-      new Step\When('I press "Save for Abraham"'),
+      new Step\When('I press "edit-submit"'),
     );
   }
 }
