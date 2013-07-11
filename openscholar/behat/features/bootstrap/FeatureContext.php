@@ -988,5 +988,39 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-}
 
+  /**
+   * @When /^I login as "([^"]*)" in "([^"]*)"$/
+   */
+  public function iLoginAsIn($username, $site) {
+    $title = str_replace("'", "\'", $site);
+
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+
+    try {
+      $password = $this->drupal_users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    return array(
+      new Step\When('I visit "node/' . $nid .'"'),
+      new Step\When('I click "Admin Login"'),
+      new Step\When('I fill in "Username" with "' . $username . '"'),
+      new Step\When('I fill in "Password" with "' . $password . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I set the Share domain name to "([^"]*)"$/
+   */
+  public function iSetTheShareDomainNameTo($value) {
+    $action = $value ? 'I checked "edit-vsite-domain-name-vsite-domain-shared"' : 'I uncheck "edit-vsite-domain-name-vsite-domain-shared"';
+    return array(
+      new Step\When('I click "Settings"'),
+      new Step\When($action),
+      new Step\When('I press "Save for Abraham"'),
+    );
+  }
+}

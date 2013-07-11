@@ -71,7 +71,8 @@ if (!class_exists('purl_vsite_path')) {
         return;
       }
 
-      // If we are asking for the absolute url then return the correct base url for a path provider
+      // If we are asking for the absolute url then return the correct base url
+      // for a path provider
       if (array_key_exists('absolute', $options) && $options['absolute']) {
         if ($element->id && $vsite = spaces_load('og', $element->id)) {
           $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
@@ -91,8 +92,10 @@ if (!class_exists('purl_vsite_path')) {
       if (!empty($path) && $path != '<front>') {
         $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
         $alias = drupal_get_path_alias($path, $language);
-        if ($alias != $path && $alias != $this->remove($alias, $element)) {
-          return;
+        if ($alias == $path || $alias == $this->remove($alias, $element)) {
+          global $base_url;
+          // Set the base URL as the default base URL of the site.
+          $options['base_url'] = variable_get('purl_base_domain', $base_url);
         }
       }
 
