@@ -203,6 +203,16 @@ function _os_link_get_view($params) {
             '#type' => 'submit',
             '#value' => t('Insert'),
           )
+        ),
+        '#attached' => array(
+          'js' => array(
+            array(
+              'type' => 'setting',
+              'data' => array('media' => array(
+                'browser' => array()
+              ))
+            )
+          )
         )
       );
 
