@@ -880,3 +880,18 @@ function vsite_register_validate($type, $value) {
   print drupal_json_encode($output);
   exit;
 }
+
+function vsite_register_user_exists($name) {
+  $output = array(
+    'uid' => 0,
+  );
+  if ($account = user_load_by_name($name)) {}
+  elseif ($account = user_load_by_mail($name)) {}
+
+  if ($account) {
+    $output['uid'] = $account->uid;
+  }
+
+  echo drupal_json_encode($output);
+  exit;
+}
