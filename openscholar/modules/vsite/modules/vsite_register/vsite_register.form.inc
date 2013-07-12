@@ -16,11 +16,6 @@ function vsite_register_form($form, &$state) {
   $anonymous = ($user->uid == 0);
   $manager = (user_access('create vsite content on behalf') && user_access('administer users'));
 
-  /**
-   * @todo Enable manager and admin mode
-   */
-  $anonymous = true;
-  $manager = false;
 
   $parent = NULL;
   if (isset($_GET['parent']) && $parent = vsite_get_vsite($_GET['parent'])) {
@@ -335,12 +330,6 @@ function vsite_register_form_submit(&$form, &$state) {
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
-
-    // Emails user to inform them of new created site, email is always sent.
-    // This function may additionally send a second email to a specified
-    // administrator's email address.
-    // @see vsite_register_admin_form()
-    vsite_register_notify($vsite);
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
