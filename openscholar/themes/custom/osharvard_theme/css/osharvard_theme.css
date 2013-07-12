@@ -281,16 +281,28 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 
 .block-boxes-os_boxes_twitterfeed {
-	margin: -2023px 0 0 768px;
+     margin: -2023px 0px 0px 768px;
+color:#000;
+
+}
+
+div.tweets-pulled-listing div.tweet-divider {
+    border-bottom: 1px solid #ccc;
+    clear: left;
+    margin: 5px 0;
+}
+
+.block-boxes-os_boxes_twitterfeed img{
+    display:none;
 }
 
 .block-boxes-os_boxes_twitterfeed .block-content {
-	margin-left:-90px; 
+     margin-left: -90px;
 }
 
-
 .block-boxes-os_boxes_twitterfeed a {
-	color: #215990 !important;
+     color: #215990 !important;
+font-weight:normal !important;
 }
 
 .block-boxes-os_boxes_twitterfeed h2.block-title {
