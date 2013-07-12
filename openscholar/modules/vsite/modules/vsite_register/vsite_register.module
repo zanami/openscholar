@@ -309,7 +309,7 @@ function vsite_register_node_insert($node){
 	    // Emails user to inform them of new created site, email is always sent.
 	    // This function may additionally send a second email to a specified
 	    // administrator's email address.
-	    // @see vsite_register_admin_form()
+	    // @see form.inc
 	    module_load_include('form.inc', 'vsite_register');
 	    vsite_register_notify($vsite);
     }
