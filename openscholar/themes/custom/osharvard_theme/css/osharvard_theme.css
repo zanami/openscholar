@@ -221,6 +221,11 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	color:#FFF;
 	}
 
+.whyuse {
+	background:url('../images/uploads/whydivider.png') no-repeat 678px 450px !important;
+}	
+	
+
 .whyuse .benef2colwrapper,
 .whyuse .activitywrapper {
 	display: inline-block;
@@ -302,6 +307,7 @@ div.tweets-pulled-listing div.tweet-divider {
 
 .block-boxes-os_boxes_twitterfeed .block-content {
      margin-left: -90px;
+     padding-top:0 !important;
 }
 
 .block-boxes-os_boxes_twitterfeed a {
