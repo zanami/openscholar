@@ -310,7 +310,7 @@ function vsite_register_node_insert($node){
 	    // This function may additionally send a second email to a specified
 	    // administrator's email address.
 	    // @see vsite_register_admin_form()
-	    module_load_include('form.inc', 'vsite');
+	    module_load_include('form.inc', 'vsite_register');
 	    vsite_register_notify($vsite);
     }
   }
