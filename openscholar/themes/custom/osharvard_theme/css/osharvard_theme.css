@@ -32,12 +32,13 @@ body  {
 
 .front #content-panels .region .region-inner[style] {
     min-height: 200px !important;
+    position: relative;
 }
 
 
 
 #menu-bar .block-boxes-os_boxes_html,
-body.front.no-sidebars #content-panels .block-inner {
+body.front.no-sidebars #content-panels .region-inner {
     margin: 0 auto;
     width: 980px;
 }
@@ -268,7 +269,9 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	padding:6px;
 	}
 
-
+.whyuse .block-content {
+	padding-top:35px !important;
+}
 
 .sample img {
 	margin:0 20px;
@@ -281,15 +284,16 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 
 .block-boxes-os_boxes_twitterfeed {
-     margin: -2023px 0px 0px 768px;
+ 
 color:#000;
-
+position: absolute;
+    right: 17px;
+    top: 357px;
+    width: 200px;
 }
 
 div.tweets-pulled-listing div.tweet-divider {
     border-bottom: 1px solid #ccc;
-    clear: left;
-    margin: 5px 0;
 }
 
 .block-boxes-os_boxes_twitterfeed img{
@@ -306,9 +310,10 @@ font-weight:normal !important;
 }
 
 .block-boxes-os_boxes_twitterfeed h2.block-title {
-	background:url('../images/uploads/whytwittericon.png') no-repeat;
-	padding: 90px 5px 0 5px;
-	color: #000000;
-    font: 18px/1.2em "Helvetica","Arial","sans-serif";
+	background:url('../images/uploads/whytwittericon.png') no-repeat !important;
+	padding: 90px 5px 0 5px !important;
+	color: #000000 !important;
+    font: 18px/1.2em "Helvetica","Arial","sans-serif" !important;
+    border-bottom: none !important;
 }
 
