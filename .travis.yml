@@ -30,8 +30,8 @@ before_script:
   - bash scripts/build
   # Install a multi-tanent, developemnt site.
   - cd www
-  - mkdir -p sites/default/tmp
-  - sudo chmod 777 sites/default/tmp -R
+  - mkdir -p /tmp
+  - sudo chmod 777 /tmp -R
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
   - drush vset purl_base_domain http://127.0.0.1
   - drush en os_migrate_demo -y
