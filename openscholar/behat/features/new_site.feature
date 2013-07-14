@@ -5,9 +5,9 @@ Feature: Testing the creation of the a new site.
     Given I am logged in as "admin"
      When I visit "/"
       And I click "Create your site"
-      And I should print page
       And I fill "edit-domain" with random text
       And I press "edit-submit"
+      And I should print page
       And I visit the site "random"
      Then I should see "Your site's front page is set to display your bio by default."
 
