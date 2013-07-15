@@ -42,14 +42,7 @@ function os_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'securepages_pages';
-  $strongarm->value = 'node/add*
-node/*/edit
-node/*/delete
-user
-user/*
-admin
-admin/*
-user/login';
+  $strongarm->value = 'user/login';
   $export['securepages_pages'] = $strongarm;
 
   $strongarm = new stdClass();
