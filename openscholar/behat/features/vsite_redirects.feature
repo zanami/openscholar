@@ -35,10 +35,10 @@ Feature:
   @api
   Scenario: Verifying that the redirect of user between sites with domain and
   sited without domain is working properly.
-    Given I visit "lincoln.local/lincoln/blog/first-blog"
+    Given I visit "http://lincoln.local/lincoln/blog/first-blog"
       And I should be on "john/blog/first-blog"
      When I login as "admin" in "Abraham"
       And I set the Share domain name to "0"
-     When I visit "lincoln.local/blog/first-blog"
+     When I visit "http://lincoln.local/blog/first-blog"
      Then I should be on "john/blog/first-blog"
 
