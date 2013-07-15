@@ -30,6 +30,7 @@ body  {
     display: block !important;
 }
 
+.front #content-panels .region .region-inner,
 .front #content-panels .region .region-inner[style] {
     min-height: 200px !important;
     position: relative;
@@ -201,8 +202,9 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 
-.getsite .sitecount {
+.stats .sitecount {
 	font: bold 22px arial,sans-serif;
+	 text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 
 }
 
@@ -289,12 +291,19 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 
 .block-boxes-os_boxes_twitterfeed {
- 
-color:#000;
-position: absolute;
+ 	color:#000;
+	position: absolute;
     right: 17px;
     top: 357px;
     width: 200px;
+}
+
+.stats {
+ 	color:#fff;
+	position: absolute;
+    right: 378px;
+    top: 132px;
+    z-index: 20;
 }
 
 div.tweets-pulled-listing div.tweet-divider {
