@@ -988,12 +988,5 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-
-  /**
-   * @Given /^I should get "([^"]*)" library$/
-   */
-  public function iShouldGetLibrary($library) {
-    $this->invoke_code('os_migrate_demo_get_stream_path', array("'{$library}'"), TRUE);
-  }
 }
 
