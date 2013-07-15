@@ -1,4 +1,4 @@
 <virtualhost lincoln.local:*>
 ServerName lincoln.local
-DocumentRoot /home/travis/drupal
+DocumentRoot /home/travis/build/openscholar/openscholar/www
 </virtualhost>
