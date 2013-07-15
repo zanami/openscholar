@@ -314,6 +314,9 @@ projects[restws][patch][] = "http://drupal.org/files/1806142-restws-property-exc
 projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
 
+projects[securepages][subdir] = "contrib"
+projects[securepages][version] = 1.0-beta1
+
 projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x

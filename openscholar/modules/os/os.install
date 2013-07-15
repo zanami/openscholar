@@ -199,7 +199,6 @@ function os_update_7012() {
   }
 }
 
-
 /**
  * @function _os_update_event_registration_mollom
  * 
@@ -233,4 +232,11 @@ function _os_update_event_registration_mollom() {
     
     mollom_form_save($mollom_form);
   }
+}
+
+/**
+ * Enable secure pages and password policy
+ */
+function os_update_7013() {
+  module_enable(array('password_policy', 'secure_pages'));
 }
