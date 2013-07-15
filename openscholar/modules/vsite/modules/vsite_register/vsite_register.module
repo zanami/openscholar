@@ -300,6 +300,22 @@ function vsite_register_cors_access() {
   return true;
 }
 
+/**
+ * Implements hook_node_insert()
+ */
+function vsite_register_node_insert($node){
+  if (og_is_group_type('node', $node->type)) {
+    if(($vsite = spaces_load('og', $node->nid))){
+	    // Emails user to inform them of new created site, email is always sent.
+	    // This function may additionally send a second email to a specified
+	    // administrator's email address.
+	    // @see form.inc
+	    module_load_include('form.inc', 'vsite_register');
+	    vsite_register_notify($vsite);
+    }
+  }
+}
+
 function vsite_register_get_purls() {
   $q = db_select('purl', 'p')
     ->fields('p', array('value'))
