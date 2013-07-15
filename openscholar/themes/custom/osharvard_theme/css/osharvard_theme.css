@@ -153,11 +153,6 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 
 /* SPECIAL CSS FOR CUSTOM BLOCKS FOR OSHARVARD SITE */
-/*.getsitenow {
-	margin:-50px 0 0 200px;
-	z-index: 1000;
-	position:relative;
-	}*/
 
 
 .custhtml h3.custheader {
@@ -223,10 +218,13 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	color:#FFF;
 	}
 
+/* COMMENTING OUT UNTIL THIS BE USED. ITS A THIN GREY RULE USED
+ * AS A DIVIDER IN THE WHYUSE SECTION
+ 
 .whyuse {
 	background:url('../images/uploads/whydivider.png') no-repeat 678px 450px !important;
 }	
-	
+	*/
 
 .whyuse .benef2colwrapper,
 .whyuse .activitywrapper {
@@ -261,7 +259,8 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 
 .whyuse .apps,
-.whyuse .custdomains {height:270px;}
+.whyuse .custdomains,
+.activitywrapper .analytics {height:270px;}
 .whyuse .custdomains {top:-52px;position:relative;}
 
 .whyuse .themes,
@@ -269,7 +268,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .whyuse .social {top:-53px;position:relative;}
 
 .whyuse .support {
-	top:-515px;
+	top:-22px;
 	position:relative;
 	border:1px solid #ccc;
 	background:#EFEFEF;
@@ -290,13 +289,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	font-size:16px;
 }
 
-.block-boxes-os_boxes_twitterfeed {
- 	color:#000;
-	position: absolute;
-    right: 17px;
-    top: 357px;
-    width: 200px;
-}
+
 
 .stats {
  	color:#fff;
@@ -305,6 +298,16 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
     top: 132px;
     z-index: 20;
 }
+
+/* COMMENTING OUT UNTIL THIS BLOCK IS USED
+.block-boxes-os_boxes_twitterfeed {
+ 	color:#000;
+	position: absolute;
+    right: 17px;
+    top: 357px;
+    width: 200px;
+}
+
 
 div.tweets-pulled-listing div.tweet-divider {
     border-bottom: 1px solid #ccc;
@@ -324,6 +327,7 @@ div.tweets-pulled-listing div.tweet-divider {
 font-weight:normal !important;
 }
 
+
 .block-boxes-os_boxes_twitterfeed h2.block-title {
 	background:url('../images/uploads/whytwittericon.png') no-repeat !important;
 	padding: 90px 5px 0 5px !important;
@@ -331,4 +335,4 @@ font-weight:normal !important;
     font: 18px/1.2em "Helvetica","Arial","sans-serif" !important;
     border-bottom: none !important;
 }
-
+*/
