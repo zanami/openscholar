@@ -65,10 +65,24 @@ function os_wysiwyg_link_filter_info() {
 function os_wysiwyg_link_filter($text) {
   $matches = _os_wysiwyg_link_find_links($text);
   foreach ($matches as $m) {
-    $file = file_load($m[2]);
-    if (isset($file->uri)) {
-      $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
-      $text = str_replace($m[0], $link, $text);
+    switch ($m[2]) {
+      case 'fid':
+        $file = file_load($m[3]);
+        if (isset($file->uri)) {
+          $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
+          $text = str_replace($m[0], $link, $text);
+        }
+        break;
+      case 'url':
+        if (url_is_external($m[3])) {
+          $url = url($m[3], array('external' => TRUE));
+        }
+        else {
+          $url = url($m[3], array('absolute' => TRUE));
+        }
+        $link = str_replace('href="'.$m[1], 'href="'.$url, $m[0]);
+        $text = str_replace($m[0], $link, $text);
+        break;
     }
   }
   return $text;
@@ -76,6 +90,6 @@ function os_wysiwyg_link_filter($text) {
 
 function _os_wysiwyg_link_find_links($str) {
   $matches = array();
-  preg_match_all('|<a[^>]+href="([^"]+)"[^>]+data-fid="([\d]*)">[^<]*<\/a>|', $str, $matches, PREG_SET_ORDER);
+  preg_match_all('~<a[^>]+href="([^"]+)"[^>]+data-(fid|url)="([^"]*)">[^<]*<\/a>~', $str, $matches, PREG_SET_ORDER);
   return $matches;
 }
