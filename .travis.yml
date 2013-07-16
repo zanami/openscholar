@@ -30,6 +30,8 @@ before_script:
   - bash scripts/build
   # Install a multi-tanent, developemnt site.
   - cd www
+  - mkdir -p /tmp/devel-mails
+  - sudo chmod 777 /tmp -R
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
   - drush vset purl_base_domain http://127.0.0.1
   - drush en os_migrate_demo -y
@@ -38,7 +40,8 @@ before_script:
   # Copy Behat configuration file.
   - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
-  - composer install
+  - curl -s https://getcomposer.org/installer | php
+  - php composer.phar install --prefer-source
 
 script:
     - ./bin/behat --tags=~wip

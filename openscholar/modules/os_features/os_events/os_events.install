@@ -83,3 +83,10 @@ function os_events_update_7001() {
 function os_events_update_7002() {
   module_enable(array('date_ical'));
 }
+
+/**
+ * Enable the registration module.
+ */
+function os_events_update_7004() {
+  module_enable(array('registration'));
+}

@@ -10,19 +10,20 @@ function vsite_access_update_7001(&$sandbox) {
 
   $field = field_info_field(VSITE_ACCESS_FIELD);
 
-  //Update the field config
+  // Update the field config
   if (!empty($field)) {
 
-    //We are changing from boolean to integer which have the same schema, lets trick Drupal into letting us.
-    db_update('field_config')->fields(array('type' => $def_field['field']['type']))
-	    ->condition('field_name', 'group_access')
-	    ->condition('module', 'list')
-	    ->condition('type', $field['type'])
-	    ->execute();
+    // We are changing from boolean to integer which have the same schema, lets trick Drupal into letting us.
+    db_update('field_config')
+      ->fields(array('type' => $def_field['field']['type']))
+      ->condition('field_name', 'group_access')
+      ->condition('module', 'list')
+      ->condition('type', $field['type'])
+      ->execute();
 
     // Keep the same 'allowed values', so that list field will let us update the field.
     // It will use the new 'allowed values' function instead of this.
-	  $def_field['field']['settings']['allowed_values'] = $field['settings']['allowed_values'];
+    $def_field['field']['settings']['allowed_values'] = $field['settings']['allowed_values'];
 
     field_update_field($def_field['field']);
   }
@@ -32,15 +33,15 @@ function vsite_access_update_7001(&$sandbox) {
   foreach ($group_types as $group_bundle) {
 
     $instance = field_info_instance('node', VSITE_ACCESS_FIELD, $group_bundle);
-	  if (!empty($instance)) {
-	    $def_instance = $def_field['instance'];
-	    $def_instance += array(
-	      'field_name' => VSITE_ACCESS_FIELD,
-	      'bundle' => $group_bundle,
-	      'entity_type' => 'node',
-	    );
-	    field_update_instance($def_instance);
-	  }
+    if (!empty($instance)) {
+      $def_instance = $def_field['instance'];
+      $def_instance += array(
+        'field_name' => VSITE_ACCESS_FIELD,
+        'bundle' => $group_bundle,
+        'entity_type' => 'node',
+      );
+      field_update_instance($def_instance);
+    }
   }
 
   entity_property_info_cache_clear();
@@ -53,10 +54,11 @@ function vsite_access_update_7001(&$sandbox) {
  */
 function vsite_access_update_7002(&$sandbox) {
 
-  if(!module_exists(robotstxt)){
-    if(module_enable(array('robotstxt'))){
+  if (!module_exists(robotstxt)) {
+    if (module_enable(array('robotstxt'))) {
       return "Enabled Module robotstxt";
     }
     throw new DrupalUpdateException('Unable to enable robotstxt.');
   }
 }
+

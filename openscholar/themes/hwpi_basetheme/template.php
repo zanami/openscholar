@@ -26,8 +26,8 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  * Adds mobile menu controls to menubar.
  */
 function hwpi_basetheme_page_alter(&$page) {
-  $page['menu_bar']['#sorted'] = false;
-  $page['menu_bar']['mobile'] = array(
+  $page['header_third']['#sorted'] = false;
+  $page['header_third']['mobile'] = array(
     '#theme' => 'links',
     '#attributes' => array(
       'class' => array('mobile-buttons'),
@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '#block-os-quick-links',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
         ),
       ),
       'mobi-search' => array(
@@ -63,6 +63,19 @@ function hwpi_basetheme_page_alter(&$page) {
       )
     )
   );
+  
+  if (context_isset('context', 'os_public') && variable_get('enable_responsive', false)) {
+    $path = drupal_get_path('theme', 'hwpi_basetheme').'/css/';
+    drupal_add_css($path.'responsive.base.css');
+    drupal_add_css($path.'responsive.layout.css');
+    drupal_add_css($path.'responsive.nav.css');
+    drupal_add_css($path.'responsive.slideshow.css');
+    drupal_add_css($path.'responsive.widgets.css');
+
+    $theme = $GLOBALS['theme'];
+    $theme_path = drupal_get_path('theme', $theme).'/css/';
+    drupal_add_css($theme_path.'responsive.'.str_replace('hwpi_', '', $theme).'.css');
+  }
 }
 
 /**
@@ -150,9 +163,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
-          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'], 'html' => TRUE)) . '<br />';
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], $item) . '<br />';
         }
       }
 

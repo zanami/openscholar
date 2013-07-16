@@ -17,8 +17,9 @@ body.front {
   }
 
 .front #page {
-  background:url('../images/wrapper-front.png') repeat-x 0 -98px transparent;
+  background:url('../images/wrapper-front.png') repeat-x 0 -104px transparent;
   }
+
 
 #page-wrapper {
   background: url('../images/wrapper-inner.png') repeat-x 0 100% transparent;
@@ -136,24 +137,24 @@ ul.grid {
   }
 
 
-#header-container ul.menu {
+#header-container ul.nice-menu {
   text-align: right;
   }
 
-#header-container ul.menu li {
+#header-container ul.nice-menu li {
   text-align: right;
   display:inline-block;
   }
 
-#header-container ul.menu li a,
-#header-container ul.menu li a:visited {
+#header-container ul.nice-menu li a,
+#header-container ul.nice-menu li a:visited {
   font-size: 13px;
   padding: 0 7px;
   display:block;
   text-decoration: none;
   }
 
-#header-container ul.menu li {
+#header-container ul.nice-menu li {
   text-transform: uppercase;
   line-height: 60px;
   font-size: 13px;
@@ -162,21 +163,21 @@ ul.grid {
   font-weight: bold;
   }
 
-#header-container ul.menu li a,
-#header-container ul.menu li a:visited {
+#header-container ul.nice-menu li a,
+#header-container ul.nice-menu li a:visited {
   color: #000;
   }
 
-#header-container ul.menu li.first a {
+#header-container ul.nice-menu li.first a {
   background:url('../images/download.png') no-repeat 0 12px transparent;
   padding-left: 44px;
   }
 
-#header-container ul.menu li a:hover {
+#header-container ul.nice-menu li a:hover {
   color: #000;
   }
 
-#header-container ul.menu li a.active {
+#header-container ul.nice-menu li a.active {
   color: #df0800 !important;
   }
 
@@ -204,20 +205,20 @@ ul.grid {
   background:#3b484d;
   }
 
-#menu-bar #block-os-primary-menu ul.menu,
-.region-header-second #block-os-secondary-menu ul.menu
+#menu-bar #block-os-primary-menu ul.nice-menu,
+.region-header-second #block-os-secondary-menu ul.nice-menu
  {
 
   float: right;
   }
 
-#menu-bar ul.menu li {
+#menu-bar ul.nice-menu li {
 	padding-left: 5px;
 }
 
 #menu-bar,
-#menu-bar ul.menu li a,
-#menu-bar ul.menu li a:visited {
+#menu-bar ul.nice-menu li a,
+#menu-bar ul.nice-menu li a:visited {
   color:#fff;
   font-size: 17px;
   text-decoration: none;
@@ -450,8 +451,8 @@ div.tweets-pulled-listing div.tweet-divider {
 .region-content-first h2.block-title,.region-content-second h2.block-title,
 .region-content-bottom h2.block-title {margin-top: 0;}
 
-#block-os-site_search.no-title, .block-os-search-solr.no-title, .block-os-search-db.no-title {float:right;margin: -17px 32px 8px 0;}
-
+#block-os-site_search.no-title, .block-os-search-solr.no-title, .block-os-search-db.no-title {float:right;margin: -5px 32px 8px 0;}
+/*margin: -17px 32px 8px 0;*/
 
 .views-table {width:100%;}
 

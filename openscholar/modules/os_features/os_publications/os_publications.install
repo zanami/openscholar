@@ -401,3 +401,10 @@ function os_publications_update_7009() {
 
   return t('@files CSL file(s) has been replaced and existing patents updated.', array('@files' => $output));
 }
+
+/**
+ * Set biblio to use views_litepager
+ */
+function os_publications_update_7010() {
+  variable_set('biblio_pager', 'views_mini_pager');
+}

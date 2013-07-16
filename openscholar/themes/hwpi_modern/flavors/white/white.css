@@ -28,8 +28,9 @@ body {
 
 
 h2.block-title {
-    background: #333333;
-    color: #FFFFFF;
+    background: #FFF;
+    color: #333;
+    border:1px solid #999;
  	font-size: 12px;
  	margin-bottom: 10px;
     padding: 2px 8px;
@@ -48,6 +49,21 @@ h2.block-title {
     font-family: 'Open Sans',Helvetica,sans-serif;
 }
 
+#menu-bar {
+    background:  #FFF;
+
+}
+
+#menu-bar ul.nice-menu .menuparent a {
+    background: url("../../../hwpi_basetheme/images/menu_down_arrowBlack.gif") no-repeat scroll right center transparent;
+}
+
+#menu-bar ul.nice-menu .menuparent a:hover,
+#menu-bar ul.nice-menu .menuparent a.active {
+    background: url("../../../hwpi_basetheme/images/menu_down_arrowOn.gif") right center no-repeat #111;
+}
+
+
 #menu-bar ul.nice-menu a.active,
 #menu-bar ul.nice-menu a:hover {
   background: #111111;
@@ -59,6 +75,11 @@ h2.block-title {
 }
 
 
-#menu-bar ul.menu ul ul {
+#menu-bar ul.nice-menu ul {
     background: #111111;
+}
+
+
+.region-header-third ul.nice-menu a {
+    color: #215990;
 }
