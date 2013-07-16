@@ -180,6 +180,7 @@ class os_sv_list_box extends os_boxes_default {
     );
 
     $terms = array();
+    $vocabs_default_value = is_array($vocabs_default_value) ? $vocabs_default_value : array($vocabs_default_value);
     if ($vocabs_default_value) {
       foreach ($vocabs_default_value as $vid) {
         $tree = taxonomy_get_tree($vid);
@@ -611,7 +612,16 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Collect all the taxonomy term ID.
-    if (!empty($this->options['vocabs'])) {
+    $tids = array();
+    if (in_array(0, $this->options['terms'])) {
+      // The user did not select a terms but a vocab - loading the terms from
+      // the vocab.
+      $tree = taxonomy_get_tree($this->options['vocabs']);
+      foreach ($tree as $terms) {
+        $tids[] = $terms->tid;
+      }
+    }
+    else {
       $tids = $this->options['vocabs'];
     }
 
