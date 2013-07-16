@@ -162,6 +162,7 @@ class os_sv_list_box extends os_boxes_default {
 
     $form['query_details']['vocabs'] = array(
       '#type' => 'select',
+      '#multiple' => TRUE,
       '#title' => t('Vocabulary'),
       '#description' => t('Select a vocabulary to filter content by tagged items.'),
       '#options' => $vocabs,
@@ -175,10 +176,12 @@ class os_sv_list_box extends os_boxes_default {
 
     $terms = array();
     if ($vocabs_default_value) {
-      $tree = taxonomy_get_tree($vocabs_default_value);
-      foreach ($tree as $item) {
-        $term = taxonomy_term_load($item->tid);
-        $terms[$term->tid] = $term->name;
+      foreach ($vocabs_default_value as $vid) {
+        $tree = taxonomy_get_tree($vid);
+        foreach ($tree as $item) {
+          $term = taxonomy_term_load($item->tid);
+          $terms[$term->tid] = $term->name;
+        }
       }
     }
 
@@ -619,8 +622,13 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Load the taxonomy terms of the vocabulary.
-    if (!$vocabulary = taxonomy_get_tree($this->options['vocabs'])) {
-      return;
+    $vocabs = array();
+    foreach ($this->options['vocabs'] as $vid) {
+      if (!$vocabulary = taxonomy_get_tree($vid)) {
+        return;
+      }
+
+      $vocabs[] = $vocabulary;
     }
 
     // Clean terms with empty value.
@@ -638,8 +646,10 @@ class os_sv_list_box extends os_boxes_default {
     }
     else {
       $tids = array();
-      foreach ($vocabulary as $terms) {
-        $tids[] = $terms->tid;
+      foreach ($vocabs as $vocab) {
+        foreach ($vocab as $terms) {
+          $tids[] = $terms->tid;
+        }
       }
     }
 
