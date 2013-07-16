@@ -623,6 +623,7 @@ class os_sv_list_box extends os_boxes_default {
 
     // Load the taxonomy terms of the vocabulary.
     $vocabs = array();
+    $this->options['vocabs'] = !is_array($this->options['vocabs']) ? array($this->options['vocabs']) : $this->options['vocabs'];
     foreach ($this->options['vocabs'] as $vid) {
       if (!$vocabulary = taxonomy_get_tree($vid)) {
         return;
