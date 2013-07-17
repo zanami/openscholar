@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Verify that the user sees terms in the filter by term widget.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
   | Vocabularies           | authors             | select list |
   | Show empty terms       | check               | checkbox    |
@@ -18,7 +18,7 @@ Feature:
 
   @api
   Scenario: Verify that the number of tagged posts appended to the term name.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And I assign the node "John F. Kennedy" to the term "Antoine de Saint-Exupéry"
     And I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
     And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
@@ -34,7 +34,7 @@ Feature:
 
   @api
   Scenario: Verify the widget can show/hide the child terms.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
     And I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
     And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
@@ -52,7 +52,7 @@ Feature:
 
   @api
   Scenario: Verify the widget can show/hide the child terms by the depth setting.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
     And I set the term "Douglas Noël Adams" under the term "Stephen William Hawking"
     And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
@@ -76,7 +76,7 @@ Feature:
 
   @api
   Scenario: Verify the widget can show/hide the child terms by the depth setting.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
   | Vocabularies           | authors   | select list |
   | Show empty terms       | check     | checkbox    |
@@ -94,7 +94,7 @@ Feature:
 
   @api
   Scenario: Verify the terms links direct us to the correct path.
-    Given I am logged in as "john"
+    Given I am logging in as "john"
     And the widget "Filter by term" is set in the "Classes" page with the following <settings>:
   | Vocabularies           | authors   | select list |
   | Show empty terms       | check     | checkbox    |
