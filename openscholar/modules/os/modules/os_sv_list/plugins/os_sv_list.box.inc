@@ -21,6 +21,8 @@ class os_sv_list_box extends os_boxes_default {
       'sort_by' => 'sort_newest',
       'vocabs' => array(),
       'terms' => array(),
+      'only_vocabs' => TRUE,
+      'only_vocabs_values' => array(),
 
       //Do not include subsites by default
       'query_scope' => array('current'),
@@ -153,11 +155,16 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
-    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
+    $form['query_details']['only_vocabs'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Only vocabularies'),
+      '#description' => t('Display item which tagged to all of the vocabulary terms and specific terms'),
+      '#default_value' => $this->options['only_vocabs'],
+    );
 
+    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
     $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
 
-    $options = array();
     foreach ($vocabs as $vid => $vocab) {
       $terms = array();
       $tree = taxonomy_get_tree($vid);
@@ -166,6 +173,7 @@ class os_sv_list_box extends os_boxes_default {
         $terms[$term->tid] = $term->name;
       }
       $options[$vocab] = $terms;
+      $only_vocabs[$vid] = $vocab;
     }
 
     $form['query_details']['vocabs'] = array(
@@ -177,6 +185,29 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $vocabs_default_value,
       '#access' => $vocabs,
       '#size' => 10,
+
+      '#states' => array(
+        'visible' => array(
+          ':input[name="only_vocabs"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+
+    $form['query_details']['only_vocabs_values'] = array(
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#title' => t('Vocabulary'),
+      '#description' => t('Select a vocabulary to filter content by tagged items.'),
+      '#options' => $only_vocabs,
+      '#default_value' => $this->options['only_vocabs_values'],
+      '#access' => $vocabs,
+      '#size' => 10,
+
+      '#states' => array(
+        'visible' => array(
+          ':input[name="only_vocabs"]' => array('checked' => TRUE),
+        ),
+      ),
     );
 
     $terms = array();
@@ -607,11 +638,7 @@ class os_sv_list_box extends os_boxes_default {
    * Return the nodes attached to terms of the selected vocabulary.
    */
   public function tagged_nodes() {
-    if (empty($this->options['vocabs'])) {
-      return;
-    }
-
-    // Collect all the taxonomy term ID.
+    // Build a list of terms.
     $tids = array();
     if (in_array(0, $this->options['terms'])) {
       // The user did not select a terms but a vocab - loading the terms from
@@ -622,7 +649,25 @@ class os_sv_list_box extends os_boxes_default {
       }
     }
     else {
-      $tids = $this->options['vocabs'];
+      if ($this->options['only_vocabs']) {
+        // The user selected specific vocabs - load all the terms of the
+        // vocabularies.
+        foreach ($this->options['only_vocabs_values'] as $vocab) {
+          $tree = taxonomy_get_tree($vocab);
+          foreach ($tree as $term) {
+            $tids[] = $term->tid;
+          }
+        }
+      }
+      else {
+        // The user selected specific terms.
+        $tids = $this->options['vocabs'];
+      }
+    }
+
+    // No terms were found.
+    if (empty($tids)) {
+      return;
     }
 
     $bundles = os_get_bundles(array(1));
@@ -764,26 +809,6 @@ class os_sv_list_box extends os_boxes_default {
 
     return $options;
   }
-}
-
-/**
- * AJAX callback to add query details (e.g. the vocabulary to use).
- *
- * Since the controlling logic for populating the form is in the form builder
- * function, all we do here is select the element and return it to be updated.
- */
-function os_sv_list_query_details_ajax($form, &$form_state) {
-  return $form['options']['query_details'];
-}
-
-/**
- * AJAX callback for adding terms to the query.
- *
- * Since the controlling logic for populating the form is in the form builder
- * function, all we do here is select the element and return it to be updated.
- */
-function os_sv_list_terms_details_ajax($form, &$form_state) {
-  return $form['options']['query_details']['terms'];
 }
 
 /**
