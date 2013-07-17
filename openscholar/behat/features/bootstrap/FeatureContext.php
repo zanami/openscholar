@@ -30,7 +30,7 @@ class FeatureContext extends DrupalContext {
   /**
    * Hold the user name and password for the selenium tests for log in.
    */
-  private $drupal_users;
+  private $users;
 
   /**
    * Hold the NID of the vsite.
@@ -46,8 +46,8 @@ class FeatureContext extends DrupalContext {
    *   Context parameters (set them up through behat.yml or behat.local.yml).
    */
   public function __construct(array $parameters) {
-    if (isset($parameters['drupal_users'])) {
-      $this->drupal_users = $parameters['drupal_users'];
+    if (isset($parameters['users'])) {
+      $this->users = $parameters['users'];
     }
 
     if (isset($parameters['vsite'])) {
@@ -58,11 +58,11 @@ class FeatureContext extends DrupalContext {
   /**
    * Authenticates a user with password from configuration.
    *
-   * @Given /^I am logged in as "([^"]*)"$/
+   * @Given /^I am logging in as "([^"]*)"$/
    */
-  public function iAmLoggedInAs($username) {
+  public function iAmLoggingInAs($username) {
     try {
-      $password = $this->drupal_users[$username];
+      $password = $this->users[$username];
     } catch (Exception $e) {
       throw new Exception("Password not found for '$username'.");
     }
@@ -895,7 +895,7 @@ class FeatureContext extends DrupalContext {
   public function iDeleteRegistration($arg1) {
     return array(
       new Step\When('I am not logged in'),
-      new Step\When('I am logged in as "john"'),
+      new Step\When('I am logging in as "john"'),
       new Step\When('I visit "john/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
