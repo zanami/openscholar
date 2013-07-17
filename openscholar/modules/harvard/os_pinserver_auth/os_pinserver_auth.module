@@ -177,7 +177,7 @@ function os_pinserver_auth_get_uid_from_huid($huid = NULL) {
   }
 
   if ($huid) {
-    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $id))->fetchField();
+    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $huid))->fetchField();
   }
 
   return FALSE;
@@ -201,7 +201,7 @@ function os_pinserver_auth_module_implements_alter(&$implementations, $hook) {
  * Add Pinserver Site Privacy options
  */
 function os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options){
-  _os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options);
+  _os_pinserver_auth_vsite_access_privacy_values_alter($privacy_options);
 }
 
 /**

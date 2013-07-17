@@ -904,5 +904,12 @@ border-bottom-left-radius: 3px;
 
 .logged-in.no-sidebars.page-user ul.primary,
 ul.primary {
+    margin: 2em 0 -8px;
+}
+
+@-moz-document url-prefix() {
+   .logged-in.no-sidebars.page-user ul.primary,
+ul.primary {
     margin: 2em 0 -9px;
+}
 }

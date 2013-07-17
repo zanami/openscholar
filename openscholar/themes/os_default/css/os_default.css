@@ -248,7 +248,6 @@ text-decoration:none;
 }
 
 
-.page-site-register #content a,
 .logged-in.no-sidebars.page-user #content a {
 	color:#3A72AB;
 }
@@ -343,7 +342,8 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 }
 
 .page-site-register .form-submit,
-.logged-in.no-sidebars.page-user #content .user-add-website {
+.logged-in.no-sidebars.page-user #content .user-add-website,
+.os-green-button {
 	padding: 5px 10px;
     border:none;
 	font-size:13px;
@@ -370,6 +370,11 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 	padding:5px;
 
 }
+
+.page-site-register ul.error {
+    margin-left: 15px;
+}
+
 
 /* SITE MAINTENANCE PAGE */
 .maintenance-page #page {
@@ -417,4 +422,16 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 	height:30px;
 }
 
+/* ROADMAP PAGE STYLES */
+
+.roadmap td {
+     padding: 12px 10px;
+}
+
+.roadmap span.status {
+     -webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+     padding: 5px 7px;
+}
 
