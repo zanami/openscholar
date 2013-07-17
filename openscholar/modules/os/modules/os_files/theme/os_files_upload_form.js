@@ -9,18 +9,18 @@ Drupal.behaviors.os_upload_form = {
         $file_select = $('#edit-upload input[type="file"]', ctx);
 
     if ($('label[for="edit-upload-upload"]').length == 0) {
-      $file_select.before($input).click(function (e) {
-      	if ($file_select.hasClass('focus')){
-      	  e.preventDefault();
-      	}
-      	$file_select.addClass('focus');
-      });
-      $input.bind('mousedown', function (e) {$file_select.show(); $input.addClass('focus');})
-            .bind('mouseup', function(e) {$file_select.hide(); $input.removeClass('focus');});
+      $file_select.before($input)//.click(function (e) {
+      //	if ($file_select.hasClass('focus')){
+      //	  e.preventDefault();
+      //	}
+      //	$file_select.addClass('focus');
+      //});
+      //$input.bind('mousedown', function (e) {$file_select.show(); $input.addClass('focus');})
+      //      .bind('mouseup', function(e) {$file_select.hide(); $input.removeClass('focus');});
 
-      if (!$.browser.msie) {
-        $input.click(function(e) {$file_select.click();});
-      }
+      //if (!$.browser.msie) {
+      //  $input.click(function(e) {$file_select.click();});
+      //}
        
       $('.form-item-upload label[for="edit-upload"]', ctx).after($help);
       
