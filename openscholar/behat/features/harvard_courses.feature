@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Importing courses and test their grouping to the correct sites.
-    Given I am logging in as "admin"
+    Given I am logged in as "admin"
 
     # Define harvard courses
      When I enable harvard courses

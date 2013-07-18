@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Verify the cache is invalidate.
-    Given I am logging in as "john"
+    Given I am logged in as "john"
      When I set the variable "views_og_cache_invalidate_node" to "1"
       And I visit "john/people"
       And I click "Add Person"
@@ -15,7 +15,7 @@ Feature:
 
   @api
   Scenario: Verify the cache is not invalidate.
-    Given I am logging in as "john"
+    Given I am logged in as "john"
      When I set the variable "views_og_cache_invalidate_node" to "0"
       And I visit "john/people"
       And I click "Foo Bar"
