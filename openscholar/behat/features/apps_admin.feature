@@ -5,6 +5,7 @@ Feature:
   Scenario: Check that all of the apps are turned on
     Given I am logging in as "john"
       And I visit "john"
+      And I should print page
      When I click "Build"
       #And I should see "Apps"
      Then I should see the "spaces" table with the following <contents>:
