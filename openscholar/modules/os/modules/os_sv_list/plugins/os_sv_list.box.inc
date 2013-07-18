@@ -640,6 +640,7 @@ class os_sv_list_box extends os_boxes_default {
   public function tagged_nodes() {
     // Build a list of terms.
     $tids = array();
+    $inside_vocab = FALSE;
     if (in_array(0, $this->options['terms'])) {
       // The user did not select a terms but a vocab - loading the terms from
       // the vocab.
@@ -662,6 +663,7 @@ class os_sv_list_box extends os_boxes_default {
       else {
         // The user selected specific terms.
         $tids = $this->options['vocabs'];
+        $inside_vocab = TRUE;
       }
     }
 
@@ -675,16 +677,50 @@ class os_sv_list_box extends os_boxes_default {
 
     $query = db_select('taxonomy_index', 't');
     $query->join('node', 'n', 'n.nid = t.nid');
-    $result = $query
-      ->condition('t.tid', $tids, 'IN')
+    $query
       ->condition('n.type', $content_types)
       ->condition('n.status', 1)
-      ->fields('t')
-      ->execute();
+      ->fields('t');
 
-    $nids = array();
-    foreach ($result as $row) {
-      $nids[] = $row->nid;
+    if ($inside_vocab) {
+      $terms = taxonomy_term_load_multiple($tids);
+
+      foreach ($terms as $term) {
+        $vocabs[$term->vid][] = $term->tid;
+      }
+
+      $or = db_or();
+
+      foreach ($vocabs as $terms) {
+        $or->condition('t.tid', $terms);
+      }
+
+      $result = $query
+        ->condition($or)
+        ->execute();
+
+      $nids = array();
+      foreach ($result as $row) {
+        $nids[] = $row->nid;
+      }
+
+      foreach (array_count_values($nids) as $node_nid => $count) {
+        if ($count == count($tids)) {
+          $nodes[] = $node_nid;
+        }
+      }
+
+      $nids = $nodes;
+    }
+    else {
+      $result = $query
+        ->condition('t.tid', $tids, 'IN')
+        ->execute();
+
+      $nids = array();
+      foreach ($result as $row) {
+        $nids[] = $row->nid;
+      }
     }
 
     return $nids;
