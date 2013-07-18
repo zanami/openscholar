@@ -64,11 +64,9 @@ function vsite_install() {
 
   _vsite_initilize_group_fields();
 
-  foreach (module_invoke_all('vsite_og_node_type_info') as $bundle => $type) {
-    if ($type == 'group') {
-      variable_set("og_is_group_default_access__node__$bundle", FALSE);
-    }
-  }
+  variable_set("og_is_group_default_access__node__department", FALSE);
+  variable_set("og_is_group_default_access__node__personal", FALSE);
+  variable_set("og_is_group_default_access__node__project", FALSE);
 }
 
 /**
@@ -405,9 +403,7 @@ function vsite_update_7010() {
  * Allow group to override the permission and roles.
  */
 function vsite_update_7011() {
-  foreach (module_invoke_all('vsite_og_node_type_info') as $bundle => $type) {
-    if ($type == 'group') {
-      variable_set("og_is_group_default_access__node__$bundle", FALSE);
-    }
-  }
+  variable_set("og_is_group_default_access__node__department", FALSE);
+  variable_set("og_is_group_default_access__node__personal", FALSE);
+  variable_set("og_is_group_default_access__node__project", FALSE);
 }
