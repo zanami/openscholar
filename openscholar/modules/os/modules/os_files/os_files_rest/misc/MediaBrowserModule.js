@@ -63,31 +63,6 @@
       operating: false
     };
   }]).
-  /**
-   * Sets up paths for when the
-   */
-  config(['$routeProvider', function($routeProvider) {
-    $routeProvider.
-      when('/browser/upload', {
-        templateUrl: rootPath+'/templates/upload.html',
-        controller: 'UploadCtrl'
-      }).
-      when('browser/internet', {
-        templateUrl: rootPath+'/templates/internet.html',
-        controller: 'InternetCtrl'
-      }).
-      when('/browser/list', {
-        templateUrl: rootPath+'/templates/browser.html',
-        controller: 'BrowserCtrl'
-      }).
-      when('/browser/edit/:fileId', {
-        templateUrl: rootPath+'/templates/fileEdit.html',
-        controller: 'FileEditCtrl'
-      }).
-      otherwise({
-        redirectTo: '/browser/list'
-      });
-  }]).
   controller('BrowserCtrl', ['FileService', '$scope', '$filter', '$http', '$templateCache', function (FileService, $scope, $filter, $http, $templateCache) {
     $scope.files = FileService.getAll();
     $scope.templatePath = rootPath;

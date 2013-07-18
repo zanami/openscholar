@@ -56,7 +56,7 @@ function _os_files_rest_modify_response_row($file) {
 
 function os_files_rest_media_browser() {
   $browser = array(
-    '#prefix' => '<div ng-app="mediaBrowser"><div ng-view>',
+    '#prefix' => '<div ng-app="mediaBrowser"><div ng-bind-template="{{browser}}">',
     '#suffix' => '</div></div>',
     '#attached' => array(
       'js' => array(
