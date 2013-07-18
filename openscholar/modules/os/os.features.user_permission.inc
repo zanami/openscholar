@@ -580,6 +580,6 @@ function os_user_default_permissions() {
     ),
     'module' => 'os',
   );
-  
+
   return $permissions;
 }
