@@ -96,6 +96,11 @@ function os_menu_alter(&$items) {
   if (isset($items['node'])) {
     unset($items['node']);
   }
+  if (isset($items['user/autocomplete'])) {
+    $items['user/autocomplete']['access arguments'] = array(
+      'access user autocomplete fields',
+    );
+  }
 }
 
 /**
@@ -1255,6 +1260,10 @@ function os_permission() {
     'edit locked regions' => array(
       'title' => t('Edit Locked Regions'),
       'description' => t('Allows users to edit locked regions')
+    ),
+    'access user autocomplete fields' => array(
+      'title' => t('Access user autocomplete fields'),
+      'description' => t('Such as Author fields on biblio node forms and Authoring information on all node forms')
     ),
   );
 
