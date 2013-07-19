@@ -7,9 +7,10 @@ function _os_pinserver_auth_login_menu() {
   $items = array();
 
   $items['user/pin'] = array(
-    'title' => 'Login via PIN',
+    'title' => 'Log in via PIN',
     'page callback' => 'os_pinserver_auth_user_login',
     'access callback' => 'os_pinserver_auth_user_login_access',
+    'type' => MENU_LOCAL_TASK,
     'file' => 'includes/os_pinserver_auth.login.inc',
   );
 
@@ -41,11 +42,18 @@ function os_pinserver_auth_user_login_access() {
  * Prompts to
  */
 function os_pinserver_auth_user_login() {
-  if (!user_is_logged_in() && !pinserver_check_status()) {
+  pinserver_authenticate_user();
+  if ($error = pinserver_check_system_settings()) {
+    dpm($error);
+    return '';
+  }
+  elseif ($errors = pinserver_get_errors()) {
+    dpm($errors);
+    return '';
+  }
+  elseif (!user_is_logged_in() && !pinserver_check_status()) {
     $url = 'user/pin';
-    if (isset($_GET['destination'])) {
-      $url .= $_GET['destination'];
-    }
+    $url = url($url, array('absolute' => TRUE));
     pinserver_redirect(array('redirect' => $url));
   }
 
@@ -99,4 +107,11 @@ function os_pinserver_auth_user_create_form_submit($form, &$form_state) {
 
   $GLOBALS['user'] = $user;
   user_login_finalize();
+}
+
+function os_pinserver_auth_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'user') {
+    $args = func_get_args();
+    dpm($args);
+  }
 }
