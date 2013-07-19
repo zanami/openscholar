@@ -8,6 +8,7 @@ Drupal.behaviors.osLinkExternal = {
     $('#-os-link-external-form').submit(function (e) {
       if ($(this).filter(':visible').length > 0) {
         Drupal.settings.osWysiwygLinkResult = $('#edit-external', this).val();
+        Drupal.settings.osWysiwygLinkAttributes = {'data-url': $('#edit-external', this).val()};
         e.preventDefault();
       }
     });
