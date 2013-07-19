@@ -111,6 +111,9 @@ ul.menu {
     position: relative;
 
 }
+body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
+	margin-bottom:20px;
+}
 /*Breadcrumb*/
 .node-type-page .breadcrumb, .breadcrumb {
     margin: -40px 0 35px!important;
@@ -127,6 +130,7 @@ ul.menu {
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none repeat scroll 0 0 #24527A !important;
 }
+
 /* calendar arrows */
 .one-sidebar #main-content .view .date-nav-wrapper .date-prev {
     right: 90%;
