@@ -71,7 +71,7 @@ display:none;
 /*layout*/
 #columns .region-inner {
     border: medium none;
-    margin-bottom: -12px !important;
+
 }
 .front .content-left.content-right.content-bottom #content-panels .region {
     margin-bottom: 25px;
