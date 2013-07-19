@@ -9,6 +9,9 @@ include_once ('includes/os_pinserver_auth.private_files.inc');
 //Private Sites Logic
 include_once ('includes/os_pinserver_auth.private_sites.inc');
 
+//Login Logic
+include_once ('includes/os_pinserver_auth.login.inc');
+
 // Temporarially Private, access restricted to pin users. All files Public.
 define('OS_PINSERVER_ACCESS', 4);
 // Perminantly Private, access restricted to pin users. All files Private.
@@ -30,6 +33,7 @@ function os_pinserver_auth_menu_alter(&$items) {
 function os_pinserver_auth_menu() {
   //Add file menu callbacks
   $items = _os_pinserver_auth_private_files_menu();
+  $items += _os_pinserver_auth_login_menu();
 
   return $items;
 }
