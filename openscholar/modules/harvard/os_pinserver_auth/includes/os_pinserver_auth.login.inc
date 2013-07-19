@@ -50,8 +50,10 @@ function os_pinserver_auth_user_login() {
   }
 
   $pin_user = pinserver_get_user();
-  // user already exists. Just go straight to their destination
+  // user already exists. Log them in and go straight to their destination
   if ($uid = os_pinserver_auth_get_uid_from_huid($pin_user['huid'])) {
+    $GLOBALS['user'] = user_load($uid);
+    user_login_finalize();
     drupal_goto();
   }
 
@@ -65,5 +67,18 @@ function os_pinserver_auth_user_login() {
  * Allows user to fill in the rest of their user account
  */
 function os_pinserver_auth_user_login_form($form, &$form_state) {
+  $pin_user = pinserver_get_user();
 
+  $form['notice'] = array(
+    '#markup' => t('This is your first time logging into OpenScholar through PIN.
+      Please create an OpenScholar account before continuing. The next time you
+      visit an OpenScholar site, you can log in with this or through PIN.')
+  );
+
+  module_load_include('form.inc', 'vsite_register');
+  $form['user'] = _vsite_register_user_form();
+
+  $form['#submit'] = array();
+
+  return $form;
 }
