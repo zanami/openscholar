@@ -9,7 +9,9 @@
 
 /*--------------------------------------------------------*/
 @media (max-width: 1008px){
-
+.region-header-first {
+    margin-left: 0!important;
+}
 .media-element[style] {
     display: block !important;
     float: none !important;
@@ -130,6 +132,9 @@ display:none;
     margin: 0;
     padding: 0 15px !important;
 }	
+#nice-menu-primary-menu a.contextual-links-trigger{
+	display:none;
+}
 #block-boxes-shield{
 display:none;	
 }
