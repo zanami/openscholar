@@ -66,7 +66,7 @@ function os_pinserver_auth_user_login() {
 /**
  * Allows user to fill in the rest of their user account
  */
-function os_pinserver_auth_user_login_form($form, &$form_state) {
+function os_pinserver_auth_user_create_form($form, &$form_state) {
   $pin_user = pinserver_get_user();
 
   $form['notice'] = array(
@@ -78,7 +78,25 @@ function os_pinserver_auth_user_login_form($form, &$form_state) {
   module_load_include('form.inc', 'vsite_register');
   $form['user'] = _vsite_register_user_form();
 
-  $form['#submit'] = array();
+  $form['#submit'] = array('os_pinserver_auth_user_create_form_submit');
 
   return $form;
+}
+
+function os_pinserver_auth_user_create_form_submit($form, &$form_state) {
+  $values = $form_state['values'];
+
+  $user_options = array(
+    'name' => $values['name'],
+    'pass' => $values['password'],
+    'mail' => $values['mail'],
+    'status' => 1,
+    'field_first_name' => $values['first_name'],
+    'field_last_name' => $values['last_name'],
+  );
+  $user = os_user_create($user_options);
+  os_pinserver_auth_add_row($user->uid, pinserver_get_user_huid());
+
+  $GLOBALS['user'] = $user;
+  user_login_finalize();
 }
