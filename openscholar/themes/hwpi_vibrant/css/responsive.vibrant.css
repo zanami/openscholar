@@ -111,8 +111,8 @@ ul.menu {
     position: relative;
 
 }
-body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
-	margin-bottom:30px!important;
+#columns .region-inner {
+    margin-bottom: 25px !important;
 }
 /*Breadcrumb*/
 .node-type-page .breadcrumb, .breadcrumb {
