@@ -112,7 +112,7 @@ ul.menu {
 
 }
 body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
-	margin-bottom:20px;
+	margin-bottom:30px!important;
 }
 /*Breadcrumb*/
 .node-type-page .breadcrumb, .breadcrumb {
