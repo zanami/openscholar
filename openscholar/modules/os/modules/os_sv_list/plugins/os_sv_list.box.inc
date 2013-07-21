@@ -675,12 +675,12 @@ class os_sv_list_box extends os_boxes_default {
     $bundles = os_get_bundles(array(1));
     $content_types = ($this->options['content_type'] == 'all') ? array_keys($bundles) : $this->options['content_type'];
 
-    $query = db_select('taxonomy_index', 't');
-    $query->join('node', 'n', 'n.nid = t.nid');
+    $query = db_select('node', 'n');
+    $query->join('taxonomy_index', 't', 'n.nid = t.nid');
     $query
       ->condition('n.type', $content_types)
       ->condition('n.status', 1)
-      ->fields('t');
+      ->fields('n');
 
     if ($inside_vocab) {
       $terms = taxonomy_term_load_multiple($tids);
@@ -689,28 +689,18 @@ class os_sv_list_box extends os_boxes_default {
         $vocabs[$term->vid][] = $term->tid;
       }
 
-      $or = db_or();
-
-      foreach ($vocabs as $terms) {
-        $or->condition('t.tid', $terms);
+      foreach ($vocabs as $delta => $terms) {
+        $alias = 'term' . $delta;
+        $query->innerJoin('taxonomy_index', $alias, "$alias.nid = n.nid");
+        $query->condition("$alias.tid", $terms, 'IN');
       }
 
-      $result = $query
-        ->condition($or)
-        ->execute();
+      $result = $query->execute();
 
       $nids = array();
       foreach ($result as $row) {
         $nids[] = $row->nid;
       }
-
-      foreach (array_count_values($nids) as $node_nid => $count) {
-        if ($count == count($tids)) {
-          $nodes[] = $node_nid;
-        }
-      }
-
-      $nids = $nodes;
     }
     else {
       $result = $query
