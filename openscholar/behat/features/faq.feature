@@ -12,6 +12,7 @@ Feature:
   @api
   Scenario: Testing the migration of FAQ
     Given I am logging in as "john"
+      And I should print page
       And I visit "john/faq"
       And I click "Add FAQ"
       And I fill "edit-title" with random text

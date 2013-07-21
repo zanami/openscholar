@@ -276,6 +276,7 @@ class FeatureContext extends DrupalContext {
   public function iCreateANewPublication() {
     return array(
       new Step\When('I visit "john/node/add/biblio"'),
+      new Step\When('I should print page'),
       new Step\When('I select "Book" from "Publication Type"'),
       new Step\When('I press "edit-biblio-next"'),
       new Step\When('I fill in "Title" with "'. time() . '"'),

@@ -6,5 +6,6 @@ Feature:
     Given I am logging in as "john"
       And I visit "john/blog"
       And I click "First blog"
+      And I should print page
       And I click "Edit"
      Then I should not see "Groups audience"
