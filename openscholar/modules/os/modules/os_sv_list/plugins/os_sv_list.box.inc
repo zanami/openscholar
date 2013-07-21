@@ -179,8 +179,8 @@ class os_sv_list_box extends os_boxes_default {
     $form['query_details']['vocabs'] = array(
       '#type' => 'select',
       '#multiple' => TRUE,
-      '#title' => t('Vocabulary'),
-      '#description' => t('Select a vocabulary to filter content by tagged items.'),
+      '#title' => t('Term'),
+      '#description' => t('Select a term to filter content.'),
       '#options' => $options,
       '#default_value' => $vocabs_default_value,
       '#access' => $vocabs,
