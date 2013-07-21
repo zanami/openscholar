@@ -4,5 +4,8 @@ Feature:
   @api
   Scenario: Check that the OG audience field will be shown when editing content.
     Given I am logged in as "john"
-     When I editing the node "First blog"
-     Then I verify the "URL alias" value is "blog/first-blog"
+      And I visit "node/add/blog"
+      And I fill in "Title" with "Unique Title"
+      And I press "edit-submit"
+      And I edit the node "Unique Title"
+     Then I verify the "URL alias" value is "blog/unique-title"

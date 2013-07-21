@@ -896,7 +896,7 @@ class FeatureContext extends DrupalContext {
     return array(
       new Step\When('I am not logged in'),
       new Step\When('I am logged in as "john"'),
-      new Step\When('I visit "john/event/halleys-comet"'),
+      new Step\When('I visit "john/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
       new Step\When('I press "Delete"'),
@@ -945,9 +945,9 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @When /^I editing the node "([^"]*)"$/
+   * @When /^I edit the node "([^"]*)"$/
    */
-  public function iEditingTheNode($title) {
+  public function iEditTheNode($title) {
     $title = str_replace("'", "\'", $title);
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
     return array(
