@@ -1,6 +1,34 @@
 #!/bin/bash
 set -xe
 
+usage()
+{
+cat << EOF
+usage: $0 options
+
+This script builds the openscholar application.
+
+OPTIONS:
+   -h      Show this message
+   -d      docroot directory name defaults to 'www'
+   -o      Directory to include OPS modules, not included otherwise ex. 'sites/default/'
+EOF
+}
+
+DOCROOT="www"
+OPSDIR=
+while getopts ":hd:o:" OPTION
+do
+     case $OPTION in
+         h ) usage
+             exit 1;;
+         d ) DOCROOT=$OPTARG;;
+         o ) OPSDIR=$OPTARG;;
+         ? ) usage
+             exit;;
+     esac
+done
+
 # Drush executable.
 [[ $DRUSH && ${DRUSH-x} ]] || DRUSH=drush
 
@@ -35,8 +63,8 @@ cd $ROOT
   $DRUSH make openscholar/drupal-org-core.make $BUILD_ROOT/www-build
 
   # Check if sites/default exists, which means it is an existing installation.
-  if [ -d $BUILD_ROOT/www/sites/default ]; then
-    cp -rp $BUILD_ROOT/www/sites/default sites-backup
+  if [ -d $BUILD_ROOT/$DOCROOT/sites/default ]; then
+    cp -rp $BUILD_ROOT/$DOCROOT/sites/default sites-backup
   fi
 
   # Restore the sites directory.
@@ -49,11 +77,21 @@ cd $ROOT
   ln -s ../../openscholar $BUILD_ROOT/www-build/profiles/openscholar
 
   # Fix permisions before deleting.
-  chmod -R +w $BUILD_ROOT/www/sites/* || true
-  rm -Rf $BUILD_ROOT/www || true
+  chmod -R +w $BUILD_ROOT/$DOCROOT/sites/* || true
+  rm -Rf $BUILD_ROOT/$DOCROOT || true
 
   # Restore updated site.
-  mv $BUILD_ROOT/www-build $BUILD_ROOT/www
+  mv $BUILD_ROOT/www-build $BUILD_ROOT/$DOCROOT
+)
+
+CUR_DIR=$(pwd)
+#Build the ops profile
+(
+  if [ -n "$OPSDIR" ] && [ -d $BUILD_ROOT/$DOCROOT/$OPSDIR ] ; then
+    cd $BUILD_ROOT/$DOCROOT/$OPSDIR
+    $DRUSH make --no-core --contrib-destination $CUR_DIR/$BUILD_ROOT/openscholar/os-ops.make .
+    cd $CUR_DIR
+  fi
 )
 
 # Copy unmakable contrib files

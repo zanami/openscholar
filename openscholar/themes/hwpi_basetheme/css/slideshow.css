@@ -382,7 +382,9 @@ a.rslides_nav.prev {
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 transparent;
     border-radius: 0 0 0 0;
-    left: 550px;
+    left: 548px;
+    position: absolute;
+    top: 250px;
 }
 
 .lt-ie9 #layout_16_9_side .rslides_tabs {

@@ -38,6 +38,7 @@ border-top-right-radius: 3px;
 
 #menu-bar ul.nice-menu ul {
     background: #EBEBEB;
+    top: 3.36em !important;
 }
 
 #menu-bar ul.nice-menu .menuparent a {
@@ -87,9 +88,9 @@ border-top-right-radius: 3px;
      padding: 15px;
 }
 
-
+.sidebar .block-boxes-os_boxes_sectionnav .block-content,
 .sidebar .block-boxes-os-pages-section-nav .block-content {
-    padding: 0;
+    padding: 15px 0px;
 }
 
 .sidebar .block.section-nav, #content-column .block.section-nav {
@@ -104,12 +105,9 @@ border-top-right-radius: 3px;
      font-size: 12px;
      line-height: 20px;
      min-height: 20px;
-     padding: 7px 15px;
+     padding: 7px 15px !important;
 }
 
-.not-front h2.block-title {
-    padding: 7px 15px;
-}
 
 #content-panels .block-inner {
      margin-top: 0px;
@@ -136,4 +134,9 @@ a.rslides_nav.prev {
 #footer {
      background: none repeat scroll 0% 0% #F9F9F9;
      border-top: 2px solid #DDDDDD;
+}
+
+
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+    margin-left: 6.3em;
 }
