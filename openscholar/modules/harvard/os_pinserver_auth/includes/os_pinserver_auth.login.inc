@@ -42,42 +42,50 @@ function os_pinserver_auth_user_login_access() {
  * Prompts to
  */
 function os_pinserver_auth_pin_user_login() {
-  pinserver_authenticate_user();
-  if ($error = pinserver_check_system_settings()) {
-    watchdog(WATCHDOG_ERROR, t('Pinserver connection error: @error', array('@error' => $error)));
-    drupal_see_message('error', 'Unable to connect to pinserver. Contact your site administrator.');
-    drupal_goto('user');
-  }
-  elseif ($errors = pinserver_get_errors()) {
+ if ($errors = pinserver_get_errors()) {
     foreach ($errors as $e) {
       watchdog(WATCHDOG_ERROR, t('Pinserver authentication error: @error', array('@error' => $e)));
+      error_log($e);
     }
-    drupal_see_message('error', 'Unable to authenticate to pinserver. Contact your site administrator.');
+  }
+  if ($error = pinserver_check_system_settings()) {
+    watchdog(WATCHDOG_ERROR, t('Pinserver connection error: @error', array('@error' => $error)));
+    error_log($error);
+    drupal_set_message('Unable to connect to pinserver. Contact your site administrator.', 'error');
     drupal_goto('user');
   }
-  elseif (!user_is_logged_in() && !pinserver_check_status()) {
+  elseif (!pinserver_authenticate_user()) {
+    drupal_set_message('sending to pin');
     $url = 'user/pin';
-    $url = url($url, array('absolute' => TRUE));
+    $options = array(
+      'absolute' => TRUE,
+    );
+    if (isset($_GET['destination'])) {
+      $options['query']['destination'] = $_GET['destination'];
+      unset($_GET['destination']);
+    }
+    $url = url($url, $options);
+    drupal_set_message($url);
     pinserver_redirect(array('redirect' => $url));
   }
-
-  $pin_user = pinserver_get_user();
-  // user already exists. Log them in and go straight to their destination
-  if ($uid = os_pinserver_auth_get_uid_from_huid($pin_user['huid'])) {
+  elseif ($uid = os_pinserver_auth_get_uid_from_huid(pinserver_get_user_huid())) {
+    drupal_set_message('existing pin user found');
     $GLOBALS['user'] = user_load($uid);
     user_login_finalize();
     drupal_goto('user');
   }
-
-  // Users needs to create a full account to continue further
-  if (isset($_GET['destination'])) {
-    $args = array('destination' => $_GET['destination']);
-    unset($_GET['destination']);
-  }
   else {
-    $args = array('destination' => 'user');
+    drupal_set_message('new pin account needed');
+    // Users needs to create a full account to continue further
+    if (isset($_GET['destination'])) {
+      $args = array('destination' => $_GET['destination']);
+      unset($_GET['destination']);
+    }
+    else {
+      $args = array('destination' => 'user');
+    }
+    drupal_goto('user/pin/create', array('query' => $args));
   }
-  drupal_goto('user/pin/create', array('query' => $args));
 }
 
 /**
