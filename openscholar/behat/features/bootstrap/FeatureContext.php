@@ -990,4 +990,3 @@ class FeatureContext extends DrupalContext {
     }
   }
 }
-
