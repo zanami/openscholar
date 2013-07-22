@@ -1,12 +1,12 @@
-@import url('http://fonts.googleapis.com/css?family=Goudy+Bookletter+1911');
+@import url(http://fonts.googleapis.com/css?family=IM+Fell+English);
 
 .region-page-top .region-inner {
     padding-top: 0;
 }
 
 body {
-  color:#666;
-  font-family: 'Goudy Bookletter 1911', palatino, baskerville, "palatino linotype", "Times New Roman", Times, Georgia, serif;
+  color:#555;
+  font-family: 'IM Fell English', palatino, baskerville, "palatino linotype", "Times New Roman", Times, Georgia, serif;
   background: url(../images/body-bg-no-sidebar.jpg) 50% 135px repeat-y #6d2a01;
   }
 
@@ -22,6 +22,7 @@ body.two-sidebars {
     background-image: url(../images/body-bg-both-sidebar.jpg);
     }
 
+/*
 #page {
   padding-top: 40px;
   background:url(../images/header-no-sidebar.jpg) no-repeat top center transparent;
@@ -38,7 +39,7 @@ body.sidebar-second #page {
 body.two-sidebars #page {
     background-image:url(../images/header-both-sidebar.jpg);
     }
-
+*/
 /* 
 #page {
     width: 982px;
