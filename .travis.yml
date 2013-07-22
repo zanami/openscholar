@@ -41,7 +41,7 @@ before_script:
   - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
   - curl -s https://getcomposer.org/installer | php
-  - php composer.phar install
+  - php composer.phar self-update
 
 script:
     - ./bin/behat --tags=~wip
