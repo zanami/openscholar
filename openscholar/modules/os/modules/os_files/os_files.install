@@ -505,3 +505,10 @@ function os_files_update_7005(&$sandbox) {
 
   return t('Deleting references to no longer existed file has performed successfully.');
 }
+
+/**
+ * Enables colorbox inline so attached videos will display in colorbox.
+ */
+function os_files_update_7006(&$sandbox) {
+  variable_set('colorbox_inline', 1);
+}
