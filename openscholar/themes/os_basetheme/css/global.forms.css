@@ -523,12 +523,12 @@ body#tinymce, #tinymce {background:#FFF;font-size:100%;}
 
 /** MAILING LIST SIGNUP FORM - STYLES **/
 	
-#os-mailchimp-form legend {
+#os-mailchimp-form {
     position:absolute;
-    top:-20px;
     left:20px;
-    z-index:1002 !important;
+    z-index:2002 !important;
 }	
+
 	
 #os-mailchimp-form .fieldset-legend {
 	margin: 0;
