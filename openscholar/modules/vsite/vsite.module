@@ -373,7 +373,8 @@ function vsite_vsite_exists_access($vsites = array()) {
   }
 
   // Checks if user is over limit. If so, they may only create sites on behalf.
-  if (count($vsites) > variable_get('os_vsites_per_user', 1) && !$vicarious_access) {
+  $user_over_limit = count($vsites) >= variable_get('os_vsites_per_user', 1);
+  if ($user_over_limit && !$vicarious_access) {
     // Sets an error message if the user is accessing the site register form.
     if ($path_site_register) {
       // Clear message queue.
