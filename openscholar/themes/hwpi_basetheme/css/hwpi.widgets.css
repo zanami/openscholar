@@ -122,6 +122,11 @@ input[type="search"] {
 	display: none;
 }
 
+.page-search .form-item-retain-filters {
+    display: inline !important;
+    margin: 0;
+    padding-bottom: 0;
+}
 
 /* Calendar Overrides */
 .view-os-events ul li {

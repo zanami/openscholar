@@ -1399,7 +1399,7 @@ function os_files_file_default_types_alter(&$types){
   ));
 
   $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
-  $types['document']->mimetypes = array_diff($types['document']->streams, array('oembed'));
+  $types['document']->streams = array_diff($types['document']->streams, array('oembed'));
 }
 
 /**

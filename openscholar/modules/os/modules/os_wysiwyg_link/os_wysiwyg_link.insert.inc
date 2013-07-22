@@ -73,7 +73,8 @@ function os_wysiwyg_link_insert() {
         if (isset($entity->fid)) {
           media_browser_build_media_item($entity);
           drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
-          
+
+          $commands[] = ajax_command_replace('.view-media-default .view-empty', '<div class="view-content"><div class="clearfix"><ul id="media-browser-library-list" class="media-list-thumbnails"></ul></div>');
           $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
           // clear out status messages
           theme('status_messages');
@@ -202,6 +203,24 @@ function _os_link_get_view($params) {
           'insert' => array(
             '#type' => 'submit',
             '#value' => t('Insert'),
+          )
+        ),
+        '#attached' => array(
+          'library' => array(
+            array('media', 'media_browser'),
+          ),
+          'js' => array(
+            drupal_get_path('module', 'media') . '/js/plugins/media.views.js',
+            array(
+              'type' => 'setting',
+              'data' => array('media' =>
+                array(
+                  'browser' => array(
+                    'params' => media_get_browser_params(),
+                  )
+                )
+              )
+            )
           )
         )
       );
