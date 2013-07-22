@@ -30,14 +30,16 @@ body  {
     display: block !important;
 }
 
+.front #content-panels .region .region-inner,
 .front #content-panels .region .region-inner[style] {
     min-height: 200px !important;
+    position: relative;
 }
 
 
 
 #menu-bar .block-boxes-os_boxes_html,
-body.front.no-sidebars #content-panels .block-inner {
+body.front.no-sidebars #content-panels .region-inner {
     margin: 0 auto;
     width: 980px;
 }
@@ -151,11 +153,6 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 
 /* SPECIAL CSS FOR CUSTOM BLOCKS FOR OSHARVARD SITE */
-/*.getsitenow {
-	margin:-50px 0 0 200px;
-	z-index: 1000;
-	position:relative;
-	}*/
 
 
 .custhtml h3.custheader {
@@ -164,7 +161,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 .custhtml h3.custheader a {
     color: #000000;
-    font: 24px/1.4em "Helvetica","Arial","sans-serif";
+    font: 25px/1.4em "Helvetica","Arial","sans-serif";
 }
 
 .custhtml.sample h3.custheader a {
@@ -200,8 +197,9 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 
-.getsite .sitecount {
+.stats .sitecount {
 	font: bold 22px arial,sans-serif;
+	 text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 
 }
 
@@ -220,6 +218,14 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	color:#FFF;
 	}
 
+/* COMMENTING OUT UNTIL THIS BE USED. ITS A THIN GREY RULE USED
+ * AS A DIVIDER IN THE WHYUSE SECTION
+ 
+.whyuse {
+	background:url('../images/uploads/whydivider.png') no-repeat 678px 450px !important;
+}	
+	*/
+
 .whyuse .benef2colwrapper,
 .whyuse .activitywrapper {
 	display: inline-block;
@@ -227,17 +233,12 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	}
 .whyuse .benef2colwrapper {
 	padding-right: 15px;
-    width: 67%;
-    border-right:1px solid #D4D4D4;
-	}
-.whyuse .activitywrapper {
-	 margin-left: 18px;
-    width: 29%;
+    width: 66%;
 	}
 	
-.whyuse .activityinner {
-	 top:-463px;
-	position:relative;
+.whyuse .activitywrapper {
+	 margin-left: 18px;
+    width: 30%;
 	}
 	
 .whyuse .benef2colwrapper .twocolleft,
@@ -252,33 +253,89 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	position:relative;
 }
 
-@-moz-document url-prefix() {
- .whyuse .benef2colwrapper .twocolright {
-	top:-12px;
+.whyuse .whynotech,
+.whyuse .drag {height:270px;}
+.whyuse .drag {top:-45px;position:relative;}
+
+
+.whyuse .apps,
+.whyuse .custdomains,
+.activitywrapper .search {height:270px;}
+.whyuse .custdomains {top:-52px;position:relative;}
+
+.activitywrapper .search {top:-30px;position:relative;}
+.activitywrapper .analytics {top:-24px;position:relative;}
+
+.whyuse .themes,
+.whyuse .social {height:230px;}
+.whyuse .social {top:-53px;position:relative;}
+
+.whyuse .support {
+	top:-49px;
+	position:relative;
+	border:1px solid #ccc;
+	background:#EFEFEF;
+	padding:6px;
 	}
+
+.whyuse .block-content {
+	padding-top:35px !important;
 }
 
 .sample img {
 	margin:0 20px;
 }
 
+
+.sample .sitesheader {
+	margin-left:22px;
+	font-size:16px;
+}
+
+
+
+.stats {
+ 	color:#fff;
+	position: absolute;
+    right: 378px;
+    top: 132px;
+    z-index: 20;
+}
+
+/* COMMENTING OUT UNTIL THIS BLOCK IS USED
 .block-boxes-os_boxes_twitterfeed {
-	margin: -1870px 0 0 768px;
+ 	color:#000;
+	position: absolute;
+    right: 17px;
+    top: 357px;
+    width: 200px;
+}
+
+
+div.tweets-pulled-listing div.tweet-divider {
+    border-bottom: 1px solid #ccc;
+}
+
+.block-boxes-os_boxes_twitterfeed img{
+    display:none;
 }
 
 .block-boxes-os_boxes_twitterfeed .block-content {
-	margin-left:-90px; 
+     margin-left: -90px;
+     padding-top:0 !important;
 }
-
 
 .block-boxes-os_boxes_twitterfeed a {
-	color: #215990 !important;
+     color: #215990 !important;
+font-weight:normal !important;
 }
+
 
 .block-boxes-os_boxes_twitterfeed h2.block-title {
-	background:url('../images/uploads/whytwittericon.png') no-repeat;
-	padding: 90px 5px 0 5px;
-	color: #000000;
-    font: 18px/1.2em "Helvetica","Arial","sans-serif";
+	background:url('../images/uploads/whytwittericon.png') no-repeat !important;
+	padding: 90px 5px 0 5px !important;
+	color: #000000 !important;
+    font: 18px/1.2em "Helvetica","Arial","sans-serif" !important;
+    border-bottom: none !important;
 }
-
+*/
