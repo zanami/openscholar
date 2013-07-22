@@ -240,5 +240,5 @@ function _os_update_event_registration_mollom() {
  */
 function os_update_7013() {
   $modules = array('services_basic_auth');
-  module_enable($modules));
+  module_enable($modules);
 }
