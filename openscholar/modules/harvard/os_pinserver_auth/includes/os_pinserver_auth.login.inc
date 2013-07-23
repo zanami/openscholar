@@ -45,17 +45,16 @@ function os_pinserver_auth_pin_user_login() {
  if ($errors = pinserver_get_errors()) {
     foreach ($errors as $e) {
       watchdog(WATCHDOG_ERROR, t('Pinserver authentication error: @error', array('@error' => $e)));
-      error_log($e);
+      error_log(t('Pinserver authentication error: @error', array('@error' => $e)));
     }
   }
   if ($error = pinserver_check_system_settings()) {
     watchdog(WATCHDOG_ERROR, t('Pinserver connection error: @error', array('@error' => $error)));
-    error_log($error);
+    error_log(t('Pinserver connection error: @error', array('@error' => $error)));
     drupal_set_message('Unable to connect to pinserver. Contact your site administrator.', 'error');
     drupal_goto('user');
   }
   elseif (!pinserver_authenticate_user()) {
-    drupal_set_message('sending to pin');
     $url = 'user/pin';
     $options = array(
       'absolute' => TRUE,
@@ -69,13 +68,11 @@ function os_pinserver_auth_pin_user_login() {
     pinserver_redirect(array('redirect' => $url));
   }
   elseif ($uid = os_pinserver_auth_get_uid_from_huid(pinserver_get_user_huid())) {
-    drupal_set_message('existing pin user found');
     $GLOBALS['user'] = user_load($uid);
     user_login_finalize();
     drupal_goto('user');
   }
   else {
-    drupal_set_message('new pin account needed');
     // Users needs to create a full account to continue further
     if (isset($_GET['destination'])) {
       $args = array('destination' => $_GET['destination']);
