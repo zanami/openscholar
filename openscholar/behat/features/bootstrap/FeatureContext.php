@@ -30,7 +30,7 @@ class FeatureContext extends DrupalContext {
   /**
    * Hold the user name and password for the selenium tests for log in.
    */
-  private $drupal_users;
+  private $users;
 
   /**
    * Hold the NID of the vsite.
@@ -47,28 +47,37 @@ class FeatureContext extends DrupalContext {
    */
   public function __construct(array $parameters) {
     if (isset($parameters['drupal_users'])) {
-      $this->drupal_users = $parameters['drupal_users'];
+      $this->users = $parameters['drupal_users'];
+    }
+    else {
+      throw new Exception('behat.yml should include "drupal_users" property.');
     }
 
     if (isset($parameters['vsite'])) {
       $this->nid = $parameters['vsite'];
+    }
+    else {
+      throw new Exception('behat.yml should include "vsite" property.');
     }
   }
 
   /**
    * Authenticates a user with password from configuration.
    *
-   * @Given /^I am logged in as "([^"]*)"$/
+   * @Given /^I am logging in as "([^"]*)"$/
    */
-  public function iAmLoggedInAs($username) {
+  public function iAmLoggingInAs($username) {
+
     try {
-      $password = $this->drupal_users[$username];
-    } catch (Exception $e) {
+      $password = $this->users[$username];
+    }
+    catch (Exception $e) {
       throw new Exception("Password not found for '$username'.");
     }
 
     if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
       // We are using a cli, log in with meta step.
+
       return array(
         new Step\When('I visit "/user"'),
         new Step\When('I fill in "Username" with "' . $username . '"'),
@@ -895,7 +904,7 @@ class FeatureContext extends DrupalContext {
   public function iDeleteRegistration($arg1) {
     return array(
       new Step\When('I am not logged in'),
-      new Step\When('I am logged in as "john"'),
+      new Step\When('I am logging in as "john"'),
       new Step\When('I visit "john/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
