@@ -63,6 +63,10 @@ function vsite_install() {
   variable_set('spaces_preset_og', 'os_scholar');
 
   _vsite_initilize_group_fields();
+
+  variable_set("og_is_group_default_access__node__department", FALSE);
+  variable_set("og_is_group_default_access__node__personal", FALSE);
+  variable_set("og_is_group_default_access__node__project", FALSE);
 }
 
 /**
@@ -393,4 +397,13 @@ function vsite_update_7010() {
 
   $revert = array_fill_keys($modules, array('user_permission'));
   features_revert($revert);
+}
+
+/**
+ * Allow group to override the permission and roles.
+ */
+function vsite_update_7011() {
+  variable_set("og_is_group_default_access__node__department", FALSE);
+  variable_set("og_is_group_default_access__node__personal", FALSE);
+  variable_set("og_is_group_default_access__node__project", FALSE);
 }

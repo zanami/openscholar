@@ -135,3 +135,8 @@ a.rslides_nav.prev {
      background: none repeat scroll 0% 0% #F9F9F9;
      border-top: 2px solid #DDDDDD;
 }
+
+
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+    margin-left: 6.3em;
+}
