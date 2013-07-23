@@ -132,8 +132,8 @@ display:none;
     margin: 0;
     padding: 0 15px !important;
 }	
-#nice-menu-primary-menu a.contextual-links-trigger{
-	display:none;
+#menu-bar .contextual-links-trigger{
+	display:none!important;
 }
 #block-boxes-shield{
 display:none;	
