@@ -8,6 +8,7 @@ Drupal.behaviors.osLinkExternal = {
     $('#-os-link-external-form').submit(function (e) {
       if ($(this).filter(':visible').length > 0) {
         Drupal.settings.osWysiwygLinkResult = $('#edit-external', this).val();
+        Drupal.settings.osWysiwygLinkAttributes = {'data-url': $('#edit-external', this).val()};
         e.preventDefault();
       }
     });
@@ -46,23 +47,25 @@ Drupal.behaviors.osLinkEmail = {
 Drupal.behaviors.osLinkFile = {
   attach: function (ctx) {
     var params = Drupal.settings.media.browser.params;
-    if ('fid' in params) {
-      $('div.media-item[data-fid="'+params.fid+'"]', ctx).click();
-    }
-    
-    $('label[for="edit-filename"]', ctx).html('Search by Filename');
-    
-    $('#edit-file .form-actions input', ctx).click(function (e) {
-      if ($(this).parents('#edit-file').filter(':visible').length > 0) {
-        var selected = Drupal.media.browser.selectedMedia;
-        if (selected.length) {
-          var fid = selected[0].fid;
-          
-          Drupal.settings.osWysiwygLinkResult = selected[0].url;
-          Drupal.settings.osWysiwygLinkAttributes = {"data-fid": fid};
-        }
+    if (params) {
+      if ('fid' in params) {
+        $('div.media-item[data-fid="'+params.fid+'"]', ctx).click();
       }
-    });
+
+      $('label[for="edit-filename"]', ctx).html('Search by Filename');
+
+      $('#edit-file .form-actions input', ctx).click(function (e) {
+        if ($(this).parents('#edit-file').filter(':visible').length > 0) {
+          var selected = Drupal.media.browser.selectedMedia;
+          if (selected.length) {
+            var fid = selected[0].fid;
+
+            Drupal.settings.osWysiwygLinkResult = selected[0].url;
+            Drupal.settings.osWysiwygLinkAttributes = {"data-fid": fid};
+          }
+        }
+      });
+    }
   }
 };
 

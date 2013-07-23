@@ -12,6 +12,10 @@ include_once ('includes/vsite.inc');
 
 //module_load_include('inc', 'spaces', 'spaces.overrides');
 
+/**
+ * Defines the default vsites per user.
+ */
+define('VSITE_PER_USER_DEFAULT', 1);
 
 /**
  * Returns the current vsite (space).
@@ -372,10 +376,12 @@ function vsite_vsite_exists_access($vsites = array()) {
     $vsites = vsite_get_vsite_by_owner($user->uid);
   }
 
-  // Checks if user is over limit.
-  // If so, they may only create sites on behalf.
-  $over_limit = (bool) count($vsites) >= variable_get('os_vsites_per_user');
-  if ($over_limit && !$vicarious_access) {
+  // Checks if user is over limit. If so, they may only create sites on behalf.
+  $vsites_per_user = variable_get('os_vsites_per_user', VSITE_PER_USER_DEFAULT);
+  // Casts to int in order to compare without false positive.
+  $user_over_limit = (bool) (count($vsites) >= (int) $vsites_per_user);
+  // If this user is over the limit and is not creating on behalf...
+  if ($user_over_limit && !$vicarious_access) {
     // Sets an error message if the user is accessing the site register form.
     if ($path_site_register) {
       // Clear message queue.

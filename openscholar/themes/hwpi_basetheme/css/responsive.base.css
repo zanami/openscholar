@@ -9,16 +9,6 @@
     margin-right: 0;
 }
 /*Menu*/
-
-/*To pass accessibility scans*/
-.mobile-buttons li {
-     background: #000000;
-}
-
-.mobile-buttons li a {
-     color: #FFFFFF;
-}
-
 #menu-bar ul.nice-menu ul {
     background: none repeat scroll 0 0 #24527A;
 }
