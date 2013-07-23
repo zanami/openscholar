@@ -46,12 +46,18 @@ class FeatureContext extends DrupalContext {
    *   Context parameters (set them up through behat.yml or behat.local.yml).
    */
   public function __construct(array $parameters) {
-    if (isset($parameters['users'])) {
-      $this->users = $parameters['users'];
+    if (isset($parameters['drupal_users'])) {
+      $this->users = $parameters['drupal_users'];
+    }
+    else {
+      throw new Exception('behat.yml should include "drupal_users" property.');
     }
 
     if (isset($parameters['vsite'])) {
       $this->nid = $parameters['vsite'];
+    }
+    else {
+      throw new Exception('behat.yml should include "vsite" property.');
     }
   }
 
@@ -61,14 +67,17 @@ class FeatureContext extends DrupalContext {
    * @Given /^I am logging in as "([^"]*)"$/
    */
   public function iAmLoggingInAs($username) {
+
     try {
       $password = $this->users[$username];
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       throw new Exception("Password not found for '$username'.");
     }
 
     if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
       // We are using a cli, log in with meta step.
+
       return array(
         new Step\When('I visit "/user"'),
         new Step\When('I fill in "Username" with "' . $username . '"'),
