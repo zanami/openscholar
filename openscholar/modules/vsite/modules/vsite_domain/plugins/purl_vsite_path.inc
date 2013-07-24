@@ -92,10 +92,8 @@ if (!class_exists('purl_vsite_path')) {
       if (!empty($path) && $path != '<front>') {
         $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
         $alias = drupal_get_path_alias($path, $language);
-        if ($alias == $path || $alias == $this->remove($alias, $element)) {
-          global $base_url;
-          // Set the base URL as the default base URL of the site.
-          $options['base_url'] = variable_get('purl_base_domain', $base_url);
+        if ($alias != $path && $alias != $this->remove($alias, $element)) {
+          return;
         }
       }
 
