@@ -523,20 +523,8 @@ body#tinymce, #tinymce {background:#FFF;font-size:100%;}
 
 /** MAILING LIST SIGNUP FORM - STYLES **/
 	
-#os-mailchimp-form {
-    left:20px;
-    z-index:2002 !important;
-}	
 
-	
-#os-mailchimp-form .fieldset-legend {
-	margin: 0;
-    padding: 0.3em 0;
-    color: #666;
-    font-size:24px;
-    font-weight: normal;
-}
-
+.block-boxes-os_boxes_mailchimp fieldset,
 #os-mailchimp-form fieldset {
 	  background: none;
     border: none;
@@ -544,6 +532,7 @@ body#tinymce, #tinymce {background:#FFF;font-size:100%;}
     padding: 0.35em 0.625em 0.75em;
 }
 
+.block-boxes-os_boxes_mailchimp input.form-submit,  
 #os-mailchimp-form input.form-submit {
   cursor: pointer;
   padding: 4px 17px;
@@ -562,6 +551,15 @@ body#tinymce, #tinymce {background:#FFF;font-size:100%;}
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
+}
+
+div.ctools-modal-content .block-boxes-os_boxes_mailchimp fieldset-legend,
+div.ctools-modal-content #os-mailchimp-form .fieldset-legend {
+	margin: 0;
+    padding: 0.3em 0;
+    color: #666;
+    font-size:24px;
+    font-weight: normal;
 }
 
 div.ctools-modal-content #os-mailchimp-form .form-item label {
