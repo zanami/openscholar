@@ -12,3 +12,4 @@ Feature:
        And I visit "john/classes"
       Then I should see "Simple view list"
        And I should see "John F. Kennedy"
+
