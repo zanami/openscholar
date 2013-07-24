@@ -260,15 +260,18 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 
 .whyuse .apps,
 .whyuse .custdomains,
-.activitywrapper .analytics {height:270px;}
+.activitywrapper .search {height:270px;}
 .whyuse .custdomains {top:-52px;position:relative;}
+
+.activitywrapper .search {top:-30px;position:relative;}
+.activitywrapper .analytics {top:-24px;position:relative;}
 
 .whyuse .themes,
 .whyuse .social {height:230px;}
 .whyuse .social {top:-53px;position:relative;}
 
 .whyuse .support {
-	top:-22px;
+	top:-49px;
 	position:relative;
 	border:1px solid #ccc;
 	background:#EFEFEF;

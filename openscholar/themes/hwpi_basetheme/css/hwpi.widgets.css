@@ -122,6 +122,12 @@ input[type="search"] {
 	display: none;
 }
 
+.page-search .form-item-retain-filters {
+    display: inline !important;
+    margin: 0;
+    padding-bottom: 0;
+}
+
 /* Calendar Overrides */
 .view-os-events ul li {
   border: none;
@@ -271,6 +277,10 @@ table td.mini .mini-day-on a {
   display: table !important;
   width: 100%;
   table-layout: fixed;
+}
+
+.lt-ie9 .ui-tabs ul.ui-tabs-nav {
+  table-layout: auto;
 }
 
 .ui-tabs ul.ui-tabs-nav li {
