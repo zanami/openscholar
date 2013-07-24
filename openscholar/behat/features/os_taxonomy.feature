@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Testing the term tagged items pager.
-     Given I am logged in as "john"
+     Given I am logging in as "john"
       When I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
        And I assign the node "I opened a new personal" with the type "news" to the term "Stephen William Hawking"
        And I assign the node "First blog" with the type "blog" to the term "Stephen William Hawking"
