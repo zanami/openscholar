@@ -9,9 +9,6 @@ include_once ('includes/os_pinserver_auth.private_files.inc');
 //Private Sites Logic
 include_once ('includes/os_pinserver_auth.private_sites.inc');
 
-//Login Logic
-include_once ('includes/os_pinserver_auth.login.inc');
-
 // Temporarially Private, access restricted to pin users. All files Public.
 define('OS_PINSERVER_ACCESS', 4);
 // Perminantly Private, access restricted to pin users. All files Private.
@@ -33,7 +30,6 @@ function os_pinserver_auth_menu_alter(&$items) {
 function os_pinserver_auth_menu() {
   //Add file menu callbacks
   $items = _os_pinserver_auth_private_files_menu();
-  $items += _os_pinserver_auth_login_menu();
 
   return $items;
 }
@@ -143,48 +139,6 @@ function os_pinserver_auth_form_cp_app_settings_form_alter(&$form, $form_state) 
 
   // Add vsite level config setting for private files
   _os_pinserver_auth_vsite_private_file_settings($form, $form_state);
-}
-
-/**
- * Stores HUID by drupal user.
- *
- * @param int $uid
- * @param int $huid
- *
- * @return bool
- *   TRUE if database update was run.
- */
-function os_pinserver_auth_add_row($uid, $huid) {
-  $object           = new stdClass();
-  $object->uid      = (int)$uid;
-  $object->huid     = (int)$huid;
-  $object->reg_time = time();
-  if (!db_query("SELECT uid FROM {os_pinserver} WHERE huid = $huid")->fetchField()) {
-    drupal_write_record('os_pinserver', $object);
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-/**
- * Checks if user exists in pinserver table and returns uid
- *
- * @param int $huid
- * Defaults to active user
- *
- * @return user id
- */
-function os_pinserver_auth_get_uid_from_huid($huid = NULL) {
-  if(!$huid){
-    $huid = pinserver_get_user_huid();
-  }
-
-  if ($huid) {
-    return db_query("SELECT uid FROM {os_pinserver} WHERE huid = :huid", array(':huid' => $huid))->fetchField();
-  }
-
-  return FALSE;
 }
 
 /**
