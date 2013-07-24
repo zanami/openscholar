@@ -145,8 +145,12 @@ Drupal.wysiwyg.plugins.os_link = {
         ret.url = a.pathname.replace(home, '');
         ret.type = 'internal';
       }
+      else if (a.hasAttribute('data-url')) {
+        ret.url = a.getAttribute('data-url');
+        ret.type = 'external';
+      }
       else {
-        ret.url = a.href;
+        ret.url = a.href.replace(home, '');
         ret.type = 'external';
       }
       

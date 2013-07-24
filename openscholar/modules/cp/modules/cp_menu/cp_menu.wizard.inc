@@ -291,7 +291,7 @@ function cp_menu_url_validate(&$form, &$state) {
         $http = explode(' ', $header[0]);
         $http_code = $http[1];
   
-        if ($http_code >= 400) {
+        if ($http_code == 404) {
           form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
         }
       }
