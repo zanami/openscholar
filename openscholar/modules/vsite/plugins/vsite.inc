@@ -207,10 +207,13 @@ class vsite extends space_og {
       return TRUE;
     }
 
-    $access = parent::access_feature($op, $feature, $account);
 
     // Checks feature 'privacy' settings
     $features = variable_get('spaces_features', array());
+
+    // Check if the feature is enabled.
+    $access = !empty($features[$feature]);
+
     if ($access && $features[$feature] > 1) {
       // Handles privacy levels that are not simple Public/Disabled
       switch ($features[$feature]) {
