@@ -1830,20 +1830,21 @@ function vsite_preprocess_html(&$vars){
  * Add a link to create a subsite.
  */
 function vsite_preprocess_toolbar(&$vars){
-  $space = spaces_get_space();
-  ctools_include('subsite', 'vsite');
+  if ($space = spaces_get_space()) {
+    ctools_include('subsite', 'vsite');
 
-  $title = t('Add subsite');
-  $description = t('Add a subsite to the current site.');
-  $parent = $space->group->nid;
-  $link = _vsite_add_site_link($title, $description, $parent);
-  if (vsite_subsite_access('create', $space)) {
-    $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
-      '#theme' => 'links__toolbar_subsite',
-      '#links' => array(
-        'add_site' => $link,
-      )
-    );
+    $title = t('Add subsite');
+    $description = t('Add a subsite to the current site.');
+    $parent = $space->group->nid;
+    $link = _vsite_add_site_link($title, $description, $parent);
+    if (vsite_subsite_access('create', $space)) {
+      $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
+        '#theme' => 'links__toolbar_subsite',
+        '#links' => array(
+          'add_site' => $link,
+        )
+      );
+    }
   }
 }
 
