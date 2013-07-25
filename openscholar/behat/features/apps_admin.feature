@@ -23,8 +23,3 @@ Feature:
       | Publications  | Public |
       | Reader        | Public |
       | Software      | Public |
-
-  @api
-  Scenario: Check that all of the apps are turned on
-    Given I visit "http://lincoln.local"
-     Then I should print page

@@ -136,9 +136,7 @@ class OsMigratePersonalNode extends OsMigrate {
   function complete($entity, $row) {
     if ($row->domain) {
       $nid = entity_id($this->entityType, $entity);
-      $vsite = vsite_get_vsite($nid);
-
-      $vsite->controllers->variable->set('vsite_domain_name', $row->domain);
+      os_migrate_demo_spaces_overrides('og', $nid, $row->domain);
     }
 
     if (is_array($entity->users_to_group)) {
