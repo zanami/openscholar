@@ -7,6 +7,11 @@ body  {
  
 }
 
+h1#page-title {
+    font-size: 32px;
+
+}
+
 .not-front #content-column {
     font-size: 14px;
 }
@@ -91,6 +96,10 @@ border-top-right-radius: 3px;
 .sidebar .block-boxes-os_boxes_sectionnav .block-content,
 .sidebar .block-boxes-os-pages-section-nav .block-content {
     padding: 15px 0px;
+}
+
+.sidebar .node-teaser.node-person {
+    padding: 0;
 }
 
 .sidebar .block.section-nav, #content-column .block.section-nav {
