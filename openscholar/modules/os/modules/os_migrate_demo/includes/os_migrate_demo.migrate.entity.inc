@@ -91,7 +91,10 @@ abstract class OsMigrate extends Migration {
    * relation to the newly created vocabulary.
    */
   private function prepareRowTaxonomyTerm(&$row) {
-    $name = $this->bundle . '_' . $row->{OG_AUDIENCE_FIELD};
+    // At some point the audience field is empty - fill it with time for now.
+    $suffix = empty($row->{OG_AUDIENCE_FIELD}) ? time() : $row->{OG_AUDIENCE_FIELD};
+
+    $name = $this->bundle . '_' . $suffix;
     if (!$vocabulary = taxonomy_vocabulary_machine_name_load($name)) {
       // Create a vocaulary for the bundle in the VSite.
       $vocabulary = (object) array(
@@ -120,6 +123,7 @@ abstract class OsMigrate extends Migration {
   private function prepareTaxonomyTerm($entity, $row) {
     $vocabulary = taxonomy_vocabulary_machine_name_load($entity->vocabulary_machine_name);
     $gid = $entity->og_group_ref['destid1'];
+
     og_vocab_relation_save($vocabulary->vid, 'node', $gid);
   }
 
