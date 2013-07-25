@@ -1005,9 +1005,8 @@ class FeatureContext extends DrupalContext {
     $title = str_replace("'", "\'", $site);
 
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
-
     try {
-      $password = $this->drupal_users[$username];
+      $password = $this->users[$username];
     } catch (Exception $e) {
       throw new Exception("Password not found for '$username'.");
     }
