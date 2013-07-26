@@ -1552,3 +1552,12 @@ function os_files_file_fields() {
 
   return $file_fields;
 }
+
+/**
+ * Grants access to the full list of files
+ */
+function os_files_file_entity_access($op, $file, $account) {
+  if (!$file && $op == 'view' && user_access('view files', $account)) {
+    return FILE_ENTITY_ACCESS_ALLOW;
+  }
+}
