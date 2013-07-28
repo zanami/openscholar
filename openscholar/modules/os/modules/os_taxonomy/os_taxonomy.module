@@ -173,7 +173,7 @@ function os_taxonomy_term_page($taxonomy_term) {
   );
 
   os_taxonomy_activate_context($taxonomy_term);
-  
+
   ctools_include('infinite_scroll', 'os');
   _os_add_infinite_scroll('os_taxonomy');
 
@@ -703,7 +703,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
         )),
         'class' => array('term-' . drupal_html_class($item->name)),
       );
-  
+
       $params = array(
         'type' => 'ul',
         'items' => $content,
@@ -718,9 +718,13 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     // When using a select list widget, we need to return array of the terms.
     return $content;
   }
-  else {
+  elseif (count($params)) {
     // When using the list widget, we need to return the raw HTML output.
     return theme('item_list', $params);
+  }
+  else {
+    // All of the child terms were empty and are not displayed.
+    return '';
   }
 }
 

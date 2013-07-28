@@ -25,7 +25,7 @@ projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919
 projects[biblio][subdir] = "contrib"
 projects[biblio][download][type] = git
 projects[biblio][download][url] = "https://github.com/amitaibu/biblio"
-projects[biblio][download][branch] = 20
+projects[biblio][download][branch] = "7.x-3.x"
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
@@ -168,6 +168,7 @@ projects[hierarchical_taxonomy][download][type] = git
 projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
 projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
 projects[hierarchical_taxonomy][download][revision] = 5bbe344
+projects[hierarchical_taxonomy][patch][] = "https://drupal.org/files/2034713-hs-comaprse-name-2.patch"
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -287,7 +288,9 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][tag] = 7.x-3.3
+;projects[pinserver][tag] = 7.x-3.3
+projects[pinserver][branch] = 7.x-3.x
+; @todo Make tag when QA is finished
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -318,6 +321,9 @@ projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x
 projects[services][download][revision] = 761e620
+
+projects[services_basic_auth][subdir] = "contrib"
+projects[services_basic_auth][version] = "1.1"
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
@@ -430,3 +436,7 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
 libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
+
+libraries[html5shiv[type] = "libraries"
+libraries[html5shiv][download][type] = "file"
+libraries[html5shiv][download][url] = "http://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv.js"

@@ -124,6 +124,10 @@ table caption {
   list-style: disc;
 }
 
+#content-column .block ul ul {
+  list-style: circle;
+}
+
 
 /* Search Results */
 .page-search input.form-text {

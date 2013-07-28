@@ -37,7 +37,7 @@ function os_files_update_7001(&$sandbox) {
   $union3->join('file_usage', 'fu2', 'fu2.fid = fu.fid AND fu2.type = \'node\'');
   $union3->join('og_membership', 'ogm', 'ogm.etid = fu2.id AND entity_type = \'node\'');
   $union3->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
-  
+
   // limit testing to a single vsite
   //$q->condition('ogm.gid', 3633);
   //$union1->condition('ogm.gid', 3633);
@@ -191,7 +191,7 @@ function os_files_update_7001(&$sandbox) {
         $fake = null;
         $dup = file_load($rf->fid);
         $entity = entity_load($rf->type, array($rf->id));
-        
+
         // find the which file is real and which is fake, to be remove from the db
         foreach ($entity[$rf->id] as $k => $f) {
           if (!is_array($f) || !isset($f[LANGUAGE_NONE])) continue;
@@ -247,7 +247,7 @@ function os_files_update_7001(&$sandbox) {
             }
           }
         }
-        
+
         if (!is_null($fake)) {
           file_delete($fake, TRUE);
           entity_get_controller('file')->resetCache();
@@ -314,14 +314,14 @@ function os_files_update_7001(&$sandbox) {
           // add the fid so we can find this easily later
           $node->body_value = str_replace($m[1].'"', file_create_url($file->uri).'" data-fid="'.$file->fid.'"', $node->body_value);
         }
-  
+
         db_update('field_data_body')
           ->fields(array('body_value' => $node->body_value))
           ->condition('entity_id', $node->id)
           ->condition('revision_id', $node->revision_id)
           ->execute();
       }
-      
+
       $biblio_save = false;
       if (isset($node->biblio_notes) && strlen($node->biblio_notes)) {
         preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_notes, $matches, PREG_SET_ORDER);
@@ -331,7 +331,7 @@ function os_files_update_7001(&$sandbox) {
           $biblio_save = true;
         }
       }
-      
+
       if (isset($node->biblio_abst_e) && strlen($node->biblio_abst_e)) {
         preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_abst_e, $matches, PREG_SET_ORDER);
         foreach ($matches as $m) {
@@ -340,7 +340,7 @@ function os_files_update_7001(&$sandbox) {
           $biblio_save = true;
         }
       }
-      
+
       if (isset($node->biblio_full_text) && strlen($node->biblio_full_text)) {
         preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_full_text, $matches, PREG_SET_ORDER);
         foreach ($matches as $m) {
@@ -349,7 +349,7 @@ function os_files_update_7001(&$sandbox) {
           $biblio_save = true;
         }
       }
-      
+
       if ($biblio_save) {
         db_update('biblio')
           ->fields(array(
@@ -417,6 +417,10 @@ function os_files_update_7004(&$sb) {
     $sb['progress'] = 0;
     $sb['limit'] = 50;
     $sb['fixed'] = 0;
+    if ($sb['count'] == 0) {
+      $sb['#finished'] = 1;
+      return t('No files need correcting.');
+    }
   }
 
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
@@ -437,13 +441,11 @@ function os_files_update_7004(&$sb) {
   }
 }
 
-
 /**
- * Remove file reference to file which no longer exists.
- */
+  * Remove file reference to file which no longer exists.
+  */
 function os_files_update_7005(&$sandbox) {
   $file_fields = os_files_file_fields();
-
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
     // Get the total amounts of nodes.
@@ -500,4 +502,11 @@ function os_files_update_7005(&$sandbox) {
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
 
   return t('Deleting references to no longer existed file has performed successfully.');
+}
+
+/**
+ * Enables colorbox inline so attached videos will display in colorbox.
+ */
+function os_files_update_7006(&$sandbox) {
+  variable_set('colorbox_inline', 1);
 }

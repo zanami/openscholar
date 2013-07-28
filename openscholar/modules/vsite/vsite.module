@@ -12,6 +12,10 @@ include_once ('includes/vsite.inc');
 
 //module_load_include('inc', 'spaces', 'spaces.overrides');
 
+/**
+ * Defines the default vsites per user.
+ */
+define('VSITE_PER_USER_DEFAULT', 1);
 
 /**
  * Returns the current vsite (space).
@@ -307,17 +311,31 @@ function vsite_spaces_registry_alter(&$registry){
  * Handles access rules for when site owner is attempting to create a another
  * site
  *
- * @return
+ * @param array $vsites
+ *   An array as returned by vsite_get_vsite_by_user()
+ *
+ * @return bool
+ *   TRUE if the user has access to create a site under these conditions.
  */
-function vsite_vsite_exists_access($vsites = array()){
-  global $user;
+function vsite_vsite_exists_access($vsites = array()) {
+  // First, checks that the site would be created on the correct domain.
+  // If this function is being called on the site register form...
+  $path_site_register = (bool) ($_GET['q'] == 'site/register');
+  if ($path_site_register) {
+    // Checks that the form is being accessed from the purl base domain.
+    global $base_url;
+    // Checks that this site is being created on sitewide domain.
+    $purl_base_domain = variable_get('purl_base_domain', '');
+    // If the domain is NOT the purl base domain, alerts user and denies access.
+    if ($base_url != $purl_base_domain) {
+      drupal_set_message(t('You may not register new sites on custom domains.'), 'warning');
 
-  // load user's vsites. anon (uid 0) has no vsites
-  if (! $vsites && $user->uid) {
-    ctools_include('vsite', 'vsite');
-    $vsites = vsite_get_vsite_by_owner($user->uid);
+      return FALSE;
+    }
   }
 
+  // Next, checks this user's permissions.
+  // Finds if user has permission to create at least 1 group node type.
   $group_bundles = og_get_all_group_bundle();
   $group_create_access = FALSE;
   foreach ( $group_bundles['node'] as $type => $label ) {
@@ -327,13 +345,18 @@ function vsite_vsite_exists_access($vsites = array()){
     }
   }
 
-  // Does user have permission to create vsites?
-  if (! user_access('create vsite content on behalf') && ! $group_create_access) {
-    if (current_path() == 'site/register') {
-      // Set error message when appropriate.
-      global $base_url;
+  // Finds if user has permission to create vsites on behalf of others.
+  $vicarious_access = (bool) user_access('create vsite content on behalf');
+
+  // Denies access if user has no permission to create vsites.
+  if (!$vicarious_access && !$group_create_access) {
+    // Sets an error message if the user is accessing the site register form.
+    if ($path_site_register) {
       // Clear message queue.
       drupal_get_messages();
+      global $base_url;
+      // @todo remove duplicate message
+      // @see _os_pinserver_auth_existing_vsite_redirect()
       drupal_set_message(t('You do not have permission to create new OpenScholar sites. !link', array(
         '!link' => l(t('Return home.'), $base_url)
       )), 'error');
@@ -342,11 +365,25 @@ function vsite_vsite_exists_access($vsites = array()){
     return FALSE;
   }
 
-  // Can user create more vsites?
-  if (count($vsites) >= variable_get('os_vsites_per_user') && ! user_access('create vsite content on behalf')) {
-    // No, they can't!
-    if (current_path() == 'site/register') {
-      // Set error message when appropriate.
+  // Last, checks if this user has exceeded the limit of sites per user.
+  // Anonymous users have no "per-user" limit.
+  global $user;
+  if (user_is_anonymous() || $user->uid == 1) {
+    return TRUE;
+  }
+  if (empty($vsites)) {
+    ctools_include('vsite', 'vsite');
+    $vsites = vsite_get_vsite_by_owner($user->uid);
+  }
+
+  // Checks if user is over limit. If so, they may only create sites on behalf.
+  $vsites_per_user = variable_get('os_vsites_per_user', VSITE_PER_USER_DEFAULT);
+  // Casts to int in order to compare without false positive.
+  $user_over_limit = (bool) (count($vsites) >= (int) $vsites_per_user);
+  // If this user is over the limit and is not creating on behalf...
+  if ($user_over_limit && !$vicarious_access) {
+    // Sets an error message if the user is accessing the site register form.
+    if ($path_site_register) {
       // Clear message queue.
       drupal_get_messages();
       drupal_set_message(t('You have already created the maximum of %num OpenScholar !sites. !link', array(
@@ -1105,14 +1142,22 @@ function vsite_user_view_alter(&$build){
   // Additions section.
   // Add in an "Add website" link if user has permissions to create vsites.
   // Make sure they're logged in and it's their user page they're viewing.
-  if (vsite_vsite_exists_access() && user_is_logged_in() && isset($build['#account']) && ($user->uid == $build['#account']->uid)) {
-    $create_new_link = l(t('Add a new site'), 'site/register', array('attributes' => array('class' => 'user-add-website')));
+  $own_user_page = (bool) (isset($build['#account']) && ($user->uid == $build['#account']->uid));
+  if (vsite_vsite_exists_access() && user_is_logged_in() && $own_user_page) {
+    $purl_base_domain = variable_get('purl_base_domain', '');
+    $title = t('Add a new site');
+    $description = t('Create an additional site');
+    $parent = NULL;
+    $options = array(
+      'attributes' => array('class' => array('user-add-website')),
+    );
+    $create_new_link = _vsite_add_site_link($title, $description, $parent, $options);
     $build['add_new_site'] = array(
       '#title' => '',
       '#prefix' => '<div class="user-add-site-block">',
       '#suffix' => '</div>',
       '#type' => 'user_profile_item',
-      '#markup' => $create_new_link,
+      '#markup' => theme_link($create_new_link),
       '#weight' => '10',
     );
   }
@@ -1393,6 +1438,12 @@ function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
+  }
+
+  if (og_is_group_type('node', $node->type)) {
+    module_load_include('inc', 'vsite', 'includes/user');
+    vsite_user_add($node->uid ,$node->nid);
+    vsite_role_grant($node->uid, 'vsite admin', $node->nid);
   }
 }
 
@@ -1779,26 +1830,21 @@ function vsite_preprocess_html(&$vars){
  * Add a link to create a subsite.
  */
 function vsite_preprocess_toolbar(&$vars){
-  $space = spaces_get_space();
-  ctools_include('subsite', 'vsite');
+  if ($space = spaces_get_space()) {
+    ctools_include('subsite', 'vsite');
 
-  if (vsite_subsite_access('create', $space)) {
-    $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
-      '#theme' => 'links__toolbar_subsite',
-      '#links' => array(
-        'add' => array(
-          'title' => t('Add Subsite'),
-          'href' => 'site/register',
-          'description' => t('Add a subsite to the current site.'),
-          'attributes' => array(
-            'data-tooltip' => t('Add a subsite to the current site.')
-          ),
-          'query' => array(
-            'parent' => $space->group->nid
-          )
+    $title = t('Add subsite');
+    $description = t('Add a subsite to the current site.');
+    $parent = $space->group->nid;
+    $link = _vsite_add_site_link($title, $description, $parent);
+    if (vsite_subsite_access('create', $space)) {
+      $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
+        '#theme' => 'links__toolbar_subsite',
+        '#links' => array(
+          'add_site' => $link,
         )
-      )
-    );
+      );
+    }
   }
 }
 
@@ -1880,8 +1926,96 @@ function vsite_user_autocomplete($string = '') {
 function vsite_og_tasks_info($entity_type, $entity) {
   $tasks = array();
 
-  $tasks['AboutSection'] = new vsiteTaskAboutSection($entity_type, $entity);
-  $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
+//   $tasks['AboutSection'] = new vsiteTaskAboutSection($entity_type, $entity);
+//   $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
 
   return $tasks;
+}
+
+/**
+ * Alter metadata for entity properties for use with entity module.
+ *
+ * Expose group entity properties to the entityAPI module.
+ *
+ * @see hook_entity_property_info()
+ */
+function vsite_entity_property_info_alter(&$info) {
+
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  foreach ($group_types as $type) {
+    if(!isset($info['node']['bundles'][$type]['properties'])){
+      continue;
+    }
+    $properties = &$info['node']['bundles'][$type]['properties'];
+
+    $properties['spaces_preset_og'] = array(
+      'label' => t("Spaces Preset"),
+      'description' => t("The preset for a vsite."),
+      'type' => 'text',
+      'getter callback' => 'entity_metadata_node_get_properties',
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+    $properties['purl'] = array(
+      'label' => t("vsite PURL"),
+      'description' => t("The purl for a vsite."),
+      'type' => NULL,
+      'getter callback' => 'entity_metadata_node_get_properties',
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+  }
+
+  $info['user']['bundles']['user']['properties']['pass'] = array(
+    'label' => t("Password"),
+    'description' => t("The password for a user entity."),
+    'type' => 'text',
+    'getter callback' => 'entity_metadata_user_get_properties',
+    'setter callback' => 'entity_property_verbatim_set',
+  );
+
+}
+
+/**
+ * Returns a render array for the add site button.
+ *
+ * Can be passed to theme_links() as a link item, or to theme_link as a link.
+ * Because of this, title, path/href, and options are duplicated.
+ */
+function _vsite_add_site_link($title, $description, $parent = NULL, $options = array()) {
+  $purl_base_domain = variable_get('purl_base_domain');
+  $href = 'site/register';
+  $build = array(
+    'title' => $title,
+    'text' => $title,
+    'href' => $href,
+    'path' => $href,
+    'description' => $description,
+    'attributes' => array(
+      'data-tooltip' => $description,
+    ),
+    'absolute' => TRUE,
+    'base_url' => $purl_base_domain,
+    'options' => array(
+      'absolute' => TRUE,
+      'base_url' => $purl_base_domain,
+      'attributes' => array(
+        'data-tooltip' => $description,
+      ),
+    ),
+  );
+
+  if ($parent) {
+    $build['query'] = array(
+      'parent' => $parent,
+    );
+    $build['options']['query'] = array(
+      'parent' => $parent,
+    );
+  }
+
+  if (isset($options['attributes']['class'])) {
+    $build['attributes']['class'] = $options['attributes']['class'];
+    $build['options']['attributes']['class'] = $options['attributes']['class'];
+  }
+
+  return $build;
 }

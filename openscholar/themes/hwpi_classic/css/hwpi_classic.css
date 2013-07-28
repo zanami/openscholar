@@ -211,10 +211,6 @@ padding: 10px 0;
 
 /** SLIDESHOW **/
 	
-.front #content-column .block.block-boxes-os_slideshow_box {
-	margin-top: 0;
-}
-	
 a.rslides_nav.next {
     background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
 }
