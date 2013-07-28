@@ -180,6 +180,7 @@ projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-ma
 
 projects[inline_entity_form][subdir] = "contrib"
 projects[inline_entity_form][version] = 1.3
+projects[inline_entity_form][patch][] = "https://drupal.org/files/2046953-ief-unique-id-3.patch"
 
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
