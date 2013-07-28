@@ -178,6 +178,10 @@ projects[imagefield_crop][download][revision] = 4a5302
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-hook_imagefield_crop_instance_alter-1915510-2.patch"
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-max_filesize-1923934-1.patch"
 
+projects[inline_entity_form][subdir] = "contrib"
+projects[inline_entity_form][version] = 1.3
+projects[inline_entity_form][patch][] = "https://drupal.org/files/2046953-ief-unique-id-3.patch"
+
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
 
