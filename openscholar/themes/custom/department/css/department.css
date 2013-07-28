@@ -36,10 +36,21 @@ padding:1px 20px 20px;
 }
 
 /**** BLOCK STYLES ****/
-#columns .block {background: url('../images/blockTitleBg.png') left top repeat-x;}
-.not-front #columns #content-column .block {background: none !important;}
-#columns .block .content {background: url('../images/blockBg.png') repeat-x center bottom;}
-#columns .region-content-top .block {padding-top:0;}
+.sidebar .block,
+.region-content-first .block,
+.region-content-second .block,
+.region-content-bottom .block {
+	background: url('../images/blockTitleBg.png') left top repeat-x;
+	}
+.not-front #columns #content-column .block {
+	background: none !important;
+	}
+.sidebar .block .content {
+	background: url('../images/blockBg.png') repeat-x center bottom;
+	}
+#columns .region-content-top .block {
+	padding-top:0;
+	}
 
 #columns #block-boxes-os_addthis.block .content {background: none;}
 
@@ -141,6 +152,12 @@ p span {
   font-family: 'Oswald', arial;
    } 
   
+  
+ .front .sidebar h2.block-title {
+     background: none;
+     font-family: arial;
+     padding-left: 0;
+}
  
  .front .block-boxes-os_boxes_twitterfeed h2.block-title {
   background: url('../images/twitterIcon.png') 0 7px no-repeat;

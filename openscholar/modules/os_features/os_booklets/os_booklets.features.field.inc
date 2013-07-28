@@ -190,6 +190,8 @@ function os_booklets_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',

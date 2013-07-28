@@ -39,6 +39,15 @@ function vsite_register_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['site/login/once/%/%/%/%'] = array(
+    'title' => 'One-time login to website',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_register_site_login', 3, 4, 5, 6),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc',
+  );
+
   $items['site/purls'] = array(
     'title' => 'Get PURLs',
     'page callback' => 'vsite_register_get_purls',
@@ -53,6 +62,15 @@ function vsite_register_menu() {
     'access callback' => 'vsite_register_cors_access',
     'type' => MENU_CALLBACK,
     'file' => 'vsite_register.form.inc'
+  );
+
+  $items['site/user/exists/%'] = array(
+    'title' => 'Validate Username/Email',
+    'page callback' => 'vsite_register_user_exists',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc',
   );
 
   return $items;
@@ -298,6 +316,22 @@ function vsite_register_cors_access() {
     return false;
   }
   return true;
+}
+
+/**
+ * Implements hook_node_insert()
+ */
+function vsite_register_node_insert($node){
+  if (og_is_group_type('node', $node->type)) {
+    if(($vsite = spaces_load('og', $node->nid))){
+	    // Emails user to inform them of new created site, email is always sent.
+	    // This function may additionally send a second email to a specified
+	    // administrator's email address.
+	    // @see form.inc
+	    module_load_include('form.inc', 'vsite_register');
+	    vsite_register_notify($vsite);
+    }
+  }
 }
 
 function vsite_register_get_purls() {

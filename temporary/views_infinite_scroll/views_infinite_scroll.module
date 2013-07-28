@@ -35,3 +35,33 @@ function views_infinite_scroll_theme() {
   );
   return $hooks;
 }
+
+/**
+* Implements hook_libraries_info
+*
+* Provides autopager and html5shiv
+*/
+function views_infinite_scroll_libraries_info() {
+  $libraries = array(
+    'autopager' => array(
+      'name' => 'jQuery Autopager',
+      'vendor url' => 'http://code.google.com/p/jquery-autopager/',
+      'download url' => 'http://code.google.com/p/jquery-autopager/',
+      'dependencies' => array('html5shiv'),
+      'version' => '1.0',
+      'files' => array(
+        'js' => array('jquery.autopager-1.0.0.js'),
+        'css' => array('autopager.css'),
+      ),
+    ),
+    'html5shiv' => array(
+      'name' => 'html5shiv',
+      'vendor url' => 'http://code.google.com/p/html5shiv/',
+      'download url' => 'http://code.google.com/p/html5shiv/',
+      'version' => '1.0',
+      'files' => array('js' => array('html5shiv.js')),
+    ),
+  );
+  
+  return $libraries;
+}
