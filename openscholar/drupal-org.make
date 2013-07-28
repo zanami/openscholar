@@ -25,7 +25,7 @@ projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919
 projects[biblio][subdir] = "contrib"
 projects[biblio][download][type] = git
 projects[biblio][download][url] = "https://github.com/amitaibu/biblio"
-projects[biblio][download][branch] = 20
+projects[biblio][download][branch] = "7.x-3.x"
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
@@ -290,7 +290,7 @@ projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
 ;projects[pinserver][tag] = 7.x-3.3
 projects[pinserver][branch] = 7.x-3.x
-; @todo Make tag when QA is finished 
+; @todo Make tag when QA is finished
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
