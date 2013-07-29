@@ -11,4 +11,4 @@ Feature:
     | request-url                     | text                                                |
     | "einstein"                      | "Einstein"                                          |
     | "einstein/blog"                 | "Mileva Marić"                                      |
-    | "einstein/blog/mileva-marić"    | "Yesterday i met Mileva, what a nice girl :)."      |
+    | "einstein/blog/mileva-marić"    | "Yesterday I met Mileva, what a nice girl :)."      |
