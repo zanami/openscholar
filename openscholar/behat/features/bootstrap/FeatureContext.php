@@ -347,7 +347,17 @@ class FeatureContext extends DrupalContext {
     foreach ($hash as $form_elements) {
       switch ($form_elements[2]) {
         case 'select list':
-          $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          $values = explode(",", $form_elements[1]);
+
+          if (count($values) > 1) {
+            foreach ($values as $value) {
+              // Select multiple values from the terms options.
+              $this->getSession()->getPage()->selectFieldOption($form_elements[0], trim($value), true);
+            }
+          }
+          else {
+            $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          }
           break;
         case 'checkbox':
           $metasteps[] = new Step\When('I '. $form_elements[1] . ' the box "' . $form_elements[0] . '"');
