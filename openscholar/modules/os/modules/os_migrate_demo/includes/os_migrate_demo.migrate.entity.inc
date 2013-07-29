@@ -91,10 +91,7 @@ abstract class OsMigrate extends Migration {
    * relation to the newly created vocabulary.
    */
   private function prepareRowTaxonomyTerm(&$row) {
-    // At some point the audience field is empty - fill it with time for now.
-    $suffix = empty($row->{OG_AUDIENCE_FIELD}) ? time() : $row->{OG_AUDIENCE_FIELD};
-
-    $name = $this->bundle . '_' . $suffix;
+    $name = $this->bundle . '_' . $row->{OG_AUDIENCE_FIELD};
     if (!$vocabulary = taxonomy_vocabulary_machine_name_load($name)) {
       // Create a vocaulary for the bundle in the VSite.
       $vocabulary = (object) array(
