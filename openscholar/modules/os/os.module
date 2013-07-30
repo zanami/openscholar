@@ -533,7 +533,7 @@ function os_preprocess_page(&$vars) {
   }
 
   // Display contextual links for private apps as well.
-  $types = os_get_bundles(array(1, 2));
+  $types = os_get_bundles();
 
   $links = array();
   $active = context_active_contexts();

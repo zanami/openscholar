@@ -24,7 +24,7 @@
  * @return
  *  Array keyed with the bundle ID and the bundle name as value.
  */
-function os_get_bundles($include_status = array(1), $space_type = 'og', $reset = FALSE) {
+function os_get_bundles($include_status = array(1, 2), $space_type = 'og', $reset = FALSE) {
   $return_all = FALSE;
   if ($include_status === TRUE) {
     $return_all = TRUE;
