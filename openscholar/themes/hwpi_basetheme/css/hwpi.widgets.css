@@ -295,6 +295,11 @@ table td.mini .mini-day-on a {
   border-right: 1px solid #cacaca;
 }
 
+.lt-ie9 .ui-tabs ul.ui-tabs-nav li.last {
+  border-right: 1px solid #cacaca !important;
+}
+
+
 .ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
   background: #fff;
 }
@@ -339,8 +344,11 @@ table td.mini .mini-day-on a {
 
 .ui-state-default,
 .ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default {
+.lt-ie9 .ui-widget-header .ui-state-default {
+	 border: 1px solid #D3D3D3 !important;
 }
+
+
 
 .ui-tabs .ui-state-default a,
 .ui-tabs .ui-state-default a:link,
