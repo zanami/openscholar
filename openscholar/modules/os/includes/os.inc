@@ -133,24 +133,19 @@ function os_get_app_path($app_name = NULL) {
  */
 function _os_create_node($options) {
   // Provides defaults which may be overridden in the $options param.
-  $now = time();
   $language = LANGUAGE_NONE;
+  // Note: These node object properties will be set to node type defaults:
+  // status, promote, sticky, revision
+  // Additionally, these node object properties are altered by Drupal:
+  // uid, created, date, log
+  // @see node_object_prepare()
   $defaults = array(
-    'uid' => 0,
     'type' => 'page',
     'language' => $language,
-    'status' => 1,
-    'promote' => 0,
-    'sticky' => 0,
-    'created' => $now,
-    'revision' => 0,
-    'comment' => 0,
     'path' => array(
       'language' => $language,
       'pathauto' => 1,
     ),
-    'changed' => $now,
-    'validated' => 1,
     'os_menu' => array(
       'enabled' => 0,
       'mlid' => 0,
@@ -167,6 +162,15 @@ function _os_create_node($options) {
 
   // Prepares and saves the new node object (inserts the new node).
   node_object_prepare($node);
+
+  // Allow options to override default values from node_object_prepare().
+  $overrides = array('uid', 'created', 'date', 'log', 'revision');
+  foreach ($overrides as $key) {
+    if (in_array($key, $options)) {
+      $node->$key = $options[$key];
+    }
+  }
+
   $node = node_submit($node);
   $node->revision = TRUE;
   node_save($node);
