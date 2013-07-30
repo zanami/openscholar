@@ -146,15 +146,6 @@ function _os_create_node($options) {
       'language' => $language,
       'pathauto' => 1,
     ),
-    'os_menu' => array(
-      'enabled' => 0,
-      'mlid' => 0,
-      'module' => 'menu',
-      'hidden' => 0,
-      'has_children' => 0,
-      'customized' => 0,
-      'options' => array(),
-    ),
   );
 
   // Merges default options with the given node and builds a stdClass.
