@@ -1,7 +1,7 @@
 Feature:
   Testing the simple view widget.
 
-  @api @current
+  @api
   Scenario: Verify the simple view widget works after tagging node to term.
      Given I am logging in as "john"
        And the widget "Simple view list" is set in the "Classes" page with the following <settings>:
