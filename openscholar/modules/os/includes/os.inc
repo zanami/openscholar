@@ -162,11 +162,9 @@ function os_save_node($options) {
 
   // Merges default options with the given node and builds a stdClass.
   $node = (object) array_merge($defaults, $options);
-
-  // Prepares and saves the new node object (inserts the new node).
   node_object_prepare($node);
-  $node = node_submit($node);
-  $node->revision = TRUE;
+
+  // Saves the node object (inserts the new node).
   node_save($node);
   if (!isset($node->nid)) {
     return FALSE;
