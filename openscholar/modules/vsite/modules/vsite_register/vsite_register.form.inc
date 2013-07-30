@@ -288,6 +288,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
   elseif (($values['vicarious_user'] && !$values['existing_username']) || (!$values['vicarious_user'] && $values['name'])) {
     // Create user for current logged in user or on someone else's behalf.
+    $role = user_role_load_by_name('vsite admin');
     $user_options = array(
       'name' => $values['name'],
       'pass' => $values['password'],
@@ -295,6 +296,7 @@ function vsite_register_form_submit(&$form, &$state) {
       'status' => 1,
       'field_first_name' => $values['first_name'],
       'field_last_name' => $values['last_name'],
+      'roles' => array($role->rid),
     );
     $site_owner = os_user_create($user_options);
 
