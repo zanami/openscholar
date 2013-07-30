@@ -176,3 +176,37 @@ function os_save_node($options) {
   // Returns the new node object.
   return $node;
 }
+
+/**
+ * Creates a default node.
+ *
+ * @param string $title
+ *   The new node title.
+ * @param string $type
+ *   The new node's type (machine name).
+ * @param int $uid
+ *   (Optional) The author's uid. Defaults to current user.
+ * @param string $body
+ *   (Optional) The new node body text, if applicable.
+ * @param array $options
+ *   (Optional) Override defaults. This will be passed to os_save_node().
+ */
+function os_create_node($title, $type, $uid = NULL, $body = NULL, $options = array()) {
+  // Author defaults to current user if not passed as param.
+  if (is_null($uid)) {
+    global $user;
+    $uid = $user->uid;
+  }
+
+  // Inserts the custom properties into the node options array.
+  $options['title'] = $title;
+  $options['type'] = $type;
+  $options['uid'] = $uid;
+  $options['body'] = $body;
+
+  // Creates and loads the new node.
+  $node = os_save_node($options);
+
+  // Returns the new node.
+  return $node;
+}
