@@ -128,8 +128,10 @@ function os_get_app_path($app_name = NULL) {
 
 /**
  * Creates and saves (inserts) a new node.
+ *
+ * @see os_create_node()
  */
-function os_save_node($options) {
+function _os_create_node($options) {
   // Provides defaults which may be overridden in the $options param.
   $now = time();
   $language = LANGUAGE_NONE;
@@ -180,34 +182,25 @@ function os_save_node($options) {
 }
 
 /**
- * Creates a default node.
+ * Creates and saves (inserts) a new node. Wrapper for _os_create_node().
  *
  * @param string $title
  *   The new node title.
  * @param string $type
  *   The new node's type (machine name).
  * @param int $uid
- *   (Optional) The author's uid. Defaults to current user.
- * @param string $body
- *   (Optional) The new node body text, if applicable.
+ *   The author's uid.
  * @param array $options
- *   (Optional) Override defaults. This will be passed to os_save_node().
+ *   (Optional) Override defaults, or add additional properties or values.
  */
-function os_create_node($title, $type, $uid = NULL, $body = NULL, $options = array()) {
-  // Author defaults to current user if not passed as param.
-  if (is_null($uid)) {
-    global $user;
-    $uid = $user->uid;
-  }
-
-  // Inserts the custom properties into the node options array.
+function os_create_node($title, $type, $uid, $options = array()) {
+  // Inserts the required properties into the node options array.
   $options['title'] = $title;
   $options['type'] = $type;
   $options['uid'] = $uid;
-  $options['body'] = $body;
 
   // Creates and loads the new node.
-  $node = os_save_node($options);
+  $node = _os_create_node($options);
 
   // Returns the new node.
   return $node;
