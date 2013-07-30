@@ -126,3 +126,53 @@ function os_get_app_path($app_name = NULL) {
   return ($apps) ? $apps : FALSE;
 }
 
+/**
+ * Creates and saves (inserts) a new node.
+ */
+function os_save_node($options) {
+  // Provides defaults which may be overridden in the $options param.
+  $now = time();
+  $language = LANGUAGE_NONE;
+  $defaults = array(
+    'uid' => 0,
+    'type' => 'page',
+    'language' => $language,
+    'status' => 1,
+    'promote' => 0,
+    'sticky' => 0,
+    'created' => $now,
+    'revision' => 0,
+    'comment' => 0,
+    'path' => array(
+      'language' => $language,
+      'pathauto' => 1,
+    ),
+    'changed' => $now,
+    'validated' => 1,
+    'os_menu' => array(
+      'enabled' => 0,
+      'mlid' => 0,
+      'module' => 'menu',
+      'hidden' => 0,
+      'has_children' => 0,
+      'customized' => 0,
+      'options' => array(),
+    ),
+  );
+
+  // Merges default options with the given node and builds a stdClass.
+  $node = (object) array_merge($defaults, $options);
+  node_object_prepare($node);
+
+  // Saves the node object (inserts the new node).
+  node_save($node);
+  if (!isset($node->nid)) {
+    return FALSE;
+  }
+
+  // Loads the newly-created node.
+  $node = node_load($node->nid);
+
+  // Returns the new node object.
+  return $node;
+}
