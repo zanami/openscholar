@@ -361,3 +361,20 @@ function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
 function vsite_vocab_invalidate_entitycache($form, $form_state) {
   cache_clear_all('*', 'cache_entity_taxonomy_term', TRUE);
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * When the user reset the vocabulary to alphabetical order - close thr overlay.
+ */
+function vsite_vocab_form_taxonomy_overview_terms_reset_alter(&$form, &$form_state) {
+  $form['#submit'][] = 'vsite_vocab_close_overlay';
+}
+
+/**
+ * Submit handler - close the overlay when reset to alphabetical order.
+ */
+function vsite_vocab_close_overlay($form, &$form_state) {
+  overlay_close_dialog();
+  $form_state['redirect'] = FALSE;
+}
