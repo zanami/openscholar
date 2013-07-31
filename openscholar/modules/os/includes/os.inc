@@ -143,13 +143,12 @@ function _os_create_node($options) {
 
   // Creates a wrapper and further modifies the entity.
   $wrapper = entity_metadata_wrapper('node', $node);
-  // Handles title.
-  $wrapper->title = $options['title'];
 
   // Handles additional options such as body value.
   $properties = array_keys($wrapper->getPropertyInfo());
+  $skip = array('type');
   foreach ($options as $key => $value) {
-    if (in_array($key, $properties)) {
+    if (in_array($key, $properties) && !in_array($key, $skip)) {
       $wrapper->{$key}->set($value);
     }
   }
