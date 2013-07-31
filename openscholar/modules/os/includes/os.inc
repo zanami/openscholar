@@ -132,45 +132,44 @@ function os_get_app_path($app_name = NULL) {
  * @see os_create_node()
  */
 function _os_create_node($options) {
+  // Does nothing if any of the required options are missing.
+  if (!isset($options['title'], $options['type'], $options['uid'])) {
+    return FALSE;
+  }
+
   // Provides defaults which may be overridden in the $options param.
-  $language = LANGUAGE_NONE;
   // Note: These node object properties will be set to node type defaults:
   // status, promote, sticky, revision
   // Additionally, these node object properties are altered by Drupal:
   // uid, created, date, log
   // @see node_object_prepare()
-  $defaults = array(
-    'type' => 'page',
-    'language' => $language,
-    'path' => array(
-      'language' => $language,
-      'pathauto' => 1,
-    ),
-  );
+  // @fixme which of these defaults are needed?
+//  $language = LANGUAGE_NONE;
+//  $defaults = array(
+//    'type' => 'page',
+//    'language' => $language,
+//    'path' => array(
+//      'language' => $language,
+//      'pathauto' => 1,
+//    ),
+//  );
 
-  // Merges default options with the given node and builds a stdClass.
-  $node = (object) array_merge($defaults, $options);
+  // Creates a new node entity with the specified author user ID.
+  $node = entity_create('node', array('type' => $options['type']));
+  $node->uid = $options['uid'];
 
-  // Prepares and saves the new node object (inserts the new node).
-  node_object_prepare($node);
-
-  // Allow options to override default values from node_object_prepare().
-  $overrides = array('uid', 'created', 'date', 'log', 'revision');
-  foreach ($overrides as $key) {
-    if (in_array($key, $options)) {
-      $node->$key = $options[$key];
-    }
+  // Creates a wrapper and further modifies the entity.
+  $wrapper = entity_metadata_wrapper('node', $node);
+  // Handles title.
+  $wrapper->title = $options['title'];
+  // Handles body.
+  if (isset($options['body']) && !empty($options['body'])) {
+    $wrapper->field_body = $options['body'];
   }
+  // @todo add more properties and field value set handlers.
 
-  $node = node_submit($node);
-  $node->revision = TRUE;
-  node_save($node);
-  if (!isset($node->nid)) {
-    return FALSE;
-  }
-
-  // Loads the newly-created node.
-  $node = node_load($node->nid);
+  // Saves the node.
+  $wrapper->save();
 
   // Returns the new node object.
   return $node;
