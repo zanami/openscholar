@@ -111,4 +111,12 @@ class vsite_task extends og_task {
       spaces_set_space($this->active_space);
     }
   }
+
+  /**
+   * Creates and adds a new node to this vsite.
+   */
+  public function add_node($title, $type, $uid, $body = NULL, $options = array()) {
+    $node = os_create_node($title, $type, $uid, $body, $options);
+    return $node;
+  }
 }
