@@ -883,6 +883,8 @@ function os_files_media_browser_params_alter(&$media_params){
       $media_params['file_directory'] = $filepath;
     }
   }
+
+  $media_params['max_filesize'] = '128m';
 }
 
 /**
