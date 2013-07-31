@@ -43,7 +43,7 @@ define('OS_PRIVATE_APP', 2);
  * @return
  *  Array keyed with the bundle ID and the bundle name as value.
  */
-function os_get_bundles($include_status = array(OS_PUBLIC_APP, OS_PRIVATE_APP), $space_type = 'og', $reset = FALSE) {
+function os_get_bundles($include_status = array(OS_PUBLIC_APP), $space_type = 'og', $reset = FALSE) {
   $return_all = FALSE;
   if ($include_status === TRUE) {
     $return_all = TRUE;
