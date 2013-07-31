@@ -137,23 +137,6 @@ function _os_create_node($options) {
     return FALSE;
   }
 
-  // Provides defaults which may be overridden in the $options param.
-  // Note: These node object properties will be set to node type defaults:
-  // status, promote, sticky, revision
-  // Additionally, these node object properties are altered by Drupal:
-  // uid, created, date, log
-  // @see node_object_prepare()
-  // @fixme which of these defaults are needed?
-//  $language = LANGUAGE_NONE;
-//  $defaults = array(
-//    'type' => 'page',
-//    'language' => $language,
-//    'path' => array(
-//      'language' => $language,
-//      'pathauto' => 1,
-//    ),
-//  );
-
   // Creates a new node entity with the specified author user ID.
   $node = entity_create('node', array('type' => $options['type']));
   $node->uid = $options['uid'];
@@ -162,11 +145,17 @@ function _os_create_node($options) {
   $wrapper = entity_metadata_wrapper('node', $node);
   // Handles title.
   $wrapper->title = $options['title'];
-  // Handles body.
-  if (isset($options['body']) && !empty($options['body'])) {
-    $wrapper->field_body = $options['body'];
+
+  // Handles additional options such as body value.
+  $properties = array_keys($wrapper->getPropertyInfo());
+  foreach ($options as $key => $value) {
+    if (in_array($key, $properties)) {
+      $wrapper->{$key}->set($value);
+    }
   }
-  // @todo add more properties and field value set handlers.
+  // @todo add a function in api.php describing the correct $options array
+  // to modify most common values (i.e. language, comment, comment_source,
+  // pathauto, (published) status, created date, sticky, promoted, etc...
 
   // Saves the node.
   $wrapper->save();
@@ -184,14 +173,19 @@ function _os_create_node($options) {
  *   The new node's type (machine name).
  * @param int $uid
  *   The author's uid.
+ * @param string $body
+ *   (Optional) A translated text value for the body field. Use t() before call.
  * @param array $options
  *   (Optional) Override defaults, or add additional properties or values.
  */
-function os_create_node($title, $type, $uid, $options = array()) {
+function os_create_node($title, $type, $uid, $body = NULL, $options = array()) {
   // Inserts the required properties into the node options array.
   $options['title'] = $title;
   $options['type'] = $type;
   $options['uid'] = $uid;
+  if ($body !== NULL) {
+    $options['body'] = array('value' => $body);
+  }
 
   // Creates and loads the new node.
   $node = _os_create_node($options);
