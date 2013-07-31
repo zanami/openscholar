@@ -173,6 +173,22 @@ div.messages {
 
   .footer-left.footer-right .at-panel .region.region-footer-third,
   .footer-right .at-panel .region.region-footer-third {float: right;}
+  
+  
+ /* MAKE IT POSSIBLE TO HAVE WIDGETS IN THE LEFT AND RIGHT HEADER REGIONS ONLY */ 
+.header-left.header-main.header-right .region-header-first,
+.header-left.header-main .region-header-first {margin-left:-100%;}
+
+.header-main.header-right .region-header-first {
+    margin-left: 0;
+}
+
+.header-main.header-right .region-header-third {
+	float:right !important;
+}
+
+  
+  
 /*
  * Branding
  */
