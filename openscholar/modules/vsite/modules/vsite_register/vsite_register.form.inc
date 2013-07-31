@@ -730,7 +730,7 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
   // Initialize replacements array with values common to both mail keys.
   $replacements = array(
     '!username' => $author->name,
-    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/user/login', array('absolute' => TRUE)),
     '!user_mail' => $author->mail,
     '!site_url' => url($base_url . '/' . $vsite->group->title, array('absolute' => TRUE)),
     '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
