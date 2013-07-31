@@ -8,7 +8,26 @@
  */
 
 /**
- * Returns avalible bundles, with option to filter by spaces_features status.
+ * Define disabled app.
+ */
+define('OS_DISABLED_APP', 0);
+
+/**
+ * Define a public app.
+ *
+ * An app which her content and pages are public to all.
+ */
+define('OS_PUBLIC_APP', 1);
+
+/**
+ * Define a private app.
+ *
+ * An app which her content and pages are private.
+ */
+define('OS_PRIVATE_APP', 2);
+
+/**
+ * Returns available bundles, with option to filter by spaces_features status.
  *
  * @param $privacy
  *  Can be array:
@@ -24,7 +43,7 @@
  * @return
  *  Array keyed with the bundle ID and the bundle name as value.
  */
-function os_get_bundles($include_status = array(1), $space_type = 'og', $reset = FALSE) {
+function os_get_bundles($include_status = array(OS_PUBLIC_APP), $space_type = 'og', $reset = FALSE) {
   $return_all = FALSE;
   if ($include_status === TRUE) {
     $return_all = TRUE;
