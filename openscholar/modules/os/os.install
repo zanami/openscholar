@@ -247,6 +247,6 @@ function os_update_7013() {
  * Grant to vsite admin and content editor the permission to watch unpublished
  * group content.
  */
-function os_update_7013() {
+function os_update_7014() {
   os_grant_unpublished_viewing_permission();
 }
