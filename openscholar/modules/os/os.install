@@ -242,3 +242,11 @@ function os_update_7013() {
   $modules = array('services_basic_auth');
   module_enable($modules);
 }
+
+/**
+ * Grant to vsite admin and content editor the permission to watch unpublished
+ * group content.
+ */
+function os_update_7013() {
+  os_grant_unpublished_viewing_permission();
+}

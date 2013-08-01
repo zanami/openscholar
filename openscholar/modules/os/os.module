@@ -1498,3 +1498,24 @@ function os_restws_resource_info_alter(&$info){
 //   }
 
 }
+
+/**
+ * Helper function for permission to view unpublish group content.
+ */
+function os_grant_unpublished_viewing_permission() {
+  $group_content = og_get_all_group_content_bundle();
+
+  foreach (array_keys($group_content['node']) as $bundle) {
+    $group_types = array('department', 'personal', 'project');
+
+    foreach ($group_types as $group_type) {
+      $roles = og_roles('node', $group_type);
+      foreach ($roles as $rid => $role) {
+        if (!in_array($role, array('vsite admin', 'content editor'))) {
+          continue;
+        }
+        og_role_grant_permissions($rid, array('view any unpublished ' . $bundle . ' content'));
+      }
+    }
+  }
+}
