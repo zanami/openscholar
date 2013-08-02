@@ -382,18 +382,18 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
   }
 
-  if (!$data) {
-    return;
-  }
-
   // Make sure we pass the numeric values.
-  if ($options['range']) {
+  if ($options['range'] && $options['range'] > 0) {
     $options['offset'] = intval($options['offset']);
     $options['range'] = intval($options['range']);
 
     $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
   }
 
+  if (!$data) {
+    return;
+  }
+  
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     // Calling to a generic form ID.
     $options['path_prefix'] = empty($options['path_prefix']) ? '' : $options['path_prefix'];
