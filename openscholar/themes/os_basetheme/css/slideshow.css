@@ -1,4 +1,5 @@
-
+/** BASE SLIDESHOW STYLES **/
+	
 .page .block.block-boxes-os_slideshow_box ul,
 #columns .block.block-boxes-os_slideshow_box ul {
     list-style: none;
@@ -31,12 +32,12 @@
     font: 16px/24px arial,sans-serif;
 }
 .hero-copy h2 {
-    font: 32px/40px georgia,serif;
+    font: 28px/35px georgia,serif;
     margin-bottom: 2%;
 }
 
 .hero-copy h2 a {
-    font: 32px/40px;
+    font: 28px/36px;
     margin-bottom: 2%;
 }
 
@@ -146,11 +147,10 @@ a.rslides_nav.prev {
     padding: 1px 13px 0;
 }
 
+/** BASE SLIDESHOW STYLES END - SPECIFIC LAYOUT STYLE CSS BEGINS BELOW **/
+
 /** 3.1 OVERLAY **/
- #layout_3_1_overlay .hero {
-    /*min-height: 315px;*/
-}
-	
+
  #layout_3_1_overlay .hero img {
     left: 0;
     position: absolute;
@@ -172,20 +172,35 @@ a.rslides_nav.prev {
 
  #layout_3_1_overlay .rslides li {
     -moz-box-sizing: border-box;
-   /* min-height: 315px;
-    padding: 5% 0 0 5%;*/
 }
 
  #layout_3_1_overlay .rslides_tabs {
     background: none repeat scroll 0 0 transparent;
-    bottom: 8%;
+    bottom: 7%;
     position: absolute;
-    right: 3%;
+    right: 2%;
     z-index: 100;
 }
 
  #layout_3_1_overlay .rslides_tabs li {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.8);
+}
+
+
+.one-sidebar #layout_3_1_overlay .hero-copy h2 {
+    font: 24px/29px georgia,serif;
+}
+
+.two-sidebars #layout_3_1_overlay .hero-copy h2 {
+font:21px/25px georgia,serif;
+}
+
+.one-sidebar #layout_3_1_overlay .hero-copy p {
+    font: 14px/18px arial,sans-serif;
+}
+
+.two-sidebars #layout_3_1_overlay .hero-copy p {
+	font: 13px/17px arial,sans-serif;
 }
 
 /** 16.9 BELOW **/
