@@ -11,6 +11,7 @@ function _os_files_install_find_nodes($file) {
   $fields = &drupal_static(__FUNCTION__, array());
   $file_field_types = array(
     'file',
+    'image',
     'imagefield_crop',
   );
   $text_field_types = array(
