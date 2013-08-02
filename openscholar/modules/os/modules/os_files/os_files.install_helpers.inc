@@ -31,10 +31,14 @@ function _os_files_install_find_nodes($file) {
     }
   }
 
+  $filename = basename($file->uri);
+  $pattern = '~("fid":"'.$file->fid.'"|data-fid="'.$file->fid.'"|'.$filename.'")~';
+
   $eids = array();
   foreach ($fields as $f => $t) {
     $table = 'field_data_'.$f;
     $module = 'file';
+    $count = 0;
 
     $q = db_select($table, 'ft')
       ->fields('ft', array('entity_type', 'entity_id'));
@@ -43,7 +47,7 @@ function _os_files_install_find_nodes($file) {
     }
     elseif (in_array($t, $text_field_types)) {
       $q->condition($f.'_format', 'filtered_html');
-      $filename = basename($file->uri);
+      $q->fields('ft', array($f.'_value'));
       $or = db_or()
         ->condition($f.'_value', '%"fid":"'.$file->fid.'"%', 'LIKE')
         ->condition($f.'_value', '%data-fid="'.$file->fid.'"%', 'LIKE')
@@ -54,12 +58,45 @@ function _os_files_install_find_nodes($file) {
     $q = $q->execute();
 
     foreach ($q as $r) {
+      // account for multiple usages of a file
+      $count = 1;
+      if ($module == 'media') {
+        $count = preg_match_all($pattern, $r->{$f.'_value'}, $arr, PREG_PATTERN_ORDER);
+      }
+
       $eids[$r->entity_type][] = array(
         'id' => $r->entity_id,
-        'module' => $module
+        'module' => $module,
+        'count' => $count
       );
     }
   }
+
+  $biblio_fields = array(
+    'biblio_notes',
+    'biblio_full_text',
+    'biblio_abst_e'
+  );
+
+  $q = db_select('biblio', 'b')
+    ->fields('b', array('nid'));
+  $bib_or = db_or();
+  foreach ($biblio_fields as $bf) {
+    $bib_or
+      ->condition($bf, '%"fid":"'.$file->fid.'"%', 'LIKE')
+      ->condition($bf, '%data-fid="'.$file->fid.'"%', 'LIKE')
+      ->condition($bf, '%'.$filename.'%', 'LIKE');
+  }
+  $q->condition($bib_or);
+  $q = $q->execute();
+
+  foreach ($q as $r) {
+    $eids['node'][] = array(
+      'id' => $r->nid,
+      'module' => 'media'
+    );
+  }
+
 
   return $eids;
 }

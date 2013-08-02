@@ -440,7 +440,7 @@ function os_files_update_7004(&$sb) {
 /**
  * Runs through every file and fixes their spaces and file_usage information
  */
-/*function os_files_update_7005(&$sb) {
+function os_files_update_7005(&$sb) {
   module_load_include('inc', 'os_files', 'os_files.install_helpers');
   $q = db_select('file_managed', 'fm')
       ->fields('fm', array('fid'));
@@ -468,7 +468,7 @@ function os_files_update_7004(&$sb) {
 
     foreach ($eids as $type => $ids) {
       foreach ($ids as $d) {
-        file_usage_add($file, $d['module'], $type, $d['id']);
+        file_usage_add($file, $d['module'], $type, $d['id'], $d['count']);
       }
     }
 
@@ -484,4 +484,4 @@ function os_files_update_7004(&$sb) {
   if ($sb['#finished'] >= 1) {
     return t('File usage has been corrected for all files.');
   }
-} */
+}
