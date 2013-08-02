@@ -18,7 +18,7 @@
     background: #444;
     clear: both;
     color: #FFFFFF;
-    padding: 12px 30px;
+    padding: 2% 3%;
 }
 
 .hero-copy a,
@@ -32,12 +32,12 @@
 }
 .hero-copy h2 {
     font: 32px/40px georgia,serif;
-    margin-bottom: 12px;
+    margin-bottom: 2%;
 }
 
 .hero-copy h2 a {
     font: 32px/40px;
-    margin-bottom: 12px;
+    margin-bottom: 2%;
 }
 
 .rslides .caption {
@@ -148,7 +148,7 @@ a.rslides_nav.prev {
 
 /** 3.1 OVERLAY **/
  #layout_3_1_overlay .hero {
-    min-height: 315px;
+    /*min-height: 315px;*/
 }
 	
  #layout_3_1_overlay .hero img {
@@ -161,8 +161,9 @@ a.rslides_nav.prev {
  #layout_3_1_overlay .hero-copy {
      background: none repeat scroll 0 0 rgba(30, 30, 30, 0.6);
     position: relative;
-    width: 420px;
+    width: 48%;
     z-index: 2;
+    margin: 4% 0 0 4%;
 }
 
 .lt-ie9  #layout_3_1_overlay .hero-copy {
@@ -171,15 +172,15 @@ a.rslides_nav.prev {
 
  #layout_3_1_overlay .rslides li {
     -moz-box-sizing: border-box;
-    min-height: 315px;
-    padding: 48px 0 0 60px;
+   /* min-height: 315px;
+    padding: 5% 0 0 5%;*/
 }
 
  #layout_3_1_overlay .rslides_tabs {
     background: none repeat scroll 0 0 transparent;
-    bottom: 30px;
+    bottom: 8%;
     position: absolute;
-    right: 30px;
+    right: 3%;
     z-index: 100;
 }
 
@@ -236,7 +237,7 @@ a.rslides_nav.prev {
 #layout_16_9_overlay .rslides_tabs {
     background: none repeat scroll 0 0 transparent;
     bottom: 45px;
-    left: 28px;: absolute;
+    left: 28px;
     z-index: 100;
 }	
 
