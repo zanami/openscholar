@@ -27,6 +27,13 @@ function imported_entity_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'type' => array(
+        'description' => 'The type of the entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default bundle' => 'import',
+      ),
       'description' => array(
         'description' => 'The title of the node.',
         'type' => 'blob',

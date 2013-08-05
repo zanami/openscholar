@@ -12,6 +12,7 @@ function imported_entity_entity_info() {
   return array(
     'imported_entity' => array(
       'label' => t('Imported entity'),
+      'entity class' => 'Entity',
       'base table' => 'imported_entity',
       'controller class' => 'EntityAPIController',
       'entity keys' => array(

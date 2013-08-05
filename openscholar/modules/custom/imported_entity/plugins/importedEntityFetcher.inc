@@ -26,8 +26,7 @@ class ImportedEntityFetcher extends FeedsProcessor {
    * Creates a new imported entity and returns it.
    */
   protected function newEntity(FeedsSource $source) {
-    $type = $this->config['imported_entity'];
-    $imported_entity = imported_entity_create($type);
+    $imported_entity = imported_entity_create();
     return $imported_entity;
   }
 
@@ -43,7 +42,9 @@ class ImportedEntityFetcher extends FeedsProcessor {
    * Save a imported entity.
    */
   protected function entitySave($entity) {
-    $entity->save();
+    imported_entity_create(array(
+      'title' => $entity->title,
+    ))->save();
   }
 
   /**
@@ -75,8 +76,6 @@ class ImportedEntityFetcher extends FeedsProcessor {
   }
 
   public function getMappingTargets() {
-    self::loadMappers();
-
     $targets = array(
       'title' => array(
         'name' => t('Title'),
