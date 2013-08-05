@@ -21,6 +21,12 @@ a:visited {
      text-decoration: none;
 }
 
+.field-name-body h3 a,
+.field-name-body h2 a {
+     text-decoration: none;
+}
+
+
 #columns .block-boxes-os_slideshow_box a:hover {
      text-decoration: none;
 }
