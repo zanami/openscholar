@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Install file of the imported entity module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function imported_entity_schema() {
+  $schema = array();
+
+  $schema['imported_entity'] = array(
+    'description' => 'Base table of the imported entity.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier of the entry.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The title of the node.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'description' => array(
+        'description' => 'The title of the node.',
+        'type' => 'blob',
+      ),
+      'time' => array(
+        'description' => 'The timestamp the entry was created',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'image' => array(
+        'type' => 'int',
+        'description' => 'The image file id the entity relate to.',
+      ),
+      'terms' => array(
+        'description' => 'The image file id the entity relate to.',
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The user created the entry.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
