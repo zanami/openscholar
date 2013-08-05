@@ -56,6 +56,7 @@ class ImportedEntityFetcher extends FeedsProcessor {
   public function configDefaults() {
     return array(
       'type' => array(),
+      'mappings' => array(),
     );
   }
 
@@ -75,8 +76,8 @@ class ImportedEntityFetcher extends FeedsProcessor {
 
   public function getMappingTargets() {
     self::loadMappers();
-    
-    return array(
+
+    $targets = array(
       'title' => array(
         'name' => t('Title'),
       ),
@@ -90,5 +91,7 @@ class ImportedEntityFetcher extends FeedsProcessor {
         'name' => t('Terms'),
       ),
     );
+
+    return $targets;
   }
 }
