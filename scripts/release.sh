@@ -6,12 +6,18 @@
 # Packages a release tar file for the latest version of openscholar.
 #
 # Usage:
+<<<<<<< HEAD
 #         ./scripts/release.sh [TAGNAME]
 #
 # TAGNAME
 #     A git branch or tag to check out and build from. If no tagname is given,
 #     then the version will be detected from the openscholar.info file, and the
 #     latest available tag for that version will be used.
+=======
+#         ./scripts/release.sh
+#
+# The version will be detected from the openscholar.info file.
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 
 # Goes to repository root directory
 ROOT="$(dirname $0)/.."
@@ -22,6 +28,7 @@ ROOT=$(pwd)
 echo " "
 echo "Repository found: $ROOT"
 
+<<<<<<< HEAD
 # Gets the argument if it exists
 if [ $# -eq 1 ]
 then
@@ -78,16 +85,46 @@ echo " "
 echo "Or check out a different branch, edit openscholar.info and correct the version number."
 echo " "
 read -p 'Continue? (y/n) '
+=======
+# Confirms to the user that the correct version is being used.
+VERSION_INFO=`grep "version = 7.x" openscholar/openscholar.info`
+VERSION=`echo $VERSION_INFO | sed -n 's/version = 7\.x-3\.\(.*\)/\1/p'`
+echo " "
+echo "In order to compress OpenScholar 7.x-3.${VERSION},"
+echo "this script will:"
+echo " - DESTROY your local docroot build"
+echo " - RESET any changes you have made to your local git clone"
+echo " "
+echo "Note: To build a different version, either check out a different branch or edit openscholar.info and correct the version number."
+echo " "
+read -p "Continue? (y/n) "
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     exit 1
 fi
 
+<<<<<<< HEAD
+=======
+# Finds the latest version tag
+MATCH="SCHOLAR-3.$VERSION"
+TAGS=$(git tag)
+TAGNAME=$(echo "$TAGS" | (grep $MATCH -m1))
+if [ -z $TAGNAME ]
+then
+  echo "No tag found mathching $MATCH."
+  exit 0
+fi
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 echo "Checking out tag $TAGNAME and running build script..."
 
 # Stores the original branch to restore after process.
 ORIG_BRANCH="$(git symbolic-ref HEAD 2>/dev/null)" ||
+<<<<<<< HEAD
 ORIG_BRANCH='(unnamed branch)'     # detached HEAD
+=======
+ORIG_BRANCH="(unnamed branch)"     # detached HEAD
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 ORIG_BRANCH=${ORIG_BRANCH##refs/heads/}
 
 # Checks out the latest version tag for the detected minor version.
@@ -96,7 +133,11 @@ git checkout $TAGNAME >/dev/null 2>&1
 # Removes any existing docroots or release builds.
 rm -rf www #sudo?
 rm -rf docroot #sudo?
+<<<<<<< HEAD
 
+=======
+DIRNAME="openscholar-7.x-3.$VERSION"
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 echo "Building tag $TAGNAME to directory $DIRNAME..."
 if [ -d $DIRNAME ]
 then
@@ -107,7 +148,11 @@ fi
 bash scripts/build >/dev/null 2>&1
 if [ -d www ]
 then
+<<<<<<< HEAD
   mv www $DIRNAME
+=======
+	mv www $DIRNAME
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 fi
 
 # Removes unnecessary 1.5M of test files
@@ -139,6 +184,10 @@ git checkout $ORIG_BRANCH >/dev/null 2>&1
 git reset --hard HEAD
 
 echo " "
+<<<<<<< HEAD
 echo "Success: $DIRNAME.tar.gz -- $FILESIZE"
+=======
+echo "Success: $DIRNAME.tar.gz ($FILESIZE)"
+>>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 echo " "
 exit
