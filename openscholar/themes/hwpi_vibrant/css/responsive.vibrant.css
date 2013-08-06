@@ -135,6 +135,8 @@ ul.menu {
 .one-sidebar #main-content .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
-
+#layout_16_9_side .slidecontrol.rslides_tabs.rslides1_tabs{
+	top:290px;
+}
 
 }

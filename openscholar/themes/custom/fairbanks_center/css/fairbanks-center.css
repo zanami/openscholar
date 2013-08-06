@@ -83,9 +83,9 @@ p {
 }
 
 .page-calendar .field h2.field-label {
-	  border-top: none !important;
-	  padding-top: 0 !important;
-	  float: none !important;
+	    border-top: medium none !important;
+    	display: block;
+    	padding-top: 0 !important;
 }
 	
 	
