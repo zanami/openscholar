@@ -413,7 +413,7 @@ function vsite_access_field_attach_update($entity_type, $entity) {
  */
 function vsite_access_node_delete($node) {
   // Only continues to modify robotstxt settings for group type nodes.
-  if (!og_is_group_type($node->type)) {
+  if (!og_is_group_type('node', $node->type)) {
     return;
   }
   
