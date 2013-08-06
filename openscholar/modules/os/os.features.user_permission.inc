@@ -573,8 +573,8 @@ function os_user_default_permissions() {
     'module' => 'user',
   );
 
-  $permissions['access user autocomplete fields'] = array(
-    'name' => 'access user autocomplete fields',
+  $permissions['access user autocomplete'] = array(
+    'name' => 'access user autocomplete',
     'roles' => array(
       0 => 'authenticated user',
     ),

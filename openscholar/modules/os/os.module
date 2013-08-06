@@ -96,11 +96,14 @@ function os_menu_alter(&$items) {
   if (isset($items['node'])) {
     unset($items['node']);
   }
-  if (isset($items['user/autocomplete'])) {
-    $items['user/autocomplete']['access arguments'] = array(
-      'access user autocomplete fields',
-    );
-  }
+  // By default, "user/autocomplete" requires "view user profiles" permission.
+  // Since we want authenticated users to have access to the autocomplete
+  // callback, but we don't want authenticated users to have access to other
+  // users' profiles, we provide our own permission and override the default
+  // behavior of the menu item to use our custom permission instead.
+  $items['user/autocomplete']['access arguments'] = array(
+      'access user autocomplete',
+  );
 }
 
 /**
@@ -1261,9 +1264,9 @@ function os_permission() {
       'title' => t('Edit Locked Regions'),
       'description' => t('Allows users to edit locked regions')
     ),
-    'access user autocomplete fields' => array(
-      'title' => t('Access user autocomplete fields'),
-      'description' => t('Such as Author fields on biblio node forms and Authoring information on all node forms')
+    'access user autocomplete' => array(
+      'title' => t('Access user autocomplete callback'),
+      'description' => t('Used for Author fields on biblio node forms and Authoring information on all node forms')
     ),
   );
 
