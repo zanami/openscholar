@@ -334,7 +334,9 @@ function os_user_default_permissions() {
   $permissions['access resource node'] = array(
     'name' => 'access resource node',
     'roles' => array(
-      0 => 'web services',
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+      2 => 'web services',
     ),
     'module' => 'restws',
   );
@@ -343,7 +345,9 @@ function os_user_default_permissions() {
   $permissions['access resource user'] = array(
     'name' => 'access resource user',
     'roles' => array(
-      0 => 'web services',
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+      2 => 'web services',
     ),
     'module' => 'restws',
   );
