@@ -396,6 +396,7 @@ class FeatureContext extends DrupalContext {
    * @AfterScenario
    */
   public function afterScenario($event) {
+    return;
     if (empty($this->box)) {
       return;
     }
@@ -595,6 +596,19 @@ class FeatureContext extends DrupalContext {
       throw new Exception("The pager wasn't found.");
     }
   }
+
+  /**
+   * @Then /^I should see the embed "([^"]*)"$/
+   */
+  public function iShouldSeeTheEmbed($url) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//iframe[@src='$url']");
+
+    if (!$element) {
+      throw new Exception("The embed wasn't found.");
+    }
+  }
+
 
   /**
    * @Given /^I set courses to import$/
