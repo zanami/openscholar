@@ -114,6 +114,7 @@ function os_events_process_node(&$variables) {
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
     list(,,$field,$delta) = explode('.', $variables['date_id'][0]);
+    $delta = intval($delta);
     $date = field_get_items('node', $variables['node'], $field);
     $date = $date[$delta]['value'];
     $variables['link_title_text'] = t('On @date', array('@date' => gmdate('D M j', strtotime($date))));
@@ -122,10 +123,12 @@ function os_events_process_node(&$variables) {
     }
   }
 
-  $variables['content']['export'] = array(
-    '#markup' => l('iCal', 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical')))),
-    '#weight' => 10,
-  );
+  if ($variables['page']) {
+    $variables['content']['export'] = array(
+      '#markup' => l('iCal', 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical')))),
+      '#weight' => 10,
+    );
+  }
 }
 
 /**
