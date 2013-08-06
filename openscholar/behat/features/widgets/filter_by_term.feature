@@ -109,13 +109,13 @@ Feature:
     When I visit the original page for the term "Barack Hussein Obama"
     Then I should not get a "200" HTTP response
 
-  @api @current
+  @api
   Scenario: Verify that an empty term is shown if it has non-empty children.
     Given I am logging in as "john"
     And the widget "Filter by term" is set in the "Calendar" page with the following <settings>:
   | Widget Description   | Taxonomy  | textfield   |
   | Vocabularies         | authors   | select list |
-  | Show empty terms     | uncheck     | checkbox    |
+  | Show empty terms     | uncheck   | checkbox    |
     And I set the term "Douglas Noël Adams" under the term "Antoine de Saint-Exupéry"
     And I set the term "Stephen William Hawking" under the term "Douglas Noël Adams"
     And I unassign the node "Halley's Comet" with the type "event" from the term "Douglas Noël Adams"
