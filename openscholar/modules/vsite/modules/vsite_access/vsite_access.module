@@ -413,20 +413,23 @@ function vsite_access_field_attach_update($entity_type, $entity) {
  */
 function vsite_access_node_delete($node) {
   // Only continues to modify robotstxt settings for group type nodes.
-  $group_node_types = og_get_all_group();
-  if (!in_array($node->type, $group_node_types)) {
+  if (!og_is_group_type($node->type)) {
     return;
   }
-  $directives = variable_get('vsite_access_robotstxt_directives');
+  
+  // Loads the existing directives and assumes no changes will be made.
+  $directives = variable_get('vsite_access_robotstxt_directives', array());
   $modified = FALSE;
 
   // Deletes any reference to this site in the base domain array.
-  $base_domain = variable_get('purl_base_domain');
-  if (isset($directives[$base_domain][$node->nid])) {
-    unset($directives[$base_domain][$node->nid]);
-    $modified = TRUE;
+  $base_domain = variable_get('purl_base_domain', '');
+  if ($base_domain) {
+    if (isset($directives[$base_domain][$node->nid])) {
+      unset($directives[$base_domain][$node->nid]);
+      $modified = TRUE;
+    }
   }
-
+  
   // Additional checks if there is a custom domain on this vsite.
   $vsite = vsite_get_vsite($node->nid);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
