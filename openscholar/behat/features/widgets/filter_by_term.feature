@@ -106,5 +106,20 @@ Feature:
   @api
   Scenario: Verify the terms links direct us to the correct path.
     Given I assign the node "Me and michelle obama" with the type "blog" to the term "Barack Hussein Obama"
-     When I visit the original page for the term "Barack Hussein Obama"
-     Then I should not get a "200" HTTP response
+    When I visit the original page for the term "Barack Hussein Obama"
+    Then I should not get a "200" HTTP response
+
+  @api
+  Scenario: Verify that an empty term is shown if it has non-empty children.
+    Given I am logging in as "john"
+    And the widget "Filter by term" is set in the "Calendar" page with the following <settings>:
+  | Widget Description   | Taxonomy  | textfield   |
+  | Vocabularies         | authors   | select list |
+  | Show empty terms     | uncheck   | checkbox    |
+    And I set the term "Douglas Noël Adams" under the term "Antoine de Saint-Exupéry"
+    And I set the term "Stephen William Hawking" under the term "Douglas Noël Adams"
+    And I unassign the node "Halley's Comet" with the type "event" from the term "Douglas Noël Adams"
+    When I visit "john/calendar"
+    Then I should see "Douglas Noël Adams"
+    And I should see "Antoine de Saint-Exupéry"
+    And I should see "Stephen William Hawking"
