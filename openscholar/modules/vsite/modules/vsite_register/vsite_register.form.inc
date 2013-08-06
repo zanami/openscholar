@@ -281,6 +281,9 @@ function vsite_register_form_submit(&$form, &$state) {
   ctools_include('vsite', 'vsite');
   $values = $state['values'];
 
+  // The site has created on the behalf of a new user.
+  $new_user = FALSE;
+
   // If the specified user account already exists...
   if ($values['vicarious_user'] && $values['existing_username']) {
     // Loads that user account as site owner.
@@ -298,8 +301,9 @@ function vsite_register_form_submit(&$form, &$state) {
     );
     $site_owner = os_user_create($user_options);
 
-    // Grant vsite admin role to the user.
-    os_role_grant($site_owner->uid, 'vsite admin');
+    // We created a new user. After creating the vsite we'll grant him the vsite
+    // admin role.
+    $new_user = TRUE;
 
     // Send out an email to notify the user of the newly created account.
     // Email only sent if user requested to be notified of new account.
@@ -329,10 +333,14 @@ function vsite_register_form_submit(&$form, &$state) {
   $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
   $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
   if ($vsite) {
-
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
+
+    // Grant the proper roles to the user.
+    if ($new_user) {
+      os_role_grant($site_owner->uid, 'vsite admin', $vsite->nid);
+    }
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
