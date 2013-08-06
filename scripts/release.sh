@@ -107,11 +107,7 @@ fi
 bash scripts/build >/dev/null 2>&1
 if [ -d www ]
 then
-<<<<<<< HEAD
   mv www $DIRNAME
-=======
-	mv www $DIRNAME
->>>>>>> 057cc353fa82f75ef38b8f260d2451c434322d8d
 fi
 
 # Removes unnecessary 1.5M of test files
