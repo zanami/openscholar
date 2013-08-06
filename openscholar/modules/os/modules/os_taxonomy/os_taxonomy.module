@@ -331,7 +331,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       $number = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
     }
 
-    $display_as_text = FALSE;
     if (!$options['show_empty_terms'] && $number == 0) {
       // Even if we don't display empty terms, the term will be displayed if it
       // has non-empty children.
@@ -344,9 +343,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         // All children are empty.
         continue;
       }
-
-      // Empty parent with tagged children should be displayed as text.
-      $display_as_text = TRUE;
     }
 
     $term_path = taxonomy_term_uri($term);
@@ -386,7 +382,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
           'link_options' => $link_options,
           'url_path' => $term_path,
           'description' => $term->description,
-          'link_to_empty_terms' => $display_as_text ? NULL : $options['link_to_empty_terms'],
+          'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
           'childs' => $child_content,
         )),
@@ -731,7 +727,6 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       $child_content = os_taxonomy_build_child_item($item->below, $item, $options);
     }
 
-    $display_as_text = FALSE;
     if (!$options['show_empty_terms'] && $number == 0) {
       // Even if we don't display empty terms, the term will be displayed if it
       // has non-empty children.
@@ -744,9 +739,6 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
         // All children are empty.
         continue;
       }
-
-      // Empty parent with tagged children should be displayed as text.
-      $display_as_text = TRUE;
     }
 
     if ($options['widget_type'] == 'select') {
@@ -770,7 +762,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
           'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $item->tid ? 'active' : '',)),
           'url_path' => $term_path,
           'description' => $item->description,
-          'link_to_empty_terms' => $display_as_text ? NULL : $options['link_to_empty_terms'],
+          'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
           'childs' => $child_content,
         )),
