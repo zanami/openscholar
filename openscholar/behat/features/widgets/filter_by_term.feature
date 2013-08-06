@@ -112,14 +112,14 @@ Feature:
   @api @current
   Scenario: Verify that an empty term is shown if it has non-empty children.
     Given I am logging in as "john"
-    And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
+    And the widget "Filter by term" is set in the "Calendar" page with the following <settings>:
   | Widget Description   | Taxonomy  | textfield   |
   | Vocabularies         | authors   | select list |
-  | Show empty terms     | check     | checkbox    |
+  | Show empty terms     | uncheck     | checkbox    |
     And I set the term "Antoine de Saint-Exupéry" under the term "Douglas Noël Adams"
     And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
     And I unassign the node "Halley's Comet" with the type "event" from the term "Antoine de Saint-Exupéry"
-    When I visit "john"
+    When I visit "john/calendar"
     Then I should see "Douglas Noël Adams"
     And I should see "Antoine de Saint-Exupéry"
     And I should see "Stephen William Hawking"
