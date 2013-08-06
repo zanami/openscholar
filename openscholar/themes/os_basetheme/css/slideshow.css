@@ -281,7 +281,6 @@ font:21px/25px georgia,serif;
     border: medium none;
     border-radius: 0 0 0 0;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.85);
-    min-height: 305px;
     position: relative;
     z-index: 2;
 }
@@ -298,7 +297,7 @@ font:21px/25px georgia,serif;
     margin-bottom: 0;
     position: absolute;
     top: 0;
-    width: 55.5%;
+    width: 55%;
     z-index: 2;
 }
 
@@ -317,14 +316,13 @@ font:21px/25px georgia,serif;
     border-radius: 0 0 0 0;
     clear: both;
     color: #FFFFFF;
-    padding: 12px 30px;
   
 }
 #layout_16_9_side .slide-copy {
     background: none repeat scroll 0 0 transparent;
     clear: none;
     float: right;
-    padding-top: 40px;
+    padding-top:3%;
     position: relative;
     width: 38%;
     z-index: 4;
@@ -333,7 +331,7 @@ font:21px/25px georgia,serif;
 
 @-moz-document url-prefix() { 
   #layout_16_9_side .slide-copy {
-    width: 44%;
+    width: 45%;
 }
 }
 
@@ -341,10 +339,33 @@ font:21px/25px georgia,serif;
     font: 17px/24px arial,sans-serif;
     padding: 0;
 }
+
+
+.one-sidebar #layout_16_9_side .slide-copy p {
+    font: 14px/20px arial,sans-serif;
+}
+
+.two-sidebars  #layout_16_9_side .slide-copy p {
+    font: 13px/16px arial,sans-serif;
+}
+
+ 
+
 #layout_16_9_side .slide-copy h2 {
     font: bold 30px arial,sans-serif;
     margin-bottom: 12px;
 }
+
+
+.one-sidebar #layout_16_9_side .slide-copy h2 {
+    font: bold 20px arial,sans-serif;
+}
+
+.two-sidebars #layout_16_9_side .slide-copy h2 {
+   font: bold 18px arial,sans-serif;
+}
+
+
 #layout_16_9_side .slide-copy h2 {
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
@@ -382,7 +403,6 @@ font:21px/25px georgia,serif;
     line-height: 1;
     list-style: none outside none;
     margin: 0;
-    padding: 0 30px 24px;
     position: relative;
     text-align: center;
     z-index: 10;
@@ -399,9 +419,9 @@ font:21px/25px georgia,serif;
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 transparent;
     border-radius: 0 0 0 0;
-    left: 548px;
+    left: 58.5%;
     position: absolute;
-    top: 250px;
+    top: 80%;
 }
 
 .lt-ie9 #layout_16_9_side .rslides_tabs {

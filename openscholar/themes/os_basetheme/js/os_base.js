@@ -25,7 +25,3 @@ Drupal.behaviors.osBase_skipLinkFocus = {
 };
 
 
-jQuery(document).ready(function(){
-var slideimgheight = jQuery(".rslides img").height();
-jQuery(".hero").css({ height: slideimgheight});
-});

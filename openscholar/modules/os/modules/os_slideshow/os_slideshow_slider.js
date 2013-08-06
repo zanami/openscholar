@@ -22,6 +22,11 @@ Drupal.behaviors.os_slideshow = {
       }
       
     });
+    
+   // Adds an exact height (from the ss image) to the .slide wrapper
+    var slideimgheight = jQuery(".rslides img").height();
+    jQuery(".slide").css({ height: slideimgheight});
+    
   }
 }
 
