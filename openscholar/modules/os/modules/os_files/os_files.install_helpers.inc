@@ -80,7 +80,7 @@ function _os_files_install_find_nodes($file) {
   );
 
   $q = db_select('biblio', 'b')
-    ->fields('b', array('nid'));
+    ->fields('b', array_merge(array('nid'), $biblio_fields));
   $bib_or = db_or();
   foreach ($biblio_fields as $bf) {
     $bib_or
@@ -92,9 +92,14 @@ function _os_files_install_find_nodes($file) {
   $q = $q->execute();
 
   foreach ($q as $r) {
+    $count = 0;
+    foreach ($biblio_fields as $b) {
+      $count = preg_match_all($pattern, $r->{$b}, $arr, PREG_PATTERN_ORDER);
+    }
     $eids['node'][] = array(
       'id' => $r->nid,
-      'module' => 'media'
+      'module' => 'media',
+      'count' => $count
     );
   }
 
