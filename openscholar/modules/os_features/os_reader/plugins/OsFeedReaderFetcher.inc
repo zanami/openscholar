@@ -99,9 +99,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
   }
 
   /**
-   * @param FeedsSource $source
-   * @param FeedsParserResult $result
-   * @return int
+   * Prevent duplication of entries.
    */
   protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
     if ($id = parent::existingEntityId($source, $result)) {
@@ -124,6 +122,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       }
     }
 
+    // Return the identifier of the entity.
     if ($id) {
       return $id;
     }
