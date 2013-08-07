@@ -11,14 +11,11 @@
 #header {
     background: none repeat scroll 0 0 #E3EAEF;
 }
-#menu-bar {
-    background: none repeat scroll 0 0 #A61D31;
-    padding: 0;
-}
+
 #menu-bar nav {
     background: none repeat scroll 0 0 #A61D31;
     border-radius: 0 0 0 0;
-     box-shadow: 0 none;
+     box-shadow: 0 0;
 }
 #menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
     color: #FFFFFF;
@@ -68,7 +65,7 @@ body {
     background: none repeat scroll 0 0 transparent;
     border: medium none;
     border-radius: 0 0 0 0;
-    box-shadow: 0;
+    box-shadow: 0 0;
 }
 .front #content-panels .block-title, .sidebar .block-title {
     border-bottom: 3px solid #A61D31;
