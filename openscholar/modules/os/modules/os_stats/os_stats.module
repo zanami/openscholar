@@ -81,7 +81,7 @@ function os_stats_block_view($delta = '') {
 function os_stats_content() {
   $items = array();
 
-  //check cache
+  // Check cache.
   if ($cache = cache_get('os_stats_data')) {
     if ($cache->expire < time()) {
       // Clears expired data, but uses it for this run.
@@ -191,7 +191,6 @@ function os_stats_page($style = 'default') {
  * Prepares array to be output as JSON.
  */
 function _os_stats_v1_json($type, $style) {
-
   // Throws error if $type or $format is an unexpected value.
   $output = _os_stats_v1_json_init($type, $style);
 
@@ -284,7 +283,6 @@ function _os_stats_v1_json_init($type, $style) {
 
 /**
  * Returns an indexed array containing all possible queries to run.
- *
  */
 function _os_stats_queries() {
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));

@@ -382,6 +382,21 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I unassign the node "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeFromTheTerm($node, $term) {
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'"));
+  }
+
+  /**
+   * @Given /^I unassign the node "([^"]*)" with the type "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeWithTheTypeFromTheTerm($node, $type, $term) {
+    $node = str_replace("'", "\'", $node);
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'","'$type'"), TRUE);
+  }
+
+  /**
    * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
    */
   public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
