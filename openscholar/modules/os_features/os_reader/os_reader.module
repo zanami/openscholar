@@ -31,3 +31,97 @@ function os_reader_vsite_og_node_type_info() {
   );
 }
 
+/**
+ * Implements hook_entity_info().
+ */
+function os_reader_entity_info() {
+  return array(
+    'os_feed_item' => array(
+      'label' => t('OS feed item'),
+      'entity class' => 'Entity',
+      'base table' => 'os_feed_item',
+      'controller class' => 'EntityAPIController',
+      'entity keys' => array(
+        'id' => 'id',
+        'label' => 'title',
+      ),
+    ),
+  );
+}
+
+/**
+ * Create an OS feed item object.
+ *
+ * @param $values
+ *  The initialized values of the OS feed item object.
+ *
+ * @return Entity
+ *  The entity object of the OS feed item entry.
+ */
+function os_reader_create($values = array()) {
+  global $user;
+
+  $values += array(
+    'time' => time(),
+    'uid' => $user->uid,
+  );
+
+  return entity_create('os_feed_item', $values);
+}
+
+/**
+ * Load an OS feed item entry.
+ *
+ * @param $id
+ *  The OS feed item identifier.
+ *
+ * @return Entity
+ *  The OS feed item object.
+ */
+function os_reader_load($id) {
+  $results = entity_load('os_feed_item', array($id));
+  return reset($results);
+}
+
+/**
+ * Load multiple OS feed item entries.
+ *
+ * @param $ids
+ *  List of IDs to load.
+ *
+ * @return Entity
+ *  List of OS feed item entries.
+ */
+function os_reader_load_multiple($ids) {
+  return entity_load('os_feed_item', $ids);
+}
+
+/**
+ * Delete multiple imported entities.
+ *
+ * @param $ids
+ *  The identifiers of the imported entities.
+ */
+function os_reader_delete_multiple($ids) {
+  entity_delete_multiple('os_feed_item', $ids);
+}
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function os_reader_feeds_plugins() {
+  $info = array();
+  $info['OsFeedReaderFetcher'] = array(
+    'name' => t('OS feed reader fetcher'),
+    'description' => t('Fetch info from a out source.'),
+    'handler' => array(
+      'parent' => 'FeedsProcessor',
+      'class' => 'OsFeedReaderFetcher',
+      'file' => 'OsFeedReaderFetcher.inc',
+      'path' => drupal_get_path('module', 'os_reader') . '/plugins',
+    ),
+  );
+  return $info;
+}
+
+

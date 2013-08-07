@@ -1,9 +1,16 @@
 name = Reader
 description = Pull in useful content from other sites on the internet.
 core = 7.x
+
 package = Features
 php = 5.2.4
 project = os_events
+
+dependencies[] = entity
+dependencies[] = feeds
+
+files[] = plugins/OsFeedReaderFetcher.inc
+
 dependencies[] = boxes
 dependencies[] = google_feedapi
 dependencies[] = link

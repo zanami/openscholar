@@ -1,8 +1,0 @@
-name = Imported entity
-description = Provide a dummy entity to import data via feed.
-core = 7.x
-
-dependencies[] = entity
-dependencies[] = feeds
-
-files[] = plugins/importedEntityFetcher.inc

@@ -70,9 +70,6 @@ dependencies[] = restws
 dependencies[] = views_slideshow_cycle
 dependencies[] = os_mailchimp
 
-; Imported entity
-dependencies[] = imported_entity
-
 ; OS
 dependencies[] = os
 dependencies[] = os_help

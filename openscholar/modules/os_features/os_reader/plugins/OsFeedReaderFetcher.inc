@@ -2,15 +2,15 @@
 
 /**
  * @file
- * Imported entity fetcher for the feeds module.
+ * OS feed items fetcher for the feeds module.
  */
-class ImportedEntityFetcher extends FeedsProcessor {
+class OsFeedReaderFetcher extends FeedsProcessor {
 
   /**
    * Define entity type.
    */
   public function entityType() {
-    return 'imported_entity';
+    return 'os_feed_item';
   }
 
   /**
@@ -18,7 +18,7 @@ class ImportedEntityFetcher extends FeedsProcessor {
    */
   protected function entityInfo() {
     $info = parent::entityInfo();
-    $info['label plural'] = t('Imported entities');
+    $info['label plural'] = t('OS feed items');
     return $info;
   }
 
@@ -26,23 +26,23 @@ class ImportedEntityFetcher extends FeedsProcessor {
    * Creates a new imported entity and returns it.
    */
   protected function newEntity(FeedsSource $source) {
-    $imported_entity = imported_entity_create();
-    return $imported_entity;
+    $os_reader = os_reader_create();
+    return $os_reader;
   }
 
   /**
    * Loads an existing imported entity.
    */
   protected function entityLoad(FeedsSource $source, $id) {
-    $imported_entity = imported_entity_load($id);
-    return $imported_entity;
+    $os_reader = os_reader_load($id);
+    return $os_reader;
   }
 
   /**
    * Save a imported entity.
    */
   protected function entitySave($entity) {
-    imported_entity_create(array(
+    os_reader_create(array(
       'title' => $entity->title,
     ))->save();
   }
@@ -51,7 +51,7 @@ class ImportedEntityFetcher extends FeedsProcessor {
    * Delete multiple user accounts.
    */
   protected function entityDeleteMultiple($ids) {
-    imported_entity_delete_multiple($ids);
+    os_reader_delete_multiple($ids);
   }
 
   public function configDefaults() {
@@ -59,20 +59,6 @@ class ImportedEntityFetcher extends FeedsProcessor {
       'type' => array(),
       'mappings' => array(),
     );
-  }
-
-  public function configForm(&$form_state) {
-    $form['type'] = array(
-      '#type' => 'select',
-      '#title' => t('Source type'),
-      '#description' => t('Select the source type you will migrate from.'),
-      '#options' => array(
-        'xml' => t('XML'),
-        'json' => t('JSON'),
-      ),
-      '#default_value' => $this->config['type'],
-    );
-    return $form;
   }
 
   public function getMappingTargets() {

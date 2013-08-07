@@ -1,13 +1,64 @@
 <?php
-// $Id$
+/**
+ * @file
+ * Install file of the OS reader module.
+ */
 
 /**
  * Perform some setup items for the feed / feed_item content types provided by the feeds module
  */
 function os_reader_install() {
-
-  //Turn comments off by default
+  // Turn comments off by default.
   variable_set('comment_feed', COMMENT_NODE_CLOSED);
   variable_set('comment_feed_item', COMMENT_NODE_CLOSED);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function os_reader_schema() {
+  $schema = array();
+
+  $schema['os_feed_item'] = array(
+    'description' => 'Base table of the feed item.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier of the entry.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The title of the entity.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'description' => array(
+        'description' => 'The title of the node.',
+        'type' => 'blob',
+      ),
+      'time' => array(
+        'description' => 'The timestamp the entry was created',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'image' => array(
+        'type' => 'int',
+        'description' => 'The image file id the entity relate to.',
+      ),
+      'uid' => array(
+        'description' => 'The user created the entry.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
 }
 
