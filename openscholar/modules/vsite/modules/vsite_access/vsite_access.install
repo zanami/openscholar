@@ -54,11 +54,34 @@ function vsite_access_update_7001(&$sandbox) {
  */
 function vsite_access_update_7002(&$sandbox) {
 
-  if (!module_exists(robotstxt)) {
+  if (!module_exists('robotstxt')) {
     if (module_enable(array('robotstxt'))) {
-      return "Enabled Module robotstxt";
+      return "Enabled module robotstxt";
     }
-    throw new DrupalUpdateException('Unable to enable robotstxt.');
+    throw new DrupalUpdateException('Unable to enable module robotstxt.');
   }
 }
 
+/**
+ * Removes empty directives from the stored robots.txt variable.
+ */
+function vsite_access_update_7003() {
+  // Loads the directives array and assumes no changes will be made.
+  $directives = variable_get('vsite_access_robotstxt_directives', array());
+  $modified = FALSE;
+
+  // Loops over each directive (line of text) for each domain...
+  foreach ($directives as $domain => $lines) {
+    foreach ($lines as $gid => $directive) {
+      // Removes the line if the string contains an empty purl value.
+      $empty_purl = 'Disallow: //';
+      if ($directive == $empty_purl) {
+        unset($directives[$domain][$gid]);
+      }
+    }
+  }
+
+  if ($modified) {
+    variable_set('vsite_access_robotstxt_directives', $directives);
+  }
+}
