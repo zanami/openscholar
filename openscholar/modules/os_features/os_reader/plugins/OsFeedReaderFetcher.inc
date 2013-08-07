@@ -42,11 +42,12 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Save a imported entity.
    */
   protected function entitySave($entity) {
+    $file = system_retrieve_file($entity->image, NULL, TRUE);
     os_reader_create(array(
       'title' => $entity->title,
       'description' => $entity->description,
       'created' => strtotime($entity->created),
-      'fid' => system_retrieve_file($entity->image)->fid,
+      'fid' => $file->fid,
     ))->save();
   }
 
@@ -83,6 +84,9 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       ),
       'created' => array(
         'name' => t('Published date'),
+      ),
+      'url' => array(
+        'name' => t('URL'),
       ),
     );
 
