@@ -10,25 +10,25 @@ function os_wysiwyg_link_insert() {
   $tabs = array(
     'external' => array(
       'title' => 'Web Address',
-    	'form' => '_os_link_external_form',
+    	'form' => '_os_wysiwyg_link_external_form',
     ),
     'email' => array(
       'title' => 'E-mail',
-      'form' => '_os_link_email_form',
+      'form' => '_os_wysiwyg_link_email_form',
     ),
     'file' => array(
       'title' => 'Files',
-      'page' => '_os_link_get_view',
+      'page' => '_os_wysiwyg_link_get_view',
       'params' => array(),
     ),
     'page' => array(
       'title' => 'Page',
-      'form' => '_os_link_internal_form',
+      'form' => '_os_wysiwyg_link_internal_form',
     ),
   );
 
   if (isset($_GET['active']) && isset($tabs[$_GET['active']])) {
-     $tabs[$_GET['active']]['default'] = true;
+     $tabs[$_GET['active']]['default'] = TRUE;
      $tabs[$_GET['active']]['params'] = array('url' => $_GET['url']);
   }
 
@@ -130,7 +130,7 @@ function os_wysiwyg_link_insert() {
 /**
 * Form builder; provides form for "Web address" tab.
 */
-function _os_link_external_form($form, $form_state, $params) {
+function _os_wysiwyg_link_external_form($form, $form_state, $params) {
   $form = array();
   $args = func_get_args();
 
@@ -156,7 +156,7 @@ function _os_link_external_form($form, $form_state, $params) {
 /**
 * Form builder; provides form for "Page" tab.
 */
-function _os_link_internal_form($form, $form_state, $params) {
+function _os_wysiwyg_link_internal_form($form, $form_state, $params) {
   $form = array();
 
   $form['coming_soon'] = array(
@@ -183,7 +183,7 @@ function _os_link_internal_form($form, $form_state, $params) {
 /**
 * Form builder; provides form for "Files" tab.
 */
-function _os_link_get_view($params) {
+function _os_wysiwyg_link_get_view($params) {
   $name = 'media_default';
   $display = 'media_browser_1';
   if (isset($params['url'])) {
@@ -247,7 +247,7 @@ function _os_link_get_view($params) {
 /**
 * Form builder; provides form for "E-mail" tab.
 */
-function _os_link_email_form($form, $form_state, $params) {
+function _os_wysiwyg_link_email_form($form, $form_state, $params) {
   $form = array();
 
   $form['email'] = array(
