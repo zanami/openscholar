@@ -44,6 +44,13 @@ function os_reader_schema() {
         'type' => 'int',
         'description' => 'The image file ID.',
       ),
+      'type' => array(
+        'description' => 'The type of the entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'feed_item',
+      ),
     ),
     'primary key' => array('id'),
   );
