@@ -124,4 +124,27 @@ function os_reader_feeds_plugins() {
   return $info;
 }
 
+/**
+ * Create a news node based on a feed item.
+ *
+ * @param $feed_id
+ *   The identifier of the feed to copy.
+ * @param $vsite_id
+ *   VSite ID to which to assign the new node.
+ */
+function os_reader_save_to_news($feed_id, $vsite_id) {
+  global $user;
 
+  $feed = os_reader_load($feed_id);
+
+  $node = entity_create('node', array('type' => 'news'));
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  $wrapper->title->set($feed->title);
+  $wrapper->body->value->set($feed->description);
+  $wrapper->field_news_date->set($feed->time);
+  $wrapper->field_photo->set($feed->image);
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite_id));
+  $wrapper->author->set($user->uid);
+  $wrapper->save();
+}
