@@ -9,7 +9,8 @@ include_once 'os_reader.features.inc';
 function os_reader_menu() {
   $items = array();
 
-  $items['ajax/os-reader/copy-feed-to-news/%/%node/%'] = array(
+  $items['ajax/os-reader/copy-feed-to-news/%entity_object/%node/%'] = array(
+    'load arguments' => array('os_feed_item'),
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
     'page arguments' => array(3, 4, 5),
@@ -46,8 +47,17 @@ function os_reader_config() {
   return '';
 }
 
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
-  os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax);
+/**
+ * AJAX callback for bind feed item to node.
+ *
+ * @param $feed
+ *  The feed object.
+ * @param $vsite
+ *  The vsite object.
+ * @param string $ajax
+ */
+function os_reader_ajax_copy_feed_to_news($feed, $vsite, $ajax = 'nojs') {
+  os_reader_copy_feed_to_news($feed, $vsite, $ajax);
 
   // Ajax
 
@@ -202,15 +212,13 @@ function os_reader_feeds_plugins() {
 /**
  * Create a news node based on a feed item.
  *
- * @param $feed_id
- *   The identifier of the feed to copy.
- * @param $vsite_id
- *   VSite ID to which to assign the new node.
+ * @param $feed
+ *  The feed object to copy.
+ * @param $vsite
+ *  VSITE object to which to assign the new node.
  */
-function os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
+function os_reader_copy_feed_to_news($feed, $vsite) {
   global $user;
-
-  $feed = os_reader_load($feed_id);
 
   $node = entity_create('node', array('type' => 'news'));
   $wrapper = entity_metadata_wrapper('node', $node);
@@ -219,7 +227,7 @@ function os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
   $wrapper->body->value->set($feed->description);
   $wrapper->field_news_date->set($feed->created);
   $wrapper->field_photo->set($feed->fid);
-  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite_id));
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite));
   $wrapper->author->set($user->uid);
   $wrapper->save();
 }
