@@ -222,8 +222,11 @@ function _os_files_install_get_files_from_string($string, $space = null) {
  * @param $eids
  * @return int
  */
-function _os_files_install_find_new_space($file, $eids) {
+function _os_files_install_find_new_space($fid, $node) {
   $current_space = null;
+
+
+
   if (isset($file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
     $current_space = $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
   }

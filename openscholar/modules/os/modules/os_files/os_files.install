@@ -442,8 +442,8 @@ function os_files_update_7004(&$sb) {
  */
 function os_files_update_7005(&$sb) {
   module_load_include('inc', 'os_files', 'os_files.install_helpers');
-  $q = db_select('file_managed', 'fm')
-      ->fields('fm', array('fid'));
+  $q = db_select('node', 'n')
+      ->fields('n', array('nid'));
 
   if (!isset($sb['progress'])) {
     $sb['count'] = $q->countQuery()->execute()->fetchField();
@@ -454,11 +454,11 @@ function os_files_update_7005(&$sb) {
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
 
   foreach ($rs as $obj) {
-    $fid = $obj->fid;
-    $file = file_load($fid);
+    $nid = $obj->nid;
+    $node = node_load($nid);
 
     // Update file_usage
-    $eids = _os_files_install_find_nodes($file);
+    $eids = _os_files_install_find_files($node);
     db_delete('file_usage')
       ->condition('fid', $fid)
       ->condition('module', 'imagefield_crop', '<>')
@@ -466,9 +466,10 @@ function os_files_update_7005(&$sb) {
       ->condition('type', 'file', '<>')
       ->execute();
 
-    foreach ($eids as $type => $ids) {
-      foreach ($ids as $d) {
-        file_usage_add($file, $d['module'], $type, $d['id'], $d['count']);
+    foreach ($eids as $module => $ids) {
+      foreach ($fid as $count) {
+        $temp = (object)array('fid' => $fid);
+        file_usage_add($temp, $module, 'node', $nid, $count);
       }
     }
 
