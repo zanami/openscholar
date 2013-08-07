@@ -107,6 +107,113 @@ function _os_files_install_find_nodes($file) {
   return $eids;
 }
 
+function _os_files_install_find_files($node) {
+  $start = microtime(true);
+  $fields = &drupal_static(__FUNCTION__, array());
+  $file_field_types = array(
+    'file',
+    'image',
+    'imagefield_crop',
+  );
+  $text_field_types = array(
+    'text_with_summary',
+    'text_long',
+  );
+
+  if (empty($fields)) {
+    $q = db_select('field_config', 'fc')
+      ->fields('fc', array('field_name', 'type'))
+      ->condition('active', 1)
+      ->condition('deleted', 0)
+      ->condition('type', array_merge($file_field_types, $text_field_types))
+      ->execute();
+
+    foreach ($q as $r) {
+      $fields[$r->field_name] = $r->type;
+    }
+  }
+  $space = spaces_og_spaces_get_space_from_object('node', $node);
+
+  $files = array();
+  foreach ($fields as $name => $type) {
+    if (empty($node->$name)) continue;
+    $field = $node->$name;
+    if (in_array($type, $file_field_types)) {
+      foreach ($field[LANGUAGE_NONE] as $f) {
+        $files['file'][$f['fid']]++;
+      }
+    }
+    elseif (in_array($type, $text_field_types)) {
+      foreach ($field[LANGUAGE_NONE] as $b) {
+        $usage =  _os_files_install_get_files_from_string($b['value'], $space->group->purl);
+        foreach ($usage as $fid => $count) {
+          $files['media'][$fid] += $count;
+        }
+      }
+    }
+  }
+
+  if ($node->type == 'biblio') {
+    $biblio_fields = array(
+      'biblio_notes',
+      'biblio_full_text',
+      'biblio_abst_e'
+    );
+
+    foreach ($biblio_fields as $bf) {
+      $usage =  _os_files_install_get_files_from_string($node->$bf, $space->group->purl);
+      foreach ($usage as $fid => $count) {
+        $files['media'][$fid] += $count;
+      }
+    }
+  }
+dpm(microtime(true)-$start);
+  return $files;
+}
+
+function _os_files_install_get_files_from_string($string, $space = null) {
+  $fid_pattern = '~"fid":"([\d]+)"|data\-fid="([\d]+)"~';
+  $image_pattern = '~<img[^>]+src="([^"]*)"[^>]*>~';
+  $link_pattern = '~<a[^>]+href="([^"]*)"[^>]*>[^<]*<\/a>~';
+  $files = array();
+
+
+  $matches = array();
+  preg_match_all($fid_pattern, $string, $matches, PREG_SET_ORDER);
+  foreach ($matches as $m) {
+    if (empty($m[1])) {
+      $files[$m[2]]++;
+    }
+    else {
+      $files[$m[1]]++;
+    }
+  }
+
+  preg_match_all($image_pattern, $string, $matches);
+  foreach ($matches[1] as $m) {
+    $filename = basename($m);
+    $uri = 'public://'.$space.'/files/'.$filename;
+    $file = file_uri_to_object($uri);
+    if (!empty($file->fid)) {
+      $files[$file->fid]++;
+    }
+  }
+
+  preg_match_all($link_pattern, $string, $matches, PREG_SET_ORDER);
+  foreach ($matches as $m) {
+    if (strpos($m[0], 'data-fid') === FALSE) {
+      $filename = basename($m[1]);
+      $uri = 'public://'.$space.'/files/'.$filename;
+      $file = file_uri_to_object($uri);
+      if (!empty($file->fid)) {
+        $files[$file->fid]++;
+      }
+    }
+  }
+
+  return $files;
+}
+
 /**
  * Determines if a file needs its space changed.
  * Returns the new space if it does
