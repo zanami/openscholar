@@ -383,8 +383,6 @@ function os_theme() {
  */
 function os_theme_registry_alter(&$reg) {
   $reg['menu_tree']['preprocess functions'] = array_diff($reg['menu_tree']['preprocess functions'], array('template_preprocess_menu_tree'));
-
-  $reg['search_block_form']['template'] = drupal_get_path('module', 'os').'/theme/search-block-form';
 }
 
 /**
