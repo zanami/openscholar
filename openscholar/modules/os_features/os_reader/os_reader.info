@@ -9,7 +9,6 @@ project = os_events
 dependencies[] = entity
 dependencies[] = feeds
 
-files[] = plugins/OsFeedReaderFetcher.inc
 
 dependencies[] = boxes
 dependencies[] = feeds_xpathparser

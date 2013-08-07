@@ -46,9 +46,9 @@ function os_reader_feeds_importer_default() {
           'tidy' => 0,
           'tidy_encoding' => 'UTF8',
           'debug' => array(
-            'context' => 'context',
-            'xpathparser:0' => 'xpathparser:0',
-            'xpathparser:1' => 'xpathparser:1',
+            'context' => 0,
+            'xpathparser:0' => 0,
+            'xpathparser:1' => 0,
             'xpathparser:2' => 0,
             'xpathparser:3' => 0,
           ),
@@ -78,7 +78,7 @@ function os_reader_feeds_importer_default() {
           ),
           3 => array(
             'source' => 'xpathparser:3',
-            'target' => 'time',
+            'target' => 'created',
             'unique' => FALSE,
           ),
         ),
