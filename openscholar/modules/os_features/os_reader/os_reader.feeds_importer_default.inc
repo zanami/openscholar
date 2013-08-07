@@ -69,7 +69,7 @@ function os_reader_feeds_importer_default() {
           1 => array(
             'source' => 'xpathparser:1',
             'target' => 'title',
-            'unique' => FALSE,
+            'unique' => 1,
           ),
           2 => array(
             'source' => 'xpathparser:2',

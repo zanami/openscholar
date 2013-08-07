@@ -73,6 +73,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     $targets = array(
       'title' => array(
         'name' => t('Title'),
+        'optional_unique' => TRUE,
       ),
       'description' => array(
         'name' => t('Description'),
@@ -91,5 +92,38 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 
     return $targets;
+  }
+
+  /**
+   * @param FeedsSource $source
+   * @param FeedsParserResult $result
+   * @return int
+   */
+  protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
+    if ($id = parent::existingEntityId($source, $result)) {
+      return $id;
+    }
+
+    foreach ($this->uniqueTargets($source, $result) as $target => $value) {
+      switch($target) {
+        case 'title':
+          $query = new entityFieldQuery();
+          $result = $query
+            ->entityCondition('entity_type', 'os_feed_item')
+            ->propertyCondition('title', $value)
+            ->execute();
+
+          if (!empty($result['os_feed_item'])) {
+            $id = reset(array_keys($result['os_feed_item']));
+          }
+          break;
+      }
+    }
+
+    if ($id) {
+      return $id;
+    }
+
+    return 0;
   }
 }
