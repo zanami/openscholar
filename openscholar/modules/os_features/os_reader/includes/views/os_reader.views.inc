@@ -11,8 +11,6 @@ class OsReaderViewsController extends EntityDefaultViewsController {
   public function views_data() {
     $data = parent::views_data();
 
-    dpm($data);
-
     $data['os_feed_item']['copy_feed_to_news'] = array(
       'title' => t('Copy Feed to News'),
       'help' => t('Filter messages by message type category.'),
