@@ -52,5 +52,6 @@ features[views_view][] = os_reader
 files[] = os_reader.info.inc
 files[] = plugins/OsFeedReaderFetcher.inc
 files[] = includes/views/handlers/os_reader_handler_copy_feed_to_news.inc
+files[] = includes/views/os_reader.views.inc
 spaces[types][] = site
 spaces[types][] = og
