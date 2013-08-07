@@ -39,8 +39,6 @@ function os_reader_schema() {
       'url' => array(
         'description' => 'The URL of the news.',
         'type' => 'blob',
-        'not null' => TRUE,
-        'default' => 0,
       ),
       'fid' => array(
         'type' => 'int',
