@@ -4,6 +4,37 @@
 include_once 'os_reader.features.inc';
 
 /**
+ * Implements hook_menu().
+ */
+function os_reader_menu() {
+  $items = array();
+
+  $items['ajax/os-reader/copy-feed-to-news/%/%node/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'os_reader_ajax_copy_feed_to_news',
+    'page arguments' => array(3, 4, 5),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
+  os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax);
+
+  // Ajax
+
+  if ($ajax == 'ajax') {
+//    $commands = array();
+//    $page = array('#type' => 'ajax', '#commands' => $commands);
+//    ajax_deliver($page);
+  }
+  else {
+    //drupal_goto();
+  }
+}
+
+/**
  * Implements hook_os_app_info().
  */
 function os_reader_os_app_info() {
@@ -45,6 +76,8 @@ function os_reader_entity_info() {
         'id' => 'id',
         'label' => 'title',
       ),
+      'views controller class' => 'OsReaderViewsController',
+      'metadata controller class' => 'OsReaderMetadataController',
     ),
   );
 }
@@ -132,7 +165,7 @@ function os_reader_feeds_plugins() {
  * @param $vsite_id
  *   VSite ID to which to assign the new node.
  */
-function os_reader_save_to_news($feed_id, $vsite_id) {
+function os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
   global $user;
 
   $feed = os_reader_load($feed_id);
@@ -142,8 +175,8 @@ function os_reader_save_to_news($feed_id, $vsite_id) {
 
   $wrapper->title->set($feed->title);
   $wrapper->body->value->set($feed->description);
-  $wrapper->field_news_date->set($feed->time);
-  $wrapper->field_photo->set($feed->image);
+  $wrapper->field_news_date->set($feed->created);
+  $wrapper->field_photo->set($feed->fid);
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite_id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
