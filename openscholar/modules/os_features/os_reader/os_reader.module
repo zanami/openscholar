@@ -1,7 +1,21 @@
 <?php
-// $Id$
 
 include_once 'os_reader.features.inc';
+
+/**
+ * Implements hook_init().
+ *
+ * TODO: Find a way to add the library in the view callback.
+ */
+function os_reader_init() {
+  $menu = menu_get_item();
+
+  if ($menu['path'] != 'os-reader') {
+    return;
+  }
+
+  drupal_add_library('system', 'drupal.ajax');
+}
 
 /**
  * Implements hook_menu().
@@ -9,8 +23,10 @@ include_once 'os_reader.features.inc';
 function os_reader_menu() {
   $items = array();
 
-  $items['ajax/os-reader/copy-feed-to-news/%entity_object/%node/%'] = array(
-    'load arguments' => array('os_feed_item'),
+
+  // When using %node or %os_feed_item the page callback isn't invoked.
+  $items['ajax/os-reader/copy-feed-to-news/%/%/%'] = array(
+    'delivery callback' => 'ajax_deliver',
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
     'page arguments' => array(3, 4, 5),
@@ -50,24 +66,25 @@ function os_reader_config() {
 /**
  * AJAX callback for bind feed item to node.
  *
- * @param $feed
- *  The feed object.
- * @param $vsite
- *  The vsite object.
+ * @param $feed_id
+ *  The feed ID.
+ * @param $vsite_id
+ *  The vsite ID.
  * @param string $ajax
  */
-function os_reader_ajax_copy_feed_to_news($feed, $vsite, $ajax = 'nojs') {
-  os_reader_copy_feed_to_news($feed, $vsite, $ajax);
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
+  $feed = os_reader_load($feed_id);
+  $vsite = vsite_get_vsite($vsite_id);
 
-  // Ajax
+  os_reader_copy_feed_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-//    $commands = array();
-//    $page = array('#type' => 'ajax', '#commands' => $commands);
-//    ajax_deliver($page);
+    $commands[] = ajax_command_html('#feed-' . $feed_id, t('Copy'));
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    return $page;
   }
   else {
-    //drupal_goto();
+    drupal_goto('os-reader');
   }
 }
 
@@ -147,8 +164,8 @@ function os_reader_create($values = array()) {
   global $user;
 
   $values += array(
-    'time' => time(),
-    'uid' => $user->uid,
+    'created' => time(),
+    'type' => 'feed_item',
   );
 
   return entity_create('os_feed_item', $values);
@@ -220,14 +237,46 @@ function os_reader_feeds_plugins() {
 function os_reader_copy_feed_to_news($feed, $vsite) {
   global $user;
 
+  if (os_reader_feed_orphan_from_node($feed->id, $vsite->id)) {
+    drupal_set_message(t('The node feed has already copied.'), 'error');
+    return;
+  }
+
+  // Create the node.
   $node = entity_create('node', array('type' => 'news'));
   $wrapper = entity_metadata_wrapper('node', $node);
-
   $wrapper->title->set($feed->title);
   $wrapper->body->value->set($feed->description);
   $wrapper->field_news_date->set($feed->created);
-  $wrapper->field_photo->set($feed->fid);
-  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite));
+  $wrapper->field_photo->set((array)file_load($feed->fid));
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
+
+  // Reference the feed to the node.
+  $wrapper = entity_metadata_wrapper('os_feed_item', $feed);
+  $wrapper->field_nodes_reference[] = $vsite->id;
+  $wrapper->save();
+}
+
+/**
+ * Verify the feed is not referenced to the node.
+ *
+ * @param $fid
+ *  The feed ID.
+ * @param $nid
+ *  The node ID.
+ *
+ * @return bool
+ *  Return true/false when the feed referenced to the node.
+ */
+function os_reader_feed_orphan_from_node($fid, $nid) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'os_feed_item')
+    ->propertyCondition('id', $fid)
+    ->fieldCondition('field_nodes_reference', 'target_id', $nid)
+    ->execute();
+
+  return !empty($result['os_feed_item']);
 }
