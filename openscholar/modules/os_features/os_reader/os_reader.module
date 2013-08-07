@@ -9,7 +9,8 @@ include_once 'os_reader.features.inc';
 function os_reader_menu() {
   $items = array();
 
-  $items['ajax/os-reader/copy-feed-to-news/%/%node/%'] = array(
+  $items['ajax/os-reader/copy-feed-to-news/%entity_object/%node/%'] = array(
+    'load arguments' => array('os_feed_item'),
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
     'page arguments' => array(3, 4, 5),
@@ -19,7 +20,7 @@ function os_reader_menu() {
   return $items;
 }
 
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
   os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax);
 
   // Ajax
@@ -165,7 +166,7 @@ function os_reader_feeds_plugins() {
  * @param $vsite_id
  *   VSite ID to which to assign the new node.
  */
-function os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax) {
+function os_reader_copy_feed_to_news($feed_id, $vsite_id) {
   global $user;
 
   $feed = os_reader_load($feed_id);
