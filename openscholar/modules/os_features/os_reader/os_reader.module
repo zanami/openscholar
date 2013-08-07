@@ -79,7 +79,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
   os_reader_copy_feed_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html('#feed-' . $feed_id, t('Copy'));
+    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Copy to @vsite', array('@vsite' => $vsite->og->title)));
     $page = array('#type' => 'ajax', '#commands' => $commands);
     return $page;
   }
