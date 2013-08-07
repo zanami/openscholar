@@ -5,15 +5,6 @@
  */
 
 /**
- * Perform some setup items for the feed / feed_item content types provided by the feeds module
- */
-function os_reader_install() {
-  // Turn comments off by default.
-  variable_set('comment_feed', COMMENT_NODE_CLOSED);
-  variable_set('comment_feed_item', COMMENT_NODE_CLOSED);
-}
-
-/**
  * Implements hook_schema().
  */
 function os_reader_schema() {
@@ -29,25 +20,25 @@ function os_reader_schema() {
         'not null' => TRUE,
       ),
       'title' => array(
-        'description' => 'The title of the entity.',
+        'description' => 'the title of the feed item.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
       ),
       'description' => array(
-        'description' => 'The title of the node.',
+        'description' => 'The body of the feed item.',
         'type' => 'blob',
       ),
-      'time' => array(
-        'description' => 'The timestamp the entry was created',
+      'created' => array(
+        'description' => 'The timestamp the feed created',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
       ),
-      'image' => array(
+      'fid' => array(
         'type' => 'int',
-        'description' => 'The image file id the entity relate to.',
+        'description' => 'The image file ID.',
       ),
     ),
     'primary key' => array('id'),
@@ -56,3 +47,19 @@ function os_reader_schema() {
   return $schema;
 }
 
+/**
+ * Perform some setup items for the feed / feed_item content types provided by the feeds module
+ */
+function os_reader_install() {
+  // Turn comments off by default.
+  variable_set('comment_feed', COMMENT_NODE_CLOSED);
+  variable_set('comment_feed_item', COMMENT_NODE_CLOSED);
+}
+
+/**
+ * Creating the OS feed item schema.
+ */
+function os_reader_update_7000() {
+  $schema = os_reader_schema();
+  db_create_table('os_feed_item', $schema['os_feed_item']);
+}

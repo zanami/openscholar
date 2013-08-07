@@ -12,6 +12,7 @@ dependencies[] = feeds
 files[] = plugins/OsFeedReaderFetcher.inc
 
 dependencies[] = boxes
+dependencies[] = feeds_xpathparser
 dependencies[] = google_feedapi
 dependencies[] = link
 dependencies[] = os

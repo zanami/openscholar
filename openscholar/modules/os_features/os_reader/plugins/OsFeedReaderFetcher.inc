@@ -45,7 +45,8 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     os_reader_create(array(
       'title' => $entity->title,
       'description' => $entity->description,
-      'time' => $entity->time,
+      'created' => strtotime($entity->created),
+      'fid' => system_retrieve_file($entity->image)->fid,
     ))->save();
   }
 
@@ -79,10 +80,15 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'image' => array(
         'name' => t('Image'),
       ),
-      'time' => array(
+      'created' => array(
         'name' => t('Published date'),
       ),
     );
+
+    self::loadMappers();
+    $entity_type = $this->entityType();
+    $bundle = 'os_feed_item';
+    drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 
     return $targets;
   }
