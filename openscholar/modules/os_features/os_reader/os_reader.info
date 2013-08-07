@@ -9,6 +9,7 @@ dependencies[] = context
 dependencies[] = entity
 dependencies[] = features
 dependencies[] = feeds
+dependencies[] = feeds_xpathparser
 dependencies[] = google_feedapi
 dependencies[] = link
 dependencies[] = og_vocab

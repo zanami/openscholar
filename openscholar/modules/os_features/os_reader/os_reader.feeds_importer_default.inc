@@ -26,8 +26,35 @@ function os_reader_feeds_importer_default() {
       ),
     ),
     'parser' => array(
-      'plugin_key' => 'FeedsSyndicationParser',
-      'config' => array(),
+      'plugin_key' => 'FeedsXPathParserXML',
+      'config' => array(
+        'sources' => array(
+          'xpathparser:0' => 'image',
+          'xpathparser:1' => 'title',
+          'xpathparser:2' => 'description',
+          'xpathparser:3' => 'pubDate',
+        ),
+        'rawXML' => array(
+          'xpathparser:0' => 0,
+          'xpathparser:1' => 0,
+          'xpathparser:2' => 0,
+          'xpathparser:3' => 0,
+        ),
+        'context' => '//item',
+        'exp' => array(
+          'errors' => 0,
+          'tidy' => 0,
+          'tidy_encoding' => 'UTF8',
+          'debug' => array(
+            'context' => 0,
+            'xpathparser:0' => 0,
+            'xpathparser:1' => 0,
+            'xpathparser:2' => 0,
+            'xpathparser:3' => 0,
+          ),
+        ),
+        'allow_override' => 1,
+      ),
     ),
     'processor' => array(
       'plugin_key' => 'OsFeedReaderFetcher',
@@ -35,18 +62,23 @@ function os_reader_feeds_importer_default() {
         'type' => array(),
         'mappings' => array(
           0 => array(
-            'source' => 'title',
-            'target' => 'title',
+            'source' => 'xpathparser:0',
+            'target' => 'image',
             'unique' => FALSE,
           ),
           1 => array(
-            'source' => 'description',
+            'source' => 'xpathparser:1',
+            'target' => 'title',
+            'unique' => 1,
+          ),
+          2 => array(
+            'source' => 'xpathparser:2',
             'target' => 'description',
             'unique' => FALSE,
           ),
-          2 => array(
-            'source' => 'timestamp',
-            'target' => 'time',
+          3 => array(
+            'source' => 'xpathparser:3',
+            'target' => 'created',
             'unique' => FALSE,
           ),
         ),
