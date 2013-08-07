@@ -11,6 +11,32 @@
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
 
-  // @todo determine how we want to use tasks.
+  // Provides task for preset 'Academic Department'.
+  $task = array(
+    'title' => t('Academic Department'),
+    'description' => t('Sets up standard template for academic department sites.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_academic_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_academic_completed($entity),
+  );
+  $tasks['academic'] = new og_task($task);
+
+  // @todo more tasks for more presets.
+
   return $tasks;
+}
+
+/**
+ * Task callback for vsite spaces preset "Academic Department".
+ */
+function _vsite_preset_academic_task() {
+  // @todo create required page nodes, menu items and widgets.
+}
+
+/**
+ * Task completed callback for vsite spaces preset "Academic Department".
+ */
+function _vsite_preset_academic_task_completed() {
+  // @todo verify that all page nodes, menu items and widgets have been created.
 }
