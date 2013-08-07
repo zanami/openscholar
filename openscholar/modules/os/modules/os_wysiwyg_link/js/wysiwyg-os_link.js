@@ -9,7 +9,7 @@ Drupal.wysiwyg.plugins.os_link = {
    * Returning true will cause the button to be 'down' when an element is selected
    */
   isNode: function (node) {
-    if (node == null || node == undefined) return FALSE;
+    if (node == null || node == undefined) return false;
     while (node.nodeName != 'A' && node.nodeName != 'BODY') {
       node = node.parentNode;
     }
@@ -93,7 +93,7 @@ Drupal.wysiwyg.plugins.os_link = {
       if (window.Drupal.settings.osWysiwygLinkResult) {
         var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined'
               ? window.Drupal.settings.osWysiwygLinkAttributes
-              : FALSE,
+              : false,
             text = $('.form-item-link-text input', doc).val();
 
         if (text == selected) {
@@ -177,9 +177,9 @@ Drupal.wysiwyg.plugins.os_link = {
         range.moveToElementText(target[0]);
         range.select();
       }
-      return TRUE;
+      return true;
     }
-    return FALSE;
+    return false;
   },
 
   /**
