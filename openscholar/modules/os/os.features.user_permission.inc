@@ -330,6 +330,26 @@ function os_user_default_permissions() {
     'module' => 'views',
   );
 
+  // Exported permission: access resource node.
+  $permissions['access resource node'] = array(
+    'name' => 'access resource node',
+    'roles' => array(
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+      2 => 'web services',
+    ),
+    'module' => 'restws',
+  );
+
+  // Exported permission: access resource user.
+  $permissions['access resource user'] = array(
+    'name' => 'access resource user',
+    'roles' => array(
+      0 => 'web services',
+    ),
+    'module' => 'restws',
+  );
+
   // Exported permission: block IP addresses.
   $permissions['block IP addresses'] = array(
     'name' => 'block IP addresses',
@@ -345,6 +365,7 @@ function os_user_default_permissions() {
     'name' => 'bypass node access',
     'roles' => array(
       0 => 'administrator',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
