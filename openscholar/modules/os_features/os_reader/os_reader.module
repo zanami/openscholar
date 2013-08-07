@@ -17,11 +17,47 @@ function os_reader_menu() {
     'access callback' => TRUE,
   );
 
+  $items['admin/config/content/os_feed'] = array(
+    'title' => 'OS feed config',
+    'description' => 'Manage os config',
+    'access arguments' => array('os_feed manage'),
+    'page callback' => 'os_reader_config',
+  );
+
   return $items;
 }
 
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
-  os_reader_copy_feed_to_news($feed_id, $vsite_id, $ajax);
+/**
+ * Implements hook_permission().
+ */
+function os_reader_permission() {
+  return array(
+    'os_feed manage' => array(
+      'title' => t('Mange OS feed item fields'),
+      'description' => t('Manage fields of the OS feed item entity.'),
+    ),
+  );
+}
+
+/**
+ * Page callback - for now it's empty but it's needed for display the tabs of
+ * the field UI module.
+ */
+function os_reader_config() {
+  return '';
+}
+
+/**
+ * AJAX callback for bind feed item to node.
+ *
+ * @param $feed
+ *  The feed object.
+ * @param $vsite
+ *  The vsite object.
+ * @param string $ajax
+ */
+function os_reader_ajax_copy_feed_to_news($feed, $vsite, $ajax = 'nojs') {
+  os_reader_copy_feed_to_news($feed, $vsite, $ajax);
 
   // Ajax
 
@@ -72,10 +108,25 @@ function os_reader_entity_info() {
       'label' => t('OS feed item'),
       'entity class' => 'Entity',
       'base table' => 'os_feed_item',
+      'fieldable' => TRUE,
       'controller class' => 'EntityAPIController',
       'entity keys' => array(
         'id' => 'id',
         'label' => 'title',
+        'bundle' => 'type',
+      ),
+      'bundle keys' => array(
+        'bundle' => 'type',
+      ),
+      'bundles' => array(
+        'feed_item' => array(
+          'label' => '',
+          'admin' => array(
+            'path' => 'admin/config/content/os_feed/manage/os_feed',
+            'real path' => 'admin/config/content/os_feed/manage/os_feed',
+            'access arguments' => array('os_feed manage'),
+          ),
+        ),
       ),
       'views controller class' => 'OsReaderViewsController',
       'metadata controller class' => 'OsReaderMetadataController',
@@ -161,15 +212,13 @@ function os_reader_feeds_plugins() {
 /**
  * Create a news node based on a feed item.
  *
- * @param $feed_id
- *   The identifier of the feed to copy.
- * @param $vsite_id
- *   VSite ID to which to assign the new node.
+ * @param $feed
+ *  The feed object to copy.
+ * @param $vsite
+ *  VSITE object to which to assign the new node.
  */
-function os_reader_copy_feed_to_news($feed_id, $vsite_id) {
+function os_reader_copy_feed_to_news($feed, $vsite) {
   global $user;
-
-  $feed = os_reader_load($feed_id);
 
   $node = entity_create('node', array('type' => 'news'));
   $wrapper = entity_metadata_wrapper('node', $node);
@@ -178,7 +227,7 @@ function os_reader_copy_feed_to_news($feed_id, $vsite_id) {
   $wrapper->body->value->set($feed->description);
   $wrapper->field_news_date->set($feed->created);
   $wrapper->field_photo->set($feed->fid);
-  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite_id));
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite));
   $wrapper->author->set($user->uid);
   $wrapper->save();
 }
