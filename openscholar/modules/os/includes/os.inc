@@ -211,3 +211,4 @@ function os_create_node($title, $type, $uid, $body = NULL, $options = array()) {
   // Returns the new node.
   return $node;
 }
+
