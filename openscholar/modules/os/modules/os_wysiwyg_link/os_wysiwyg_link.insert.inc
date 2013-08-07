@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Page callback;
- */
+* Provides the insert link overlay including forms for each link URL type.
+*/
 function os_wysiwyg_link_insert() {
   module_invoke_all('suppress', TRUE);
 
@@ -128,8 +128,8 @@ function os_wysiwyg_link_insert() {
 }
 
 /**
- * Helper function; External form.
- */
+* Form builder; provides form for "Web address" tab.
+*/
 function _os_wysiwyg_link_external_form($form, $form_state, $params) {
   $form = array();
   $args = func_get_args();
@@ -154,8 +154,8 @@ function _os_wysiwyg_link_external_form($form, $form_state, $params) {
 }
 
 /**
- * Helper function; Internal form.
- */
+* Form builder; provides form for "Page" tab.
+*/
 function _os_wysiwyg_link_internal_form($form, $form_state, $params) {
   $form = array();
 
@@ -181,8 +181,8 @@ function _os_wysiwyg_link_internal_form($form, $form_state, $params) {
 }
 
 /**
- * Helper function; Get media browser view.
- */
+* Form builder; provides form for "Files" tab.
+*/
 function _os_wysiwyg_link_get_view($params) {
   $name = 'media_default';
   $display = 'media_browser_1';
@@ -245,8 +245,8 @@ function _os_wysiwyg_link_get_view($params) {
 }
 
 /**
- * Helper function; Email form.
- */
+* Form builder; provides form for "E-mail" tab.
+*/
 function _os_wysiwyg_link_email_form($form, $form_state, $params) {
   $form = array();
 
