@@ -84,6 +84,9 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'created' => array(
         'name' => t('Published date'),
       ),
+      'url' => array(
+        'name' => t('URL'),
+      ),
     );
 
     self::loadMappers();

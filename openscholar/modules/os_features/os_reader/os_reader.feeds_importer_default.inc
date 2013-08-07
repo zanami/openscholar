@@ -33,12 +33,14 @@ function os_reader_feeds_importer_default() {
           'xpathparser:1' => 'title',
           'xpathparser:2' => 'description',
           'xpathparser:3' => 'pubDate',
+          'xpathparser:4' => 'link',
         ),
         'rawXML' => array(
           'xpathparser:0' => 0,
           'xpathparser:1' => 0,
           'xpathparser:2' => 0,
           'xpathparser:3' => 0,
+          'xpathparser:4' => 0,
         ),
         'context' => '//item',
         'exp' => array(
@@ -51,6 +53,7 @@ function os_reader_feeds_importer_default() {
             'xpathparser:1' => 0,
             'xpathparser:2' => 0,
             'xpathparser:3' => 0,
+            'xpathparser:4' => 0,
           ),
         ),
         'allow_override' => 1,
@@ -79,6 +82,11 @@ function os_reader_feeds_importer_default() {
           3 => array(
             'source' => 'xpathparser:3',
             'target' => 'created',
+            'unique' => FALSE,
+          ),
+          4 => array(
+            'source' => 'xpathparser:4',
+            'target' => 'url',
             'unique' => FALSE,
           ),
         ),

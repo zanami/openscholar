@@ -36,6 +36,12 @@ function os_reader_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'url' => array(
+        'description' => 'The URL of the news.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'fid' => array(
         'type' => 'int',
         'description' => 'The image file ID.',
