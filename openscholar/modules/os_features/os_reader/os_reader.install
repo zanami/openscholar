@@ -49,12 +49,6 @@ function os_reader_schema() {
         'type' => 'int',
         'description' => 'The image file id the entity relate to.',
       ),
-      'uid' => array(
-        'description' => 'The user created the entry.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
     ),
     'primary key' => array('id'),
   );

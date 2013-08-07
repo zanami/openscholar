@@ -44,6 +44,8 @@ class OsFeedReaderFetcher extends FeedsProcessor {
   protected function entitySave($entity) {
     os_reader_create(array(
       'title' => $entity->title,
+      'description' => $entity->description,
+      'time' => $entity->time,
     ))->save();
   }
 
@@ -61,6 +63,11 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     );
   }
 
+  function configForm(&$form_state) {
+    $form = array();
+    return $form;
+  }
+
   public function getMappingTargets() {
     $targets = array(
       'title' => array(
@@ -72,8 +79,8 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'image' => array(
         'name' => t('Image'),
       ),
-      'terms' => array(
-        'name' => t('Terms'),
+      'time' => array(
+        'name' => t('Published date'),
       ),
     );
 
