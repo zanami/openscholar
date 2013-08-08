@@ -161,6 +161,11 @@ a img {
 	margin-bottom: -4px;
 	padding-left: 20px;
 	}
+	
+	
+#content-column .book-menu .menu {
+   padding-left: 0;
+}	
 
 .caption {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;

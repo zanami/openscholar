@@ -34,6 +34,10 @@ a:hover {
   color: #00ff00;
 	text-decoration: none;
   }
+  
+#content-column .book-menu a {
+   color: #087AF8 !important;
+}  
 
 h1, h2, h3, h4 {
   margin-bottom: 0;
