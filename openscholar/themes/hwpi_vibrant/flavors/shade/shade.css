@@ -25,6 +25,17 @@
     font-family: open sans,arial,sans-serif;
     font-size: 18px;
 }
+.boxes-box-content .caption h2 a {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+#columns .boxes-box-content h2 {
+    border-bottom: 3px solid #A61D31;
+    color: #000000;
+    font-size: 22px;
+    line-height: 28px;
+    padding: 7px 15px 7px 0;
+}
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover,
  #menu-bar ul.nice-menu .menuparent a.active {
     background: none repeat scroll 0 0 #731422;
