@@ -26,7 +26,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Creates a new imported entity and returns it.
    */
   protected function newEntity(FeedsSource $source) {
-    $os_reader = os_reader_create();
+    $os_reader = os_reader_feed_item_create();
     return $os_reader;
   }
 
@@ -34,7 +34,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Loads an existing imported entity.
    */
   protected function entityLoad(FeedsSource $source, $id) {
-    $os_reader = os_reader_load($id);
+    $os_reader = os_reader_feed_item_load($id);
     return $os_reader;
   }
 
@@ -49,14 +49,14 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'created' => strtotime($entity->created),
       'fid' => $file->fid,
     );
-    os_reader_create($values)->save();
+    os_reader_feed_item_create($values)->save();
   }
 
   /**
    * Delete multiple user accounts.
    */
   protected function entityDeleteMultiple($ids) {
-    os_reader_delete_multiple($ids);
+    os_reader_feed_item_delete_multiple($ids);
   }
 
   public function configDefaults() {

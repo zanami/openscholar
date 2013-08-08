@@ -27,13 +27,15 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
         $items[] = t('Feed item already copied to @vsite', array('@vsite' => $vsite->title));
       }
       else {
+        $token = drupal_get_token($values->id . ':' . $vsite->nid);
         $options = array(
           'attributes' => array(
             'class' => array('use-ajax'),
           ),
         );
         $copy = t('Copy to @vsite', array('@vsite' => $vsite->title));
-        $url = l($copy, 'os-reader/copy-feed-to-news/' . $values->id . '/' . $vsite->nid . '/nojs', $options);
+
+        $url = l($copy, 'os-reader/copy-feed-to-news/' . $values->id . '/' . $vsite->nid . '/nojs/' . $token, $options);
         $items[] = "<span id='feed-{$values->id}-{$vsite->nid}'>$url</span>";
       }
     }

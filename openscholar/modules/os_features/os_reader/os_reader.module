@@ -3,64 +3,47 @@
 include_once 'os_reader.features.inc';
 
 /**
- * Implements hook_init().
- *
- * TODO: Find a way to add the library in the view callback.
- */
-function os_reader_init() {
-  $menu = menu_get_item();
-
-  if ($menu['path'] != 'os-reader') {
-    return;
-  }
-
-  drupal_add_library('system', 'drupal.ajax');
-}
-
-/**
  * Implements hook_menu().
  */
 function os_reader_menu() {
   $items = array();
 
-
-  // When using %node or %os_feed_item the page callback isn't invoked.
-  $items['ajax/os-reader/copy-feed-to-news/%/%/%'] = array(
-    'delivery callback' => 'ajax_deliver',
+  $items['os-reader/copy-feed-to-news/%/%node/%/%'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
-    'page arguments' => array(3, 4, 5),
-    'access callback' => TRUE,
-  );
-
-  $items['admin/config/content/os_feed'] = array(
-    'title' => 'OS feed config',
-    'description' => 'Manage os config',
-    'access arguments' => array('os_feed manage'),
-    'page callback' => 'os_reader_config',
+    'page arguments' => array(2, 3, 5),
+    'access callback' => 'os_reader_ajax_copy_feed_to_news_access',
+    'access arguments' => array(2, 3, 4),
   );
 
   return $items;
 }
 
 /**
- * Implements hook_permission().
+ * Access callback; Feed item copy.
+ *
+ * @param $feed_id
+ * @param $vsite
+ * @param $token
+ * @return bool
  */
-function os_reader_permission() {
-  return array(
-    'os_feed manage' => array(
-      'title' => t('Mange OS feed item fields'),
-      'description' => t('Manage fields of the OS feed item entity.'),
-    ),
-  );
-}
+function os_reader_ajax_copy_feed_to_news_access($feed_id, $vsite, $token) {
+  if (!drupal_valid_token($feed_id . ':' . $vsite->id, $token)) {
+    // Not a valid token.
+    return;
+  }
+  // @todo; fix perm name.
+  if (!og_user_access('node', $vsite->id, 'create news node')) {
+    // User does not have access to create "News" in VSite.
+    return;
+  }
 
-/**
- * Page callback - for now it's empty but it's needed for display the tabs of
- * the field UI module.
- */
-function os_reader_config() {
-  return '';
+  if (!os_reader_feed_item_load($feed_id)) {
+    // Not a valid feed item.
+    return;
+  }
+
+  return TRUE;
 }
 
 /**
@@ -72,11 +55,12 @@ function os_reader_config() {
  *  The vsite ID.
  * @param string $ajax
  */
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
-  $feed = os_reader_load($feed_id);
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite, $ajax = 'nojs') {
+  $vsite_id = $vsite->id;
+  $feed = os_reader_feed_item_load($feed_id);
   $vsite = vsite_get_vsite($vsite_id);
 
-  os_reader_copy_feed_to_news($feed, $vsite);
+  $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
     $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Copy to @vsite', array('@vsite' => $vsite->og->title)));
@@ -84,6 +68,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_id, $ajax = 'nojs') {
     return $page;
   }
   else {
+    // Redirect back the the View.
     drupal_goto('os-reader');
   }
 }
@@ -132,9 +117,6 @@ function os_reader_entity_info() {
         'label' => 'title',
         'bundle' => 'type',
       ),
-      'bundle keys' => array(
-        'bundle' => 'type',
-      ),
       'bundles' => array(
         'feed_item' => array(
           'label' => '',
@@ -160,7 +142,7 @@ function os_reader_entity_info() {
  * @return Entity
  *  The entity object of the OS feed item entry.
  */
-function os_reader_create($values = array()) {
+function os_reader_feed_item_create($values = array()) {
   $values += array(
     'type' => 'feed_item',
     'created' => time(),
@@ -178,9 +160,8 @@ function os_reader_create($values = array()) {
  * @return Entity
  *  The OS feed item object.
  */
-function os_reader_load($id) {
-  $results = entity_load('os_feed_item', array($id));
-  return reset($results);
+function os_reader_feed_item_load($id) {
+  return entity_load_single('os_feed_item', $id);
 }
 
 /**
@@ -192,7 +173,7 @@ function os_reader_load($id) {
  * @return Entity
  *  List of OS feed item entries.
  */
-function os_reader_load_multiple($ids) {
+function os_reader_feed_item_load_multiple($ids) {
   return entity_load('os_feed_item', $ids);
 }
 
@@ -202,7 +183,7 @@ function os_reader_load_multiple($ids) {
  * @param $ids
  *  The identifiers of the imported entities.
  */
-function os_reader_delete_multiple($ids) {
+function os_reader_feed_item_delete_multiple($ids) {
   entity_delete_multiple('os_feed_item', $ids);
 }
 
@@ -231,8 +212,11 @@ function os_reader_feeds_plugins() {
  *  The feed object to copy.
  * @param $vsite
  *  VSITE object to which to assign the new node.
+ *
+ * @return
+ *   The newely created node object.
  */
-function os_reader_copy_feed_to_news($feed, $vsite) {
+function os_reader_copy_feed_item_to_news($feed, $vsite) {
   global $user;
 
   // Create the "News" node.
@@ -241,7 +225,10 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
   $wrapper->title->set($feed->title);
   $wrapper->body->value->set($feed->description);
   $wrapper->field_news_date->set($feed->created);
-  $wrapper->field_photo->set(array('fid' => $feed->fid));
+  if ($feed->fid && isset($wrapper->field_photo)) {
+    $wrapper->field_photo->set(array('fid' => $feed->fid));
+  }
+
 
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
@@ -251,6 +238,8 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
   $wrapper = entity_metadata_wrapper('os_feed_item', $feed);
   $wrapper->field_nodes_reference[] = $vsite->id;
   $wrapper->save();
+
+  return $node;
 }
 
 /**
