@@ -42,12 +42,13 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Save a imported entity.
    */
   protected function entitySave($entity) {
-    $file = system_retrieve_file($entity->image, NULL, TRUE);
+
+    $file = $entity->image ? system_retrieve_file($entity->image, NULL, TRUE) : FALSE;
     $values = array(
       'title' => $entity->title,
       'description' => $entity->description,
       'created' => strtotime($entity->created),
-      'fid' => $file->fid,
+      'fid' => $file ? $file->fid : NULL,
       'guid' => $entity->guid,
     );
     os_reader_feed_item_create($values)->save();
