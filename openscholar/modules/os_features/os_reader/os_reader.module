@@ -32,7 +32,6 @@ function os_reader_ajax_copy_feed_to_news_access($feed_id, $node, $token) {
     // Not a valid token.
     return;
   }
-  // @todo; fix perm name.
   if (!og_user_access('node', $node->nid, 'create news content')) {
     // User does not have access to create "News" in VSite.
     return;
