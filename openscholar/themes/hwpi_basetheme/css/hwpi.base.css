@@ -13,10 +13,12 @@ a:visited {
   color: #215990;
 }
 
+.block-boxes-os_boxes_html a,
 .field-name-body a {
      text-decoration: underline;
 }
 
+.block-boxes-os_boxes_html a:hover,
 .field-name-body a:hover {
      text-decoration: none;
 }
