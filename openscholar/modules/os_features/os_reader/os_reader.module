@@ -11,9 +11,9 @@ function os_reader_menu() {
   $items['os-reader/copy-feed-to-news/%/%node/%/%'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
-    'page arguments' => array(2, 3, 5),
+    'page arguments' => array(2, 3, 4),
     'access callback' => 'os_reader_ajax_copy_feed_to_news_access',
-    'access arguments' => array(2, 3, 4),
+    'access arguments' => array(2, 3, 5),
   );
 
   return $items;
@@ -27,13 +27,13 @@ function os_reader_menu() {
  * @param $token
  * @return bool
  */
-function os_reader_ajax_copy_feed_to_news_access($feed_id, $vsite, $token) {
-  if (!drupal_valid_token($feed_id . ':' . $vsite->id, $token)) {
+function os_reader_ajax_copy_feed_to_news_access($feed_id, $node, $token) {
+  if (!drupal_valid_token($token, $feed_id . ':' . $node->nid)) {
     // Not a valid token.
     return;
   }
   // @todo; fix perm name.
-  if (!og_user_access('node', $vsite->id, 'create news node')) {
+  if (!og_user_access('node', $node->nid, 'create news node')) {
     // User does not have access to create "News" in VSite.
     return;
   }
