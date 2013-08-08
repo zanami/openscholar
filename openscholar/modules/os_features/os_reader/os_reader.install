@@ -19,6 +19,11 @@ function os_reader_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
+      'guid' => array(
+        'description' => 'The feed item unique identifier.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
       'title' => array(
         'description' => 'the title of the feed item.',
         'type' => 'varchar',

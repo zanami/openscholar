@@ -38,7 +38,7 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Field: OS feed item: Feed body */
+  /* Field: OS feed item: Description */
   $handler->display->display_options['fields']['description']['id'] = 'description';
   $handler->display->display_options['fields']['description']['table'] = 'os_feed_item';
   $handler->display->display_options['fields']['description']['field'] = 'description';
@@ -50,7 +50,7 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['copy_feed_to_news']['field'] = 'copy_feed_to_news';
   $handler->display->display_options['fields']['copy_feed_to_news']['label'] = '';
   $handler->display->display_options['fields']['copy_feed_to_news']['element_label_colon'] = FALSE;
-  /* Sort criterion: OS feed item: Time */
+  /* Sort criterion: Broken/missing handler */
   $handler->display->display_options['sorts']['time']['id'] = 'time';
   $handler->display->display_options['sorts']['time']['table'] = 'os_feed_item';
   $handler->display->display_options['sorts']['time']['field'] = 'time';

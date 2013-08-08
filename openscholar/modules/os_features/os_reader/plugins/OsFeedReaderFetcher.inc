@@ -89,6 +89,10 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'url' => array(
         'name' => t('URL'),
       ),
+      'guid' => array(
+        'name' => t('Item GUID'),
+        'optional_unique' => TRUE,
+      ),
     );
 
     self::loadMappers();

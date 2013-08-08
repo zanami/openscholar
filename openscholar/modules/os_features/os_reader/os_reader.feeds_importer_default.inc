@@ -26,38 +26,8 @@ function os_reader_feeds_importer_default() {
       ),
     ),
     'parser' => array(
-      'plugin_key' => 'FeedsXPathParserXML',
-      'config' => array(
-        'sources' => array(
-          'xpathparser:0' => 'image',
-          'xpathparser:1' => 'title',
-          'xpathparser:2' => 'description',
-          'xpathparser:3' => 'pubDate',
-          'xpathparser:4' => 'link',
-        ),
-        'rawXML' => array(
-          'xpathparser:0' => 0,
-          'xpathparser:1' => 0,
-          'xpathparser:2' => 0,
-          'xpathparser:3' => 0,
-          'xpathparser:4' => 0,
-        ),
-        'context' => '//item',
-        'exp' => array(
-          'errors' => 0,
-          'tidy' => 0,
-          'tidy_encoding' => 'UTF8',
-          'debug' => array(
-            'context' => 0,
-            'xpathparser:0' => 0,
-            'xpathparser:1' => 0,
-            'xpathparser:2' => 0,
-            'xpathparser:3' => 0,
-            'xpathparser:4' => 0,
-          ),
-        ),
-        'allow_override' => 1,
-      ),
+      'plugin_key' => 'FeedsSyndicationParser',
+      'config' => array(),
     ),
     'processor' => array(
       'plugin_key' => 'OsFeedReaderFetcher',
@@ -65,27 +35,27 @@ function os_reader_feeds_importer_default() {
         'type' => array(),
         'mappings' => array(
           0 => array(
-            'source' => 'xpathparser:0',
-            'target' => 'image',
-            'unique' => FALSE,
-          ),
-          1 => array(
-            'source' => 'xpathparser:1',
-            'target' => 'title',
+            'source' => 'guid',
+            'target' => 'guid',
             'unique' => 1,
           ),
+          1 => array(
+            'source' => 'title',
+            'target' => 'title',
+            'unique' => FALSE,
+          ),
           2 => array(
-            'source' => 'xpathparser:2',
+            'source' => 'description',
             'target' => 'description',
             'unique' => FALSE,
           ),
           3 => array(
-            'source' => 'xpathparser:3',
+            'source' => 'timestamp',
             'target' => 'created',
             'unique' => FALSE,
           ),
           4 => array(
-            'source' => 'xpathparser:4',
+            'source' => 'url',
             'target' => 'url',
             'unique' => FALSE,
           ),
