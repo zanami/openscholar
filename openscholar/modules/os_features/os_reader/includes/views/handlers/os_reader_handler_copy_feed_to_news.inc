@@ -23,9 +23,8 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
 
     $items = array();
     foreach ($vsites as $vsite) {
-      $copy = t('Copy to @vsite', array('@vsite' => $vsite->title));
       if (os_reader_feed_orphan_from_node($values->id, $vsite->nid)) {
-        $items[] = $copy;
+        $items[] = t('Feed item already copied to @vsite', array('@vsite' => $vsite->title));
       }
       else {
         $options = array(
@@ -33,6 +32,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
             'class' => array('use-ajax'),
           ),
         );
+        $copy = t('Copy to @vsite', array('@vsite' => $vsite->title));
         $url = l($copy, 'os-reader/copy-feed-to-news/' . $values->id . '/' . $vsite->nid . '/nojs', $options);
         $items[] = "<span id='feed-{$values->id}-{$vsite->nid}'>$url</span>";
       }
