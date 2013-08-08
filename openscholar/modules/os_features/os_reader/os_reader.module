@@ -63,13 +63,12 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite, $ajax = 'nojs') {
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
+    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id} a", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
     $page = array('#type' => 'ajax', '#commands' => $commands);
-    return $page;
+    ajax_deliver($page);
   }
   else {
-    // Redirect back the the View.
-    drupal_goto('os-reader');
+    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->title));
   }
 }
 
@@ -221,9 +220,11 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
 
   // Create the "News" node.
   $node = entity_create('node', array('type' => 'news'));
+  node_object_prepare($node);
+
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->title->set($feed->title);
-  $wrapper->body->value->set($feed->description);
+  $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set($feed->created);
   if ($feed->fid && isset($wrapper->field_photo)) {
     $wrapper->field_photo->set(array('fid' => $feed->fid));
