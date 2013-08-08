@@ -48,6 +48,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'description' => $entity->description,
       'created' => strtotime($entity->created),
       'fid' => $file->fid,
+      'guid' => $entity->guid,
     );
     os_reader_feed_item_create($values)->save();
   }
