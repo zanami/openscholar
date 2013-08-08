@@ -9,7 +9,11 @@
  * Task callback to create a News & Events page section and menu.
  */
 function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
-  // @todo create required page nodes and menu items.
-  $node = os_node_create(t('News & Events'), 'page', $entity->uid);
+  // Adds the top-level section page node.
+  $node = os_create_node(t('News & Events'), 'page', $entity->uid);
   vsite_add_entity($node, 'node', $entity);
+
+  // Adds the primary menu link for the section page node.
+  $path_alias = drupal_get_path_alias('node/' . $node->nid);
+  $mlid = vsite_menu_create_menu_link('News & Events', $path_alias, $entity);
 }
