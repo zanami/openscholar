@@ -76,15 +76,15 @@ body {
    }
    
 .event-start-month {
-    color: #F4F4F4;
+    color: #666666;
 }
 .event-start-day {
-    color: #FFFFFF;
+    color: #A61D31;
 }
 .event-start .event-start {
-    background: none repeat scroll 0 0 #A61D31;
-    border: 0 none;
-    border-radius: 50px 50px 50px 50px;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 20px 20px 20px 20px;
     width: 60px;
 }
 span.date-display-single {
@@ -171,4 +171,11 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
   background: #8996A0 !important;
+}
+#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
+    background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
+}
+
+.front #content-panels .block-content, .sidebar .block-content {
+    padding: 0;
 }
