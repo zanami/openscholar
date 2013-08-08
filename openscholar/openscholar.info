@@ -81,7 +81,6 @@ dependencies[] = os_shields
 dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
-dependencies[] = os_tasks
 dependencies[] = os_wysiwyg_link
 
 ; Control Panel
