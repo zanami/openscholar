@@ -22,7 +22,7 @@
     font-family: open sans,arial,sans-serif;
 }
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover {
-    background: none repeat scroll 0 0 #8996A0;
+    background: none repeat scroll 0 0 #731422;
     color: #F4f4f4;
 }
 .front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
@@ -73,6 +73,7 @@ body {
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px 7px 0;
+      margin-bottom: 25px;
    }
    
 .event-start-month {
@@ -105,8 +106,8 @@ span.date-display-single {
 .front #content-panels .block.block-boxes-os_boxes_manual_list {
     background-color: #FFFFFF;
     color: #000;
-    padding: 0;
     border:1px solid #f4f4f4;
+     padding: 15px;
 }
 .front #content-panels .block.block-boxes-os_boxes_manual_list a {
     color: #215990;
@@ -119,7 +120,7 @@ span.date-display-single {
     border-bottom: medium none;
     color: #666666 !important;
     margin-bottom: 0;
-    padding: 8px 15px;
+    padding: 8px 0;
 }
 .calendar-calendar tr {
     background-color: transparent;
@@ -147,7 +148,7 @@ ul.links li.link-count-node-readmore {
     border-radius: 5px 5px 5px 5px;
 }
 #menu-bar ul.nice-menu .menuparent ul li a {
-    background: none repeat scroll 0 0 #8996A0 !important;
+    background: none repeat scroll 0 0 #731422 !important;
     font-family: open sans,Arial,Helvetica,sans-serif;
     font-weight: normal;
 }
@@ -158,7 +159,7 @@ ul.links li.link-count-node-readmore {
     background-color: #E3EAEF;
 }
 #footer {
-    background: none repeat scroll 0 0 #8F323E;
+    background: none repeat scroll 0 0 #8996A0;
 }
 #branding_footer, #branding_header {
     color: #FFFFFF;
@@ -169,12 +170,12 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu a:hover,
 #menu-bar ul.nice-menu li.menuparent:hover a,
 #menu-bar ul.nice-menu .menuparent a.active {
-  background: #8996A0;
+  background: #7314221;
 
 }
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
-  background: #8996A0 !important;
+  background: #731422 !important;
 }
 #search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
