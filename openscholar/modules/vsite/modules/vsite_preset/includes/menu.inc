@@ -14,6 +14,5 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
   vsite_add_entity($node, 'node', $entity);
 
   // Adds the primary menu link for the section page node.
-  $path_alias = drupal_get_path_alias('node/' . $node->nid);
-  $mlid = vsite_menu_create_menu_link('News & Events', $path_alias, $entity);
+  vsite_menu_add_node($node, $entity);
 }
