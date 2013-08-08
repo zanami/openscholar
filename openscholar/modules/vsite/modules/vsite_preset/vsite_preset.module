@@ -11,33 +11,34 @@
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
 
-  // Provides task for preset 'Academic Department'.
+  // Provides task for creating section 'News & Events'.
   $task = array(
-    'title' => t('Academic Department'),
-    'description' => t('Sets up standard template for academic department sites.'),
+    'title' => t('News & Events Section'),
+    'description' => t('Sets up a standard News & Events site section.'),
     'required' => TRUE,
-    'callback' => '_vsite_preset_academic_task',
+    'callback' => '_vsite_preset_section_newsevents_task',
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_academic_completed($entity),
+    'completed' => _vsite_preset_section_newsevents_completed($entity),
   );
-  $tasks['academic'] = new vsite_task($task);
-
+  $tasks['section_newsevents'] = new vsite_task($task);
   // @todo more tasks for more presets.
 
   return $tasks;
 }
 
 /**
- * Task callback for vsite spaces preset "Academic Department".
+ * Task callback to create a News & Events page section and menu.
  */
-function _vsite_preset_academic_task($entity, $task, &$context) {
-  // @todo create required page nodes, menu items and widgets.
+function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
+  // @todo create required page nodes and menu items.
+  $node = os_node_create(t('News & Events'), 'page', $entity->uid);
+  vsite_add_entity($node, 'node', $entity);
 }
 
 /**
- * Task completed callback for vsite spaces preset "Academic Department".
+ * Task completed callback for News & Events page section and menu.
  */
-function _vsite_preset_academic_task_completed() {
-  // @todo verify that all page nodes, menu items and widgets have been created.
+function _vsite_preset_section_newsevents_task_completed() {
+  // @todo verify that all page nodes and menu items have been created.
 }
 
