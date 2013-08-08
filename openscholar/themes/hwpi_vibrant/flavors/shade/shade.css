@@ -205,12 +205,15 @@ ul.links li.link-count-node-readmore {
     font-weight: normal;
 }
 #menu-bar ul > li > a:hover,
-#menu-bar ul > li > a.active,
 #menu-bar ul.nice-menu a:hover,
 #menu-bar ul.nice-menu li.menuparent:hover a,
-#menu-bar ul.nice-menu .menuparent a.active {
+ {
   background: #1d1d1d;
 
+}
+#menu-bar ul.nice-menu .menuparent a.active,
+#menu-bar ul > li > a.active,{
+	background:731422;
 }
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
@@ -284,4 +287,11 @@ h1#page-title {
 .not-front .field-name-body {
     font-family: open sans, arial, sans-serif;
     font-size: 16px;
+}
+.hg-container {
+    padding-top: 0;
+}
+#layout_16_9_overlay .hero-copy .boxes-box-content h2 {
+    border-bottom: none;
+    padding: 7px 15px 7px 15px;
 }
