@@ -9,10 +9,10 @@
     font-size: 12px;
 }
 #header {
-    background: none repeat scroll 0 0 #E3EAEF;
+    background: none repeat scroll 0 0 #F6F8F8;
 }
 #menu-bar {
-    background: none repeat scroll 0 0 #E3EAEF;
+    background: none repeat scroll 0 0 #F6F8F8;
 }
 
 #menu-bar nav {
@@ -44,6 +44,17 @@ body {
 }
 #page-title, .node-title, .page-search .title a, #content-column .block.block-boxes-os_boxes_manual_list .links.inline a, .more-link, .page-search #content-column p, .links a, #footer ul.menu a, .boxes-box-content h2, .view-os-events .views-field-colorbox, .field-name-body h2, .field-name-body h3, .field-name-body h4 {
     font-family: open sans,arial,sans-serif;
+}
+h1 a, h2 a, h3 a, h4 a {
+    font-weight: normal;
+    text-decoration: none;
+}
+h1, h2, h3, h4 {
+    font-weight: normal;
+}
+#header-panels h2 a{
+	text-decoratioon:none;
+	
 }
 #layout_16_9_side .hero {
     background: none repeat scroll 0 0 #8996A0;
@@ -125,6 +136,7 @@ span.date-display-single {
     margin-bottom: 0;
     padding: 8px 0;
 }
+/*calendar*/
 .calendar-calendar tr {
     background-color: transparent;
     margin: 0;
@@ -154,6 +166,7 @@ ul.links li.link-count-node-readmore {
     border: 0 none;
     border-radius: 5px 5px 5px 5px;
 }
+/*main navbar*/
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none repeat scroll 0 0 #1d1d1d !important;
     font-family: open sans,Arial,Helvetica,sans-serif;
@@ -166,7 +179,7 @@ ul.links li.link-count-node-readmore {
     background-color: #E3EAEF;
 }
 #footer {
-    background: none repeat scroll 0 0 #A61D31;
+    background: none repeat scroll 0 0 #8996A0;
 }
 #branding_footer, #branding_header {
     color: #FFFFFF;
@@ -190,4 +203,58 @@ ul.links li.link-count-node-readmore {
 
 .front #content-panels .block-content, .sidebar .block-content {
     padding: 0;
+}
+/*slideshow*/
+#layout_3_1_overlay .hero-copy {
+    background: none repeat scroll 0 0 #8996A0;
+    opacity: 0.95;
+    position: relative;
+    width: 420px;
+    z-index: 2;
+}
+
+#layout_3_1_overlay h2 {
+    border-bottom: none;
+    color: #000000;
+    font-size: 24px;
+    line-height: 28px;
+    padding: 7px 15px 7px 0;
+}
+.hero-copy p {
+    font: 16px/24px open sans,arial,sans-serif;
+}
+/*sidebar*/
+.section-nav .menu-depth-1 > a {
+    background: none repeat scroll 0 0 #8996A0 !important;
+
+}
+.section-nav ul.menu li a {
+    font-weight: normal;
+}
+/*inside pages*/
+h1#page-title {
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 1;
+    margin: 0;
+    padding: 15px 0 30px;
+}
+.page-node #content-column .content-inner, .not-front .content-inner {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #f4f4f4;
+    border-radius: 0 0 0 0;
+    box-shadow: 0 0;
+    padding: 0 30px 20px;
+}
+.not-front.two-sidebars #content-column .content-inner {
+    border-right: 1px solid #F4F4F4;
+}
+.section-nav .menu-depth-1 > ul {
+    border-color: -moz-use-text-color #DDDDDD #DDDDDD;
+    border-image: none;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0;
 }
