@@ -15,7 +15,7 @@ class OsReaderMetadataController extends EntityDefaultMetadataController {
     $properties = &$info[$this->type]['properties'];
 
     $properties['description'] = array(
-      'label' => t('Feed body'),
+      'label' => t('Description'),
       'type' => 'text',
       'getter callback' => 'entity_property_verbatim_get',
       'setter callback' => 'entity_property_verbatim_set',

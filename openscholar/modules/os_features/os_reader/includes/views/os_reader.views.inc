@@ -20,6 +20,10 @@ class OsReaderViewsController extends EntityDefaultViewsController {
       )
     );
 
+    // Allow some HTML.
+    $data['os_feed_item']['description']['field']['handler'] = 'views_handler_field_markup';
+    $data['os_feed_item']['description']['field']['format'] = 'filtered_html';
+
     return $data;
   }
 }
