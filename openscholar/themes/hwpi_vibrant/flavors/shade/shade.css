@@ -295,3 +295,22 @@ h1#page-title {
     border-bottom: none;
     padding: 7px 15px 7px 15px;
 }
+.breadcrumb a, .breadcrumb {
+    color: #666666;
+}
+#footer ul li a {
+    font-weight: normal;
+}
+#footer a {
+    color: #215990;
+}
+#powered-by a {
+    background-color:#8996A0;
+    border: 1px solid #000000;
+    padding: 0 0 0 5px !important;
+
+}
+.branding-right {
+    font-size: 12px;
+
+}
