@@ -20,8 +20,8 @@ function os_reader_schema() {
         'not null' => TRUE,
       ),
       'guid' => array(
-        'description' => 'The feed item unique identifier.',
-        'type' => 'int',
+        'description' => 'Unique identifier for the feed item.',
+        'type' => 'text',
         'not null' => TRUE,
       ),
       'title' => array(
