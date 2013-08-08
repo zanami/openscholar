@@ -20,7 +20,7 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'file' => $path . '/includes/menu.inc',
     'completed' => _vsite_preset_academic_completed($entity),
   );
-  $tasks['academic'] = new og_task($task);
+  $tasks['academic'] = new vsite_task($task);
 
   // @todo more tasks for more presets.
 
@@ -30,7 +30,7 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
 /**
  * Task callback for vsite spaces preset "Academic Department".
  */
-function _vsite_preset_academic_task() {
+function _vsite_preset_academic_task($entity, $task, &$context) {
   // @todo create required page nodes, menu items and widgets.
 }
 
@@ -40,3 +40,4 @@ function _vsite_preset_academic_task() {
 function _vsite_preset_academic_task_completed() {
   // @todo verify that all page nodes, menu items and widgets have been created.
 }
+
