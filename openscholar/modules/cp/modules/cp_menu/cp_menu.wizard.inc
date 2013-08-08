@@ -125,7 +125,11 @@ function cp_menu_type($form, &$form_state) {
   $form['type'] = array(
     '#title' => 'Item Type',
     '#type' => 'radios',
-    '#options' => array('page' => t('Post'), 'url' => t('URL'), 'heading' => t('Menu Heading')),
+    '#options' => array(
+      'page' => t('Post'),
+      'url' => t('URL'),
+      'home' => t('Home'),
+      'heading' => t('Menu Heading')),
     '#description' => t('Select heading or type of content to link to.'),
     '#required' => TRUE,
   );
@@ -164,7 +168,16 @@ function cp_menu_title($form, &$form_state) {
       
       $form['#validate'][] = 'cp_menu_url_validate';
       break;
-
+    case 'home':
+      $form['new_node_type'] = array(
+        '#type' => 'hidden',
+        '#value' => 0
+      );
+      $form['url'] = array(
+        '#type' => 'hidden',
+        '#value' => '<front>',
+      );
+      break;
     case 'page':
       $form['new_or_select'] = array(
         '#type' => 'radios',
@@ -534,6 +547,7 @@ function cp_menu_wizard_finish(&$form_state) {
 
   // Builds the link from the collected data
   switch ($values['type']) {
+    case 'home':
     case 'url':
       $url = ($values['url'] == '<front>') ? '<front>' : check_url($values['url']);
       break;
