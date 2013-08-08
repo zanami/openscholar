@@ -256,22 +256,21 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
 /**
  * Return TRUE if feed item already copied to VSite.
  *
- * @param $fid
+ * @param $feed_id
  *  The feed ID.
- * @param $nid
- *  The node ID.
+ * @param $vsite_id
+ *  The VSite ID.
  *
- * @return bool
- *  Return TRUE when the feed references to the node.
+ * @return
+ *  Return TRUE if the feed item was already copied to the VSite, otherwise
+ *  return FALSE.
  */
-function os_reader_feed_orphan_from_node($feed_id, $vsite_id) {
-  $query = new entityFieldQuery();
-  $count = $query
-    ->entityCondition('entity_type', 'os_feed_item')
-    ->propertyCondition('id', $fid)
-    ->fieldCondition('field_nodes_reference', 'target_id', $nid)
-    ->count()
-    ->execute();
+function os_reader_is_feed_item_copied_to_vsite($feed_id, $vsite_id) {
+  $wrapper = entity_metadata_wrapper('os_feed_item', $feed_id);
 
-  return $count;
+  if (!$vsite_ids = $wrapper->field_nodes_reference->value(array('identifier' => TRUE))) {
+    return;
+  }
+
+  return in_array($vsite_id, $vsite_ids);
 }

@@ -23,7 +23,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
 
     $items = array();
     foreach ($vsites as $vsite) {
-      if (os_reader_feed_orphan_from_node($values->id, $vsite->nid)) {
+      if (os_reader_is_feed_item_copied_to_vsite($values->id, $vsite->nid)) {
         $items[] = t('Feed item already copied to @vsite', array('@vsite' => $vsite->title));
       }
       else {
