@@ -25,7 +25,8 @@
     font-family: open sans,arial,sans-serif;
     font-size: 18px;
 }
-#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover {
+#menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover,
+ #menu-bar ul.nice-menu .menuparent a.active {
     background: none repeat scroll 0 0 #731422;
     color: #F4f4f4;
 }
@@ -202,7 +203,7 @@ ul.links li.link-count-node-readmore {
 }
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
-  background: #731422 !important;
+  background: #1d1d1d !important;
 }
 #search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
@@ -266,6 +267,10 @@ h1#page-title {
     box-shadow: 0 0;
 }
 #menu-bar ul.nice-menu .menuparent a span, #menu-bar ul.nice-menu .menuparent a:hover span, #menu-bar ul.nice-menu .menuparent a.active span {
-    background: url("../images/menu-arrow_sh.png") no-repeat scroll right center transparent;
+    background: url("../../images/menu-arrow_sh.png") no-repeat scroll right center transparent;
 
+}
+.not-front .field-name-body {
+    font-family: open sans, arial, sans-serif;
+    font-size: 16px;
 }
