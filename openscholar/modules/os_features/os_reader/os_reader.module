@@ -55,15 +55,15 @@ function os_reader_ajax_copy_feed_to_news_access($feed_id, $node, $token) {
  *  The vsite ID.
  * @param string $ajax
  */
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite, $ajax = 'nojs') {
-  $vsite_id = $vsite->id;
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_node, $ajax = 'nojs') {
   $feed = os_reader_feed_item_load($feed_id);
-  $vsite = vsite_get_vsite($vsite_id);
+  $vsite = vsite_get_vsite($vsite_node->nid);
+  $vsite_id = $vsite->id;
 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id} a", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
+    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
   }
