@@ -11,6 +11,9 @@
 #header {
     background: none repeat scroll 0 0 #E3EAEF;
 }
+#menu-bar {
+    background: none repeat scroll 0 0 #E3EAEF;
+}
 
 #menu-bar nav {
     background: none repeat scroll 0 0 #A61D31;
@@ -20,6 +23,7 @@
 #menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
     color: #FFFFFF;
     font-family: open sans,arial,sans-serif;
+    font-size: 18px;
 }
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover {
     background: none repeat scroll 0 0 #731422;
@@ -111,7 +115,6 @@ span.date-display-single {
 }
 .front #content-panels .block.block-boxes-os_boxes_manual_list a {
     color: #215990;
-    font-size: 24px;
     font-weight: normal;
 }
 
@@ -126,6 +129,10 @@ span.date-display-single {
     background-color: transparent;
     margin: 0;
     padding: 0;
+}
+.calendar-calendar table.mini td.empty {
+    background: none repeat scroll 0 0 transparent;
+    border-color: #FFFFFF;
 }
 .calendar-calendar th.days {
     background-color: transparent;
@@ -148,7 +155,7 @@ ul.links li.link-count-node-readmore {
     border-radius: 5px 5px 5px 5px;
 }
 #menu-bar ul.nice-menu .menuparent ul li a {
-    background: none repeat scroll 0 0 #731422 !important;
+    background: none repeat scroll 0 0 #1d1d1d !important;
     font-family: open sans,Arial,Helvetica,sans-serif;
     font-weight: normal;
 }
@@ -159,7 +166,7 @@ ul.links li.link-count-node-readmore {
     background-color: #E3EAEF;
 }
 #footer {
-    background: none repeat scroll 0 0 #8996A0;
+    background: none repeat scroll 0 0 #A61D31;
 }
 #branding_footer, #branding_header {
     color: #FFFFFF;
@@ -170,7 +177,7 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu a:hover,
 #menu-bar ul.nice-menu li.menuparent:hover a,
 #menu-bar ul.nice-menu .menuparent a.active {
-  background: #7314221;
+  background: #1d1d1d;
 
 }
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
