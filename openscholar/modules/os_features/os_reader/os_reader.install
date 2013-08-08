@@ -45,10 +45,6 @@ function os_reader_schema() {
         'description' => 'The URL of the news.',
         'type' => 'blob',
       ),
-      'fid' => array(
-        'type' => 'int',
-        'description' => 'The image file ID.',
-      ),
       'type' => array(
         'description' => 'The type of the entity.',
         'type' => 'varchar',
