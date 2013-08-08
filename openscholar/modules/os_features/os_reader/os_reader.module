@@ -237,18 +237,14 @@ function os_reader_feeds_plugins() {
 function os_reader_copy_feed_to_news($feed, $vsite) {
   global $user;
 
-  if (os_reader_feed_orphan_from_node($feed->id, $vsite->id)) {
-    drupal_set_message(t('The node feed has already copied.'), 'error');
-    return;
-  }
-
-  // Create the node.
+  // Create the "News" node.
   $node = entity_create('node', array('type' => 'news'));
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->title->set($feed->title);
   $wrapper->body->value->set($feed->description);
   $wrapper->field_news_date->set($feed->created);
-  $wrapper->field_photo->set((array)file_load($feed->fid));
+  $wrapper->field_photo->set(array('fid' => $feed->fid));
+
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
@@ -268,15 +264,16 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
  *  The node ID.
  *
  * @return bool
- *  Return true/false when the feed referenced to the node.
+ *  Return TRUE when the feed references to the node.
  */
 function os_reader_feed_orphan_from_node($fid, $nid) {
   $query = new entityFieldQuery();
-  $result = $query
+  $count = $query
     ->entityCondition('entity_type', 'os_feed_item')
     ->propertyCondition('id', $fid)
     ->fieldCondition('field_nodes_reference', 'target_id', $nid)
+    ->count()
     ->execute();
 
-  return !empty($result['os_feed_item']);
+  return $count;
 }
