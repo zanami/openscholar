@@ -161,11 +161,9 @@ function os_reader_entity_info() {
  *  The entity object of the OS feed item entry.
  */
 function os_reader_create($values = array()) {
-  global $user;
-
   $values += array(
-    'created' => time(),
     'type' => 'feed_item',
+    'created' => time(),
   );
 
   return entity_create('os_feed_item', $values);
@@ -256,7 +254,7 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
 }
 
 /**
- * Verify the feed is not referenced to the node.
+ * Return TRUE if feed item already copied to VSite.
  *
  * @param $fid
  *  The feed ID.
@@ -266,7 +264,7 @@ function os_reader_copy_feed_to_news($feed, $vsite) {
  * @return bool
  *  Return TRUE when the feed references to the node.
  */
-function os_reader_feed_orphan_from_node($fid, $nid) {
+function os_reader_feed_orphan_from_node($feed_id, $vsite_id) {
   $query = new entityFieldQuery();
   $count = $query
     ->entityCondition('entity_type', 'os_feed_item')
