@@ -38,8 +38,5 @@ class vsite_task extends og_task {
     }
 
     $this->required = FALSE;
-    if (!$entity->spaces_preset_og) {
-      return;
-    }
   }
 }
