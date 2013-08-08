@@ -66,11 +66,15 @@ h1, h2, h3, h4 {
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 .boxes-box-content h2 {
-    border-bottom: 3px solid #A61D31;
+    border-bottom: medium none;
     color: #000000;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 28px;
     padding: 7px 15px 7px 0;
+}
+.boxes-box-content h2 a{
+	text-decoration:none!important;
+	color:#000!important;
 }
 .front #content-panels .block-content, .sidebar .block-content {
     border-top: 0 none;
@@ -99,7 +103,7 @@ h1, h2, h3, h4 {
 }
 .event-start .event-start {
     background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #E3EAEF;
     border-radius: 20px 20px 20px 20px;
     width: 60px;
 }
@@ -120,9 +124,9 @@ span.date-display-single {
 }
 .front #content-panels .block.block-boxes-os_boxes_manual_list {
     background-color: #FFFFFF;
-    color: #000;
-    border:1px solid #f4f4f4;
-     padding: 15px;
+    border: 1px solid #E3EAEF;
+    color: #000000;
+    padding: 15px;
 }
 .front #content-panels .block.block-boxes-os_boxes_manual_list a {
     color: #215990;
@@ -134,7 +138,7 @@ span.date-display-single {
     border-bottom: medium none;
     color: #666666 !important;
     margin-bottom: 0;
-    padding: 8px 0;
+    padding: 0 0 18px;
 }
 /*calendar*/
 .calendar-calendar tr {
@@ -173,7 +177,10 @@ ul.links li.link-count-node-readmore {
     font-weight: normal;
 }
 #menu-bar ul.nice-menu ul {
-    background: none repeat scroll 0 0 #8996A0;
+    background: none repeat scroll 0 0 #1d1d1d;
+}
+#menu-bar ul.nice-menu .menuparent ul li a {
+    color: #FFFFFF !important;
 }
 #page-wrapper {
     background-color: #E3EAEF;
@@ -241,14 +248,14 @@ h1#page-title {
 }
 .page-node #content-column .content-inner, .not-front .content-inner {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #f4f4f4;
-    border-radius: 0 0 0 0;
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    border-radius: 3px 3px 3px 3px;
     box-shadow: 0 0;
     padding: 0 30px 20px;
 }
 .not-front.two-sidebars #content-column .content-inner {
-    border-right: 1px solid #F4F4F4;
+    border-right: 0;
 }
 .section-nav .menu-depth-1 > ul {
     border-color: -moz-use-text-color #DDDDDD #DDDDDD;
@@ -257,4 +264,8 @@ h1#page-title {
     border-style: solid;
     border-width: 1px;
     box-shadow: 0 0;
+}
+#menu-bar ul.nice-menu .menuparent a span, #menu-bar ul.nice-menu .menuparent a:hover span, #menu-bar ul.nice-menu .menuparent a.active span {
+    background: url("../images/menu-arrow_sh.png") no-repeat scroll right center transparent;
+
 }
