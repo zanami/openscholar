@@ -14,5 +14,5 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
   vsite_add_node($node, $entity);
 
   // Adds the primary menu link for the section page node.
-  $mlid = vsite_menu_add_node($node, $entity);
+  $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
 }

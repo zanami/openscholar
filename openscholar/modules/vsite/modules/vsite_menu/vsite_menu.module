@@ -650,8 +650,12 @@ function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $opti
 /**
  * Adds a menu item for a node in the primary menu.
  */
-function vsite_menu_add_node($node, $vsite) {
-  $path_alias = drupal_get_path_alias('node/' . $node->nid);
-  $mlid = vsite_menu_create_menu_link($node->title, $path_alias, $vsite);
+function vsite_menu_add_node($nid, $vsite, $title = '') {
+  if (empty($title)) {
+    $node = node_load($nid);
+    $title = $node->title;
+  }
+  $path_alias = drupal_get_path_alias('node/' . $nid);
+  $mlid = vsite_menu_create_menu_link($title, $path_alias, $vsite);
   return $mlid;
 }
