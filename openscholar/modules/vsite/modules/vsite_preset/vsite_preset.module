@@ -10,6 +10,7 @@
  */
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
+  $path = drupal_get_path('module', 'vsite_preset');
 
   // Provides task for creating section 'News & Events'.
   $task = array(
@@ -24,15 +25,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   // @todo more tasks for more presets.
 
   return $tasks;
-}
-
-/**
- * Task callback to create a News & Events page section and menu.
- */
-function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
-  // @todo create required page nodes and menu items.
-  $node = os_node_create(t('News & Events'), 'page', $entity->uid);
-  vsite_add_entity($node, 'node', $entity);
 }
 
 /**
