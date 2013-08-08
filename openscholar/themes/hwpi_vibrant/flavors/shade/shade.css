@@ -113,9 +113,13 @@ span.date-display-single {
     font-size: 24px;
     font-weight: normal;
 }
+
 .front #content-panels .block.block-boxes-os_boxes_manual_list .block-title {
     background: none repeat scroll 0 0 transparent;
-
+    border-bottom: medium none;
+    color: #666666 !important;
+    margin-bottom: 0;
+    padding: 8px 15px;
 }
 .calendar-calendar tr {
     background-color: transparent;
