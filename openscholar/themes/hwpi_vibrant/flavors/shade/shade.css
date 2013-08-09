@@ -45,8 +45,7 @@
     background: none repeat scroll 0 0 #E3EAEF;
 }
 #columns {
-    background-color: #F6F8F8;
-    background-image: none;
+
    
 }
 body {
@@ -263,7 +262,7 @@ h1#page-title {
 }
 .page-node #content-column .content-inner, .not-front .content-inner {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 transparent;
+    background: none repeat scroll 0 0 #f6f8f8;
     border: 0 none;
     border-radius: 3px 3px 3px 3px;
     box-shadow: 0 0;
@@ -313,4 +312,11 @@ h1#page-title {
 .branding-right {
     font-size: 12px;
 
+}
+#columns {
+    background-image: url("/profiles/openscholar/themes/hwpi_vibrant/images/standard-body-gradient_sh.png");
+}
+.view .node-teaser{
+	border-bottom:1px dotted #ccc;
+	
 }
