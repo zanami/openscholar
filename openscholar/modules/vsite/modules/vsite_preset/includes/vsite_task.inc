@@ -38,14 +38,5 @@ class vsite_task extends og_task {
     }
 
     $this->required = FALSE;
-    if (!$entity->spaces_preset_og) {
-      return;
-    }
-
-    $preset = spaces_preset_load($entity->spaces_preset_og, 'og');
-    if ($preset && isset($preset->value['og_tasks']) && in_array(get_class($this), $preset->value['og_tasks'])) {
-      //The preset lists this task, set required to true
-      $this->required = TRUE;
-    }
   }
 }
