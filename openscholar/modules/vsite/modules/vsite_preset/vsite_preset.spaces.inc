@@ -19,7 +19,11 @@ function vsite_preset_spaces_presets() {
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('department'),
-    'og_tasks' => array(),
+    'og_tasks' => array(
+      'section_home',
+      'section_about',
+      'section_newsevents',
+    ),
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',

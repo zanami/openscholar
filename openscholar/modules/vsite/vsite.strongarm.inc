@@ -169,6 +169,7 @@ function vsite_strongarm() {
   $strongarm->value = array(
     'os_department' => 'os_department',
     'os_department_minimal' => 'os_department_minimal',
+    'os_department_administrative' => 'os_department_administrative',
     'os_scholar' => 'os_scholar',
     'os_project' => 'os_project',
   );
