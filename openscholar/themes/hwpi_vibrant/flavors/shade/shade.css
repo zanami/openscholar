@@ -97,13 +97,21 @@ h1, h2, h3, h4 {
     border-radius: 3px;
     box-shadow: 0 0;
 }
-.front #content-panels .block-title, .sidebar .block-title {
+.front #content-panels .block-title {
     border-bottom: 3px solid #A61D31;
     font-size: 22px;
     font-weight: normal;
     line-height: 28px;
-    padding: 7px 15px 7px 0;
+    padding: 7px 15px;
       margin-bottom: 25px;
+   }
+sidebar .block-title {
+    border-bottom: 3px solid #A61D31;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 28px;
+    padding: 7px 15px;
+      margin-bottom: 0;
    }
    
 .event-start-month {
@@ -223,7 +231,11 @@ ul.links li.link-count-node-readmore {
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
-    padding: 0;
+    padding: 15px;
+}
+.block-boxes-os_boxes_sectionnav .block-content{
+	padding:0!important;
+	
 }
 /*slideshow*/
 #layout_3_1_overlay .hero-copy {
@@ -319,4 +331,16 @@ h1#page-title {
 .view .node-teaser{
 	border-bottom:1px dotted #ccc;
 	
+}
+#footer a,
+#powerby-login a{
+	color:#000;
+}
+.block-no-title .view .date-nav-wrapper{
+	
+	border-top:0;
+}
+
+#block-boxes-os-addthis{
+	background:transparent;
 }
