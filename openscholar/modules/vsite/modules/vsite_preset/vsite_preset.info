@@ -2,6 +2,11 @@ name = OS Virtual Site: Presets
 description = Provides presets to automate virtual site creation tasks.
 core = 7.x
 package = OpenScholar vsite
-dependencies[] = vsite
+dependencies[] = ctools
 dependencies[] = og_tasks
+dependencies[] = spaces
+dependencies[] = vsite
 files[] includes/vsite_task.inc
+features[ctools][] = spaces:spaces:3
+features[features_api][] = api:1
+features[spaces_presets][] = os_department_administrative

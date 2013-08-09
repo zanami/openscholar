@@ -5,6 +5,8 @@
  * Code for OS Virtual Site: Presets
  */
 
+include_once 'vsite_preset.features.inc';
+
 /**
  * Implements hook_og_tasks_info().
  */
