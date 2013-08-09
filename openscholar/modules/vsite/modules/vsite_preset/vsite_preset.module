@@ -10,17 +10,18 @@
  */
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
+  $path = drupal_get_path('module', 'vsite_preset');
 
-  // Provides task for preset 'Academic Department'.
+  // Provides task for 'News & Events'.
   $task = array(
-    'title' => t('Academic Department'),
-    'description' => t('Sets up standard template for academic department sites.'),
+    'title' => t('News & Events Section'),
+    'description' => t('Sets up a standard News & Events site section.'),
     'required' => TRUE,
-    'callback' => '_vsite_preset_academic_task',
+    'callback' => '_vsite_preset_section_newsevents_task',
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_academic_completed($entity),
+    'completed' => _vsite_preset_section_newsevents_completed($entity),
   );
-  $tasks['academic'] = new og_task($task);
+  $tasks['section_newsevents'] = new vsite_task($task);
 
   // Provides task for 'About Section'.
   $task = array(
@@ -39,17 +40,10 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
 }
 
 /**
- * Task callback for vsite spaces preset "Academic Department".
+ * Task completed callback for News & Events page section and menu.
  */
-function _vsite_preset_academic_task() {
-  // @todo create required page nodes, menu items and widgets.
-}
-
-/**
- * Task completed callback for vsite spaces preset "Academic Department".
- */
-function _vsite_preset_academic_task_completed() {
-  // @todo verify that all page nodes, menu items and widgets have been created.
+function _vsite_preset_section_newsevents_task_completed() {
+  // @todo verify that all page nodes and menu items have been created.
 }
 
 /**
