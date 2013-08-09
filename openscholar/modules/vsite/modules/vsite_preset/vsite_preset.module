@@ -22,6 +22,17 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   );
   $tasks['academic'] = new og_task($task);
 
+  // Provides task for 'About Section'.
+  $task = array(
+    'title' => t('About Section'),
+    'description' => t('Sets up standard template for an About section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_about_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_about_completed($entity),
+  );
+  $tasks['section_about'] = new vsite_task($task);
+
   // @todo more tasks for more presets.
 
   return $tasks;
@@ -38,5 +49,12 @@ function _vsite_preset_academic_task() {
  * Task completed callback for vsite spaces preset "Academic Department".
  */
 function _vsite_preset_academic_task_completed() {
+  // @todo verify that all page nodes, menu items and widgets have been created.
+}
+
+/**
+ * Task completed callback for the 'About Section' task.
+ */
+function _vsite_preset_section_about_task_completed() {
   // @todo verify that all page nodes, menu items and widgets have been created.
 }
