@@ -36,6 +36,17 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   );
   $tasks['section_about'] = new vsite_task($task);
 
+  // Provides task for 'HOME'.
+  $task = array(
+    'title' => t('HOME Section'),
+    'description' => t('Sets up standard template for a HOME section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_home_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_home_completed($entity),
+  );
+  $tasks['section_home'] = new vsite_task($task);
+
   // @todo more tasks for more presets.
 
   return $tasks;
@@ -52,5 +63,12 @@ function _vsite_preset_section_newsevents_task_completed() {
  * Task completed callback for the 'About Section' task.
  */
 function _vsite_preset_section_about_task_completed() {
+  // @todo verify that all page nodes, menu items and widgets have been created.
+}
+
+/**
+ * Task completed callback for the 'About Section' task.
+ */
+function _vsite_preset_section_home_task_completed() {
   // @todo verify that all page nodes, menu items and widgets have been created.
 }
