@@ -92,9 +92,9 @@ h1, h2, h3, h4 {
 }
 .front #content-panels .block, .sidebar .block {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 transparent;
+    background: none repeat scroll 0 0 #f6f8f8;
     border: medium none;
-    border-radius: 0 0 0 0;
+    border-radius: 3px;
     box-shadow: 0 0;
 }
 .front #content-panels .block-title, .sidebar .block-title {
@@ -194,7 +194,7 @@ ul.links li.link-count-node-readmore {
     color: #FFFFFF !important;
 }
 #page-wrapper {
-    background-color: #E3EAEF;
+    background-color: #F6F8F8;
 }
 #footer {
     background: none repeat scroll 0 0 #8F323E;
