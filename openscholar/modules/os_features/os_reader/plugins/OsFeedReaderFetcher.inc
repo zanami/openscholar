@@ -111,25 +111,14 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       return $id;
     }
 
-    foreach ($this->uniqueTargets($source, $result) as $target => $value) {
-      switch($target) {
-        case 'title':
-          $query = new entityFieldQuery();
-          $result = $query
-            ->entityCondition('entity_type', 'os_feed_item')
-            ->propertyCondition('title', $value)
-            ->execute();
+    $query = new entityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'os_feed_item')
+      ->propertyCondition('guid', $result->current_item['guid'])
+      ->execute();
 
-          if (!empty($result['os_feed_item'])) {
-            $id = reset(array_keys($result['os_feed_item']));
-          }
-          break;
-      }
-    }
-
-    // Return the identifier of the entity.
-    if ($id) {
-      return $id;
+    if (!empty($result['os_feed_item'])) {
+      return reset(array_keys($result['os_feed_item']));
     }
 
     return 0;
