@@ -396,7 +396,6 @@ class FeatureContext extends DrupalContext {
    * @AfterScenario
    */
   public function afterScenario($event) {
-    return;
     if (empty($this->box)) {
       return;
     }
