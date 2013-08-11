@@ -36,9 +36,14 @@ function os_reader_os_add_new_links_alter(&$links) {
  * Access callback; Feed item copy.
  *
  * @param $feed_id
- * @param $vsite
+ *  The feed ID.
+ * @param $nid
+ *  The vsite node ID.
  * @param $token
+ *  Security token.
+ *
  * @return bool
+ *  Return true/false whether the user has access to copy the feed.
  */
 function os_reader_ajax_copy_feed_to_news_access($feed_id, $nid, $token) {
   if (!drupal_valid_token($token, $feed_id . ':' . $nid)) {

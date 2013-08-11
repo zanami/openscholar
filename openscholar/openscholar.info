@@ -39,7 +39,6 @@ dependencies[] = date
 dependencies[] = date_ical
 dependencies[] = entity
 dependencies[] = feeds
-dependencies[] = feeds_ui
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
