@@ -200,6 +200,16 @@ function os_reader_feeds_plugins() {
       'path' => drupal_get_path('module', 'os_reader') . '/plugins',
     ),
   );
+  $info['OsFeedFetcher'] = array(
+    'name'        => t('OS feed fetcher'),
+    'description' => t('Fetch feed item from urls.'),
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class'  => 'OsFeedFetcher',
+      'file'   => 'OsFeedFetcher.inc',
+      'path'   => drupal_get_path('module', 'os_reader') . '/plugins',
+    ),
+  );
   return $info;
 }
 
