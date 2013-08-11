@@ -74,6 +74,7 @@ features[variable][] = node_submitted_feed
 features[variable][] = node_submitted_feed_importer
 features[variable][] = pathauto_node_feed_pattern
 features[views_view][] = os_reader
+features[views_view][] = os_reader_feeds
 files[] = os_reader.info.inc
 files[] = plugins/OsFeedReaderFetcher.inc
 files[] = plugins/OsFeedFetcher.inc
