@@ -8,7 +8,7 @@ include_once 'os_reader.features.inc';
 function os_reader_menu() {
   $items = array();
 
-  $items['os-reader/copy-feed-to-news/%/%node/%/%'] = array(
+  $items['os-reader/copy-feed-to-news/%/%/%/%'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'os_reader_ajax_copy_feed_to_news',
     'page arguments' => array(2, 3, 4),
@@ -40,12 +40,12 @@ function os_reader_os_add_new_links_alter(&$links) {
  * @param $token
  * @return bool
  */
-function os_reader_ajax_copy_feed_to_news_access($feed_id, $node, $token) {
-  if (!drupal_valid_token($token, $feed_id . ':' . $node->nid)) {
+function os_reader_ajax_copy_feed_to_news_access($feed_id, $nid, $token) {
+  if (!drupal_valid_token($token, $feed_id . ':' . $nid)) {
     // Not a valid token.
     return;
   }
-  if (!og_user_access('node', $node->nid, 'create news content')) {
+  if (!og_user_access('node', $nid, 'create news content')) {
     // User does not have access to create "News" in VSite.
     return;
   }
@@ -67,9 +67,9 @@ function os_reader_ajax_copy_feed_to_news_access($feed_id, $node, $token) {
  *  The vsite ID.
  * @param string $ajax
  */
-function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_node, $ajax = 'nojs') {
+function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') {
   $feed = os_reader_feed_item_load($feed_id);
-  $vsite = vsite_get_vsite($vsite_node->nid);
+  $vsite = vsite_get_vsite($vsite_nid);
   $vsite_id = $vsite->id;
 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
@@ -242,18 +242,15 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   global $user;
 
   // Create the "News" node.
-  $node = entity_create('node', array('type' => 'news'));
-  node_object_prepare($node);
+  $node = new stdClass();
+  $node->type = 'news';
+  $node->title = 'fff';
+  $node->language = LANGUAGE_NONE;
 
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->title->set($feed->title);
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
-  $wrapper->field_news_date->set($feed->created);
-  if ($feed->fid && isset($wrapper->field_photo)) {
-    $wrapper->field_photo->set(array('fid' => $feed->fid));
-  }
-
-
+  $wrapper->field_news_date->set(time());
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();

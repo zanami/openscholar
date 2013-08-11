@@ -13,16 +13,29 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
       return;
     }
 
-    $groups = og_get_entity_groups();
-    if (empty($groups['node'])) {
-      return;
-    }
+    $current_vsite = vsite_get_vsite();
 
-    $vsite_ids = array_keys($groups['node']);
-    $vsites = node_load_multiple($vsite_ids);
+    if (!empty($current_vsite)) {
+      // Show button only for current VSite.
+      $vsites = node_load_multiple(array($current_vsite->id));
+    }
+    else {
+      // No current VSite, show button for all VSites.
+      $groups = og_get_entity_groups();
+      if (empty($groups['node'])) {
+        return;
+      }
+
+      $vsites = node_load_multiple($groups['node']);
+    }
 
     $items = array();
     foreach ($vsites as $vsite) {
+      if (!og_user_access('node', $vsite->nid, 'create news content')) {
+        // User does not have access to create "News" in VSite.
+        continue;
+      }
+
       if (os_reader_is_feed_item_copied_to_vsite($values->id, $vsite->nid)) {
         $items[] = t('Feed item already copied to @vsite', array('@vsite' => $vsite->title));
       }
