@@ -187,7 +187,13 @@ div.messages {
 	float:right !important;
 }
 
+.header-main .region-header-first {
+    margin-left: 0;
+}
   
+.header-right .region-header-third {
+	float:right !important;
+}
   
 /*
  * Branding

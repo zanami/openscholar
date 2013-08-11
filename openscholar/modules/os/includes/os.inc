@@ -145,3 +145,70 @@ function os_get_app_path($app_name = NULL) {
   return ($apps) ? $apps : FALSE;
 }
 
+/**
+ * Creates and saves (inserts) a new node.
+ *
+ * @see os_create_node()
+ */
+function _os_create_node($options) {
+  // Does nothing if any of the required options are missing.
+  if (!isset($options['title'], $options['type'], $options['uid'])) {
+    return FALSE;
+  }
+
+  // Creates a new node entity with the specified author user ID.
+  $node = entity_create('node', array('type' => $options['type']));
+  $node->uid = $options['uid'];
+
+  // Creates a wrapper and further modifies the entity.
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  // Handles additional options such as body value.
+  $properties = array_keys($wrapper->getPropertyInfo());
+  $skip = array('type');
+  foreach ($options as $key => $value) {
+    if (in_array($key, $properties) && !in_array($key, $skip)) {
+      $wrapper->{$key}->set($value);
+    }
+  }
+  // @todo add a function in api.php describing the correct $options array
+  // to modify most common values (i.e. language, comment, comment_source,
+  // pathauto, (published) status, created date, sticky, promoted, etc...
+
+  // Saves the node.
+  $wrapper->save();
+
+  // Returns the new node object.
+  return $node;
+}
+
+/**
+ * Creates and saves (inserts) a new node. Wrapper for _os_create_node().
+ *
+ * @param string $title
+ *   The new node title.
+ * @param string $type
+ *   The new node's type (machine name).
+ * @param int $uid
+ *   The author's uid.
+ * @param string $body
+ *   (Optional) A translated text value for the body field. Use t() before call.
+ * @param array $options
+ *   (Optional) Override defaults, or add additional properties or values.
+ */
+function os_create_node($title, $type, $uid, $body = NULL, $options = array()) {
+  // Inserts the required properties into the node options array.
+  $options['title'] = $title;
+  $options['type'] = $type;
+  $options['uid'] = $uid;
+  if ($body !== NULL) {
+    $options['body'] = array('value' => $body);
+  }
+
+  // Creates and loads the new node.
+  $node = _os_create_node($options);
+
+  // Returns the new node.
+  return $node;
+}
+
