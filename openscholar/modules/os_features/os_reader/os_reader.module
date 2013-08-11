@@ -20,6 +20,19 @@ function os_reader_menu() {
 }
 
 /**
+ * Implements hook_os_add_new_links_alter().
+ */
+function os_reader_os_add_new_links_alter(&$links) {
+  $menu = menu_get_item();
+  if ($menu['path'] == 'reader' and user_access('import course feeds')) {
+    $links['add_feed_importer'] = array(
+      'title' => t('Add feed importer'),
+      'href' => 'node/add/feed-importer',
+    );
+  }
+}
+
+/**
  * Access callback; Feed item copy.
  *
  * @param $feed_id
@@ -96,6 +109,7 @@ function os_reader_os_app_info() {
 function os_reader_vsite_og_node_type_info() {
   return array(
     'feed' => 'group content',
+    'feed_importer' => 'group content',
   );
 }
 
