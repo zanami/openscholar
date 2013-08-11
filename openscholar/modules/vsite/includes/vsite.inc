@@ -48,6 +48,13 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = FALSE){
 }
 
 /**
+ * Add the passed $node to the specified $vsite.
+ */
+function vsite_add_node($node, $vsite) {
+  return vsite_add_entity($node, 'node', $vsite);
+}
+
+/**
  * Remove the passed entity from a vsite
  *
  * The entity that you wish to add to the vsite.
@@ -80,13 +87,13 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = FALSE){
  * Creates a new vsite
  *
  * @param $name
- * 	 Name of site.
+ *   Name of site.
  * @param $domain
- * 	 Path for new site.
+ *   Path for new site.
  * @param $uid
- * 	The user ID to assocaite with the new VSite.
+ *  The user ID to assocaite with the new VSite.
  * @param $preset
- * 	Type of vsite to create.
+ *  Type of vsite to create.
  *
  * @return
  *   the SPACE object if created or FALSE.
@@ -111,7 +118,7 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
     $node->field_group_parent = array(
       LANGUAGE_NONE => array(
         array(
-      	  'target_id' => $parent,
+          'target_id' => $parent,
           'entity' => $parent_node,
           'access' => TRUE,
         )
@@ -157,7 +164,7 @@ function vsite_get_vsite_by_owner($uid = NULL) {
   }
 
   if (empty($uid)) {
-  	return array();
+    return array();
   }
 
   $group_bundles = og_get_all_group_bundle();

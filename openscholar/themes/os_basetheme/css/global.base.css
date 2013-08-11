@@ -472,12 +472,14 @@ ul ul ul ul {
 background:url('../images/ical_icon.gif') no-repeat !important;
 padding:2px 0 2px 25px !important;
 border-bottom:none !important;
+font-size:15px;
 }
 
 .rss {
 background:url('../images/rss_icon.gif') no-repeat !important;
 padding:2px 0 2px 25px !important;
  border-bottom:none !important;
+ font-size:15px;
 }
 
 /* BOOK NAVS */
