@@ -85,7 +85,7 @@
     padding-left: 15px !important;
 }
 
-
+#menu-bar ul.nice-menu .menuparent a,
 #menu-bar ul.nice-menu .menuparent a span, 
 #menu-bar ul.nice-menu .menuparent a:hover span, 
 #menu-bar ul.nice-menu .menuparent a.active span {
