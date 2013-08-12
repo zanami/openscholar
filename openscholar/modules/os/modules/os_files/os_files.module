@@ -1311,17 +1311,18 @@ function os_files_file_default_types() {
   return $types;
 }
 
-function os_files_file_default_types_alter(&$types){
-  $types['image']->mimetypes = array_merge($types['image']->mimetypes, array(
+function os_files_file_default_types_alter(&$types){ 
+  $image = array(
     // *.ico files
     'image/ico',
     'application/ico',
     'application/x-ico',
     'application/x-win-bitmap',
     'image/x-win-bitmap'
-  ));
+  );
+  $types['image']->mimetypes = (empty($types['image']->mimetypes)) ? $image : array_merge($types['image']->mimetypes, $image);
 
-  $types['video']->mimetypes = array_merge($types['video']->mimetypes, array(
+  $video = array(
     // *.mov files
     'video/x-quicktime',
     'image/mov',
@@ -1350,10 +1351,11 @@ function os_files_file_default_types_alter(&$types){
     // *.wmv files
     'video/x-ms-wmv',
     'text/oembed'
-  ));
+  );
+  $types['video']->mimetypes = (empty($types['video']->mimetypes)) ? $video : array_merge($types['video']->mimetypes, $video);
   $types['video']->streams[] = 'oembed';
 
-  $types['audio']->mimetypes = array_merge($types['audio']->mimetypes, array(
+  $audio = array(
     // *.mp3 files
     'audio/x-mpeg',
     'audio/mp3',
@@ -1369,9 +1371,10 @@ function os_files_file_default_types_alter(&$types){
     'application/ogg',
     'audio/x-ogg',
     'application/x-ogg'
-  ));
+  );
+  $types['audio']->mimetypes = (empty($types['audio']->mimetypes)) ? $audio : array_merge($types['audio']->mimetypes, $audio);
 
-  $types['document']->mimetypes = array_merge($types['document']->mimetypes, array(
+  $document = array(
     // *.doc files
     'application/vnd.msword',
     'application/vmd.ms-word',
@@ -1398,7 +1401,8 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
-  ));
+  );
+  $types['document']->mimetypes = (empty($types['document']->mimetypes)) ? $document : array_merge($types['document']->mimetypes, $document);
 
   $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
   $types['document']->streams = array_diff($types['document']->streams, array('oembed'));
