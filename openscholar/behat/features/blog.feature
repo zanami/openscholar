@@ -18,7 +18,7 @@ Feature:
     Then I should see "Archive: January 2013"
     And I should not see "First blog"
 
-  @api @current
+  @api
   Scenario: Test oembed
     Given I am logging in as "john"
     And I visit "john/node/add/blog"
