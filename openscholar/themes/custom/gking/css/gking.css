@@ -267,13 +267,15 @@ a.more {
     z-index: 10;
 }
 
-.not-front .contextual-controls-wrapper {
-top: 25px;
+.not-front  #content-column .contextual-controls-wrapper {
+margin: -20px 0 10px;
 }
 
-.contextual-controls-wrapper .add_new {
-padding: 3px 8px 3px 22px !important;
+.not-front.page-node-72251 #content-column .contextual-controls-wrapper {
+margin: 15px 0 10px;
 }
+
+
 
 /*
 .section-biocv #content .context-links ul {

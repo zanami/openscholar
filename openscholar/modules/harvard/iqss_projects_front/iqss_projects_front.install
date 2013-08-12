@@ -33,6 +33,20 @@ function iqss_projects_front_update_7002() {
   variable_set('os_pinserver_registration', TRUE);
 }
 
+/**
+ * IQSS site
+ */
+function iqss_projects_front_update_7003() {
+  db_insert('spaces_overrides')
+    ->fields(array(
+      'object_type' => 'variable',
+      'id' => 6235,
+      'type' => 'og',
+      'object_id' => 'os_appearance_department_flavor',
+      'value' => serialize('iqss')
+  ))->execute();
+}
+
 
 /**
  * Init mollom to protect the following forms.

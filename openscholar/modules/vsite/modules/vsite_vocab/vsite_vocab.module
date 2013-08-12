@@ -38,6 +38,15 @@ function vsite_vocab_menu() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function vsite_vocab_admin_paths() {
+  return array(
+    'cp/build/taxonomy/*/add' => TRUE,
+  );
+}
+
+/**
  * Implements hook_menu_alter().
  *
  * Adding custom paths to the vocabulary actions.

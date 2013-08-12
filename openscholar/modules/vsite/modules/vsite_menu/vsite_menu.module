@@ -123,12 +123,15 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
  * @return
  * The mlid of the saved menu link, or FALSE if the menu link could not be saved.
  */
-function vsite_menu_menu_link_save(&$item){
+function vsite_menu_menu_link_save(&$item, $vsite = FALSE) {
   drupal_alter('menu_link', $item);
   ctools_include('menu', 'os');
-  $vsite = spaces_get_space();
-  if (! $vsite)
-    return false;
+  if (!$vsite) {
+    $vsite = spaces_get_space();
+  }
+  if (!$vsite) {
+    return FALSE;
+  }
 
   $default_menu = key(os_get_menus());
   $existing_menu = FALSE;
@@ -295,9 +298,9 @@ function vsite_menu_get_link_path($menu, $path){
   $menu_links = _vsite_menu_get_menu_links($menu);
 
   foreach ($menu_links as $mlid => $link) {
-  	if($link['link_path'] == $path && $link['mlid']){
-  	  return $link['mlid'];
-  	}
+    if($link['link_path'] == $path && $link['mlid']){
+      return $link['mlid'];
+    }
   }
 }
 
@@ -562,36 +565,36 @@ function vsite_menu_cp_menu_form_submit($form, &$form_state) {
 
     //Reset, Save to preset, or call standard submit handler
     switch ($op){
-    	case t('Reset to defaults'):
-    	  if(os_menu_revert()){
-    	    drupal_set_message(t('The menus have been reset to thier default values.'));
-    	  }
-    	  break;
-    	case t('Save to @title', array('@title' => $preset->title)):
-    	  //Standard Submit, run the default submit handler to save context data before saving to preset
-    	  cp_menu_submit_form($form, $form_state);
+      case t('Reset to defaults'):
+        if(os_menu_revert()){
+          drupal_set_message(t('The menus have been reset to thier default values.'));
+        }
+        break;
+      case t('Save to @title', array('@title' => $preset->title)):
+        //Standard Submit, run the default submit handler to save context data before saving to preset
+        cp_menu_submit_form($form, $form_state);
 
-    	  if($preset){
+        if($preset){
 
-    	    //Loop through all menus
-    	    foreach (os_get_menus() as $menu_name => $title){
-    	      $override = $space->controllers->menus->get($menu_name);
-    	      if($override){
-    	        $preset->value['menus'][$menu_name] = $override;
-    	      }
-    	    }
+          //Loop through all menus
+          foreach (os_get_menus() as $menu_name => $title){
+            $override = $space->controllers->menus->get($menu_name);
+            if($override){
+              $preset->value['menus'][$menu_name] = $override;
+            }
+          }
 
-    	    //Set the default Menus
-    	    $preset->value['variable']['os_menus'] = os_get_menus();
+          //Set the default Menus
+          $preset->value['variable']['os_menus'] = os_get_menus();
 
-    	    drupal_set_message(t('The layout settings have been saved to %title.', array('%title' => $preset->title)));
-    	    spaces_preset_save($preset);
-    	  }
-    	  break;
-    	default:
-    	  //Standard Submit, run the default submit handler
-    	  cp_menu_submit_form($form, $form_state);
-    	  break;
+          drupal_set_message(t('The layout settings have been saved to %title.', array('%title' => $preset->title)));
+          spaces_preset_save($preset);
+        }
+        break;
+      default:
+        //Standard Submit, run the default submit handler
+        cp_menu_submit_form($form, $form_state);
+        break;
     }
   }
 }
@@ -621,4 +624,38 @@ function vsite_menu_preprocess_block(&$vars) {
       $vars['classes_array'][] = 'os-custom-menu';
     }
   }
+}
+
+/**
+ * Simple API function wrapper to add a new menu item to a vsite's menu.
+ */
+function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $options = array()) {
+  // Adds the parameters into the correct array format.
+  $options['link_title'] = $title;
+  $options['link_path'] = $path;
+  if ($plid !== FALSE) {
+    $options['plid'] = $plid;
+  }
+
+  // Adds default settings.
+  $defaults = array(
+    'menu_name' => 'primary-menu',
+  );
+  $options += $defaults;
+
+  $mlid = vsite_menu_menu_link_save($options, $vsite);
+  return $mlid;
+}
+
+/**
+ * Adds a menu item for a node in the primary menu.
+ */
+function vsite_menu_add_node($nid, $vsite, $title = '') {
+  if (empty($title)) {
+    $node = node_load($nid);
+    $title = $node->title;
+  }
+  $path_alias = drupal_get_path_alias('node/' . $nid);
+  $mlid = vsite_menu_create_menu_link($title, $path_alias, $vsite);
+  return $mlid;
 }

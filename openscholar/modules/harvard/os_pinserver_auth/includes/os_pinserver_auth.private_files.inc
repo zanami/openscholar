@@ -48,6 +48,10 @@ function os_pinserver_auth_private_file_download(){
 
   //Use Pinserver Tokens to load user
   pinserver_authenticate_user();
+  if(pinserver_get_errors()){
+    $errors = "Error trying to authenticate for private files. ".implode(',', pinserver_get_errors());
+    watchdog('pinserver', "".$errors);
+  }
 
   $headers = os_pinserver_auth_file_download($uri);
   if (count($headers)) {
@@ -85,7 +89,7 @@ function _os_pinserver_auth_file_download($uri) {
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-    if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
+    if (pinserver_get_user()) {
       $file = file_uri_to_object($uri, FALSE);
       return file_get_content_headers($file);
     }
@@ -110,6 +114,13 @@ function _os_pinserver_auth_pinserver_private_file_settings(&$form, $form_state)
     '#required' => FALSE,
     '#default_value' => variable_get('os_pinserver_custom_domain', FALSE),
     '#description' => t('If you would like pinserver requests to use a domain other than what is in $base_url. Ex. if you wanted to run all pin requests through pin.mysite.com.'),
+  );
+
+  $form['pinserver']['os_files_private_pinserver'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Should Pinserver control access to private files?'),
+    '#required' => FALSE,
+    '#default_value' => variable_get('os_files_private_pinserver', FALSE),
   );
 
   $form['pinserver']['os_pinserver_registration'] = array(
@@ -156,24 +167,55 @@ function _os_pinserver_auth_vsite_private_file_settings(&$form, $form_state) {
     );
   }
 
-  // Allows administrators only to edit pinserver app name in spaces_overrides.
-  if (user_access('administer pinserver')) {
+  // Allows administrators only to edit pinserver app name in spaces_overrides if they have a custom domain.
+  if (user_access('administer pinserver') && variable_get('vsite_domain_name', false)) {
     $form['pinserver_app_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Harvard PIN server application name'),
       '#required' => FALSE,
-      '#default_value' => variable_get('pinserver_app_name'),
+      '#default_value' => variable_get('pinserver_app_name',''),
       '#description' => t('Enter the application name given to you by Harvard Directory Services.' ),
     );
 
-    $form['os_pinserver_custom_domain'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Pinserver Domain'),
-      '#required' => FALSE,
-      '#default_value' => variable_get('os_pinserver_custom_domain', FALSE),
-      '#description' => t('This should be the domain that is paired with your pin application above.'),
-    );
+    $form['#submit'][] = 'os_pinserver_auth_vsite_private_file_settings_submit';
   }
+}
+
+/**
+ * Process private file settings for a vsite.
+ */
+function os_pinserver_auth_vsite_private_file_settings_submit(&$form, &$form_state){
+
+  $vsite = spaces_get_space();
+  if(!$vsite){
+    return;
+  }
+
+  $domain_pin_apps = variable_get('os_fastpath_domain_pinapps',array());
+  $vsite_domain = false;
+  if (variable_get('vsite_domain_name', false)){
+    $vsite_domain = "http://".variable_get('vsite_domain_name', false);
+  }
+
+  // Set or Unset a custom pinserver app.
+  if($form_state['values']['pinserver_app_name'] && $form_state['values']['pinserver_app_name'] != $vsite->controllers->variable->get('pinserver_app_name','original')){
+    // The pinserver domain should match the site's custom domain.
+    $vsite->controllers->variable->set('os_pinserver_custom_domain', $vsite_domain);
+    //Store pin settings for this domain for use on the os_fast callback outside a space.
+    $domain_pin_apps[$vsite_domain] = array(
+      'pinserver_app_name' => $form_state['values']['pinserver_app_name'],
+      'os_files_private_pinserver' => variable_get('os_files_private_pinserver', 0),
+      'os_pinserver_custom_domain' => $vsite_domain,
+    );
+  }else{
+    // Remove the custom pinserver domain if they do not have their own app.
+    $vsite->controllers->variable->del('os_pinserver_custom_domain');
+    if(isset($domain_pin_apps[$vsite_domain])){
+      unset($domain_pin_apps[$vsite_domain]);
+    }
+  }
+
+  variable_set('os_fastpath_domain_pinapps', $domain_pin_apps);
 }
 
 /**
@@ -181,7 +223,7 @@ function _os_pinserver_auth_vsite_private_file_settings(&$form, $form_state) {
  * This prevents hook_init from running on modules the js hook does not list.
  */
 function _os_pinserver_auth_init_variables(){
-  global $conf;
+  global $conf, $base_url;
 
   // Initialize the lock system.
   require_once DRUPAL_ROOT . '/' . variable_get('lock_inc', 'includes/lock.inc');
@@ -189,4 +231,11 @@ function _os_pinserver_auth_init_variables(){
 
   // Load variables from the database, but do not overwrite variables set in settings.php.
   $conf = variable_initialize(isset($conf) ? $conf : array());
+
+  // Does this host have a seperate pinserver config?
+  if(is_array($conf['os_fastpath_domain_pinapps']) && isset($conf['os_fastpath_domain_pinapps'][parse_url($base_url,PHP_URL_HOST)])){
+    foreach ($conf['os_fastpath_domain_pinapps'][parse_url($base_url,PHP_URL_HOST)] as $var => $value) {
+    	$conf[$var] = $value;
+    }
+  }
 }

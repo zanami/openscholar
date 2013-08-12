@@ -1,4 +1,4 @@
-; Drupal.org release file.
+; Drupal.org MakeFile for OpenScholar
 core = 7.x
 api = 2
 
@@ -32,9 +32,10 @@ projects[colorbox][version] = 2.4
 
 projects[comment_sources][download][type] = git
 projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
+projects[comment_sources][download][branch] = 7.x-2.x
+projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
-; patches needed
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
@@ -45,7 +46,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
-; rbrandon needs to push updates to contrib
+; needs patches to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
@@ -69,7 +70,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/openscholar/4098c29f1d2e51bcaf030e3da7417efd59ea34ed/patches/disqus.patch"
+projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/disqus.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -80,6 +81,7 @@ projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
 projects[entity][patch][] = http://drupal.org/files/1972668-file-delete-1.patch
+projects[entity][patch][] = http://drupal.org/files/entity-file_entity_access-1831578-9.patch
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = 1.1
@@ -92,11 +94,10 @@ projects[entityreference][download][revision] = 5b1c289
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-identifier-14.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
-projects[entityreference_prepopulate][version] = 1.3
-
-; projects[entity_dependency][subdir] = "contrib"
-; projects[entity_dependency][version] = 1.x-dev
-; projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
+; projects[entityreference_prepopulate][version] = 1.3
+projects[entityreference_prepopulate][download][type] = git
+projects[entityreference_prepopulate][download][revision] = e2c2811
+projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
 projects[elysia_cron][subdir] = "contrib"
 projects[elysia_cron][version] = 2.1
@@ -107,16 +108,14 @@ projects[eva][revision] = "6d92c27"
 
 projects[facetapi][subdir] = "contrib"
 projects[facetapi][version] = 1.1
-; 7.x-1.0+21 = 1.1
-;projects[facetapi][download][type] = git
-;projects[facetapi][download][branch] = 7.x-1.0
-;projects[facetapi][download][revision] = f7b7168
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-2.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
+projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/fb_social.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
@@ -164,6 +163,7 @@ projects[hierarchical_taxonomy][download][type] = git
 projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
 projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
 projects[hierarchical_taxonomy][download][revision] = 5bbe344
+projects[hierarchical_taxonomy][patch][] = "https://drupal.org/files/2034713-hs-comaprse-name-2.patch"
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -260,7 +260,7 @@ projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -269,6 +269,7 @@ projects[og_vocab][version] = 1.x-dev
 projects[og_vocab][download][type] = git
 projects[og_vocab][download][branch] = 7.x-1.x-dev
 projects[og_vocab][download][revision] = 61a6b9f
+projects[og_vocab][patch][] = "https://drupal.org/files/og-vocab-prevent-old-term-refernce-error.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -282,7 +283,9 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][tag] = 7.x-3.1
+;projects[pinserver][tag] = 7.x-3.3
+projects[pinserver][branch] = 7.x-3.x
+; @todo Make tag when QA is finished
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -292,6 +295,9 @@ projects[purl][download][revision] = 469e8668
 projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2_0.patch"
 projects[purl][patch][] = "http://drupal.org/files/1982198-purl-cache-set-1.patch"
 projects[purl][patch][] = "http://drupal.org/files/729862-9-purl-inbound-alter-modifies-q.patch"
+
+projects[registration][subdir] = "contrib"
+projects[registration][version] = 1.1
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
@@ -310,6 +316,9 @@ projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x
 projects[services][download][revision] = 761e620
+
+projects[services_basic_auth][subdir] = "contrib"
+projects[services_basic_auth][version] = "1.1"
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
@@ -356,10 +365,12 @@ projects[views_slideshow][version] = 3.0
 projects[views_litepager][subdir] = "contrib"
 projects[views_litepager][version] = 3.0
 projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-requirements-array-error_1976056-2.patch"
+projects[views_litepager][patch][] = "http://drupal.org/files/views_litepager-off_by_one-2006992-1.patch"
 
 projects[views_infinite_scroll][subdir] = "contrib"
 projects[views_infinite_scroll][version] = 1.1
-projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
+;projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
+;projects[views_infinite_scroll][patch][] = "http://localhost/patch/views_infinite_scroll-no_auto_scroll-2012910-1.patch"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
@@ -415,6 +426,8 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
-libraries[autopager][download][url] = "http://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
-libraries[autopager][patch][] = "http://drupal.org/files/jquery.autopager-permalink_state-1989144-2.patch"
+libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
 
+libraries[html5shiv[type] = "libraries"
+libraries[html5shiv][download][type] = "file"
+libraries[html5shiv][download][url] = "http://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv.js"

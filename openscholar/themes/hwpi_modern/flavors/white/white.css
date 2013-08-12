@@ -26,13 +26,16 @@ body {
     background-position: 2px -373px;
 }
 
+.node-type-person #content-column .node-person h2.block-title, 
+.sidebar .block h2.block-title {
+    padding: 7px 10px;
+}
 
 h2.block-title {
-    background: #333333;
-    color: #FFFFFF;
- 	font-size: 12px;
- 	margin-bottom: 10px;
-    padding: 2px 8px;
+     color: #333333;
+     font-size: 16px;
+     margin-bottom: 10px;
+     text-transform: none;
 }
 
 #page-title, 
@@ -48,6 +51,21 @@ h2.block-title {
     font-family: 'Open Sans',Helvetica,sans-serif;
 }
 
+#menu-bar {
+    background:  #FFF;
+
+}
+
+#menu-bar ul.nice-menu .menuparent a {
+    background: url("../../../hwpi_basetheme/images/menu_down_arrowBlack.gif") no-repeat scroll right center transparent;
+}
+
+#menu-bar ul.nice-menu .menuparent a:hover,
+#menu-bar ul.nice-menu .menuparent a.active {
+    background: url("../../../hwpi_basetheme/images/menu_down_arrowOn.gif") right center no-repeat #111;
+}
+
+
 #menu-bar ul.nice-menu a.active,
 #menu-bar ul.nice-menu a:hover {
   background: #111111;
@@ -59,6 +77,11 @@ h2.block-title {
 }
 
 
-#menu-bar ul.menu ul ul {
+#menu-bar ul.nice-menu ul {
     background: #111111;
+}
+
+
+.region-header-third ul.nice-menu a {
+    color: #215990;
 }

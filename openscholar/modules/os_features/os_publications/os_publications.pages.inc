@@ -167,12 +167,39 @@ function os_publications_settings() {
     ),
   );
   $style = module_exists('biblio_citeproc') ? 'biblio_citeproc_style' : 'biblio_style';
+  // Attach extra HTML to the citation array to allow for a popup box that will display an example of the citation format.
+  $biblio_styles = biblio_get_styles();
+  if(isset($biblio_styles) && is_array($biblio_styles)) {
+    $biblio_styles_hover = array();
+    $counter = 0;
+    foreach($biblio_styles as $styles => $name) {
+      $counter ++;
+      // Setup the new citation options to be wrapped for a popup.
+      $cite_example_link = '<a href="#" class="cite-pop" data-popbox="pop'.$counter.'">' . t('@link_name', array('@link_name' => $name)) . '</a>';
+      // Setup the h2.
+      $cite_example_title = '<h2>' . t('@csl_title', array('@csl_title' => $name)) . '</h2>';
+      // Setup the citation exmaple for the popup.
+      $citation_example = _os_publications_build_citation_example($styles); //'test text';
+      $cite_example_text = '<p>' . t('!cite_text', array('!cite_text' => $citation_example)) . '</p>';
+      // Concat it all together.
+      $cite_example_output = $cite_example_link . '<div id="pop'.$counter.'" class="citebox">' . $cite_example_title . $cite_example_text . '</div>';
+      $biblio_styles_hover[$styles] = $cite_example_output;
+    }
+  }
   $form['left'][$style] = array(
     '#type' => 'radios',
     '#title' => t('Select your preferred bibliographic format'),
     //'#description' => t('This alters the bibliographic format of your publications.'),
     '#default_value' => biblio_get_style(),
-    '#options' => biblio_get_styles(),
+    '#options' => $biblio_styles_hover,
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'os_publications') . '/misc/os_publications.css',
+      ),
+      'js' => array(
+        drupal_get_path('module', 'os_publications') . '/misc/os_publications_csl_hover.js',
+      )
+    ),
   );
 
   $form['right']['biblio_export_links'] = array(
@@ -300,4 +327,170 @@ function os_publications_reset(&$form, &$form_state) {
 
 function os_publications_reset_submit($form, $form_state) {
   //dpm($form_state['values']);
+}
+
+/**
+ * Return a pre-built node for an example citation.
+ */
+function _os_publications_get_citation_example() {
+
+  // Basic author listing.
+  $contributors = array(
+    0 => array(
+      'lastname' => 'Doe',
+      'firstname' => 'John',
+      'initials' => 'A',
+      'auth_category' => 1,
+      'cid' => -1),
+    1 => array(
+      'lastname' => 'Smith',
+      'firstname' => 'Richard',
+      'initials' => 'B',
+      'auth_category' => 1,
+      'cid' => -2),
+    3 => array(
+      'lastname' => 'Editor',
+      'firstname' => 'Edwin',
+      'initials' => 'Z',
+      'auth_category' => 2,
+      'cid' => -3),
+  );
+
+  // 10+ author example to display the different ways "et al" works.
+  $contributors_etall = array(
+    0 => array( 'lastname' => 'Doe', 'firstname' => 'John', 'initials' => 'A', 'auth_category' => 1, 'cid' => -1),
+    1 => array( 'lastname' => 'Smith', 'firstname' => 'Richard', 'initials' => 'B', 'auth_category' => 1, 'cid' => -2),
+    3 => array( 'lastname' => 'Rodgers', 'firstname' => 'Edwin', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -3),
+    4 => array( 'lastname' => 'Howard', 'firstname' => 'Ron', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -4),
+    5 => array( 'lastname' => 'Rodgers', 'firstname' => 'Jill', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -5),
+    6 => array( 'lastname' => "O'Donnell", 'firstname' => 'Frank', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -6),
+    7 => array( 'lastname' => 'McQuiad', 'firstname' => 'Robert', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -7),
+    8 => array( 'lastname' => 'Smith', 'firstname' => 'Jane', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -8),
+    9 => array( 'lastname' => 'Ortiz', 'firstname' => 'Oscar', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -9),
+    10 => array( 'lastname' => 'Edwards', 'firstname' => 'Rebecca', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -10),
+    11 => array( 'lastname' => "O'Neil", 'firstname' => 'Thomas', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -11),
+    12 => array( 'lastname' => 'Smith', 'firstname' => 'Kathrine', 'initials' => 'Z', 'auth_category' => 1, 'cid' => -12),
+  );
+
+  // Book Chapter.
+  $node = new stdClass();
+  $node->nid = -1;
+  $node->example_type           = 'Book Chapter';
+  $node->title                  = 'A Book Chapter';
+  $node->biblio_contributors    = $contributors;
+  $node->biblio_type            = 101;
+  $node->biblio_year            = 2013;
+  $node->biblio_volume          = 1;
+  $node->biblio_edition         = 5;
+  $node->biblio_issue           = 2;
+  $node->biblio_secondary_title = 'My Book Title';
+  $node->biblio_pages           = '500-731';
+  $node->biblio_coins           = '';
+
+  // Journal Article.
+  $node1 = new stdClass();
+  $node1->nid = -1;
+  $node1->example_type           = 'Journal Article';
+  $node1->title                  = 'My Journal Article';
+  $node1->biblio_contributors    = $contributors;
+  $node1->biblio_type            = 102;
+  $node1->biblio_year            = 2011;
+  $node1->biblio_volume          = 3;
+  $node1->biblio_issue           = 4;
+  $node1->biblio_secondary_title = 'The Journal of Articles';
+  $node1->biblio_pages           = '25-56';
+  $node1->biblio_coins           = '';
+
+  // Book.
+  $node2 = new stdClass();
+  $node2->nid = -1;
+  $node2->example_type           = 'Book with 10+ authors (et al)';
+  $node2->title                  = 'This is a Book Title';
+  $node2->biblio_contributors    = $contributors_etall;
+  $node2->biblio_type            = 100;
+  $node2->biblio_year            = 2013;
+  $node2->biblio_volume          = 1;
+  $node2->biblio_edition         = 5;
+  $node2->biblio_pages           = '800';
+  $node2->biblio_publisher       = 'Oxford University Press';
+  $node2->biblio_place_published = 'Boston, MA';
+  $node2->biblio_coins           = '';
+
+  $node_array = array($node, $node1, $node2);
+
+  return $node_array;
+}
+
+/**
+ * Return a themed citation example.
+ *  @params $csl
+ *    Citation style to use for theming the citation.
+ */
+function _os_publications_build_citation_example($csl) {
+  if(!isset($csl)) {
+    // Get the default biblio style.
+    $style = biblio_get_style();
+  }else {
+    $style = $csl;
+  }
+
+  $node_array = _os_publications_get_citation_example();
+
+  return _os_publications_theme_citation(array('style_name' => $style, 'node_array' => $node_array));
+}
+
+function _os_publications_theme_citation($variables) {
+  global $language;
+  $citeproc = '';
+  $styled_node = '';
+  $node_array = $variables['node_array'];
+  $style = isset($variables['style_name']) ? $variables['style_name'] : NULL;
+
+  module_load_include('inc', 'biblio_citeproc', 'CSL');
+
+  if (!$citeproc) {
+    $csl_id = ($style) ? $style : biblio_get_style();
+
+    if (strpos($csl_id, '.csl') === FALSE) {// try to convert old style names to csl...
+      if (in_array($csl_id, array('ama', 'apa', 'cse', 'ieee', 'mla', 'vancouver'))) {
+        $csl_id .= '.csl';
+      }
+      elseif ($csl_id == 'chicago') {
+        $csl_id = 'chicago-fullnote-bibliography.csl';
+      }
+      else {
+        $csl_id = '';
+        $message = t('An invalid style "@style" was selected, please check your "CiteProc" style settings.', array('@style' => $csl_id));
+        drupal_set_message($message, 'error');
+      }
+    }
+    if (!empty($csl_id)) {
+      $csl = db_query('SELECT parent,csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $csl_id))->fetchObject();
+      if (!isset($csl->csl)) {
+        drupal_set_message(t('Biblio-CiteProc could not fetch the style file: !csl_id from the database. Check your CiteProc settings.', array('!csl_id' => $csl_id)), 'error');
+        return;
+      }
+      if (!empty($csl->parent)) {
+        $csl_file_contents = db_query("SELECT csl FROM biblio_citeproc_styles WHERE id = :id", array(':id' => $csl->parent))->fetchField();
+      }
+      else {
+        $csl_file_contents = $csl->csl;
+      }
+      $citeproc = new citeproc($csl_file_contents, $language->language);
+    }
+  }
+
+  // Display the citation.
+  foreach($node_array as $key => $value) {
+    $output = '';
+    // Strip off the "example_type" array value if one exists.
+    if(isset($value->example_type)) {
+      $example_type = '<strong>' . $value->example_type . ' ' . t('example:') . '</strong>';
+      $output .=  $example_type . '<br />';
+    }
+    $output .= $citeproc->render($value);
+    $styled_node .= '<div class="citation-example">' . $output . '</div>';
+  }
+
+  return $styled_node;
 }

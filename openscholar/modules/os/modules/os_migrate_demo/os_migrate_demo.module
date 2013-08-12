@@ -285,12 +285,40 @@ function os_migrate_demo_assign_node_to_term($title, $name, $type = 'class') {
 }
 
 /**
+ * Remove term tag from node.
+ *
+ *  @param $title
+ *    The title of the node.
+ *  @param $name
+ *    The name of the term.
+ *  @param $type
+ *    The type of the node. Optional, default is class.
+ */
+function os_migrate_demo_unassign_node_from_term($title, $name, $type = 'class') {
+  $nid = reset(entity_load('node', NULL, array('title' => $title, 'type' => $type)))->nid;
+
+  $wrapper = entity_metadata_wrapper('node', $nid);
+
+  $terms = $wrapper->{OG_VOCAB_FIELD}->value();
+  foreach ($terms as $key => $term) {
+    if ($term->title == $name) {
+      unset($terms[$key]);
+    }
+  }
+
+  $wrapper->{OG_VOCAB_FIELD}->set($terms);
+  $wrapper->save();
+}
+
+/**
  * Set a value for variable.
  */
 function os_migrate_demo_variable_set($name, $value) {
   $vsite = spaces_preset_load('os_scholar', 'og');
   $vsite->value['variable'][$name] = $value;
   spaces_preset_save($vsite);
+
+  variable_set($name, $value);
 }
 
 /**
@@ -358,4 +386,70 @@ function os_migrate_demo_delete_node($title) {
   if (!empty($result['node'])) {
     node_delete_multiple(array_keys($result['node']));
   }
+
+}
+
+/**
+ * Adding a subtheme to a site.
+ *
+ * @param $subtheme
+ *  The name of the subtheme(a theme flavor) which located in the behat folder.
+ * @param $vsite
+ *  The name of the vsite.
+ */
+function os_migrate_demo_add_subtheme($subtheme, $vsite) {
+  $path = drupal_get_path('profile', 'openscholar') . '/behat/' . $subtheme;
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('title', $vsite)
+    ->range(0, 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = array_keys($result['node']);
+  $vsite = vsite_get_vsite(reset($nid));
+
+  $flavors = $vsite->controllers->variable->get('flavors');
+
+  $flavors[$subtheme] = array(
+    'path' => $path,
+    'name' => $subtheme,
+  );
+
+  $vsite->controllers->variable->set('flavors', $flavors);
+}
+
+/**
+ * Define a subtheme for a vsite.
+ *
+ * @param $theme
+ *  The name of the theme which the new subtheme is her flavor.
+ * @param $subtheme
+ *  The name of the subtheme which located in the behat folder.
+ * @param $vsite
+ *  The name of the vsite.
+ */
+function os_migrate_demo_define_subtheme($theme, $subtheme, $vsite) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('title', $vsite)
+    ->range(0, 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = array_keys($result['node']);
+  $vsite = vsite_get_vsite(reset($nid));
+  $flavor_key = 'os_appearance_cleanblue_flavor';
+
+  $vsite->controllers->variable->set('theme_default', $theme);
+  $vsite->controllers->variable->set('os_appearance_cleanblue_flavor', $subtheme);
 }

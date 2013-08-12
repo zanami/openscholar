@@ -3,8 +3,8 @@ Feature:
 
   @api
   Scenario: Check that a user can create a new blog post
-    Given I am logged in as a user with the "administrator" role
+    Given I am logging in as "john"
      When I visit "john/blog"
       And I click "First blog"
-      And I publish a new blog entry
+      And I add a comment "Lorem ipsum john doe" using the comment form
      Then I should see "Lorem ipsum john doe"

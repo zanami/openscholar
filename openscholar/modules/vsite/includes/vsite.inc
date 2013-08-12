@@ -48,6 +48,13 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = FALSE){
 }
 
 /**
+ * Add the passed $node to the specified $vsite.
+ */
+function vsite_add_node($node, $vsite) {
+  return vsite_add_entity($node, 'node', $vsite);
+}
+
+/**
  * Remove the passed entity from a vsite
  *
  * The entity that you wish to add to the vsite.
@@ -80,18 +87,18 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = FALSE){
  * Creates a new vsite
  *
  * @param $name
- * 	 Name of site.
+ *   Name of site.
  * @param $domain
- * 	 Path for new site.
+ *   Path for new site.
  * @param $uid
- * 	The user ID to assocaite with the new VSite.
+ *  The user ID to assocaite with the new VSite.
  * @param $preset
- * 	Type of vsite to create.
+ *  Type of vsite to create.
  *
  * @return
  *   the SPACE object if created or FALSE.
  */
-function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE, $parent = NULL) {
+function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE, $parent = NULL, $visibility = FALSE) {
   $node = new stdClass();
   $node->type = $bundle;
   node_object_prepare($node);
@@ -106,16 +113,29 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
   $node->uid = $uid;
   $node->spaces_preset_og = $preset;
   $node->language = LANGUAGE_NONE;
+  // Sets the parent relationship if this is a subsite with a parent specified.
   if (isset($parent) && $parent_node = node_load($parent)) {
     $node->field_group_parent = array(
       LANGUAGE_NONE => array(
         array(
-      	  'target_id' => $parent,
+          'target_id' => $parent,
           'entity' => $parent_node,
           'access' => TRUE,
         )
       )
     );
+  }
+  // Sets the site visibility value if the module is available and specified.
+  if (module_exists('vsite_access')) {
+    if (isset($visibility)) {
+      $node->{VSITE_ACCESS_FIELD} = array(
+        LANGUAGE_NONE => array(
+          array(
+            'value' => $visibility,
+          )
+        )
+      );
+    }
   }
   node_save($node);
 
@@ -143,8 +163,8 @@ function vsite_get_vsite_by_owner($uid = NULL) {
     $uid = $user->uid;
   }
 
-  if(empty($uid)) {
-  	return array();
+  if (empty($uid)) {
+    return array();
   }
 
   $group_bundles = og_get_all_group_bundle();

@@ -1,4 +1,17 @@
 default:
+  context:
+    parameters:
+      drupal_users:
+        admin:
+          'admin'
+        john:
+          'jfk'
+        michelle:
+          'FourMoreYears'
+      # the node ID of the group
+      vsite:
+        1
+
   extensions:
     Behat\MinkExtension\Extension:
       base_url:  BASE_URL

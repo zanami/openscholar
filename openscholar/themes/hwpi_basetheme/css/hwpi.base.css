@@ -1,4 +1,3 @@
-
 /* Typography */
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -12,6 +11,20 @@ body {
 a,
 a:visited {
   color: #215990;
+}
+
+.block-boxes-os_boxes_html a,
+.field-name-body a {
+     text-decoration: underline;
+}
+
+.block-boxes-os_boxes_html a:hover,
+.field-name-body a:hover {
+     text-decoration: none;
+}
+
+#columns .block-boxes-os_slideshow_box a:hover {
+     text-decoration: none;
 }
 
 #columns .block ul {
@@ -111,6 +124,10 @@ table caption {
 /* Block Styles */
 #content-column .block ul {
   list-style: disc;
+}
+
+#content-column .block ul ul {
+  list-style: circle;
 }
 
 
@@ -401,12 +418,12 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-.event-start #event-content {
+.event-start .event-content {
   margin-left: 70px;
 }
 
 .node-event .field-name-field-date {
-  color: #7e7e7e;
+  color: #6D6D6D;
   margin-bottom: 7px;
 }
 
@@ -422,7 +439,7 @@ ol.search-results li.search-result:last-child {
 	margin-bottom: 15px;
 }
 
-#event-content .node-header h1.node-title {
+.event-content .node-header h1.node-title {
 	margin-bottom: 0;
 }
 
@@ -701,7 +718,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #215990;
+  text-decoration: underline;
 }
 
 

@@ -66,6 +66,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'overlay',
   );
@@ -118,6 +119,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'media_embed',
   );
@@ -130,6 +132,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'media_internet',
   );
@@ -327,6 +330,26 @@ function os_user_default_permissions() {
     'module' => 'views',
   );
 
+  // Exported permission: access resource node.
+  $permissions['access resource node'] = array(
+    'name' => 'access resource node',
+    'roles' => array(
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+      2 => 'web services',
+    ),
+    'module' => 'restws',
+  );
+
+  // Exported permission: access resource user.
+  $permissions['access resource user'] = array(
+    'name' => 'access resource user',
+    'roles' => array(
+      0 => 'web services',
+    ),
+    'module' => 'restws',
+  );
+
   // Exported permission: block IP addresses.
   $permissions['block IP addresses'] = array(
     'name' => 'block IP addresses',
@@ -342,6 +365,7 @@ function os_user_default_permissions() {
     'name' => 'bypass node access',
     'roles' => array(
       0 => 'administrator',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -372,6 +396,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'file_entity',
   );
@@ -384,6 +409,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'path',
   );
@@ -396,6 +422,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'file_entity',
   );
@@ -429,6 +456,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'file_entity',
   );
@@ -451,6 +479,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'os_wysiwyg_link',
   );
@@ -560,6 +589,7 @@ function os_user_default_permissions() {
       1 => 'manager',
       2 => 'vsite admin',
       3 => 'vsite user',
+      4 => 'content editor',
     ),
     'module' => 'user',
   );

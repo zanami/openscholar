@@ -8,9 +8,8 @@ padding: 0;
 }
 
 #branding h1.page-title {
-	color:#8996A0;
-	font-size:2em;
-	font-weight:bold;
+	color:#555;
+	font-size:2.3em;
 }
 
 #branding {
@@ -382,7 +381,7 @@ width:30%;
     border-radius: 10px 10px 0 0;
     -webkit-border-radius: 10px 10px 0 0;
     -moz-border-radius: 10px 10px 0 0;
-    padding: 0;
+    padding: 5px;
 } 	
 
 /* Shrinks the node form to take up less vertical space. */

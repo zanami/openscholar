@@ -447,7 +447,7 @@ ul.contextual-links li,
  line-height: 12px !important;
  list-style: none !important;
  clear:both;
- background-color: none;
+ background: none !important;
 border-top: none;
 margin-bottom: 0 !important;
 }
@@ -488,8 +488,13 @@ color: #FFF !important;
 }
 
 #content-column div.contextual-links-wrapper.contextual-links-processed {
-   right: -15px;
+   /*right: -15px;*/
+   right: 0;
    z-index: 19;
+}
+
+.node-type-page #content-column div.contextual-links-wrapper.contextual-links-processed {
+   top:16px;
 }
 
 .contextual-controls-wrapper a {
@@ -511,13 +516,13 @@ padding: 5px 10px;
 border:none;
 font-size:13px;
 font-weight:bold;
-color: rgb(230, 230, 230);
+color: #FFF !important;
 text-shadow: 0px -1px 0px rgba(30, 30, 30, 0.25);
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
 border-radius: 4px;
 background: rgb(61, 155, 19);
-
+text-decoration:none !important;
     }
 
 .contextual-controls-wrapper .add_new:hover {
@@ -541,9 +546,13 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     color: #FFF;
 }
 
+html.js .biblio-export div.ctools-dropdown a.ctools-dropdown-text-link {
+    color: inherit !important;
+}
+
 html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
     font-size: 11px;
- 
+    color: #293352 !important;
 }
 	
 .ctools-dropdown.section_links {

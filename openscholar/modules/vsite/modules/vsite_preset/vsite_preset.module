@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Code for OS Virtual Site: Presets
+ */
+
+/**
+ * Implements hook_og_tasks_info().
+ */
+function vsite_preset_og_tasks_info($entity_type, $entity) {
+  $tasks = array();
+  $path = drupal_get_path('module', 'vsite_preset');
+
+  // Provides task for 'News & Events'.
+  $task = array(
+    'title' => t('News & Events Section'),
+    'description' => t('Sets up a standard News & Events site section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_newsevents_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_newsevents_completed($entity),
+  );
+  $tasks['section_newsevents'] = new vsite_task($task);
+
+  // Provides task for 'About Section'.
+  $task = array(
+    'title' => t('About Section'),
+    'description' => t('Sets up standard template for an About section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_about_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_about_completed($entity),
+  );
+  $tasks['section_about'] = new vsite_task($task);
+
+  // @todo more tasks for more presets.
+
+  return $tasks;
+}
+
+/**
+ * Task completed callback for News & Events page section and menu.
+ */
+function _vsite_preset_section_newsevents_task_completed() {
+  // @todo verify that all page nodes and menu items have been created.
+}
+
+/**
+ * Task completed callback for the 'About Section' task.
+ */
+function _vsite_preset_section_about_task_completed() {
+  // @todo verify that all page nodes, menu items and widgets have been created.
+}

@@ -1,34 +1,37 @@
 <?php
 
+/**
+* Provides the insert link overlay including forms for each link URL type.
+*/
 function os_wysiwyg_link_insert() {
   module_invoke_all('suppress', TRUE);
-  
+
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
     'external' => array(
       'title' => 'Web Address',
-    	'form' => '_os_link_external_form',
+    	'form' => '_os_wysiwyg_link_external_form',
     ),
     'email' => array(
       'title' => 'E-mail',
-      'form' => '_os_link_email_form',
+      'form' => '_os_wysiwyg_link_email_form',
     ),
     'file' => array(
       'title' => 'Files',
-      'page' => '_os_link_get_view',
+      'page' => '_os_wysiwyg_link_get_view',
       'params' => array(),
     ),
     'page' => array(
       'title' => 'Page',
-      'form' => '_os_link_internal_form',
+      'form' => '_os_wysiwyg_link_internal_form',
     ),
   );
-  
+
   if (isset($_GET['active']) && isset($tabs[$_GET['active']])) {
-     $tabs[$_GET['active']]['default'] = true;
+     $tabs[$_GET['active']]['default'] = TRUE;
      $tabs[$_GET['active']]['params'] = array('url' => $_GET['url']);
   }
-  
+
   $output = array(
     'text' => array(
       '#type' => 'textfield',
@@ -63,7 +66,7 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
   }
-  
+
   // handle file uploads
   if ($form = $output['tabs']['file']['page']['upload']) {
     if (isset($form['upload']['#validated'])) {
@@ -73,11 +76,12 @@ function os_wysiwyg_link_insert() {
         if (isset($entity->fid)) {
           media_browser_build_media_item($entity);
           drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
-          
+
+          $commands[] = ajax_command_replace('.view-media-default .view-empty', '<div class="view-content"><div class="clearfix"><ul id="media-browser-library-list" class="media-list-thumbnails"></ul></div>');
           $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
           // clear out status messages
           theme('status_messages');
-       
+
           $commands[] = array(
             'command' => 'clickOn',
             'target' => '#media-item-'.$entity->fid.' div.media-item',
@@ -85,7 +89,7 @@ function os_wysiwyg_link_insert() {
         }
       }
       else {
-        $commands[] = ajax_command_prepend('.views-exposed-form', theme('status_messages'));  
+        $commands[] = ajax_command_prepend('.views-exposed-form', theme('status_messages'));
       }
       // return results to ajax script
       $output = array(
@@ -96,7 +100,7 @@ function os_wysiwyg_link_insert() {
       exit;
     }
   }
-  
+
   $output['actions'] = array(
     '#type' => 'container',
     'insert' => array(
@@ -119,14 +123,17 @@ function os_wysiwyg_link_insert() {
     'css' => array($path.'/theme/os_wysiwyg_link_form.css'),
     'js' => array($path.'/js/os_wysiwyg_link_form.js'),
   );
-  
+
   return $output;
 }
 
-function _os_link_external_form($form, $form_state, $params) {
+/**
+* Form builder; provides form for "Web address" tab.
+*/
+function _os_wysiwyg_link_external_form($form, $form_state, $params) {
   $form = array();
   $args = func_get_args();
-  
+
   $form['external'] = array(
     '#type' => 'textfield',
     '#title' => t('Website URL'),
@@ -134,7 +141,7 @@ function _os_link_external_form($form, $form_state, $params) {
     '#maxlength' => 500,
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
-  
+
   $form['actions'] = array(
     '#type' => 'actions',
     'insert' => array(
@@ -146,9 +153,12 @@ function _os_link_external_form($form, $form_state, $params) {
   return $form;
 }
 
-function _os_link_internal_form($form, $form_state, $params) {
+/**
+* Form builder; provides form for "Page" tab.
+*/
+function _os_wysiwyg_link_internal_form($form, $form_state, $params) {
   $form = array();
-  
+
   $form['coming_soon'] = array(
     '#markup' => t('Coming soon!'),
   );
@@ -158,7 +168,7 @@ function _os_link_internal_form($form, $form_state, $params) {
     '#description' => t('The page of your site to link to.'),
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
-  
+
   $form['actions'] = array(
     '#type' => 'actions',
     'insert' => array(
@@ -166,17 +176,20 @@ function _os_link_internal_form($form, $form_state, $params) {
       '#value' => 'Insert',
     ),
   );*/
-  
+
   return $form;
 }
 
-function _os_link_get_view($params) {
+/**
+* Form builder; provides form for "Files" tab.
+*/
+function _os_wysiwyg_link_get_view($params) {
   $name = 'media_default';
   $display = 'media_browser_1';
   if (isset($params['url'])) {
     $_GET['fid'] = $params['url'];
   }
-  
+
   if ($view = views_get_view($name)) {
     $view->set_items_per_page(12);
     if ($view->set_display($display)) {
@@ -187,7 +200,7 @@ function _os_link_get_view($params) {
       if ($title = $view->get_title()) {
         $build['#title'] = $title;
       }
-      
+
       $output = array(
         'upload' => drupal_get_form('file_entity_add_upload', array(
           'file_directory' => os_files_get_save_path(),
@@ -203,25 +216,46 @@ function _os_link_get_view($params) {
             '#type' => 'submit',
             '#value' => t('Insert'),
           )
+        ),
+        '#attached' => array(
+          'library' => array(
+            array('media', 'media_browser'),
+          ),
+          'js' => array(
+            drupal_get_path('module', 'media') . '/js/plugins/media.views.js',
+            array(
+              'type' => 'setting',
+              'data' => array('media' =>
+                array(
+                  'browser' => array(
+                    'params' => media_get_browser_params(),
+                  )
+                )
+              )
+            )
+          )
         )
       );
 
       return $output;
     }
   }
-  
+
   return array();
 }
 
-function _os_link_email_form($form, $form_state, $params) {
+/**
+* Form builder; provides form for "E-mail" tab.
+*/
+function _os_wysiwyg_link_email_form($form, $form_state, $params) {
   $form = array();
-  
+
   $form['email'] = array(
     '#type' => 'textfield',
     '#title' => t('E-mail'),
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
-  
+
   $form['actions'] = array(
     '#type' => 'actions',
     'insert' => array(
@@ -229,7 +263,7 @@ function _os_link_email_form($form, $form_state, $params) {
       '#value' => 'Insert',
     ),
   );
-  
+
   return $form;
 }
 

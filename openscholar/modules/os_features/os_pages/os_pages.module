@@ -609,7 +609,7 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
   // Integrates with vsite module.
   if (module_exists('vsite')) {
     $vsite = vsite_get_vsite();
-    if ($vsite->id) {
+    if (isset($vsite->id)) {
       // Stores vsite id (sid) as groups id (gid) for preview generation.
       $data['alias_preview']['gid'] = $vsite->id;
       if ($purl = vsite_get_purl($vsite)) {
@@ -618,7 +618,7 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
         // Absolute path to homepage includes purl for standard & group sites.
         if (module_exists('vsite_domain')) {
           $prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
-          // This prefix is prepended to aliases and inserted after "Link URL".
+          // This prefix is prepended to aliases and inserted after "URL:".
           $data['alias_preview']['prefix'] = $prefix;
         }
       }
