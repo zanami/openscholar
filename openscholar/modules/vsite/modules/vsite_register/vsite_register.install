@@ -15,20 +15,30 @@ function vsite_register_update_7000(&$sandbox) {
   $node_info = module_invoke_all('vsite_og_node_type_info');
   $group_bundles = array_keys($node_info, 'group');
 
-  // Get all vsites.
+  // Get total amount of vsites.
   $query = new EntityFieldQuery();
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', $group_bundles, 'IN')
+    ->count()
     ->execute();
-  $vsites = empty($result['node']) ? array() : node_load_multiple(array_keys($result['node']));
-
   if (!isset($sandbox['progress'])) {
     // Get the total amounts of vsites.
-    $sandbox['max'] = count($vsites);
+    $sandbox['max'] = $result;
   }
 
-  $batch = 250;
+  $batch = 2;
+  $nid = empty($sandbox['nid']) ? 0 : $sandbox['nid'];
+
+  // Get vsites.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $group_bundles, 'IN')
+    ->propertyCondition('nid', $nid, '>')
+    ->range(0, $batch)
+    ->execute();
+  $vsites = empty($result['node']) ? array() : node_load_multiple(array_keys($result['node']));
 
   // Run through vsites.
   foreach ($vsites as $vsite) {
@@ -36,6 +46,7 @@ function vsite_register_update_7000(&$sandbox) {
     os_role_grant($vsite->uid, 'vsite admin', $vsite->nid);
 
     $sandbox['progress']++;
+    $sandbox['nid'] = $vsite->nid;
   }
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
