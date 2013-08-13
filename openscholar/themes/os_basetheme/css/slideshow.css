@@ -22,17 +22,24 @@
     padding: 2% 3%;
 }
 
+.slide a {
+    text-decoration:none !important;
+}
+
 .slide-copy a,
-.slide-copy a:visited {
+.slide-copy a:visited,
+.slide-copy a:hover {
     color: #FFFFFF;
 }
 
 
 .slide-copy p {
-    font: 16px/24px arial,sans-serif;
+    font-size:16px;
+line-height:24px;
 }
 .slide-copy h2 {
-    font: 28px/35px georgia,serif;
+    font-size: 28px;
+    line-height:35px;
     margin-bottom: 2%;
     margin-top: auto;
 }
@@ -59,6 +66,7 @@
     position: absolute;
     top: 0;
     width: 100%;
+    list-style-image: none !important;
 }
 
 .rslides img {
@@ -93,6 +101,7 @@
     background: #000;
     float: left;
     margin: 0;
+    list-style-image: none !important;
 }
 
 .rslides_tabs li * {
@@ -193,20 +202,24 @@ a.rslides_nav.prev {
 
 
 .one-sidebar #layout_3_1_overlay .slide-copy h2 {
-    font: 24px/29px georgia,serif;
+    font-size: 24px;
+    line-height: 29px;
 }
 
 .two-sidebars #layout_3_1_overlay .slide-copy h2 {
-font:21px/25px georgia,serif;
+font-size:21px;
+line-height:25px;
 margin-bottom: 7px;
 }
 
 .one-sidebar #layout_3_1_overlay .slide-copy p {
-    font: 14px/18px arial,sans-serif;
+    font-size:14px;
+line-height:18px;
 }
 
 .two-sidebars #layout_3_1_overlay .slide-copy p {
-	font: 13px/17px arial,sans-serif;
+	font-size:13px;
+	line-height:17px;
 	margin-bottom:0;
 }
 
@@ -241,11 +254,9 @@ margin-bottom: 7px;
 }
 
 .two-sidebars #layout_16_9_below .slide-copy p {
-font: 14px/24px arial,sans-serif;
+font-size:14px;
+line-height:24px;
 }
-
-
-
 
 
 /** 16.9 OVERLAY **/
@@ -293,23 +304,28 @@ font: 14px/24px arial,sans-serif;
 }
 
 #layout_16_9_overlay .slide-copy p {
-    font: 16px/24px arial,sans-serif;
+    font-size:16px;
+	line-height:24px;
     margin-bottom: 24px;
     padding: 0 25px;
 }
 
 .two-sidebars #layout_16_9_overlay .slide-copy p {
-    font: 14px/20px arial,sans-serif;
+    font-size:14px;
+	line-height:20px;
 }
 
 #layout_16_9_overlay .slide-copy h2 {
-    font: bold 22px arial,sans-serif;
-    margin-bottom: 0;
+    font-size:22px;
+font-weight:bold;
+line-height:24px;
+    margin-bottom: 8px;
     padding:5px 25px 0;
 }
 
 .two-sidebars #layout_16_9_overlay .slide-copy h2 {
-    font: bold 19px arial,sans-serif;
+    font-size:19px;
+	font-weight:bold;
 }
 	
  /** 16.9 SIDE **/ 
@@ -377,34 +393,42 @@ font: 14px/24px arial,sans-serif;
 }
 
 #layout_16_9_side .slide-copy p {
-    font: 17px/24px arial,sans-serif;
+	font-size:17px;
+line-height:24px;
     padding: 0;
 }
 
 
 .one-sidebar #layout_16_9_side .slide-copy p {
-    font: 14px/20px arial,sans-serif;
+    font-size:14px;
+	line-height:20px;
 }
 
 .two-sidebars  #layout_16_9_side .slide-copy p {
-    font: 13px/16px arial,sans-serif;
+    font-size:13px;
+line-height:16px;
 }
 
  
 
 #layout_16_9_side .slide-copy h2 {
-    font: bold 30px arial,sans-serif;
+    font-size:30px;
+	font-weight:bold;
     margin-bottom: 12px;
 }
 
 
 .one-sidebar #layout_16_9_side .slide-copy h2 {
-    font: bold 20px arial,sans-serif;
+	font-size:20px;
+	font-weight:bold;
+	line-height:26px;
 }
 
 .two-sidebars #layout_16_9_side .slide-copy h2 {
-   font: bold 17px arial,sans-serif;
-    margin-bottom: 0;
+   font-size:17px;
+font-weight:bold;
+line-height:22px;
+    margin-bottom: 8px;
 }
 
 
@@ -483,7 +507,6 @@ font: 14px/24px arial,sans-serif;
 
 #layout_16_9_side .rslides_tabs li {
   display: inline-block;
-  font-family: georgia,serif;
   margin: 0;
 }
 #layout_16_9_side .rslides_tabs li * {
