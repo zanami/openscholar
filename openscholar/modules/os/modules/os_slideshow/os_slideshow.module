@@ -14,8 +14,8 @@ function os_slideshow_boxes_plugins() {
   $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
 
   $info['os_slideshow_box'] = array(
-    'title' => 'HC Slideshow',
-    'description' => 'HC Slideshow',
+    'title' => 'Slideshow',
+    'description' => 'Slideshow',
     'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_slideshow_box',
@@ -26,6 +26,15 @@ function os_slideshow_boxes_plugins() {
   );
 
   return $info;
+}
+
+/**
+ * Implelements hook_boxes_plugins_alter
+ * 
+ * Removes deprecated gallery slideshow from the new widgets list
+ */
+function os_slideshow_boxes_plugins_alter(&$plugins) {
+  $plugins['os_boxes_slideshow']['factory'] = false;
 }
 
 /**
