@@ -17,7 +17,7 @@ class OsReaderViewsController extends EntityDefaultViewsController {
       'field' => array(
         'handler' => 'os_reader_handler_copy_feed_to_news',
         'real field' => 'id',
-      )
+      ),
     );
 
     // Allow some HTML.

@@ -74,4 +74,6 @@ function os_reader_install() {
 function os_reader_update_7000() {
   $schema = os_reader_schema();
   db_create_table('os_feed_item', $schema['os_feed_item']);
+
+  module_enable(array('feeds', 'feeds_xpathparser'));
 }

@@ -250,11 +250,10 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   // Create the "News" node.
   $node = new stdClass();
   $node->type = 'news';
-  $node->title = 'fff';
+  $node->title = $feed->title;
   $node->language = LANGUAGE_NONE;
 
   $wrapper = entity_metadata_wrapper('node', $node);
-  $wrapper->title->set($feed->title);
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
