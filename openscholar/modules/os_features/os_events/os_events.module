@@ -162,7 +162,13 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   }
 
   if (!in_array($display_id, array('block_2', 'block_1'))) {
-    foreach (array('iCal' => 'calendar/export.ics', 'rss' => 'calendar/rss.xml') as $label => $path) {
+    $buttons = array(
+      'subscribe' => 'calendar/export.ics',
+      'iCal' => 'calendar/export.ics',
+      'rss' => 'calendar/rss.xml'
+    );
+
+    foreach ($buttons as $label => $path) {
 
       // When the user is filtering events by taxonomy term we need to add the
       // path to the iCal/rss export path.
@@ -172,12 +178,15 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
         $path .= str_replace('calendar', '', $_GET['q']);
       }
 
-      $links[] = array(
+      $links[$label] = array(
         'title' => t($label),
         'href' => $path,
         'attributes' => array('class' => array(strtolower($label))),
       );
     }
+
+    // Make sure webcal link uses webcal protocol.
+    $links['subscribe']['href'] = str_replace('http://', 'webcal://', url($links['subscribe']['href'], array('absolute' => TRUE)));
 
     $view->attachment_before .= theme('links', array(
       'links' => $links,
@@ -515,7 +524,7 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
- * 
+ *
  * Hide the tokens list for sending messages to registrants
  */
 function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {
