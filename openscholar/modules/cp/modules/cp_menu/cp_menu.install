@@ -12,6 +12,13 @@ function cp_menu_update_7000() {
 }
 
 /**
+ * Enables tooltip/title editing 
+ */
+function cp_menu_update_7001() {
+  variable_set('cp_menu_link_options_tooltip', 1);
+}
+
+/**
  * @function _cp_menu_update_weight
  * 
  * cp_menu needs to be after menu and pathauto modules
