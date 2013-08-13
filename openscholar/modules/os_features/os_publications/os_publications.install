@@ -408,3 +408,11 @@ function os_publications_update_7009() {
 function os_publications_update_7010() {
   variable_set('biblio_pager', 'views_mini_pager');
 }
+
+/**
+ * Import Data publication type from harvard prod.
+ */
+function os_publications_update_7011() {
+  $sql = file_get_contents(drupal_get_path('module', 'os_publications') . '/misc/os_publication.sql');
+  db_query($sql);
+}
