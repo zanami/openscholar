@@ -217,7 +217,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
  * invokes order of the hooks.
  */
 function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
-  if (in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) && $context = og_vocab_is_group_admin_context()) {
+  if (in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || $context = og_vocab_is_group_admin_context()) {
     $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
   }
 
