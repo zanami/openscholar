@@ -170,12 +170,15 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
         $path .= str_replace('calendar', '', $_GET['q']);
       }
 
-      $links[] = array(
+      $links[$label] = array(
         'title' => t($label),
-        'href' => $label == 'subscribe' ? str_replace('http://', 'webcal://', url($path, array('absolute' => TRUE))) : $path,
+        'href' => $path,
         'attributes' => array('class' => array(strtolower($label))),
       );
     }
+
+    // Make sure webcal link uses webcal protocol.
+    $links['subscribe']['href'] = str_replace('http://', 'webcal://', url($links['subscribe']['href'], array('absolute' => TRUE)));
 
     $view->attachment_before .= theme('links', array(
       'links' => $links,
