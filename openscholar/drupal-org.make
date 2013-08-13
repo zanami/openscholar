@@ -260,7 +260,7 @@ projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 

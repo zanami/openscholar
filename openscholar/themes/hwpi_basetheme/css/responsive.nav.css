@@ -84,8 +84,17 @@
     font-size: 20px;
     padding-left: 15px !important;
 }
-#menu-bar #block-os-primary-menu  li ul li a{
-	font-size:15px;
+
+#menu-bar ul.nice-menu .menuparent a,
+#menu-bar ul.nice-menu .menuparent a span, 
+#menu-bar ul.nice-menu .menuparent a:hover span, 
+#menu-bar ul.nice-menu .menuparent a.active span {
+background: none !important;
+}
+
+#menu-bar ul.nice-menu ul,
+#menu-bar ul.nice-menu ul ul {
+	display:none !important;
 }
 /*Secondary menu*/
 .at-panel.gpanel.panel-display.three-col.clearfix {
