@@ -27,7 +27,7 @@ function vsite_register_update_7000(&$sandbox) {
     $sandbox['max'] = $result;
   }
 
-  $batch = 2;
+  $batch = 60;
   $nid = empty($sandbox['nid']) ? 0 : $sandbox['nid'];
 
   // Get vsites.
