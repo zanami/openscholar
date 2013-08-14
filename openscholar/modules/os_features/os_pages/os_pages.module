@@ -146,7 +146,7 @@ function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path)
   }
   // vsite users skip to here because they don't have access to any of the widget contextual links
   elseif ($root_path == 'node/%' && !empty($router_item['page_arguments'])) {
-    if (empty($router_item['page_arguments'][2]) || empty($router_item['page_arguments'][2]['nid'])) {
+    if (empty($router_item['page_arguments'][2]) || empty($router_item['page_arguments'][2]->nid)) {
       // Not a node.
       return;
     }
