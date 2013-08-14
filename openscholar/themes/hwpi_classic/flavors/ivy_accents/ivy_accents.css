@@ -133,11 +133,11 @@ border-top-right-radius: 3px;
 }
 
 a.rslides_nav.next {
-     background: url("/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png") repeat scroll -20px 2px #52854C;
+     background: url("/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png") repeat scroll -20px 2px #52854C;
 }
 
 a.rslides_nav.prev {
-     background: url("/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png") repeat scroll 2px 2px #52854C;
+     background: url("/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png") repeat scroll 2px 2px #52854C;
 }
 
 #footer {
