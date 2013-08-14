@@ -20,7 +20,7 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'bundles' => array('department'),
     'og_tasks' => array(
-      'section_home',
+      'vsite_preset_section_home',
     ),
     'variable' => array(
       'spaces_features' => array(
