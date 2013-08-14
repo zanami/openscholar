@@ -417,7 +417,7 @@ function vsite_update_7012() {
   if (module_exists($module)) {
     $output = t('Module @module is already enabled, nothing to do', $replacements);
   }
-  else if (!module_enable(array('og_tasks'))) {
+  else if (!module_enable(array($module))) {
     throw new DrupalUpdateException('Module @module could not be enabled.', $replacements);
   }
   else {
