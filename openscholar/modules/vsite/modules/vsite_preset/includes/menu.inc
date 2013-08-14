@@ -34,5 +34,5 @@ function _vsite_preset_section_about_task($entity, $task, &$context) {
  */
 function _vsite_preset_section_home_task($entity, $task, &$context) {
   // Adds the top-level section menu link to existing front page.
-  $mlid = vsite_menu_create_menu_link('HOME', 'home', $entity);
+  $mlid = vsite_menu_create_menu_link('HOME', 'home', $entity->nid);
 }

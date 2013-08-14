@@ -11,6 +11,8 @@
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
   $path = drupal_get_path('module', 'vsite_preset');
+  // @fixme we should be able to load this via files[]  array in vsite_preset.info
+  include_once($path . '/includes/vsite_task.inc');
 
   // Provides task for 'News & Events'.
   $task = array(
@@ -55,7 +57,7 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
  */
 function _vsite_preset_section_newsevents_completed($entity) {
   // @todo verify that all page nodes and menu items have been created.
-  return TRUE;
+  return FALSE;
 }
 
 /**
@@ -63,13 +65,13 @@ function _vsite_preset_section_newsevents_completed($entity) {
  */
 function _vsite_preset_section_about_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
-  return TRUE;
+  return FALSE;
 }
 
 /**
- * Task completed callback for the 'About Section' task.
+ * Task completed callback for the 'HOME Section' task.
  */
 function _vsite_preset_section_home_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
-  return TRUE;
+  return FALSE;
 }
