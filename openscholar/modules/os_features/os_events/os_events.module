@@ -124,8 +124,12 @@ function os_events_process_node(&$variables) {
   }
 
   if ($variables['page']) {
+    $subscribe = str_replace('http://', 'webcal://', l('subscribe', 'calendar/export.ics/' . $variables['node']->nid,
+      array('absolute' => TRUE, 'attributes' => array('class' => array('subscribe')))));
+    $ical = l('iCal', 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
+
     $variables['content']['export'] = array(
-      '#markup' => l('iCal', 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical')))),
+      '#markup' => $subscribe . ' ' . $ical,
       '#weight' => 10,
     );
   }
