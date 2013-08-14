@@ -53,20 +53,23 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
 /**
  * Task completed callback for News & Events page section and menu.
  */
-function _vsite_preset_section_newsevents_task_completed() {
+function _vsite_preset_section_newsevents_completed($entity) {
   // @todo verify that all page nodes and menu items have been created.
+  return TRUE;
 }
 
 /**
  * Task completed callback for the 'About Section' task.
  */
-function _vsite_preset_section_about_task_completed() {
+function _vsite_preset_section_about_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
+  return TRUE;
 }
 
 /**
  * Task completed callback for the 'About Section' task.
  */
-function _vsite_preset_section_home_task_completed() {
+function _vsite_preset_section_home_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
+  return TRUE;
 }
