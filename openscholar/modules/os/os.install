@@ -273,8 +273,9 @@ function os_update_7014() {
   $results = $query->execute();
   while ($row = $results->fetchObject()) {
     $menus = unserialize($row->value);
+    global $base_url;
     $domain = unserialize($row->vsite_domain_name);
-    $domain = ($domain) ? 'http://'.$domain : variable_get('purl_base_domain');
+    $domain = ($domain) ? 'http://'.$domain : variable_get('purl_base_domain', $base_url);
     $purl = $row->purl;
   
     //check each menu item
