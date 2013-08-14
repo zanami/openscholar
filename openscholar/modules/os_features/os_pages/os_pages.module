@@ -130,7 +130,7 @@ function os_pages_block_view_alter(&$render, $block) {
 
 /**
  * Implements hook_menu_contextual_links_alter().
- * 
+ *
  * Adds a link to the main_content widget to edit the content of the page.
  */
 function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path) {
@@ -145,7 +145,8 @@ function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path)
     $links = array_reverse($links, true);
   }
   // vsite users skip to here because they don't have access to any of the widget contextual links
-  elseif ($root_path == 'node/%' && $node = menu_get_object()) {
+  elseif ($root_path == 'node/%' && !empty($router_item['page_arguments'])) {
+    $node = $router_item['page_arguments'][2];
     // we don't want to mess with the links for other content types by accident
     // only pages are editted at the os/pages/ paths.
     if ($node->type == 'page') {
@@ -288,7 +289,7 @@ function os_pages_node_view($node, $view_mode) {
       if ($ctx) {
         context_set('context', $ctx->name, $ctx);
       }
-  
+
       if (isset($node->book['bid']) && $ctx = context_load('os_pages-section-'.$node->book['bid'])) {
         context_set('context', $ctx->name, $ctx);
       }
