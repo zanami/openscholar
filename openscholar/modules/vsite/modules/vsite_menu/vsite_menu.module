@@ -123,12 +123,10 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
  * @return
  * The mlid of the saved menu link, or FALSE if the menu link could not be saved.
  */
-function vsite_menu_menu_link_save(&$item, $vsite = FALSE) {
+function vsite_menu_menu_link_save(&$item, $gid = FALSE) {
   drupal_alter('menu_link', $item);
   ctools_include('menu', 'os');
-  if (!$vsite) {
-    $vsite = spaces_get_space();
-  }
+  $vsite = vsite_get_vsite($gid);
   if (!$vsite) {
     return FALSE;
   }
@@ -629,7 +627,7 @@ function vsite_menu_preprocess_block(&$vars) {
 /**
  * Simple API function wrapper to add a new menu item to a vsite's menu.
  */
-function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $options = array()) {
+function vsite_menu_create_menu_link($title, $path, $gid, $plid = FALSE, $options = array()) {
   // Adds the parameters into the correct array format.
   $options['link_title'] = $title;
   $options['link_path'] = $path;
@@ -643,7 +641,7 @@ function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $opti
   );
   $options += $defaults;
 
-  $mlid = vsite_menu_menu_link_save($options, $vsite);
+  $mlid = vsite_menu_menu_link_save($options, $gid);
   return $mlid;
 }
 
