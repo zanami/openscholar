@@ -36,3 +36,15 @@ function _vsite_preset_section_home_task($entity, $task, &$context) {
   // Adds the top-level section menu link to existing front page.
   $mlid = vsite_menu_create_menu_link('HOME', 'home', $entity->nid);
 }
+
+/**
+ * Task callback to create an About page section and menu.
+ */
+function _vsite_preset_section_academics_task($entity, $task, &$context) {
+  // Adds the top-level section page node.
+  $node = os_create_node(t('Academics'), 'page', $entity->uid);
+  vsite_add_node($node, $entity);
+
+  // Adds the primary menu link for the section page node.
+  $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
+}
