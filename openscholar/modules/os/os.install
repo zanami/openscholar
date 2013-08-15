@@ -242,7 +242,7 @@ function _os_update_event_registration_mollom() {
  * all authenticated users.
  * @see os.features.user_permission.inc
  */
-function os_update_7013() {
+function os_update_7015() {
   user_role_revoke_permissions(DRUPAL_AUTHENTICATED_RID, array('view user profiles'));
 }
 
