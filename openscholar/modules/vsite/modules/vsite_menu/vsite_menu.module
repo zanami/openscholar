@@ -648,12 +648,13 @@ function vsite_menu_create_menu_link($title, $path, $gid, $plid = FALSE, $option
 /**
  * Adds a menu item for a node in the primary menu.
  */
-function vsite_menu_add_node($nid, $vsite, $title = '') {
+function vsite_menu_add_node($nid, $gid, $title = '') {
   if (empty($title)) {
     $node = node_load($nid);
     $title = $node->title;
   }
-  $path_alias = drupal_get_path_alias('node/' . $nid);
-  $mlid = vsite_menu_create_menu_link($title, $path_alias, $vsite);
+  // Note: the final menu item will use any available path alias.
+  $path = "node/$nid";
+  $mlid = vsite_menu_create_menu_link($title, $path, $gid);
   return $mlid;
 }
