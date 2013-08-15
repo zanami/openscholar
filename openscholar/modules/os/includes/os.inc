@@ -155,10 +155,17 @@ function _os_create_node($options) {
   if (!isset($options['title'], $options['type'], $options['uid'])) {
     return FALSE;
   }
+  $defaults = array(
+    'path' => array(
+      'pathauto' => FALSE,
+    ),
+  );
+  $options += $defaults;
 
   // Creates a new node entity with the specified author user ID.
   $node = entity_create('node', array('type' => $options['type']));
   $node->uid = $options['uid'];
+  $node->path = $options['path'];
 
   // Creates a wrapper and further modifies the entity.
   $wrapper = entity_metadata_wrapper('node', $node);

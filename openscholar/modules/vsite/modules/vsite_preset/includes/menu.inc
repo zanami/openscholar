@@ -23,10 +23,10 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
 function _vsite_preset_section_about_task($entity, $task, &$context) {
   // Adds the top-level section page node.
   $node = os_create_node(t('About'), 'page', $entity->uid);
-  vsite_add_node($node, $entity);
+  vsite_add_node($node, $entity->nid);
 
   // Adds the primary menu link for the section page node.
-  $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
+  $mlid = vsite_menu_add_node($node->nid, $entity->nid, $node->title);
 }
 
 /**

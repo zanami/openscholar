@@ -155,7 +155,7 @@ function vsite_menu_menu_link_save(&$item, $gid = FALSE) {
   $menu = $item['menu_name'];
 
   //Retrieve the existing menu data
-  $existing_menu = _vsite_menu_get_menu_links($menu);
+  $existing_menu = _vsite_menu_get_menu_links($menu, $vsite);
 
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
@@ -436,10 +436,12 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
 /**
  * Helper function to get an array of menu links from the controller or drupal, used by crud functions
  */
-function _vsite_menu_get_menu_links($menu){
-  $vsite = spaces_get_space();
+function _vsite_menu_get_menu_links($menu, $vsite = FALSE) {
+  if (!$vsite) {
+    $vsite = spaces_get_space();
+  }
 
-  if($vsite){
+  if ($vsite) {
     //Retrieve the menu data from the controller
     $existing_menu = $vsite->controllers->menus->get($menu);
   }
@@ -648,12 +650,12 @@ function vsite_menu_create_menu_link($title, $path, $gid, $plid = FALSE, $option
 /**
  * Adds a menu item for a node in the primary menu.
  */
-function vsite_menu_add_node($nid, $vsite, $title = '') {
+function vsite_menu_add_node($nid, $gid, $title = '') {
   if (empty($title)) {
     $node = node_load($nid);
     $title = $node->title;
   }
   $path_alias = drupal_get_path_alias('node/' . $nid);
-  $mlid = vsite_menu_create_menu_link($title, $path_alias, $vsite);
+  $mlid = vsite_menu_create_menu_link($title, $path_alias, $gid);
   return $mlid;
 }

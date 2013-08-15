@@ -20,9 +20,9 @@ define('VSITE_PER_USER_DEFAULT', 1);
 /**
  * Returns the current vsite (space).
  */
-function vsite_get_vsite($sid = FALSE){
+function vsite_get_vsite($sid = FALSE, $reset = FALSE){
   if ($sid && intval($sid)) {
-    $vsite = spaces_load('og', $sid, FALSE);
+    $vsite = spaces_load('og', $sid, $reset);
   }
   else {
     $vsite = spaces_get_space();
@@ -2006,4 +2006,55 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
   }
 
   return $build;
+}
+
+/**
+ * Implements hook_pathauto_alias_alter().
+ */
+function vsite_pathauto_alias_alter(&$alias, $context) {
+  // Only continues if we are outside of a vsite.
+  if ($vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  // Only continues if we have a valid group content and alias to modify.
+  $node = $context['data']['node'];
+  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
+    return;
+  }
+  if (og_is_group_type('node', $node->type)) {
+    return;
+  }
+  if (empty($alias)) {
+    return;
+  }
+
+  // Only continues if we can get a vsite group ID.
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+  $gid = isset($gids[0]) ? $gids[0] : NULL;
+  if ($gid === NULL) {
+    return;
+  }
+
+  // Only continues if we can get a non-empty purl value from the vsite.
+  // Note: We don't need to set $reset = TRUE here because it was already reset.
+  // @see vsite_add_node()
+  $vsite = vsite_get_vsite($gid);
+  $purl = vsite_get_purl($vsite);
+
+  // Only continues if we were able to find a purl value.
+  if (empty($purl)) {
+    return;
+  }
+
+  // Only continues if the purl isn't yet present as a prefix.
+  $purl_present = (bool) (strpos($alias, "$purl/") === 0);
+  if ($purl_present) {
+    return;
+  }
+
+  // Prefixes the alias with the purl.
+  // Note: This occurs BEFORE pathauto_alias_uniquify().
+  $alias = "$purl/$alias";
 }

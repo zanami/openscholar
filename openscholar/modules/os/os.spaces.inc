@@ -21,6 +21,7 @@ function os_spaces_presets() {
     'bundles' => array('department'),
     'og_tasks' => array(
       'vsite_preset_section_home',
+      'vsite_preset_section_about',
     ),
     'variable' => array(
       'spaces_features' => array(
