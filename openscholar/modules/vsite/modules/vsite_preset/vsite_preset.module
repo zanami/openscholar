@@ -86,3 +86,10 @@ function _vsite_preset_section_home_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
   return FALSE;
 }
+
+/**
+ * Task completed callback for the 'Academic Section' task.
+ */
+function _vsite_preset_section_academics_completed($entity) {
+  return FALSE;
+}
