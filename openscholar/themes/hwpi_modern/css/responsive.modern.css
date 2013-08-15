@@ -42,9 +42,12 @@
     border-top: 1px solid #AB383E!important;
         display: block;
 }
+
+.region-header-third .os-custom-menu.opened,
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #80282C!important;
 }
+.region-header-third .os-custom-menu li,
 .region-header-third #block-os-secondary-menu li{
     border-bottom: 1px solid #662023!important;
     border-top: 1px solid #8D2C30!important;

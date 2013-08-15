@@ -1921,18 +1921,6 @@ function vsite_user_autocomplete($string = '') {
 }
 
 /**
- * Implements hook_og_tasks_info().
- */
-function vsite_og_tasks_info($entity_type, $entity) {
-  $tasks = array();
-
-//   $tasks['AboutSection'] = new vsiteTaskAboutSection($entity_type, $entity);
-//   $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
-
-  return $tasks;
-}
-
-/**
  * Alter metadata for entity properties for use with entity module.
  *
  * Expose group entity properties to the entityAPI module.

@@ -113,13 +113,27 @@ function os_events_process_node(&$variables) {
 
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
-    list(,,$field,$delta) = explode('.', $variables['date_id']);
+    list(,,$field,$delta) = explode('.', $variables['date_id'][0]);
+    $delta = intval($delta);
     $date = field_get_items('node', $variables['node'], $field);
     $date = $date[$delta]['value'];
     $variables['link_title_text'] = t('On @date', array('@date' => gmdate('D M j', strtotime($date))));
     if (isset($variables['content']['links']['node']['#links']['node-readmore'])) {
       $variables['content']['links']['node']['#links']['node-readmore']['attributes']['title'] .= ' on '.gmdate('D M j', strtotime($date));
     }
+  }
+
+  if ($variables['page']) {
+    $options = array('absolute' => TRUE, 'attributes' => array('class' => array('subscribe')));
+    $subscribe = l(t('subscribe'), 'calendar/export.ics/' . $variables['node']->nid, $options);
+    $subscribe = str_replace('http://', 'webcal://', $subscribe);
+
+    $ical = l(t('iCal'), 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
+
+    $variables['content']['export'] = array(
+      '#markup' => $subscribe . ' ' . $ical,
+      '#weight' => 10,
+    );
   }
 }
 
@@ -154,7 +168,13 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   }
 
   if (!in_array($display_id, array('block_2', 'block_1'))) {
-    foreach (array('iCal' => 'calendar/export.ics', 'rss' => 'calendar/rss.xml') as $label => $path) {
+    $buttons = array(
+      'subscribe' => 'calendar/export.ics',
+      'iCal' => 'calendar/export.ics',
+      'rss' => 'calendar/rss.xml'
+    );
+
+    foreach ($buttons as $label => $path) {
 
       // When the user is filtering events by taxonomy term we need to add the
       // path to the iCal/rss export path.
@@ -164,12 +184,15 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
         $path .= str_replace('calendar', '', $_GET['q']);
       }
 
-      $links[] = array(
+      $links[$label] = array(
         'title' => t($label),
         'href' => $path,
         'attributes' => array('class' => array(strtolower($label))),
       );
     }
+
+    // Make sure webcal link uses webcal protocol.
+    $links['subscribe']['href'] = str_replace('http://', 'webcal://', url($links['subscribe']['href'], array('absolute' => TRUE)));
 
     $view->attachment_before .= theme('links', array(
       'links' => $links,
@@ -507,7 +530,7 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
- * 
+ *
  * Hide the tokens list for sending messages to registrants
  */
 function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {

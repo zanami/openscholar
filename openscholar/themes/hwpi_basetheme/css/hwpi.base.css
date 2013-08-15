@@ -188,12 +188,12 @@ ol.search-results li.search-result:last-child {
 
 
 .view .date-nav-wrapper .date-prev {
-    right: 590px;
+    right: 90%;
 }
 
 
 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 430px;
+    right: 88%;
 }
 
 .no-sidebars .view .date-nav-wrapper .date-prev {
@@ -718,7 +718,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #215990;
+  text-decoration: underline;
 }
 
 
