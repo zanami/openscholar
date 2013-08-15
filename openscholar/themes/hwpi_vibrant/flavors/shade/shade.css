@@ -128,9 +128,16 @@ sidebar .block-title {
 }
 span.date-display-single {
     color: #666666;
+    font-size:14px;
 }
 .front #content-panels .block, .sidebar .block {
     margin-bottom: 40px;
+}
+h2.field-label{
+	
+	border-bottom:0!important;
+	font-size:1em!important;
+	padding:0!important;
 }
 #layout_16_9_side .hero-copy h2 {
     border: 0 none;
@@ -274,7 +281,7 @@ h1#page-title {
 }
 .page-node #content-column .content-inner, .not-front .content-inner {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #f6f8f8;
+    background: none repeat scroll 0 0 #fff;
     border: 0 none;
     border-radius: 3px 3px 3px 3px;
     box-shadow: 0 0;
@@ -316,8 +323,6 @@ h1#page-title {
     color: #215990;
 }
 #powered-by a {
-    background-color:#8996A0;
-    border: 1px solid #000000;
     padding: 0 0 0 5px !important;
 
 }
@@ -334,7 +339,10 @@ h1#page-title {
 }
 #footer a,
 #powerby-login a{
-	color:#000;
+	color:#fff;
+}
+#boxes-box-site_info h1{
+	max-width:65%
 }
 .block-no-title .view .date-nav-wrapper{
 	
@@ -343,4 +351,13 @@ h1#page-title {
 
 #block-boxes-os-addthis{
 	background:transparent;
+}
+.caption h2{
+	border-bottom:0 none;
+}
+.boxes-box-content .caption h2{
+	border-bottom:0!important;
+}
+.node{
+	margin-bottom:50px;
 }
