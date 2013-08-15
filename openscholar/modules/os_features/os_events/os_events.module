@@ -113,7 +113,7 @@ function os_events_process_node(&$variables) {
 
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
-    list(,,$field,$delta) = explode('.', $variables['date_id'][0]);
+    list(,,$field,$delta) = explode('.', $variables['date_id']);
     $delta = intval($delta);
     $date = field_get_items('node', $variables['node'], $field);
     $date = $date[$delta]['value'];
