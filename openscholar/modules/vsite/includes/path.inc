@@ -42,27 +42,14 @@ function _vsite_get_pathauto_settings() {
 function _vsite_alter_node_path_settings(&$node) {
   $vsite = vsite_get_vsite();
   if (!$vsite || ((int) $node->nid === (int) $vsite->group->nid)) {
-    if (!og_is_group_content_type('node', $node->type)) {
-      return;
-    }
-    $wrapper = entity_metadata_wrapper('node', $node);
-    $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
-    $gid = isset($gids[0]) ? $gids[0] : NULL;
-    if ($gid === NULL) {
-      return;
-    }
-    $vsite = vsite_get_vsite($gid);
-    if (!$vsite) {
-      return;
-    }
+    return;
   }
   module_load_include('inc', 'pathauto');
   $pattern = pathauto_pattern_load_by_entity('node', $node->type, $node->language);
 
   // For pathauto generated aliases, verify no naming collisions
   // Only checks aliases if a pathauto pattern exists and pathauto will alias.
-  $pathauto_enabled = (bool) !(isset($node->path['pathauto']) && empty($node->path['pathauto']));
-  if ($pattern && $pathauto_enabled) {
+  if ($pattern && (!(isset($node->path['pathauto']) && empty($node->path['pathauto'])))) {
     // Generates the pathauto alias and removes pURL modifiers
     $alias = _vsite_alias_without_purl($node);
     // Aborts pathauto for this node if the path already exists.
