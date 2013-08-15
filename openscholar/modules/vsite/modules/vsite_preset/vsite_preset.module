@@ -11,6 +11,8 @@
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
   $path = drupal_get_path('module', 'vsite_preset');
+  // @fixme we should be able to load this via files[]  array in vsite_preset.info
+  include_once($path . '/includes/vsite_task.inc');
 
   // Provides task for 'News & Events'.
   $task = array(
@@ -21,7 +23,7 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'file' => $path . '/includes/menu.inc',
     'completed' => _vsite_preset_section_newsevents_completed($entity),
   );
-  $tasks['section_newsevents'] = new vsite_task($task);
+  $tasks['vsite_preset_section_newsevents'] = new vsite_task($task);
 
   // Provides task for 'About Section'.
   $task = array(
@@ -32,7 +34,18 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'file' => $path . '/includes/menu.inc',
     'completed' => _vsite_preset_section_about_completed($entity),
   );
-  $tasks['section_about'] = new vsite_task($task);
+  $tasks['vsite_preset_section_about'] = new vsite_task($task);
+
+  // Provides task for 'HOME'.
+  $task = array(
+    'title' => t('HOME Section'),
+    'description' => t('Sets up standard template for a HOME section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_home_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_home_completed($entity),
+  );
+  $tasks['vsite_preset_section_home'] = new vsite_task($task);
 
   // @todo more tasks for more presets.
 
@@ -42,13 +55,23 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
 /**
  * Task completed callback for News & Events page section and menu.
  */
-function _vsite_preset_section_newsevents_task_completed() {
+function _vsite_preset_section_newsevents_completed($entity) {
   // @todo verify that all page nodes and menu items have been created.
+  return FALSE;
 }
 
 /**
  * Task completed callback for the 'About Section' task.
  */
-function _vsite_preset_section_about_task_completed() {
+function _vsite_preset_section_about_completed($entity) {
   // @todo verify that all page nodes, menu items and widgets have been created.
+  return FALSE;
+}
+
+/**
+ * Task completed callback for the 'HOME Section' task.
+ */
+function _vsite_preset_section_home_completed($entity) {
+  // @todo verify that all page nodes, menu items and widgets have been created.
+  return FALSE;
 }

@@ -7,9 +7,11 @@
 
 <li>
   <?php print $image; ?>
-  <div class="caption hero-copy">
-    <h2><?php print $headline; ?></h2>
-    <p><?php print $description; ?></p>
-  </div>
+  <?php if ($headline || $description): ?>
+    <div class="caption slide-copy">
+      <h2><?php print $headline; ?></h2>
+      <p><?php print $description; ?></p>
+    </div>
+  <?php endif; ?>
 </li>
 

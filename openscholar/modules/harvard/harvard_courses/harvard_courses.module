@@ -240,12 +240,14 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
       ->entityCondition('entity_type', 'field_collection_item');
 
     if ($search_value) {
+      $vocabulary = taxonomy_vocabulary_machine_name_load('schools_names');
+
       foreach ($search_value as $field => $value) {
         $colum = 'value';
         if ($field == 'field_faculty') {
           $field = 'field_school_name';
           $colum = 'target_id';
-          $value = reset(entity_load('taxonomy_term', NULL, array('name' => $value)))->tid;
+          $value = reset(entity_load('taxonomy_term', NULL, array('name' => $value, 'vid' => $vocabulary->vid)))->tid;
         }
         $query->fieldCondition($field, $colum, $value);
       }
@@ -258,11 +260,15 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
 
     $field_collection_items = array_keys($result['field_collection_item']);
 
+    // Get group bundles.
+    $node_info = module_invoke_all('vsite_og_node_type_info');
+    $group_bundles = array_keys($node_info, 'group');
+
     // Search for nodes related to the field collection items.
     $query = new entityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'node')
-      ->propertyCondition('type', array('department', 'project', 'personal'), 'IN')
+      ->propertyCondition('type', $group_bundles, 'IN')
       ->fieldCondition('field_department_school', 'value', $field_collection_items, 'IN')
       ->execute();
   }

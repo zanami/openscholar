@@ -456,21 +456,13 @@ background-color: #e3e3e1 !important;
 }
 	
 a.rslides_nav.next {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #000;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/images/ss_arrow.png) repeat scroll -20px 2px #000;
 }
 
 a.rslides_nav.prev {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #000;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/images/ss_arrow.png) repeat scroll 2px 2px #000;
 }
 
-.rslides_tabs li {
-    background: none;
-  
-}
-
-#layout_3_1_overlay .rslides_tabs li {
-    background: none;
-}
 
 .hero-copy h2 {
     margin-bottom: 0;
