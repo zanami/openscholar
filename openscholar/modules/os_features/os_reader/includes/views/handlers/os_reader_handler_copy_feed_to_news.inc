@@ -37,7 +37,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
       }
 
       if (os_reader_is_feed_item_copied_to_vsite($values->id, $vsite->nid)) {
-        $items[] = t('Feed item already copied to @vsite', array('@vsite' => $vsite->title));
+        $items[] = !empty($current_vsite) ? t('Imported') : t('Imported to @vsite', array('@vsite' => $vsite->title));
       }
       else {
         $token = drupal_get_token($values->id . ':' . $vsite->nid);
@@ -46,7 +46,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
             'class' => array('use-ajax'),
           ),
         );
-        $copy = t('Copy to @vsite', array('@vsite' => $vsite->title));
+        $copy = !empty($current_vsite) ? t('Import') : t('Import to @vsite', array('@vsite' => $vsite->title));
 
         $url = l($copy, 'os-reader/copy-feed-to-news/' . $values->id . '/' . $vsite->nid . '/nojs/' . $token, $options);
         $items[] = "<span id='feed-{$values->id}-{$vsite->nid}'>$url</span>";
