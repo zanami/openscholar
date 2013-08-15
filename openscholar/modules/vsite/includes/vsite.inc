@@ -50,8 +50,12 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = FALSE){
 /**
  * Add the passed $node to the specified $vsite.
  */
-function vsite_add_node($node, $vsite) {
   return vsite_add_entity($node, 'node', $vsite);
+function vsite_add_node($node, $gid = FALSE, $update_alias = TRUE) {
+  $vsite = vsite_get_vsite($gid, $update_alias);
+  $og_membership = vsite_add_entity($node, 'node', $vsite);
+
+  return $og_membership;
 }
 
 /**
