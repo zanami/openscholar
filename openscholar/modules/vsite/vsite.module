@@ -20,9 +20,9 @@ define('VSITE_PER_USER_DEFAULT', 1);
 /**
  * Returns the current vsite (space).
  */
-function vsite_get_vsite($sid = FALSE){
+function vsite_get_vsite($sid = FALSE, $reset = FALSE){
   if ($sid && intval($sid)) {
-    $vsite = spaces_load('og', $sid, FALSE);
+    $vsite = spaces_load('og', $sid, $reset);
   }
   else {
     $vsite = spaces_get_space();
