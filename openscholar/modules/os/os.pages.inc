@@ -44,3 +44,39 @@ function os_user_page() {
     return drupal_get_form('user_login');
   }
 }
+
+/**
+ * @function os_acquia_backups_page
+ * 
+ * Makes our backups available to certain users
+ */
+function os_acquia_backups_page($filename = '') {
+  $_SERVER['AH_SITE_NAME'] = 'foo'; 
+  $_SERVER['AH_SITE_ENVIRONMENT'] = 'bar';
+  if (!isset($_SERVER['AH_SITE_NAME'], $_SERVER['AH_SITE_ENVIRONMENT'])) {
+    return t('Not an acquia site');
+  }
+  
+  $path = '/mnt/gfs/' . $_SERVER['AH_SITE_NAME'] . '.' . $_SERVER['AH_SITE_ENVIRONMENT'];
+  $files = glob($path . '/*.sql.gz');
+  
+  $file = ($filename) ? "${path}/${filename}" : FALSE;
+  if ($file && in_array($file, $files)) {
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename='.basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file));
+    ob_clean();
+    flush();
+    readfile($file);
+    exit;
+  } else {
+    drupal_set_message(t('Could not find file: @filename', array('@filename' => $filename)), 'error');
+    $list_items = array_map(create_function('$a', '$info = pathinfo($a); return l($info["basename"], "acquia_backups/".$info["basename"]);'), $files);
+    return theme('item_list', array('items' => $list_items, 'type' => 'ul'));
+  }
+}
