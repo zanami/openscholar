@@ -655,7 +655,8 @@ function vsite_menu_add_node($nid, $gid, $title = '') {
     $node = node_load($nid);
     $title = $node->title;
   }
-  $path_alias = drupal_get_path_alias('node/' . $nid);
-  $mlid = vsite_menu_create_menu_link($title, $path_alias, $gid);
+  // Note: the final menu item will use any available path alias.
+  $path = "node/$nid";
+  $mlid = vsite_menu_create_menu_link($title, $path, $gid);
   return $mlid;
 }
