@@ -47,6 +47,17 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   );
   $tasks['vsite_preset_section_home'] = new vsite_task($task);
 
+  // Provides task for 'Academics'.
+  $task = array(
+    'title' => t('Academics Section'),
+    'description' => t('Sets up standard template for a Academics section.'),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_academics_task',
+    'file' => $path . '/includes/menu.inc',
+    'completed' => _vsite_preset_section_academics_completed($entity),
+  );
+  $tasks['vsite_preset_section_academics'] = new vsite_task($task);
+
   // @todo more tasks for more presets.
 
   return $tasks;
