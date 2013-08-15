@@ -22,6 +22,7 @@ function os_spaces_presets() {
     'og_tasks' => array(
       'vsite_preset_section_home',
       'vsite_preset_section_about',
+      'vsite_preset_section_academics',
     ),
     'variable' => array(
       'spaces_features' => array(
