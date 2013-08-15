@@ -67,13 +67,13 @@ h1, h2, h3, h4 {
 	text-decoratioon:none;
 	
 }
-#layout_16_9_side .hero {
+#layout_16_9_side .slide {
     background: none repeat scroll 0 0 #8996A0;
 }
-#layout_16_9_side .hero-copy h2 {
+#layout_16_9_side .slide-copy h2 {
     font: bold 30px open sans,arial,sans-serif;
 }
-#layout_16_9_side .hero-copy p {
+#layout_16_9_side .slide-copy p {
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 .boxes-box-content h2 {
@@ -132,7 +132,7 @@ span.date-display-single {
 .front #content-panels .block, .sidebar .block {
     margin-bottom: 40px;
 }
-#layout_16_9_side .hero-copy h2 {
+#layout_16_9_side .slide-copy h2 {
     border: 0 none;
     color: #FFFFFF;
     font-weight: normal;
@@ -238,7 +238,7 @@ ul.links li.link-count-node-readmore {
 	
 }
 /*slideshow*/
-#layout_3_1_overlay .hero-copy {
+#layout_3_1_overlay .slide-copy {
     background: none repeat scroll 0 0 #8996A0;
     opacity: 0.95;
     position: relative;
@@ -253,7 +253,7 @@ ul.links li.link-count-node-readmore {
     line-height: 28px;
     padding: 7px 15px 7px 0;
 }
-.hero-copy p {
+.slide-copy p {
     font: 16px/24px open sans,arial,sans-serif;
 }
 /*sidebar*/
@@ -302,7 +302,7 @@ h1#page-title {
 .hg-container {
     padding-top: 0;
 }
-#layout_16_9_overlay .hero-copy .boxes-box-content h2 {
+#layout_16_9_overlay .slide-copy .boxes-box-content h2 {
     border-bottom: none;
     padding: 7px 15px 7px 15px;
 }

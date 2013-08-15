@@ -230,10 +230,10 @@ a.rslides_nav.prev {
 
 
 
-#layout_16_9_side .hero-copy h2,
-#layout_3_1_overlay .hero-copy h2,
-#layout_16_9_below .hero-copy h2,
-#layout_16_9_overlay .hero-copy h2 {
+#layout_16_9_side .slide-copy h2,
+#layout_3_1_overlay .slide-copy h2,
+#layout_16_9_below .slide-copy h2,
+#layout_16_9_overlay .slide-copy h2 {
   font-family: Georgia,arial;
   font-size:28px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);

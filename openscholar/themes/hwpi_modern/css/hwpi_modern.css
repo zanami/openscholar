@@ -464,15 +464,15 @@ a.rslides_nav.prev {
 }
 
 
-.hero-copy h2 {
+.slide-copy h2 {
     margin-bottom: 0;
 }
 
-#layout_16_9_below .hero-copy h2 {
+#layout_16_9_below .slide-copy h2 {
     margin-bottom: 16px;
 }
 
-.hero-copy h2 a {
+.slide-copy h2 a {
     font-weight: bold;
 }
 
