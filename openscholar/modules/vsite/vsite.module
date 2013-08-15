@@ -2019,6 +2019,9 @@ function vsite_pathauto_alias_alter(&$alias, $context) {
 
   // Only continues if we have a valid group content and alias to modify.
   $node = $context['data']['node'];
+  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
+    return;
+  }
   if (og_is_group_type('node', $node->type)) {
     return;
   }
