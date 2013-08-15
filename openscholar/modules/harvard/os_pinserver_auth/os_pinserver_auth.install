@@ -5,7 +5,7 @@
  */
 function os_pinserver_auth_install(){
   //set module weight
-  db_query("UPDATE {system} SET weight = %d WHERE name = '%s'", 80, 'os_pinserver_auth');
+  db_query("UPDATE {system} SET weight = 80 WHERE name = 'os_pinserver_auth'");
   cache_clear_all('strongarm', 'cache');
 }
 
