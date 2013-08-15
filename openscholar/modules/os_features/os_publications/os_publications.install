@@ -411,6 +411,8 @@ function os_publications_update_7010() {
 
 /**
  * Import Data publication type from harvard prod.
+ *
+ * @see biblio_admin_types_add_form_submit().
  */
 function os_publications_update_7011() {
   $result = db_select('biblio_types', 'bt')
@@ -423,8 +425,15 @@ function os_publications_update_7011() {
     return;
   }
 
-  // Creating the new publication type.
-  $values = array('name' => 'Data 2');
+  // Creating the new publication type. The biblio types table don't have auto
+  // increment ont he tid property. Using the biblio module logic for calculate
+  // the tid value.
+  $values = array('name' => 'Data');
+  $query = db_select('biblio_types', 'bt');
+  $query->addExpression('MAX(tid)', 'max_tid');
+  $result = $query->execute();
+  $record = $result->fetchAssoc();
+  $values['tid'] = $record['max_tid'] + 1;
   db_insert('biblio_types')
     ->fields($values)
     ->execute();
@@ -435,357 +444,306 @@ function os_publications_update_7011() {
     0 => array (
       'vtab' => '1',
       'autocomplete' => '1',
-      'required' => '0',
       'weight' => '1',
       'visible' => '1',
     ),
     1 => array (
       'vtab' => '1',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '2',
       'visible' => '0',
     ),
     2 => array (
       'vtab' => '1',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '3',
       'visible' => '0',
     ),
     3 => array (
       'vtab' => '1',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '4',
       'visible' => '0',
     ),
     4 => array (
       'vtab' => '1',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '5',
       'visible' => '0',
     ),
     5 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '6',
       'visible' => '0',
     ),
     6 => array (
       'vtab' => '8',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '7',
       'visible' => '0',
     ),
     7 => array (
       'vtab' => '4',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '8',
       'visible' => '0',
     ),
     8 => array (
       'vtab' => '4',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '9',
       'visible' => '0',
     ),
     9 => array (
       'vtab' => '4',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '10',
       'visible' => '0',
     ),
     10 => array (
       'vtab' => '4',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '11',
       'visible' => '0',
     ),
     11 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '12',
       'visible' => '0',
     ),
     12 => array (
       'vtab' => '3',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '13',
       'visible' => '1',
     ),
     13 => array (
       'vtab' => '3',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '14',
       'visible' => '0',
     ),
     14 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '-45',
       'visible' => '1',
     ),
     15 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '16',
       'visible' => '0',
     ),
     16 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '17',
       'visible' => '0',
     ),
     17 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '18',
       'visible' => '0',
     ),
     18 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '19',
       'visible' => '0',
     ),
     19 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '20',
       'visible' => '0',
     ),
     20 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '21',
       'visible' => '0',
     ),
     21 => array (
       'vtab' => '1',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '22',
       'visible' => '1',
     ),
     22 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '23',
       'visible' => '0',
     ),
     23 => array (
       'vtab' => '6',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '24',
       'visible' => '0',
     ),
     24 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '25',
       'visible' => '0',
     ),
     25 => array (
       'vtab' => '5',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '26',
       'visible' => '1',
     ),
     26 => array (
       'vtab' => '7',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '27',
       'visible' => '1',
     ),
     27 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '28',
       'visible' => '0',
     ),
     28 => array (
       'vtab' => '7',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '29',
       'visible' => '0',
     ),
     29 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '30',
       'visible' => '0',
     ),
     30 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '31',
       'visible' => '0',
     ),
     31 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '32',
       'visible' => '0',
     ),
     32 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '33',
       'visible' => '0',
     ),
     33 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '34',
       'visible' => '0',
     ),
     34 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '35',
       'visible' => '0',
     ),
     35 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '36',
       'visible' => '0',
     ),
     36 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '37',
       'visible' => '0',
     ),
     37 => array (
       'vtab' => '8',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '38',
       'visible' => '0',
     ),
     38 => array (
       'vtab' => '8',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '39',
       'visible' => '0',
     ),
     39 => array (
       'vtab' => '8',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '40',
       'visible' => '0',
     ),
     40 => array (
       'vtab' => '8',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '41',
       'visible' => '0',
     ),
     41 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '42',
       'visible' => '0',
     ),
     42 => array (
       'vtab' => '2',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '43',
       'visible' => '0',
     ),
     43 => array (
       'vtab' => '4',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '44',
       'visible' => '0',
     ),
     44 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '45',
       'visible' => '0',
     ),
     45 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '28',
       'visible' => '1',
     ),
     46 => array (
       'vtab' => '5',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '29',
       'visible' => '1',
     ),
     47 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '48',
       'visible' => '0',
     ),
     48 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '49',
       'visible' => '0',
     ),
     49 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '50',
       'visible' => '0',
     ),
     50 => array (
       'vtab' => '9',
       'autocomplete' => '0',
-      'required' => '0',
       'weight' => '51',
       'visible' => '0',
     ),
@@ -793,8 +751,7 @@ function os_publications_update_7011() {
   $result = db_query('SELECT * FROM {biblio_field_type} WHERE tid=0', array(), array('fetch' => PDO::FETCH_ASSOC));
   foreach ($result as $delta => $row) {
     // Adding settings of the Data publications.
-    $row['tid'] = $values['tid'];
-    $row += $field_settings[$delta];
+    $row = array_merge($row, $field_settings[$delta], array('tid' => $values['tid']));
     db_insert('biblio_field_type')
       ->fields($row)
       ->execute();
