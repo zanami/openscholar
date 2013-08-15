@@ -324,6 +324,11 @@ function vsite_register_cors_access() {
 function vsite_register_node_insert($node){
   if (og_is_group_type('node', $node->type)) {
     if(($vsite = spaces_load('og', $node->nid))){
+      //PURL is needed but spaces_og_node_insert may not have fired yet
+      if (!isset($vsite->group->purl) && is_array($node->purl) && !empty($node->purl['value'])) {
+        $vsite->group->purl = $node->purl['value'];
+      }
+
 	    // Emails user to inform them of new created site, email is always sent.
 	    // This function may additionally send a second email to a specified
 	    // administrator's email address.
