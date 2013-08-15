@@ -436,8 +436,10 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
 /**
  * Helper function to get an array of menu links from the controller or drupal, used by crud functions
  */
-function _vsite_menu_get_menu_links($menu){
-  $vsite = spaces_get_space();
+function _vsite_menu_get_menu_links($menu, $vsite = FALSE) {
+  if (!$vsite) {
+    $vsite = spaces_get_space();
+  }
 
   if($vsite){
     //Retrieve the menu data from the controller
