@@ -25,7 +25,8 @@
     font-family: open sans,arial,sans-serif;
     font-size: 18px;
 }
-.boxes-box-content .caption h2 a {
+.boxes-box-content .caption h2 a,
+.boxes-box-content .caption h2 {
     color: #FFFFFF !important;
     text-decoration: none !important;
 }
@@ -44,10 +45,7 @@
 .front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
     background: none repeat scroll 0 0 #E3EAEF;
 }
-#columns {
 
-   
-}
 body {
     font-family: open sans,arial,serif;
     font-size: 16px;
@@ -205,9 +203,7 @@ ul.links li.link-count-node-readmore {
 #page-wrapper {
     background-color: #F6F8F8;
 }
-#footer {
-    background: none repeat scroll 0 0 #8F323E;
-}
+
 #branding_footer, #branding_header {
     color: #FFFFFF;
     font-weight: normal;
@@ -266,21 +262,7 @@ ul.links li.link-count-node-readmore {
     font-weight: normal;
 }
 /*inside pages*/
-h1#page-title {
-    font-size: 30px;
-    font-weight: normal;
-    line-height: 1;
-    margin: 0;
-    padding: 15px 0 30px;
-}
-.page-node #content-column .content-inner, .not-front .content-inner {
-    -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #fff;
-    border: 0 none;
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 0;
-    padding: 0 30px 20px;
-}
+
 .not-front.two-sidebars #content-column .content-inner {
     border-right: 0;
 }
@@ -300,9 +282,7 @@ h1#page-title {
     font-family: open sans, arial, sans-serif;
     font-size: 16px;
 }
-.hg-container {
-    padding-top: 0;
-}
+
 #layout_16_9_overlay .slide-copy .boxes-box-content h2 {
     border-bottom: none;
     padding: 7px 15px 7px 15px;
@@ -354,4 +334,7 @@ h1#page-title {
 }
 .node{
 	margin-bottom:50px;
+}
+#footer {
+    background: none repeat scroll 0 0 #8F323E;
 }
