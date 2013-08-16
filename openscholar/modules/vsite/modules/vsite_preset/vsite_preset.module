@@ -21,7 +21,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'required' => TRUE,
     'callback' => '_vsite_preset_section_newsevents_task',
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_section_newsevents_completed($entity),
   );
   $tasks['vsite_preset_section_newsevents'] = new vsite_task($task);
 
@@ -33,7 +32,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'callback' => '_vsite_preset_section_task',
     'arguments' => array('title' => t('About')),
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_section_about_completed($entity),
   );
   $tasks['vsite_preset_section_about'] = new vsite_task($task);
 
@@ -44,7 +42,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'required' => TRUE,
     'callback' => '_vsite_preset_section_home_task',
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_section_home_completed($entity),
   );
   $tasks['vsite_preset_section_home'] = new vsite_task($task);
 
@@ -56,42 +53,10 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'callback' => '_vsite_preset_section_task',
     'arguments' => array('title' => t('Academics')),
     'file' => $path . '/includes/menu.inc',
-    'completed' => _vsite_preset_section_academics_completed($entity),
   );
   $tasks['vsite_preset_section_academics'] = new vsite_task($task);
 
   // @todo more tasks for more presets.
 
   return $tasks;
-}
-
-/**
- * Task completed callback for News & Events page section and menu.
- */
-function _vsite_preset_section_newsevents_completed($entity) {
-  // @todo verify that all page nodes and menu items have been created.
-  return FALSE;
-}
-
-/**
- * Task completed callback for the 'About Section' task.
- */
-function _vsite_preset_section_about_completed($entity) {
-  // @todo verify that all page nodes, menu items and widgets have been created.
-  return FALSE;
-}
-
-/**
- * Task completed callback for the 'HOME Section' task.
- */
-function _vsite_preset_section_home_completed($entity) {
-  // @todo verify that all page nodes, menu items and widgets have been created.
-  return FALSE;
-}
-
-/**
- * Task completed callback for the 'Academic Section' task.
- */
-function _vsite_preset_section_academics_completed($entity) {
-  return FALSE;
 }
