@@ -8,4 +8,7 @@
 /**
  * Class vsite_task
  */
-class vsite_task extends og_task {}
+class vsite_task extends og_task {
+  // Arguments array for the vsite_task::callback property.
+  public $arguments = array();
+}
