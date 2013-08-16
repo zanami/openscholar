@@ -355,7 +355,7 @@ h1.node-title {
 }
 
 h1#page-title {
-  font-size: 40px;
+  font-size: 30px;
   line-height: 1;
   margin: 0;
   padding: 15px 0 30px;
@@ -902,7 +902,7 @@ ul.links li.link-count-node-readmore a {
 }
 
 /* SLIDESHOW */
-#layout_16_9_side .hero {
+#layout_16_9_side .slide {
   background: #ac253a;
 background: -moz-linear-gradient(top, #ac253a 0%, #880f1c 100%);
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ac253a), color-stop(100%, #880f1c));
@@ -924,7 +924,7 @@ a.rslides_nav.next {
 padding: 0 0 0 60px;
 }
 
-.front.no-sidebars .region-content-top #layout_3_1_overlay .hero-copy {
+.front.no-sidebars .region-content-top #layout_3_1_overlay .slide-copy {
 margin-top: 48px;
 }
 

@@ -260,7 +260,7 @@ function cp_menu_submit_form($form, &$form_state){
           $link[$param] = $l[$param];
           //If the link is moving to a different menu, remove from the old menu
           if ($param == 'menu_name') {
-            os_menu_link_delete_link($l['menu-old'], $l['mlid']);
+            os_menu_link_delete($l['menu-old'], $l['mlid']);
           }
         }
       }
@@ -363,7 +363,7 @@ function cp_menu_edit_submit($form, &$form_state) {
     ctools_include('menu', 'os');
 
     // @todo Validation
-    os_menu_add($menu['title'],$menu['menu_name']);
+    os_menu_create($menu['title'],$menu['menu_name']);
   }
   else {
     // @todo Edit a existing Menu's Name
@@ -431,7 +431,7 @@ function cp_menu_remove_confirm_submit($form, $form_state) {
       drupal_set_message(t('The @menu menu has been reset to defaults.', array('@menu' => $menu)));
     }
     else {
-      os_menu_del($menu);
+      os_menu_delete($menu);
       drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => $menu)));
     }
 

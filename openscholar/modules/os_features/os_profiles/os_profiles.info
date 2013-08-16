@@ -38,6 +38,7 @@ features[image][] = profile_full
 features[image][] = profile_thumbnail
 features[menu_links][] = primary-menu:people
 features[node][] = person
+features[user_permission][] = bypass redirection
 features[user_permission][] = create person content
 features[user_permission][] = delete any person content
 features[user_permission][] = delete own person content

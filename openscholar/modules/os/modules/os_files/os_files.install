@@ -510,3 +510,21 @@ function os_files_update_7005(&$sandbox) {
 function os_files_update_7006(&$sandbox) {
   variable_set('colorbox_inline', 1);
 }
+
+/**
+ * Reverts file types and file displays
+ */
+function os_files_update_7007(&$sandbox) {
+  ctools_include('export');
+  $types = ctools_export_crud_load_all('file_type');
+  foreach ($types as $t => $o) {
+    ctools_export_crud_delete('file_type', $t);
+  }
+
+  $displays = ctools_export_crud_load_all('file_display');
+  foreach ($displays as $t => $o) {
+    ctools_export_crud_delete('file_display', $t);
+  }
+
+  return t('File Types and Displays have been reverted.');
+}

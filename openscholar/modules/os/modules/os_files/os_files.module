@@ -1401,6 +1401,9 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
+    'application/x-wtml',
+    'application/x-wtt',
+    'application/x-wwtfig'
   );
   $types['document']->mimetypes = (empty($types['document']->mimetypes)) ? $document : array_merge($types['document']->mimetypes, $document);
 
@@ -1521,6 +1524,9 @@ function _os_files_extensions_from_type($type) {
       'odp',
       'xml',
       'tex',
+      'wtml',
+      'wtt',
+      'wwtfig'
     );
 
     $types['executable'] = array(
@@ -1557,4 +1563,21 @@ function os_files_file_fields() {
   $file_fields = array_unique($file_fields);
 
   return $file_fields;
+}
+
+/**
+ * Adds worldwide telescope mimetypes and extensions to Drupal
+ */
+function os_files_file_mimetype_mapping_alter(&$mimes) {
+  $types = array(
+    'application/x-wtt' => 'wtt',
+    'application/x-wtml' => 'wtml',
+    'application/x-wwtfig' => 'wwtfig'
+  );
+
+  foreach ($types as $mime => $ext) {
+    $key = max(array_keys($mimes['mimetypes'])) + 1;
+    $mimes['mimetypes'][$key] = $mime;
+    $mimes['extensions'][$ext] = $key;
+  }
 }

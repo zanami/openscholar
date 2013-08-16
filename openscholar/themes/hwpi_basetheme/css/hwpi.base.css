@@ -13,10 +13,12 @@ a:visited {
   color: #215990;
 }
 
+.block-boxes-os_boxes_html a,
 .field-name-body a {
      text-decoration: underline;
 }
 
+.block-boxes-os_boxes_html a:hover,
 .field-name-body a:hover {
      text-decoration: none;
 }
@@ -186,12 +188,12 @@ ol.search-results li.search-result:last-child {
 
 
 .view .date-nav-wrapper .date-prev {
-    right: 590px;
+    right: 90%;
 }
 
 
 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 430px;
+    right: 88%;
 }
 
 .no-sidebars .view .date-nav-wrapper .date-prev {
@@ -421,7 +423,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .node-event .field-name-field-date {
-  color: #7e7e7e;
+  color: #6D6D6D;
   margin-bottom: 7px;
 }
 
@@ -716,7 +718,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #215990;
+  text-decoration: underline;
 }
 
 

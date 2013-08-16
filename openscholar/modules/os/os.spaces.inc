@@ -20,8 +20,13 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'bundles' => array('department'),
     'og_tasks' => array(
-      'vsiteTaskNewsEventsSection',
-      'vsiteTaskAboutSection'
+      'vsite_preset_section_home',
+      'vsite_preset_section_about',
+      'vsite_preset_section_academics',
+      'vsite_preset_section_research',
+      'vsite_preset_section_activities',
+      'vsite_preset_section_resources',
+      'vsite_preset_section_news_&_events',
     ),
     'variable' => array(
       'spaces_features' => array(
