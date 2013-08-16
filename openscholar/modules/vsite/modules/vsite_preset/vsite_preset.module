@@ -14,10 +14,12 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   // @fixme we should be able to load this via files[]  array in vsite_preset.info
   include_once($path . '/includes/vsite_task.inc');
 
-  // Provides task for 'Academics'.
-  $tasks['vsite_preset_section_academics'] = _vsite_preset_new_section_task('Academics');
-  // Provides task for 'Academics'.
-  $tasks['vsite_preset_section_about'] = _vsite_preset_new_section_task('About');
+  // Provides all simple section tasks.
+  $sections = array('About', 'Academics', 'Activities', 'Overview', 'Research', 'Resources', 'Services');
+  foreach ($sections as $title) {
+    $key = 'vsite_preset_section_' . strtolower($title);
+    $tasks[$key] = _vsite_preset_new_section_task($title);
+  }
 
   // Provides task for 'News & Events'.
   $task = array(
