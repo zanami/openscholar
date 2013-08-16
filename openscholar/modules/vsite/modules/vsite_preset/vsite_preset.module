@@ -60,3 +60,27 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
 
   return $tasks;
 }
+
+/**
+ * Builds a new task that creates a page section and primary menu item.
+ *
+ * @param string $title
+ *   The string to use for the page title and menu link title.
+ * @return object $task
+ *   The new vsite_task object to create the new page and new menu link.
+ */
+function _vsite_preset_new_section_task($title) {
+  $path = drupal_get_path('module', 'vsite_preset');
+  $replacements = array('@title' => $title);
+  $properties = array(
+    'title' => t('@title Section', $replacements),
+    'description' => t('Sets up standard template for a @title section.', $replacements),
+    'required' => TRUE,
+    'callback' => '_vsite_preset_section_task',
+    'arguments' => array('title' => t($title)),
+    'file' => $path . '/includes/menu.inc',
+  );
+  $task = new vsite_task($properties);
+
+  return $task;
+}
