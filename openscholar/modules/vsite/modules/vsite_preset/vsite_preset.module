@@ -11,8 +11,6 @@
 function vsite_preset_og_tasks_info($entity_type, $entity) {
   $tasks = array();
   $path = drupal_get_path('module', 'vsite_preset');
-  // @fixme we should be able to load this via files[]  array in vsite_preset.info
-  include_once($path . '/includes/vsite_task.inc');
 
   // Provides all simple section tasks.
   $sections = array('About', 'Academics', 'Activities', 'News & Events', 'Overview', 'Research', 'Resources', 'Services');
@@ -20,16 +18,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     $key = 'vsite_preset_section_' . str_replace(' ', '_', strtolower($title));
     $tasks[$key] = _vsite_preset_new_section_task($title);
   }
-
-  // Provides task for 'News & Events'.
-  $task = array(
-    'title' => t('News & Events Section'),
-    'description' => t('Sets up a standard News & Events site section.'),
-    'required' => TRUE,
-    'callback' => '_vsite_preset_section_newsevents_task',
-    'file' => $path . '/includes/menu.inc',
-  );
-  $tasks['vsite_preset_section_newsevents'] = new vsite_task($task);
 
   // Provides task for 'HOME'.
   $task = array(
