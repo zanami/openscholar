@@ -737,7 +737,7 @@ function vsite_register_mail($key, &$message, $params) {
  */
 function _vsite_register_mail_replacements($vsite, $author, $key) {
   global $base_url;
-  
+
   // Initialize replacements array with values common to both mail keys.
   $replacements = array(
     '!username' => $author->name,
