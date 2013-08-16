@@ -187,7 +187,6 @@ function cp_menu_alter(&$items) {
   // make them all part of 'cp' menu
   foreach ($items as $path => $item) {
     if (strpos($path, 'cp') === 0) {
-      if (is_null($item)) dpm($path);
       if (!array_key_exists('menu_name', $item)) {
         $items[$path]['menu_name'] = 'cp';
       }
