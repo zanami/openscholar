@@ -463,7 +463,7 @@ a.rslides_nav.prev {
     background: url(/profiles/openscholar/themes/os_basetheme/images/images/ss_arrow.png) repeat scroll 2px 2px #000;
 }
 
-
+/*
 .slide-copy h2 {
     margin-bottom: 0;
 }
@@ -471,7 +471,7 @@ a.rslides_nav.prev {
 #layout_16_9_below .slide-copy h2 {
     margin-bottom: 16px;
 }
-
+*/
 .slide-copy h2 a {
     font-weight: bold;
 }
