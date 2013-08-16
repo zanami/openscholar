@@ -15,9 +15,9 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   include_once($path . '/includes/vsite_task.inc');
 
   // Provides all simple section tasks.
-  $sections = array('About', 'Academics', 'Activities', 'Overview', 'Research', 'Resources', 'Services');
+  $sections = array('About', 'Academics', 'Activities', 'News & Events', 'Overview', 'Research', 'Resources', 'Services');
   foreach ($sections as $title) {
-    $key = 'vsite_preset_section_' . strtolower($title);
+    $key = 'vsite_preset_section_' . str_replace(' ', '_', strtolower($title));
     $tasks[$key] = _vsite_preset_new_section_task($title);
   }
 

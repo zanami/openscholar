@@ -23,6 +23,10 @@ function os_spaces_presets() {
       'vsite_preset_section_home',
       'vsite_preset_section_about',
       'vsite_preset_section_academics',
+      'vsite_preset_section_research',
+      'vsite_preset_section_activities',
+      'vsite_preset_section_resources',
+      'vsite_preset_section_news_&_events',
     ),
     'variable' => array(
       'spaces_features' => array(
