@@ -30,7 +30,8 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'title' => t('About Section'),
     'description' => t('Sets up standard template for an About section.'),
     'required' => TRUE,
-    'callback' => '_vsite_preset_section_about_task',
+    'callback' => '_vsite_preset_section_task',
+    'arguments' => array('title' => t('About')),
     'file' => $path . '/includes/menu.inc',
     'completed' => _vsite_preset_section_about_completed($entity),
   );
@@ -52,7 +53,8 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     'title' => t('Academics Section'),
     'description' => t('Sets up standard template for a Academics section.'),
     'required' => TRUE,
-    'callback' => '_vsite_preset_section_academics_task',
+    'callback' => '_vsite_preset_section_task',
+    'arguments' => array('title' => t('Academics')),
     'file' => $path . '/includes/menu.inc',
     'completed' => _vsite_preset_section_academics_completed($entity),
   );
