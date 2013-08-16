@@ -167,6 +167,11 @@ function _os_create_node($options) {
   $node->uid = $options['uid'];
   $node->path = $options['path'];
 
+  // Updates parent and child node for creating subpage (book) nodes.
+  if (isset($options['parent_node'])) {
+    os_pages_make_subpage($node, $options['parent_node']);
+  }
+
   // Creates a wrapper and further modifies the entity.
   $wrapper = entity_metadata_wrapper('node', $node);
 
