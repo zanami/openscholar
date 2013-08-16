@@ -440,17 +440,26 @@ function os_pages_preprocess_table(&$vars) {
 function os_pages_node_submit(&$node, $form, &$form_state) {
   if (isset($form['#book_parent_node'])) {
     // create a book out of our parent node
-    $parent = $form['#book_parent_node'];
-    $parent = node_load($parent);
-    $parent->book['bid'] = 'new';
-    book_node_update($parent);
-
-    // $node->book has already been added to the node.
-    // nothing is done if these fields are empty
-    $node->book['bid'] = $parent->nid;
-    $node->book['plid'] = $parent->book['mlid'];
-    $node->book['menu_name'] = $parent->book['menu_name'];
+    $parent_id = $form['#book_parent_node'];
+    os_pages_make_subpage($node, $parent_id);
   }
+}
+
+/**
+ * Adds the passed node as a child page of the parent node ID.
+ */
+function os_pages_make_subpage(&$node, $parent_id) {
+  // Updates the parent node (book root).
+  $parent = node_load($parent_id);
+  $parent->book['bid'] = 'new';
+  book_node_update($parent);
+
+  // Updates the child node (new subpage).
+  // $node->book has already been added to the node.
+  // nothing is done if these fields are empty
+  $node->book['bid'] = $parent->nid;
+  $node->book['plid'] = $parent->book['mlid'];
+  $node->book['menu_name'] = $parent->book['menu_name'];
 }
 
 /**
