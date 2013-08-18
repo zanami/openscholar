@@ -16,6 +16,12 @@ function os_reader_menu() {
     'access arguments' => array(2, 3, 5),
   );
 
+  $items['os-reader'] = array(
+    'title' => 'Import news',
+    'page callback' => 'os_reader_import_news',
+    'access callback' => 'os_reader_import_news_access_callback',
+  );
+
   return $items;
 }
 
@@ -26,6 +32,32 @@ function os_reader_admin_paths() {
   );
 
   return $paths;
+}
+
+/**
+ * Access callback for the os reader news import.
+ */
+function os_reader_import_news_access_callback() {
+  if ($vsite = vsite_get_vsite()) {
+    return og_user_access('node', $vsite->id, 'create news content');
+  }
+  else {
+    return user_access('create news content');
+  }
+}
+
+/**
+ * Display to the user feeds items which he can import into his site.
+ */
+function os_reader_import_news() {
+  drupal_add_css(drupal_get_path('module', 'os_reader') . '/os_reader.css');
+
+  $item = menu_get_item();
+  $feed_importer_nid = isset($item['map'][1]) ? $item['map'][1] : NULL;
+
+  return
+    "<div class='first'>" . views_embed_view('os_feed_importers') . "</div>" .
+    "<div class='second'>" . views_embed_view('os_reader_feeds', 'block_1', $feed_importer_nid) . "</div>";
 }
 
 /**

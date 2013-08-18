@@ -1,0 +1,11 @@
+.first {
+  float: left; /* LTR */
+  padding-right: 5px; /* LTR */
+  border-right: dotted 1px #000000; /* LTR */
+  height: 100%;
+}
+
+.second {
+  float: right; /* LTR */
+  width: 85%;
+}
