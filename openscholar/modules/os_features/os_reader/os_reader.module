@@ -19,16 +19,33 @@ function os_reader_menu() {
   return $items;
 }
 
+function os_reader_admin_paths() {
+  $paths = array(
+    'os-reader' => TRUE,
+    'os-reader/*' => TRUE,
+  );
+
+  return $paths;
+}
+
 /**
  * Implements hook_os_add_new_links_alter().
  */
 function os_reader_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();
+
   $vsite = vsite_get_vsite();
   if ($menu['path'] == 'reader' && og_user_access('node', $vsite->id, 'create feed_importer content')) {
     $links['add_feed_importer'] = array(
       'title' => t('Add feed importer'),
       'href' => 'node/add/feed-importer',
+    );
+  }
+
+  if ($menu['path'] == 'news') {
+    $links['import-news'] = array(
+      'title' => t('Import News'),
+      'href' => 'os-reader',
     );
   }
 }
