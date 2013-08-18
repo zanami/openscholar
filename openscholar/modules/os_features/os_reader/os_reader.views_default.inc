@@ -147,11 +147,19 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['copy_feed_to_news']['field'] = 'copy_feed_to_news';
   $handler->display->display_options['fields']['copy_feed_to_news']['label'] = '';
   $handler->display->display_options['fields']['copy_feed_to_news']['element_label_colon'] = FALSE;
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: OS feed item: Created */
   $handler->display->display_options['sorts']['time']['id'] = 'created';
   $handler->display->display_options['sorts']['time']['table'] = 'os_feed_item';
   $handler->display->display_options['sorts']['time']['field'] = 'created';
   $handler->display->display_options['sorts']['time']['order'] = 'DESC';
+  /* Contextual filter: OS feed item: Importer_nid */
+  $handler->display->display_options['arguments']['importer_nid']['id'] = 'importer_nid';
+  $handler->display->display_options['arguments']['importer_nid']['table'] = 'os_feed_item';
+  $handler->display->display_options['arguments']['importer_nid']['field'] = 'importer_nid';
+  $handler->display->display_options['arguments']['importer_nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['importer_nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['importer_nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['importer_nid']['summary_options']['items_per_page'] = '25';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
