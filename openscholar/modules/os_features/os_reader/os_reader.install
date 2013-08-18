@@ -55,8 +55,6 @@ function os_reader_schema() {
       'importer_nid' => array(
         'description' => 'The feed importer NID',
         'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
       ),
     ),
     'primary key' => array('id'),
