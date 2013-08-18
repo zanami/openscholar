@@ -148,9 +148,9 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['copy_feed_to_news']['label'] = '';
   $handler->display->display_options['fields']['copy_feed_to_news']['element_label_colon'] = FALSE;
   /* Sort criterion: Broken/missing handler */
-  $handler->display->display_options['sorts']['time']['id'] = 'time';
+  $handler->display->display_options['sorts']['time']['id'] = 'created';
   $handler->display->display_options['sorts']['time']['table'] = 'os_feed_item';
-  $handler->display->display_options['sorts']['time']['field'] = 'time';
+  $handler->display->display_options['sorts']['time']['field'] = 'created';
   $handler->display->display_options['sorts']['time']['order'] = 'DESC';
 
   /* Display: Page */
