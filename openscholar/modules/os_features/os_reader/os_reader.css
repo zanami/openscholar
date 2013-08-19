@@ -1,69 +1,69 @@
-.first {
+.first-region {
   float: left; /* LTR */
   height: 100%;
   width: 15%;
 }
 
-.first .item-list ul,
-.second .item-list ul  {
+.first-region .item-list ul,
+.second-region .item-list ul  {
   margin: 0px;
 }
 
-.first .item-list ul li,
-.second .item-list ul li  {
+.first-region .item-list ul li,
+.second-region .item-list ul li  {
   list-style-type: none;
 }
 
-.first .item-list ul li {
+.first-region .item-list ul li {
   border: 2px solid #C4C2C2;
   padding: 2px 5px;
   background-color: #DDDDDD;
   width: 100%;
 }
 
-.first .item-list ul li.active {
+.first-region .item-list ul li.active {
   background-color: #EEEEEE;
 }
 
-.first .item-list ul li a {
+.first-region .item-list ul li a {
   display: block;
 }
 
-.first .add-new {
+.first-region .add-new {
   display: block;
   margin-top: 10px;
 }
 
-.second {
+.second-region {
   float: left; /* LTR */
   width: 85%;
 }
 
-.second .views-table {
+.second-region .views-table {
   border: 2px solid #C4C2C2;
   width: 100%;
 }
 
-.second .views-field-title {
+.second-region .views-field-title {
   padding: 0;
 }
 
-.second .feed-item-title {
+.second-region .feed-item-title {
   padding: 0.6em;
   cursor: pointer;
 }
 
-.second .feed-item-description {
+.second-region .feed-item-description {
   display: none;
   padding-left: 0.6em; /* LTR */
 }
 
-.second .views-field-copy-feed-to-news {
+.second-region .views-field-copy-feed-to-news {
   border-left: 2px solid #C4C2C2; /* LTR */
   text-align: right; /* LTR */
 }
 
-.second .views-field-copy-feed-to-news .item-list ul {
+.second-region .views-field-copy-feed-to-news .item-list ul {
   list-style-type: none;
 }
 
