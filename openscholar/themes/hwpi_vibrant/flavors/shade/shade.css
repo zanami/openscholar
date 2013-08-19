@@ -88,9 +88,16 @@ h1, h2, h3, h4 {
 .front #content-panels .block-content, .sidebar .block-content {
     border-top: 0 none;
 }
-.front #content-panels .block, .sidebar .block {
+.front #content-panels .block {
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 #f6f8f8;
+    border: medium none;
+    border-radius: 3px;
+    box-shadow: 0 0;
+}
+.sidebar .block {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 transparent;
     border: medium none;
     border-radius: 3px;
     box-shadow: 0 0;
@@ -109,7 +116,12 @@ sidebar .block-title {
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      margin-bottom: 0;
+    margin-bottom: 0;
+    background: none repeat scroll 0 0 transparent;
+   }
+   span[style]{
+   	font-family:open sans,arial, sans-serif!important;
+   
    }
    
 .event-start-month {
@@ -244,13 +256,6 @@ ul.links li.link-count-node-readmore {
 	
 }
 /*slideshow*/
-#layout_3_1_overlay .slide-copy {
-    background: none repeat scroll 0 0 #8996A0;
-    opacity: 0.95;
-    position: relative;
-    width: 420px;
-    z-index: 2;
-}
 
 #layout_3_1_overlay h2 {
     border-bottom: none;
@@ -287,6 +292,11 @@ ul.links li.link-count-node-readmore {
 .not-front .field-name-body {
     font-family: open sans, arial, sans-serif;
     font-size: 16px;
+}
+h2.field-label {
+    border-bottom: 0 none !important;
+    font-size: 1em !important;
+    padding: 0 !important;
 }
 
 #layout_16_9_overlay .slide-copy .boxes-box-content h2 {
