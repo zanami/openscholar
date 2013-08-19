@@ -884,7 +884,9 @@ function os_files_media_browser_params_alter(&$media_params){
     }
   }
 
-  $media_params['max_filesize'] = variable_get('os_files_max_file_size', '128m');
+  if (isset($media_params['max_filesize'])) {
+    $media_params['max_filesize'] = variable_get('os_files_max_inline_filesize', '128m');
+  }
 }
 
 /**
