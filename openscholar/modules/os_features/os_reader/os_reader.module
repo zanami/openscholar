@@ -338,3 +338,15 @@ function os_reader_is_feed_item_copied_to_vsite($feed_id, $vsite_id) {
 
   return in_array($vsite_id, $vsite_ids);
 }
+
+/**
+ * Import feed item when the user add the feed importer for the first time.
+ */
+function os_reader_node_insert($node) {
+  if (!$node->is_new || $node->type != 'feed_importer') {
+    return;
+  }
+
+  // TODO: Fix the redirect.
+  feeds_source('os_reader', $node->nid)->startImport();
+}
