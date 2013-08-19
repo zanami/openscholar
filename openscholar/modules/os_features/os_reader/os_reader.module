@@ -430,27 +430,20 @@ function os_reader_node_insert($node) {
   }
 
   feeds_source('os_reader', $node->nid)->startImport();
-
-  // Using this variable so we can know if we need to change the destination of
-  // the batch.
-  variable_set('os_reader_redirect', TRUE);
 }
 
 /**
- * Implements hook_batch_alter().
- *
- * When the user add the feed importer for the first time the feed items are
- * imported for the first time. We need to change the destination of the batch
- * operation.
+ * Implements hook_node_preprocess().
  */
-function os_reader_batch_alter(&$batch) {
-  if (!variable_get('os_reader_redirect')) {
+function os_reader_process_node(&$variables) {
+  if (!$variables['page'] || $variables['page'] != 'feed_importer') {
     return;
   }
 
-  // Change the address of the batch operation destination.
-  $_GET['destination'] = 'os-reader';
+  $url = 'os-reader';
+  if ($vsite = vsite_get_vsite()) {
+    $url = $vsite->group->name . '/' . $url;
+  }
 
-  // No need for this variable any more.
-  variable_del('os_reader_redirect');
+  drupal_goto('reader', array('fragment' => 'overlay=' . $url));
 }
