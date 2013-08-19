@@ -203,6 +203,10 @@ ul.links li.link-count-node-readmore {
 #page-wrapper {
     background-color: #F6F8F8;
 }
+.page-node #content-column .content-inner, .not-front .content-inner {
+    box-shadow: 0 0;
+ 
+}
 
 #branding_footer, #branding_header {
     color: #FFFFFF;
@@ -225,6 +229,12 @@ ul.links li.link-count-node-readmore {
 }
 #search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
+}
+.sidebar .block-title {
+    border-bottom: 3px solid #A61D31;
+    font-size: 22px;
+    font-weight: normal;
+ 
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
