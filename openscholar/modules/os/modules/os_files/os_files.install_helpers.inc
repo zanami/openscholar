@@ -168,7 +168,7 @@ function _os_files_install_find_files($node) {
       }
     }
   }
-dpm(microtime(true)-$start);
+
   return $files;
 }
 
@@ -231,24 +231,16 @@ function _os_files_install_get_files_from_string($string, $space = null) {
  * Returns the new space if it does
  *
  * @param $file
- * @param $eids
+ * @param $node
  * @return int
  */
-function _os_files_install_find_new_space($fid, $node) {
+function _os_files_install_find_new_space($file, $node) {
   $current_space = null;
-
-
 
   if (isset($file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
     $current_space = $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
   }
 
-  // no nodes use this file. We can only assume it's in the correct space already
-  if (empty($eids['node'])) {
-    return 0;
-  }
-
-  $node = node_load(reset($eids['node']));
   if (isset($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']) && $current_space != $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']) {
     return $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
   }
