@@ -57,7 +57,7 @@ function os_reader_import_news() {
 
   return
     "<div class='first'>" . views_embed_view('os_feed_importers') . "</div>" .
-    "<div class='second'>" . views_embed_view('os_reader_feeds', 'block_1', $feed_importer_nid) . "</div>";
+    "<div class='second'>" . views_embed_view('os_reader_feeds', 'default', $feed_importer_nid) . "</div>";
 }
 
 /**
