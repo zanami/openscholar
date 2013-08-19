@@ -4,7 +4,13 @@
   width: 15%;
 }
 
-.first .item-list ul {
+.first .item-list ul,
+.second .item-list ul  {
+  margin: 0px;
+}
+
+.first .item-list ul li,
+.second .item-list ul li  {
   list-style-type: none;
 }
 
@@ -12,6 +18,7 @@
   border: 2px solid #C4C2C2;
   padding: 2px 5px;
   background-color: #DDDDDD;
+  width: 100%;
 }
 
 .first .item-list ul li.active {

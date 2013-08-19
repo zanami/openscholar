@@ -118,7 +118,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
   $items = array(
     array(
       'data' => l('All feeds', 'os-reader'),
-      'class' => empty($feed_importer_nid) ? 'active' : '',
+      'class' => empty($feed_importer_nid) ? array('active') : array(),
     ),
   );
   foreach ($importers as $importer) {
@@ -126,7 +126,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
       // Currently viewed importer, display as active text.
       $items[] = array(
         'data' => $importer->title,
-        'class' => 'active',
+        'class' => array('active'),
       );
     }
     else {
