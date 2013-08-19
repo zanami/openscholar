@@ -205,11 +205,13 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   $feed = os_reader_feed_item_load($feed_id);
   $vsite = vsite_get_vsite($vsite_nid);
   $vsite_id = $vsite->id;
+  $current_vsite = vsite_get_vsite();
 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
+    $message = empty($current_vsite) ? t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)) : t('Imported');
+    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", $message);
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
   }
