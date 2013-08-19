@@ -48,6 +48,7 @@
 
 .second .feed-item-description {
   display: none;
+  padding-left: 0.6em; /* LTR */
 }
 
 .second .views-field-copy-feed-to-news {
