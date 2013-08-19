@@ -44,6 +44,12 @@
   width: 100%;
 }
 
+.second .views-table tr {
+  background-color: #EEE;
+  border-bottom: 1px solid #CCC;
+  padding: 0.1em 0.6em;
+}
+
 .second .views-field-title {
   padding: 0;
 }
