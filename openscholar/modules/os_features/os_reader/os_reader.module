@@ -26,12 +26,10 @@ function os_reader_menu() {
 }
 
 function os_reader_admin_paths() {
-  $paths = array(
+  return array(
     'os-reader' => TRUE,
     'os-reader/*' => TRUE,
   );
-
-  return $paths;
 }
 
 /**
@@ -106,6 +104,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'feed_importer')
+    ->propertyCondition('status', NODE_PUBLISHED)
     ->execute();
 
   if (empty($result['node'])) {
@@ -211,7 +210,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $message = empty($current_vsite) ? t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)) : t('Imported');
+    $message = empty($current_vsite) ? t('Feed item imported to @vsite', array('@vsite' => $vsite->og->title)) : t('Imported');
     $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", $message);
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
