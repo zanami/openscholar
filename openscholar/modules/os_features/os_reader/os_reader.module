@@ -44,7 +44,7 @@ function os_reader_theme() {
     'variables' => array(
       'view' => '',
       'importers' => '',
-      'add_new' => ''
+      'add_new' => '',
     ),
     'template' => 'os-reader',
   );
