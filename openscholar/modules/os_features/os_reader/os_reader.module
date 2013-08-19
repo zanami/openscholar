@@ -16,7 +16,127 @@ function os_reader_menu() {
     'access arguments' => array(2, 3, 5),
   );
 
+  $items['os-reader'] = array(
+    'title' => 'Import news',
+    'page callback' => 'os_reader_import_news',
+    'access callback' => 'os_reader_import_news_access_callback',
+  );
+
   return $items;
+}
+
+function os_reader_admin_paths() {
+  return array(
+    'os-reader' => TRUE,
+    'os-reader/*' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function os_reader_theme() {
+  $items = array();
+
+  $items['os_reader'] = array(
+    'variables' => array(
+      'view' => '',
+      'importers' => '',
+      'add_new' => '',
+    ),
+    'template' => 'os-reader',
+  );
+
+  return $items;
+}
+
+/**
+ * Access callback for the os reader news import.
+ */
+function os_reader_import_news_access_callback() {
+  if ($vsite = vsite_get_vsite()) {
+    return og_user_access('node', $vsite->id, 'create news content');
+  }
+  else {
+    return user_access('create news content');
+  }
+}
+
+/**
+ * Page Callback; Display feed items which can be imported into vsite.
+ */
+function os_reader_import_news() {
+  drupal_add_css(drupal_get_path('module', 'os_reader') . '/os_reader.css');
+  drupal_add_js(drupal_get_path('module', 'os_reader') . '/os_reader.js');
+
+  $item = menu_get_item();
+  $feed_importer_nid = isset($item['map'][1]) ? $item['map'][1] : NULL;
+
+  // Check if user is allowed to import feeds.
+  if ($vsite = vsite_get_vsite()) {
+    if (og_user_access('node', $vsite->id, 'create feed_importer content')) {
+      $options = array('attributes' => array('class' => array('add-new')));
+      $add_new = l(t('+ Add new'), 'node/add/feed-importer', $options);
+    }
+  }
+
+  $variables = array(
+    'importers' => os_reader_get_importers_list($feed_importer_nid),
+    'view' => views_embed_view('os_reader_feeds', 'default', $feed_importer_nid),
+    'add_new' => empty($add_new) ? '' : $add_new,
+  );
+
+  return theme('os_reader', $variables);
+}
+
+/**
+ * Helper function for import news screen; Returns list of feed importer nodes.
+ *
+ * @param $feed_importer_nid
+ *    Currently viewed importer, will get class 'active'.
+ *
+ * @return
+ *    Themed item list of feed importers.
+ */
+function os_reader_get_importers_list($feed_importer_nid = NULL) {
+  // Get all feed importer nodes.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'feed_importer')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->execute();
+
+  if (empty($result['node'])) {
+    // No feed importer nodes.
+    return 'No feed importers found.';
+  }
+  $importers = node_load_multiple(array_keys($result['node']));
+
+  // Create item list of feed importers.
+  $items = array(
+    array(
+      'data' => l('All feeds', 'os-reader'),
+      'class' => empty($feed_importer_nid) ? array('active') : array(),
+    ),
+  );
+  foreach ($importers as $importer) {
+    if ($feed_importer_nid == $importer->nid) {
+      // Currently viewed importer, display as active text.
+      $items[] = array(
+        'data' => $importer->title,
+        'class' => array('active'),
+      );
+    }
+    else {
+      // Display importer as link.
+      $items[] = array(
+        'data' => l($importer->title, 'os-reader/' . $importer->nid),
+      );
+    }
+  }
+
+  return theme('item_list', array('items' => $items));
 }
 
 /**
@@ -24,11 +144,19 @@ function os_reader_menu() {
  */
 function os_reader_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();
+
   $vsite = vsite_get_vsite();
   if ($menu['path'] == 'reader' && og_user_access('node', $vsite->id, 'create feed_importer content')) {
     $links['add_feed_importer'] = array(
       'title' => t('Add feed importer'),
       'href' => 'node/add/feed-importer',
+    );
+  }
+
+  if ($menu['path'] == 'news' && os_reader_import_news_access_callback()) {
+    $links['import-news'] = array(
+      'title' => t('Import News'),
+      'href' => 'os-reader',
     );
   }
 }
@@ -77,11 +205,13 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   $feed = os_reader_feed_item_load($feed_id);
   $vsite = vsite_get_vsite($vsite_nid);
   $vsite_id = $vsite->id;
+  $current_vsite = vsite_get_vsite();
 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", t('Feed item copied to @vsite', array('@vsite' => $vsite->og->title)));
+    $message = empty($current_vsite) ? t('Feed item imported to @vsite', array('@vsite' => $vsite->og->title)) : t('Imported');
+    $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", $message);
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
   }
@@ -288,4 +418,31 @@ function os_reader_is_feed_item_copied_to_vsite($feed_id, $vsite_id) {
   }
 
   return in_array($vsite_id, $vsite_ids);
+}
+
+/**
+ * Import feed item when the user add the feed importer for the first time.
+ */
+function os_reader_node_insert($node) {
+  if (!$node->is_new || $node->type != 'feed_importer') {
+    return;
+  }
+
+  feeds_source('os_reader', $node->nid)->startImport();
+}
+
+/**
+ * Implements hook_node_preprocess().
+ */
+function os_reader_process_node(&$variables) {
+  if (!$variables['page'] || $variables['page'] != 'feed_importer') {
+    return;
+  }
+
+  $url = 'os-reader';
+  if ($vsite = vsite_get_vsite()) {
+    $url = $vsite->group->name . '/' . $url;
+  }
+
+  drupal_goto('reader', array('fragment' => 'overlay=' . $url));
 }

@@ -52,6 +52,10 @@ function os_reader_schema() {
         'not null' => TRUE,
         'default' => 'feed_item',
       ),
+      'importer_nid' => array(
+        'description' => 'The feed importer NID',
+        'type' => 'int',
+      ),
     ),
     'primary key' => array('id'),
   );
