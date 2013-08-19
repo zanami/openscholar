@@ -133,6 +133,7 @@ function _os_files_install_find_files($node) {
     }
   }
   $space = spaces_og_spaces_get_space_from_object('node', $node);
+  $path_prefix = $space ? $space->group->purl : NULL;
 
   $files = array();
   foreach ($fields as $name => $type) {
@@ -145,7 +146,7 @@ function _os_files_install_find_files($node) {
     }
     elseif (in_array($type, $text_field_types)) {
       foreach ($field[LANGUAGE_NONE] as $b) {
-        $usage =  _os_files_install_get_files_from_string($b['value'], $space->group->purl);
+        $usage =  _os_files_install_get_files_from_string($b['value'], $path_prefix);
         foreach ($usage as $fid => $count) {
           $files['media'][$fid] += $count;
         }
@@ -161,7 +162,7 @@ function _os_files_install_find_files($node) {
     );
 
     foreach ($biblio_fields as $bf) {
-      $usage =  _os_files_install_get_files_from_string($node->$bf, $space->group->purl);
+      $usage =  _os_files_install_get_files_from_string($node->$bf, $path_prefix);
       foreach ($usage as $fid => $count) {
         $files['media'][$fid] += $count;
       }
@@ -192,7 +193,12 @@ function _os_files_install_get_files_from_string($string, $space = null) {
   preg_match_all($image_pattern, $string, $matches);
   foreach ($matches[1] as $m) {
     $filename = basename($m);
-    $uri = 'public://'.$space.'/files/'.$filename;
+    if ($space) {
+      $uri = 'public://'.$space.'/files/'.$filename;
+    }
+    else {
+      $uri = 'public://'.$filename;
+    }
     $file = file_uri_to_object($uri);
     if (!empty($file->fid)) {
       $files[$file->fid]++;
@@ -203,6 +209,12 @@ function _os_files_install_get_files_from_string($string, $space = null) {
   foreach ($matches as $m) {
     if (strpos($m[0], 'data-fid') === FALSE) {
       $filename = basename($m[1]);
+      if ($space) {
+        $uri = 'public://'.$space.'/files/'.$filename;
+      }
+      else {
+        $uri = 'public://'.$filename;
+      }
       $uri = 'public://'.$space.'/files/'.$filename;
       $file = file_uri_to_object($uri);
       if (!empty($file->fid)) {
