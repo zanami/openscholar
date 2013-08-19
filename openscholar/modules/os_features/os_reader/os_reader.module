@@ -153,7 +153,7 @@ function os_reader_os_add_new_links_alter(&$links) {
     );
   }
 
-  if ($menu['path'] == 'news') {
+  if ($menu['path'] == 'news' && os_reader_import_news_access_callback()) {
     $links['import-news'] = array(
       'title' => t('Import News'),
       'href' => 'os-reader',
