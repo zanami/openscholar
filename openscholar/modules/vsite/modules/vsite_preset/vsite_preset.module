@@ -13,10 +13,23 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
   $path = drupal_get_path('module', 'vsite_preset');
 
   // Provides all simple section tasks.
-  $sections = array('About', 'Academics', 'Activities', 'News & Events', 'Overview', 'Research', 'Resources', 'Services');
-  foreach ($sections as $title) {
+  $sections = array(
+    'About' => array(
+      'subpages' => array(
+        'Contact',
+      ),
+    ),
+    'Academics' => array(),
+    'Activities' => array(),
+    'News & Events' => array(),
+    'Overview' => array(),
+    'Research' => array(),
+    'Resources' => array(),
+    'Services' => array(),
+  );
+  foreach ($sections as $title => $info) {
     $key = 'vsite_preset_section_' . str_replace(' ', '_', strtolower($title));
-    $tasks[$key] = _vsite_preset_new_section_task($title);
+    $tasks[$key] = _vsite_preset_new_section_task($title, $info);
   }
 
   // Provides task for 'HOME'.
@@ -40,7 +53,7 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
  * @return object $task
  *   The new vsite_task object to create the new page and new menu link.
  */
-function _vsite_preset_new_section_task($title) {
+function _vsite_preset_new_section_task($title, $info = array()) {
   $path = drupal_get_path('module', 'vsite_preset');
   $replacements = array('@title' => $title);
   $properties = array(
@@ -48,7 +61,10 @@ function _vsite_preset_new_section_task($title) {
     'description' => t('Sets up standard template for a @title section.', $replacements),
     'required' => TRUE,
     'callback' => '_vsite_preset_section_task',
-    'arguments' => array('title' => t($title)),
+    'arguments' => array(
+      'title' => t($title),
+      'info' => $info,
+    ),
     'file' => $path . '/includes/menu.inc',
   );
   $task = new vsite_task($properties);

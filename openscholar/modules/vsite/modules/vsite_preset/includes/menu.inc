@@ -16,9 +16,19 @@ function _vsite_preset_section_task($entity, $task, &$context) {
 
   // Creates a new page node using the passed title.
   $node = os_create_node($task->arguments['title'], 'page', $entity->uid);
-
   // Adds the new page node to the vsite this task is associated with.
   vsite_add_node($node, $entity->nid);
+
+  // Optionally creates and adds additional pages as sub-pages (book child nodes).
+  if (isset($task->arguments['info']['subpages'])) {
+    $subpages = array();
+    $options = array('parent_node' => $node->nid);
+    foreach ($task->arguments['info']['subpages'] as $title) {
+      $subpage = os_create_node($title, 'page', $entity->uid, NULL, $options);
+      vsite_add_node($subpage, $entity->nid);
+      $subpages[] = $subpage;
+    }
+  }
 
   // Creates a new primary menu link for the new page node.
   $mlid = vsite_menu_add_node($node->nid, $entity->nid, $node->title);
