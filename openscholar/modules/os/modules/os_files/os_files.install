@@ -448,7 +448,7 @@ function os_files_update_7005(&$sb) {
   if (!isset($sb['progress'])) {
     $sb['count'] = $q->countQuery()->execute()->fetchField();
     $sb['progress'] = 0;
-    $sb['limit'] = 10;
+    $sb['limit'] = 50;
   }
 
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
@@ -460,10 +460,10 @@ function os_files_update_7005(&$sb) {
     // Update file_usage
     $eids = _os_files_install_find_files($node);
     db_delete('file_usage')
-      ->condition('fid', $fid)
+      ->condition('id', $nid)
       ->condition('module', 'imagefield_crop', '<>')
       ->condition('module', 'os_boxes', '<>')
-      ->condition('type', 'file', '<>')
+      ->condition('type', 'node')
       ->execute();
 
     foreach ($eids as $module => $ids) {
@@ -481,6 +481,7 @@ function os_files_update_7005(&$sb) {
     $sb['progress']++;
   }
 
+  error_log($sb['progress'].'/'.$sb['count'].': '.($sb['progress']/$sb['count'] * 100).'%');
   $sb['#finished'] = $sb['progress']/$sb['count'];
   if ($sb['#finished'] >= 1) {
     return t('File usage has been corrected for all files.');
