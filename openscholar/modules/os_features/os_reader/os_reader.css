@@ -34,6 +34,20 @@
 
 .second .views-table {
   border: 2px solid #C4C2C2;
+  width: 100%;
+}
+
+.second .views-field-title {
+  padding: 0;
+}
+
+.second .feed-item-title {
+  padding: 0.6em;
+  cursor: pointer;
+}
+
+.second .feed-item-description {
+  display: none;
 }
 
 .second .views-field-copy-feed-to-news {
