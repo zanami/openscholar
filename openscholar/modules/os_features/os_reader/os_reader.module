@@ -347,6 +347,28 @@ function os_reader_node_insert($node) {
     return;
   }
 
-  // TODO: Fix the redirect.
   feeds_source('os_reader', $node->nid)->startImport();
+
+  // Using this variable so we can know if we need to change the destination of
+  // the batch.
+  variable_set('os_reader_redirect', TRUE);
+}
+
+/**
+ * Implements hook_batch_alter().
+ *
+ * When the user add the feed importer for the first time the feed items are
+ * imported for the first time. We need to change the destination of the batch
+ * operation.
+ */
+function os_reader_batch_alter(&$batch) {
+  if (!variable_get('os_reader_redirect')) {
+    return;
+  }
+
+  // Change the address of the batch operation destination.
+  $_GET['destination'] = 'os-reader';
+
+  // No need for this variable any more.
+  variable_del('os_reader_redirect');
 }
