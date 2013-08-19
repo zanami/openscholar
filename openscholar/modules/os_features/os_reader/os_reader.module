@@ -35,6 +35,24 @@ function os_reader_admin_paths() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function os_reader_theme() {
+  $items = array();
+
+  $items['os_reader'] = array(
+    'variables' => array(
+      'view' => '',
+      'importers' => '',
+      'add_new' => ''
+    ),
+    'template' => 'os-reader',
+  );
+
+  return $items;
+}
+
+/**
  * Access callback for the os reader news import.
  */
 function os_reader_import_news_access_callback() {
@@ -47,7 +65,7 @@ function os_reader_import_news_access_callback() {
 }
 
 /**
- * Display to the user feeds items which he can import into his site.
+ * Page Callback; Display feed items which can be imported into vsite.
  */
 function os_reader_import_news() {
   drupal_add_css(drupal_get_path('module', 'os_reader') . '/os_reader.css');
@@ -55,9 +73,69 @@ function os_reader_import_news() {
   $item = menu_get_item();
   $feed_importer_nid = isset($item['map'][1]) ? $item['map'][1] : NULL;
 
-  return
-    "<div class='first'>" . views_embed_view('os_feed_importers') . "</div>" .
-    "<div class='second'>" . views_embed_view('os_reader_feeds', 'default', $feed_importer_nid) . "</div>";
+  // Check if user is allowed to import feeds.
+  $vsite = vsite_get_vsite();
+  if (og_user_access('node', $vsite->id, 'create feed_importer content')) {
+    $options = array('attributes' => array('class' => array('add-new')));
+    $add_new = l(t('+ Add new'), 'node/add/feed-importer', $options);
+  }
+
+  $variables = array(
+    'importers' => os_reader_get_importers_list($feed_importer_nid),
+    'view' => views_embed_view('os_reader_feeds', 'default', $feed_importer_nid),
+    'add_new' => empty($add_new) ? '' : $add_new,
+  );
+
+  return theme('os_reader', $variables);
+}
+
+/**
+ * Helper function for import news screen; Returns list of feed importer nodes.
+ *
+ * @param $feed_importer_nid
+ *    Currently viewed importer, will get class 'active'.
+ *
+ * @return
+ *    Themed item list of feed importers.
+ */
+function os_reader_get_importers_list($feed_importer_nid = NULL) {
+  // Get all feed importer nodes.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'feed_importer')
+    ->execute();
+
+  if (empty($result['node'])) {
+    // No feed importer nodes.
+    return 'No feed importers found.';
+  }
+  $importers = node_load_multiple(array_keys($result['node']));
+
+  // Create item list of feed importers.
+  $items = array(
+    array(
+      'data' => l('All feeds', 'os-reader'),
+      'class' => empty($feed_importer_nid) ? 'active' : '',
+    ),
+  );
+  foreach ($importers as $importer) {
+    if ($feed_importer_nid == $importer->nid) {
+      // Currently viewed importer, display as active text.
+      $items[] = array(
+        'data' => $importer->title,
+        'class' => 'active',
+      );
+    }
+    else {
+      // Display importer as link.
+      $items[] = array(
+        'data' => l($importer->title, 'os-reader/' . $importer->nid),
+      );
+    }
+  }
+
+  return theme('item_list', array('items' => $items));
 }
 
 /**

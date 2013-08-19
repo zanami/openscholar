@@ -30,7 +30,7 @@ function harvard_courses_os_app_info() {
  */
 function harvard_courses_feeds_plugins() {
   $path = drupal_get_path('module', 'harvard_courses');
-  
+
   $info = array();
   $info['HarvardFetcher'] = array(
     'name'        => t('Harvard API fetcher'),
