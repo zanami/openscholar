@@ -645,16 +645,8 @@ table td.mini {
     font-size:15px;
 }
 
-.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 350px;
-}
-
-.one-sidebar #main-content .view .date-nav-wrapper .date-prev {
-    right: 515px;
-}
-
 .no-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 840px;
+    right: 93%;
 }
 
 .view .date-nav-wrapper .date-next a {
