@@ -38,6 +38,7 @@ dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = date_ical
 dependencies[] = entity
+dependencies[] = feeds
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio

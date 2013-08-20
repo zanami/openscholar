@@ -130,7 +130,7 @@ function os_pages_block_view_alter(&$render, $block) {
 
 /**
  * Implements hook_menu_contextual_links_alter().
- * 
+ *
  * Adds a link to the main_content widget to edit the content of the page.
  */
 function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path) {
@@ -145,7 +145,14 @@ function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path)
     $links = array_reverse($links, true);
   }
   // vsite users skip to here because they don't have access to any of the widget contextual links
-  elseif ($root_path == 'node/%' && $node = menu_get_object()) {
+  elseif ($root_path == 'node/%' && !empty($router_item['page_arguments'])) {
+    if (empty($router_item['page_arguments'][2]) || empty($router_item['page_arguments'][2]->nid)) {
+      // Not a node.
+      return;
+    }
+
+    $node = $router_item['page_arguments'][2];
+
     // we don't want to mess with the links for other content types by accident
     // only pages are editted at the os/pages/ paths.
     if ($node->type == 'page') {
@@ -288,7 +295,7 @@ function os_pages_node_view($node, $view_mode) {
       if ($ctx) {
         context_set('context', $ctx->name, $ctx);
       }
-  
+
       if (isset($node->book['bid']) && $ctx = context_load('os_pages-section-'.$node->book['bid'])) {
         context_set('context', $ctx->name, $ctx);
       }
@@ -433,17 +440,26 @@ function os_pages_preprocess_table(&$vars) {
 function os_pages_node_submit(&$node, $form, &$form_state) {
   if (isset($form['#book_parent_node'])) {
     // create a book out of our parent node
-    $parent = $form['#book_parent_node'];
-    $parent = node_load($parent);
-    $parent->book['bid'] = 'new';
-    book_node_update($parent);
-
-    // $node->book has already been added to the node.
-    // nothing is done if these fields are empty
-    $node->book['bid'] = $parent->nid;
-    $node->book['plid'] = $parent->book['mlid'];
-    $node->book['menu_name'] = $parent->book['menu_name'];
+    $parent_id = $form['#book_parent_node'];
+    os_pages_make_subpage($node, $parent_id);
   }
+}
+
+/**
+ * Adds the passed node as a child page of the parent node ID.
+ */
+function os_pages_make_subpage(&$node, $parent_id) {
+  // Updates the parent node (book root).
+  $parent = node_load($parent_id);
+  $parent->book['bid'] = 'new';
+  book_node_update($parent);
+
+  // Updates the child node (new subpage).
+  // $node->book has already been added to the node.
+  // nothing is done if these fields are empty
+  $node->book['bid'] = $parent->nid;
+  $node->book['plid'] = $parent->book['mlid'];
+  $node->book['menu_name'] = $parent->book['menu_name'];
 }
 
 /**

@@ -607,7 +607,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 /* CTools MODAL OVERRIDES */
 
 #modalContent {
-  top: 0 !important;
+  top: 0;
   color: #666;
   position: fixed !important;
 }

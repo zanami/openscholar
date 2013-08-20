@@ -123,12 +123,10 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
  * @return
  * The mlid of the saved menu link, or FALSE if the menu link could not be saved.
  */
-function vsite_menu_menu_link_save(&$item, $vsite = FALSE) {
+function vsite_menu_menu_link_save(&$item, $gid = FALSE) {
   drupal_alter('menu_link', $item);
   ctools_include('menu', 'os');
-  if (!$vsite) {
-    $vsite = spaces_get_space();
-  }
+  $vsite = vsite_get_vsite($gid);
   if (!$vsite) {
     return FALSE;
   }
@@ -157,7 +155,7 @@ function vsite_menu_menu_link_save(&$item, $vsite = FALSE) {
   $menu = $item['menu_name'];
 
   //Retrieve the existing menu data
-  $existing_menu = _vsite_menu_get_menu_links($menu);
+  $existing_menu = _vsite_menu_get_menu_links($menu, $vsite);
 
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
@@ -438,10 +436,12 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
 /**
  * Helper function to get an array of menu links from the controller or drupal, used by crud functions
  */
-function _vsite_menu_get_menu_links($menu){
-  $vsite = spaces_get_space();
+function _vsite_menu_get_menu_links($menu, $vsite = FALSE) {
+  if (!$vsite) {
+    $vsite = spaces_get_space();
+  }
 
-  if($vsite){
+  if ($vsite) {
     //Retrieve the menu data from the controller
     $existing_menu = $vsite->controllers->menus->get($menu);
   }
@@ -629,7 +629,7 @@ function vsite_menu_preprocess_block(&$vars) {
 /**
  * Simple API function wrapper to add a new menu item to a vsite's menu.
  */
-function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $options = array()) {
+function vsite_menu_create_menu_link($title, $path, $gid, $plid = FALSE, $options = array()) {
   // Adds the parameters into the correct array format.
   $options['link_title'] = $title;
   $options['link_path'] = $path;
@@ -643,19 +643,20 @@ function vsite_menu_create_menu_link($title, $path, $vsite, $plid = FALSE, $opti
   );
   $options += $defaults;
 
-  $mlid = vsite_menu_menu_link_save($options, $vsite);
+  $mlid = vsite_menu_menu_link_save($options, $gid);
   return $mlid;
 }
 
 /**
  * Adds a menu item for a node in the primary menu.
  */
-function vsite_menu_add_node($nid, $vsite, $title = '') {
+function vsite_menu_add_node($nid, $gid, $title = '') {
   if (empty($title)) {
     $node = node_load($nid);
     $title = $node->title;
   }
-  $path_alias = drupal_get_path_alias('node/' . $nid);
-  $mlid = vsite_menu_create_menu_link($title, $path_alias, $vsite);
+  // Note: the final menu item will use any available path alias.
+  $path = "node/$nid";
+  $mlid = vsite_menu_create_menu_link($title, $path, $gid);
   return $mlid;
 }

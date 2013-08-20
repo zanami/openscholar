@@ -1,7 +1,7 @@
 Notice
 ------
 
-The OpenScholar issue queue is meant for code developments that we're actively working on.  Bugs, questions, feature requests, etc should be directed to our [community site](http://community.openscholar.harvard.edu/openscholar).
+The OpenScholar issue queue is meant for code developments that we're actively working on.  Bugs, questions, feature requests, etc should be directed to our [community site](http://community.openscholar.harvard.edu/openscholar).  Please include a title that is descriptive and unique, screenshots, links to affected pages, and atached files when relevant.
 
 Contributing
 ------------

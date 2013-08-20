@@ -85,7 +85,7 @@
     padding-left: 15px !important;
 }
 
-
+#menu-bar ul.nice-menu .menuparent a,
 #menu-bar ul.nice-menu .menuparent a span, 
 #menu-bar ul.nice-menu .menuparent a:hover span, 
 #menu-bar ul.nice-menu .menuparent a.active span {
@@ -114,26 +114,37 @@ display:none;
     position: static;
     width: 100%;
 }
-.region-header-third #block-os-secondary-menu.opened {
+.region-header-third #block-os-secondary-menu.opened,
+.region-header-third .os-custom-menu.opened {
     background-color: #2A527A;
     display: block;
     position: static;
     width:100%;
 }
+
+.region-header-third .os-custom-menu,
 .region-header-third #block-os-secondary-menu{
 	width:99%;
 }
+
+.region-header-third .os-custom-menu .menu,
 .region-header-third #block-os-secondary-menu .menu{
 	width:100%;
 }
+
+.region-header-third .os-custom-menu #nice-menu-third_menu,
 .region-header-third #block-os-secondary-menu #nice-menu-secondary-menu{
 		width:100%;
 }
+
+.region-header-third .os-custom-menu li,
 .region-header-third #block-os-secondary-menu li{
 	border-bottom: 1px solid #2E5A86;
     border-top: 1px solid #25496C !important;
     margin-left:0!important;
 }
+
+.region-header-third .os-custom-menu li a,
 .region-header-third #block-os-secondary-menu li a{
 	padding:12px 15px !important;
 }

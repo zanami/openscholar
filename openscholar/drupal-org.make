@@ -285,7 +285,7 @@ projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
 ;projects[pinserver][tag] = 7.x-3.3
 projects[pinserver][branch] = 7.x-3.x
-; @todo Make tag when QA is finished
+; @todo Make tag when QA is finished 1234
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -384,10 +384,6 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
-
-libraries[iCalcreator][type] = "libraries"
-libraries[iCalcreator][download][type] = "file"
-libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
