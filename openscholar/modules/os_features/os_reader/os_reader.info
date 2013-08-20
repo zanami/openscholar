@@ -36,6 +36,7 @@ features[field][] = node-feed-body
 features[field][] = node-feed-field_url
 features[field][] = node-feed_importer-body
 features[field][] = node-feed_importer-field_rss_url
+features[field][] = node-news-field_os_feed_item
 features[field][] = os_feed_item-feed_item-field_nodes_reference
 features[node][] = feed
 features[node][] = feed_importer
