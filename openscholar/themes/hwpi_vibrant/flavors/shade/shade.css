@@ -31,7 +31,6 @@
     text-decoration: none !important;
 }
 #columns .boxes-box-content h2 {
-    border-bottom: 3px solid #A61D31;
     color: #000000;
     font-size: 22px;
     line-height: 28px;
@@ -87,6 +86,9 @@ h1, h2, h3, h4 {
 }
 .front #content-panels .block-content, .sidebar .block-content {
     border-top: 0 none;
+}
+body.front #columns{
+	background-image:none;
 }
 .front #content-panels .block {
     -moz-box-sizing: border-box;
@@ -244,7 +246,6 @@ ul.links li.link-count-node-readmore {
     border-bottom: none;
     font-size: 22px;
     font-weight: normal;
-    color:#fff!important;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
