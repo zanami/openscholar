@@ -44,8 +44,7 @@
 
 @media (max-width: 479px){
 	#boxes-box-site_info {
-    margin-top: -5px;
-    padding-top: 38px;
+    padding-top: 0 !important;
 }
 	
 }
