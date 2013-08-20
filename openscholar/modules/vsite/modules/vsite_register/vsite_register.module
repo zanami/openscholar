@@ -39,6 +39,40 @@ function vsite_register_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['site/login/once/%/%/%/%'] = array(
+    'title' => 'One-time login to website',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_register_site_login', 3, 4, 5, 6),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc',
+  );
+
+  $items['site/purls'] = array(
+    'title' => 'Get PURLs',
+    'page callback' => 'vsite_register_get_purls',
+    'access callback' => 'vsite_register_cors_access',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['site/register/validate/%/%'] = array(
+    'title' => 'Validate User Info',
+    'page callback' => 'vsite_register_validate',
+    'page arguments' => array(3, 4),
+    'access callback' => 'vsite_register_cors_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc'
+  );
+
+  $items['site/user/exists/%'] = array(
+    'title' => 'Validate Username/Email',
+    'page callback' => 'vsite_register_user_exists',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc',
+  );
+
   return $items;
 }
 
@@ -195,7 +229,7 @@ function vsite_register_message($form, $domain) {
   // Prepares an array of messages to display to the user,
   // to be rendered each as individual paragraph elements.
   $paragraphs = array();
-  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose)));
+  $paragraphs[] = t('Success! @whose new site has been created.', array('@whose' => ucfirst($whose_site)));
   if ($user_is_anonymous) {
     $paragraphs[] = t('Check your email account for further details on how to login in to start adding features and content.');
   }
@@ -269,3 +303,57 @@ function _vsite_register_form_error() {
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
 
+function vsite_register_cors_access() {
+  $master = variable_get('ossap_master_servers', array());
+  if (isset($_SERVER['HTTP_ORIGIN'])) {
+    foreach ($master as $name => $info) {
+      $domain = 'http://'.parse_url('http://'.$info['domain'], PHP_URL_HOST);
+      if ($_SERVER['HTTP_ORIGIN'] == $domain) {
+        drupal_add_http_header('Access-Control-Allow-Origin', $domain);
+        return true;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Implements hook_node_insert()
+ */
+function vsite_register_node_insert($node){
+  if (og_is_group_type('node', $node->type)) {
+    if(($vsite = spaces_load('og', $node->nid))){
+      //PURL is needed but spaces_og_node_insert may not have fired yet
+      if (!isset($vsite->group->purl) && is_array($node->purl) && !empty($node->purl['value'])) {
+        $vsite->group->purl = $node->purl['value'];
+      }
+
+	    // Emails user to inform them of new created site, email is always sent.
+	    // This function may additionally send a second email to a specified
+	    // administrator's email address.
+	    // @see form.inc
+	    module_load_include('form.inc', 'vsite_register');
+	    vsite_register_notify($vsite);
+    }
+  }
+}
+
+function vsite_register_get_purls() {
+  $q = db_select('purl', 'p')
+    ->fields('p', array('value'))
+    ->condition('provider', 'spaces_og')
+    ->execute();
+
+  $purls = array();
+  foreach ($q as $r) {
+    $purls[] = $r->value;
+  }
+  $output = array(
+    'domain' => $GLOBALS['base_url'],
+    'purls' => $purls
+  );
+
+  print drupal_json_encode($output);
+  exit;
+}

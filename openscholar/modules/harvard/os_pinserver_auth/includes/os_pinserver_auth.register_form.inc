@@ -34,7 +34,7 @@ function os_pinserver_auth_vsite_register_form_page() {
     }
 
     // Redirects pinserver-logged-in user if they don't own a vsite.
-    if ($uid = os_pinserver_auth_get_uid_from_huid()) {
+    if ($uid = pinserver_authenticate_get_uid_from_huid()) {
       // Logs the user in based on the HUID->UID association.
       $user = user_load(array('uid' => $uid));
       $user->login = time();
@@ -166,7 +166,7 @@ function os_pinserver_auth_register_submit($form, &$form_state) {
   }
 
   // Create UID->HUID association in database if UID and HUID are present.
-  if (!empty($uid) && !empty($huid) && !os_pinserver_auth_add_row($uid, $huid)) {
+  if (!empty($uid) && !empty($huid) && !pinserver_authenticate_set_user_huid($uid, $huid)) {
     error_log('WARNING: The os_pinserver_auth_register_submit function could not add the UID->HUID association to the database');
   }
 
@@ -187,7 +187,7 @@ function os_pinserver_auth_register_validate_elements(&$form_state) {
   }
 
   // Check if user can create vsites.
-  if ($user->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('openscholar_vsites_per_user')) {
+  if ($GLOBALS['user']->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('openscholar_vsites_per_user')) {
     $errors['form'] = t('You do not have permission to create more websites.');
   }
 
@@ -229,7 +229,7 @@ function os_pinserver_auth_register_validate_huid($huid) {
   }
 
   // Verifies HUID does not already exist in database.
-  else if (os_pinserver_auth_get_uid_from_huid($huid)) {
+  else if (pinserver_authenticate_get_uid_from_huid($huid)) {
     $errors[] = t('The @harvard_id you have entered already exists in the database.', array('@harvard_id' => 'Harvard ID'));
   }
 
@@ -286,7 +286,7 @@ function _os_pinserver_auth_create_vsite_redirect() {
     // Can create new vsites; provide form to create a new vsite.
     return TRUE;
   }
-  else if (count($vsites)) {
+  else {
     // Can't create new sites; redirect user to existing vsite(s).
     return _os_pinserver_auth_existing_vsite_redirect($vsites);
   }
@@ -295,21 +295,30 @@ function _os_pinserver_auth_create_vsite_redirect() {
 }
 
 /*
- * Redirect to the proper vsite.
+ * Redirect to the proper destination after failing to create a vsite.
 */
-function _os_pinserver_auth_existing_vsite_redirect($vsites) {
-  // Redirects user to existing vsite(s).
-  $count = count($vsites);
+function _os_pinserver_auth_existing_vsite_redirect($vsites = array()) {
+  // First checks if the reason for access denied was due to domain mismatch.
+  global $base_url;
+  $purl_base_domain = variable_get('purl_base_domain');
+  // If there was a domain mismatch...
+  if ($base_url != $purl_base_domain) {
+    // Redirects to custom vsite's front page.
+    drupal_goto();
+  }
 
+  // Alerts the user that they have reached the maximum.
+  $sites = format_plural(count($vsites), '1 site', '@count sites');
   drupal_get_messages();  // Clear message queue.
-  drupal_set_message(t('You have already registered your maximum number of !count !websites.', array(
-  '!count' => "<i>$count</i>",
-  '!websites' => t('website' . ($count == 1 ? '' : 's')),
-  )));
+  drupal_set_message(t('You have already registered your maximum number of @sites.', array(
+  '@sites' => $sites,
+  )), 'warning');
 
+  // Redirects user to existing vsite(s) if available.
   if (count($vsites) == 1) {
     drupal_goto($vsites[0]->get_absolute_url());
   }
+  // Otherwise redirects to the user page, with the list of all a user's sites.
   else {
     drupal_goto('user');
   }

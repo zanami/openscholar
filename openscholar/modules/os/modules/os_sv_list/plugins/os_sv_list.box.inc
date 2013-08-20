@@ -1,4 +1,5 @@
 <?php
+
 class os_sv_list_box extends os_boxes_default {
 
   /**
@@ -21,8 +22,10 @@ class os_sv_list_box extends os_boxes_default {
       'sort_by' => 'sort_newest',
       'vocabs' => array(),
       'terms' => array(),
+      'only_vocabs' => TRUE,
+      'only_vocabs_values' => array(),
 
-      //Do not include subsites by default
+      // Do not include subsites by default.
       'query_scope' => array('current'),
 
       'biblio_whitelist' => $biblio_whitelist,
@@ -40,7 +43,7 @@ class os_sv_list_box extends os_boxes_default {
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
     $content_types = array(
-      'all' => t('All')
+      'all' => t('All'),
     ) + os_get_bundles(array(1));
 
     if (isset($content_types['media_gallery'])) {
@@ -85,15 +88,13 @@ class os_sv_list_box extends os_boxes_default {
           '#os_sv_list_content_type' => array('value' => 'biblio'),
         ),
         'invisible' => array(
-          '#os_sv_list_content_type' => array('!value' => 'biblio')
-        ,)
+          '#os_sv_list_content_type' => array('!value' => 'biblio'),
+        ),
       )
     );
 
-    if(module_exists('vsite')){
-
+    if (module_exists('vsite')) {
       ctools_include('subsite','vsite');
-
       $form['query_scope'] = array(
         '#title' => 'Include results from',
         '#type' => 'checkboxes',
@@ -123,7 +124,7 @@ class os_sv_list_box extends os_boxes_default {
         ),
       ),
     );
-    //defines which display types are content type specific
+    // Defines which display types are content type specific.
     $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
       'display_sidebar_teaser' => array('news', 'event', 'person'),
       'display_links' => array('link'),
@@ -134,13 +135,13 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Sorting',
       '#default_value' => $this->options['sort_by'],
       '#options' => array(
-        //content type sensitive sorts
+        // Content type sensitive sorts.
         'sort_event' => t('Event Date'),
         'sort_presentation' => t('Recently Presented'),
         'sort_biblio' => t('Year of Publication'),
         'sort_news' => t('News Date'),
 
-        //standard sorts
+        // Standard sorts,
         'sort_newest' => t('Newest Post'),
         'sort_oldest' => t('Oldest Post'),
         'sort_alpha' => t('Alphabetical'),
@@ -153,50 +154,72 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
-    if ($vocabs = os_sv_list_get_content_type_vocabs($content_types_value)) {
-      // Make the vocabulary selection optional.
-      $vocabs = array(-1 => t('- Select -')) + $vocabs;
-    }
-    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
-    $terms_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
-
-    $form['query_details']['vocabs'] = array(
-      '#type' => 'select',
-      '#title' => t('Vocabulary'),
-      '#description' => t('Select a vocabulary to filter content by tagged items.'),
-      '#options' => $vocabs,
-      '#default_value' => $vocabs_default_value,
-      '#access' => $vocabs,
-      '#ajax' => array(
-        'callback' => 'os_sv_list_terms_details_ajax',
-        'wrapper' => 'terms-details',
-      ),
+    $form['query_details']['only_vocabs'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Only vocabularies'),
+      '#description' => t('Display item which tagged to all of the vocabulary terms and specific terms'),
+      '#default_value' => $this->options['only_vocabs'],
     );
 
-    $terms = array();
-    if ($vocabs_default_value) {
-      $tree = taxonomy_get_tree($vocabs_default_value);
+    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
+    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+
+    foreach ($vocabs as $vid => $vocab) {
+      $terms = array();
+      $tree = taxonomy_get_tree($vid);
       foreach ($tree as $item) {
         $term = taxonomy_term_load($item->tid);
         $terms[$term->tid] = $term->name;
       }
+      $options[$vocab] = $terms;
+      $only_vocabs[$vid] = $vocab;
     }
 
-    $form['query_details']['terms'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Vocabulary terms'),
-      '#description' => empty($terms) ? t('No terms in the vocabulary') : '',
-      '#options' => $terms,
+    $form['query_details']['vocabs'] = array(
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#title' => t('Term'),
+      '#description' => t('Select a term to filter content.'),
+      '#options' => $options,
+      '#default_value' => $vocabs_default_value,
       '#access' => $vocabs,
+      '#size' => 10,
+
       '#states' => array(
-        'invisible' => array(
-          ':input[name="vocabs"]' => array('value' => -1),
+        'visible' => array(
+          ':input[name="only_vocabs"]' => array('checked' => FALSE),
         ),
       ),
-      '#default_value' => $terms_default_value,
-      '#prefix' => '<div id="terms-details">',
-      '#suffix' => '</div>',
     );
+
+    $form['query_details']['only_vocabs_values'] = array(
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#title' => t('Vocabulary'),
+      '#description' => t('Select a vocabulary to filter content by tagged items.'),
+      '#options' => $only_vocabs,
+      '#default_value' => $this->options['only_vocabs_values'],
+      '#access' => $vocabs,
+      '#size' => 10,
+
+      '#states' => array(
+        'visible' => array(
+          ':input[name="only_vocabs"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+
+    $terms = array();
+    $vocabs_default_value = is_array($vocabs_default_value) ? $vocabs_default_value : array($vocabs_default_value);
+    if ($vocabs_default_value) {
+      foreach ($vocabs_default_value as $vid) {
+        $tree = taxonomy_get_tree($vid);
+        foreach ($tree as $item) {
+          $term = taxonomy_term_load($item->tid);
+          $terms[$term->tid] = $term->name;
+        }
+      }
+    }
 
     $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
     $vocabs_statement = isset($form_state['values']['vocabs']) && $form_state['values']['vocabs'] == -1;
@@ -222,8 +245,9 @@ class os_sv_list_box extends os_boxes_default {
     if (isset($content_types['image'])) {
       $content_map['image'] = $content_map['media_gallery'];
     }
-    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' '); //use blank path for unknown paths.
 
+    // Use blank path for unknown paths.
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -266,17 +290,17 @@ class os_sv_list_box extends os_boxes_default {
       '#type' => 'textfield',
       '#default_value' => $this->options['more_text'],
       '#states' => array(
-        'visible' => array('input[name=more]' => array('checked' => TRUE))
-      )
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+      ),
     );
 
     $form['pager'] = array(
       '#title' => 'Show pager',
       '#type' => 'checkbox',
-      '#default_value' => $this->options['pager']
+      '#default_value' => $this->options['pager'],
     );
 
-    if(module_exists('vsite')){
+    if (module_exists('vsite')) {
 
       ctools_include('subsite','vsite');
 
@@ -294,7 +318,7 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Number of items to display',
       '#type' => 'select',
       '#options' => array_slice(range(0, 20), 1, NULL, TRUE),
-      '#default_value' => $this->options['number_of_items']
+      '#default_value' => $this->options['number_of_items'],
     );
 
     return $form;
@@ -311,7 +335,6 @@ class os_sv_list_box extends os_boxes_default {
     $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
     $page = 0;
 
-
     $data = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
@@ -326,7 +349,8 @@ class os_sv_list_box extends os_boxes_default {
       if ($options['content_type'] == 'image') {
         $display_func = 'display_image';
         $nodes = file_load_multiple($data);
-      }else{
+      }
+      else {
         $nids = array();
         $extra = array();
         foreach ($data as $n) {
@@ -336,7 +360,7 @@ class os_sv_list_box extends os_boxes_default {
             $extra[] = explode('=', $n[1]);
           }
         }
-        if(count($extra)){
+        if (count($extra)) {
 	        foreach ($nids as $delta => $n) {
 	          $node = clone node_load($n);
 	          if(isset($extra[$delta])){
@@ -344,7 +368,8 @@ class os_sv_list_box extends os_boxes_default {
 	          }
 	          $nodes[] = $node;
 	        }
-        }else{
+        }
+        else{
           $nodes = node_load_multiple($nids);
         }
       }
@@ -352,7 +377,7 @@ class os_sv_list_box extends os_boxes_default {
       $block['content'] = $this->$display_func($nodes);
     }
 
-    // pager widget
+    // Pager widget.
     $pager = '';
     if ($options['pager'] && $block['content']) {
       // theme_pager();
@@ -368,7 +393,7 @@ class os_sv_list_box extends os_boxes_default {
       ));
     }
 
-    // more link
+    // More link.
     if ($options['more'] && $more_link && $block['content']) {
       $block['content'] .= l($options['more_text'], $options['more_link'], array('attributes' => array('class' => array('more-link'))));
     }
@@ -379,11 +404,11 @@ class os_sv_list_box extends os_boxes_default {
     if ($block['content']) {
       $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $block['content'] . '</div>' . $pager;
       return $block;
-    } else {
+    }
+    else {
       $block['title'] = $block['subject'] = '';
       return $block;
     }
-
   }
 
   // get_default_query_query - humble beginnings of the EFQ
@@ -414,7 +439,7 @@ class os_sv_list_box extends os_boxes_default {
     $options = $this->options;
     $entity_field = "n.nid";
 
-    //Build the Query, EFQ or otherwise.
+    // Build the Query, EFQ or otherwise.
     switch ($options['content_type']) {
       case 'biblio':
         $query = db_select('node', 'n')
@@ -422,7 +447,7 @@ class os_sv_list_box extends os_boxes_default {
           ->condition('n.status', 1);
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
-        //check biblio show all...
+        // Check biblio show all...
         if (isset($options['biblio_whitelist']) && (count(array_filter($options['biblio_whitelist'])))) {
           $bib_types = array_filter($options['biblio_whitelist']);
           $query->condition('biblio_type', array_values($bib_types), 'IN');
@@ -454,12 +479,12 @@ class os_sv_list_box extends os_boxes_default {
       break;
 
       case 'event':
-        //Only query the date field if they are sorting by it
+        // Only query the date field if they are sorting by it.
         if($options['sort_by'] == 'sort_event'){
           $query = db_select('field_data_field_date', 'fd')
-          ->fields('fd', array('entity_id', 'delta'))
-          ->where('field_date_value > NOW()')
-          ->orderBy('field_date_value');
+            ->fields('fd', array('entity_id', 'delta'))
+            ->where('field_date_value > NOW()')
+            ->orderBy('field_date_value');
           $query->join('node', 'n', 'n.vid = fd.revision_id');
           $query->condition('n.status', 1);
           $entity_field = "fd.entity_id";
@@ -470,17 +495,17 @@ class os_sv_list_box extends os_boxes_default {
           return array();
         }
 
-        // content type
+        // Content type.
         if ($options['content_type'] != 'all') {
           $query->propertyCondition('type', $options['content_type']);
         }
         break;
     }
 
-    //Filter based on site or subsite
+    // Filter based on site or subsite.
     $gids = array();
     if(module_exists('vsite')){
-      if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))){
+      if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))) {
         $options['query_scope'] = array('current');
       }
 
@@ -499,13 +524,14 @@ class os_sv_list_box extends os_boxes_default {
 	      }
 	    }
 
-	    if(count($gids)){
-		    $operator = (count($gids) == 1)? "=" : "IN";
-		    $gids = (count($gids) == 1)? current($gids) : $gids;
+	    if (count($gids)) {
+		    $operator = (count($gids) == 1) ? "=" : "IN";
+		    $gids = (count($gids) == 1) ? current($gids) : $gids;
 
-		    if($query instanceof EntityFieldQuery){
+		    if ($query instanceof EntityFieldQuery) {
 		      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
-		    }else{
+		    }
+        else {
 		      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
 		      $query->condition('og.gid', $gids, $operator);
 		      $query->condition('og.entity_type', 'node');
@@ -514,10 +540,10 @@ class os_sv_list_box extends os_boxes_default {
 	    }
     }
 
-    //Filter Exceptions.
+    // Filter Exceptions.
     switch ($options['content_type']) {
       case 'book':
-        //limit book depth to 1.  not a field, so use a regular query
+        // limit book depth to 1.  not a field, so use a regular query.
         $book_query = db_select('menu_links', 'ml')
           ->condition('module', 'book')
           ->condition('depth', 1);
@@ -532,26 +558,28 @@ class os_sv_list_box extends os_boxes_default {
         break;
     }
 
-    //Init Pager.
+    // Init Pager.
     if ($options['pager'] && is_int($page)) {
-      if($query instanceof EntityFieldQuery){
+      if ($query instanceof EntityFieldQuery) {
         $query->pager($options['number_of_items']);
         $page = $query->pager['element'];
-      }else{
+      }
+      else {
         $query = $query->extend('PagerDefault');
         $query->limit($options['number_of_items']);
         $page = PagerDefault::$maxElement++;
         $query->element($page);
       }
-    }else if (is_int($page)){
+    }
+    else if (is_int($page)) {
       $query->range(0, $this->options['number_of_items']);
     }
 
 
-    //sorting exceptions
+    // Sorting exceptions.
     switch ($options['content_type']) {
       case 'person':
-        //person lists sorting alphabetically should use last name, not first.
+        // Person lists sorting alphabetically should use last name, not first.
         if ($this->options['sort_by'] == 'sort_alpha') {
           $query->fieldOrderBy('field_last_name', 'value', 'ASC');
         }
@@ -564,7 +592,7 @@ class os_sv_list_box extends os_boxes_default {
       $this->$sort_func($query);
     }
 
-    //For all Queries but image, filter out based on vocab.
+    // For all Queries but image, filter out based on vocab.
     if ($options['content_type'] != 'image' && !empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
       $tagged_nodes = $this->tagged_nodes();
 
@@ -573,9 +601,10 @@ class os_sv_list_box extends os_boxes_default {
       $operator = (empty($tagged_nodes))? "=" : "IN";
 	    $tagged_nodes = (empty($tagged_nodes))? 0 : $tagged_nodes;
 
-	    if($query instanceof EntityFieldQuery){
+	    if ($query instanceof EntityFieldQuery) {
         $query->propertyCondition('nid', $tagged_nodes, $operator);
-      }else{
+      }
+      else{
         $query->condition($entity_field, $tagged_nodes, $operator);
       }
     }
@@ -591,12 +620,12 @@ class os_sv_list_box extends os_boxes_default {
         $nids = isset($result['file']) ? array_keys($result['file']) : array();
         break;
       case 'event':
-        //Only get the date value if they are sorting by it
-        if($options['sort_by'] == 'sort_event'){
+        // Only get the date value if they are sorting by it.
+        if ($options['sort_by'] == 'sort_event') {
           $query = $query->execute();
 
           foreach ($query as $r) {
-            $nids[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;
+            $nids[] = $r->entity_id.'|date_id=date.' . $r->entity_id . '.field_date.' . $r->delta;
           }
           break;
         }
@@ -614,33 +643,38 @@ class os_sv_list_box extends os_boxes_default {
    * Return the nodes attached to terms of the selected vocabulary.
    */
   public function tagged_nodes() {
-    if (empty($this->options['vocabs'])) {
-      return;
-    }
-
-    // Load the taxonomy terms of the vocabulary.
-    if (!$vocabulary = taxonomy_get_tree($this->options['vocabs'])) {
-      return;
-    }
-
-    // Clean terms with empty value.
-    if (!empty($this->options['terms'])) {
-      foreach ($this->options['terms'] as $key => $value) {
-        if ($value == 0) {
-          unset($this->options['terms'][$key]);
-        }
-      }
-    }
-
-    // Collect all the taxonomy term ID.
-    if (!empty($this->options['terms'])) {
-      $tids = $this->options['terms'];
-    }
-    else {
-      $tids = array();
-      foreach ($vocabulary as $terms) {
+    // Build a list of terms.
+    $tids = array();
+    $inside_vocab = FALSE;
+    if (in_array(0, $this->options['terms'])) {
+      // The user did not select a terms but a vocab - loading the terms from
+      // the vocab.
+      $tree = taxonomy_get_tree($this->options['vocabs']);
+      foreach ($tree as $terms) {
         $tids[] = $terms->tid;
       }
+    }
+    else {
+      if ($this->options['only_vocabs']) {
+        // The user selected specific vocabs - load all the terms of the
+        // vocabularies.
+        foreach ($this->options['only_vocabs_values'] as $vocab) {
+          $tree = taxonomy_get_tree($vocab);
+          foreach ($tree as $term) {
+            $tids[] = $term->tid;
+          }
+        }
+      }
+      else {
+        // The user selected specific terms.
+        $tids = $this->options['vocabs'];
+        $inside_vocab = TRUE;
+      }
+    }
+
+    // No terms were found.
+    if (empty($tids)) {
+      return;
     }
 
     $bundles = os_get_bundles(array(1));
@@ -648,12 +682,29 @@ class os_sv_list_box extends os_boxes_default {
 
     $query = db_select('taxonomy_index', 't');
     $query->join('node', 'n', 'n.nid = t.nid');
-    $result = $query
-      ->condition('t.tid', $tids, 'IN')
+    $query
       ->condition('n.type', $content_types)
       ->condition('n.status', 1)
-      ->fields('t')
-      ->execute();
+      ->fields('t');
+
+    if ($inside_vocab) {
+      $terms = taxonomy_term_load_multiple($tids);
+
+      foreach ($terms as $term) {
+        $vocabs[$term->vid][] = $term->tid;
+      }
+
+      foreach ($vocabs as $delta => $terms) {
+        $alias = 'term' . $delta;
+        $query->innerJoin('taxonomy_index', $alias, "$alias.nid = n.nid");
+        $query->condition("$alias.tid", $terms, 'IN');
+      }
+    }
+    else {
+      $query->condition('t.tid', $tids, 'IN');
+    }
+
+    $result = $query->execute();
 
     $nids = array();
     foreach ($result as $row) {
@@ -712,14 +763,14 @@ class os_sv_list_box extends os_boxes_default {
   function display_title($nodes) {
 
     $cross_site_links = FALSE;
-    if(module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))){
+    if (module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))) {
       ctools_include('subsite','vsite');
       $cross_site_links = TRUE;
     }
 
-    foreach ( $nodes as $node ) {
+    foreach ($nodes as $node) {
       $options = array();
-      if($cross_site_links){
+      if ($cross_site_links) {
         vsite_subsite_node_url_options($node, $options);
       }
 
@@ -736,7 +787,7 @@ class os_sv_list_box extends os_boxes_default {
     $links = array();
     foreach ($nodes as $node) {
       $field_link = field_get_items('node', $node, 'field_links_link');
-      if(count($field_link) && strlen($field_link[0]['url'])){
+      if (count($field_link) && strlen($field_link[0]['url'])) {
         $links[] = l($node->title, $field_link[0]['url']);
       }
     }
@@ -744,7 +795,7 @@ class os_sv_list_box extends os_boxes_default {
     return theme('item_list', array(
       'items' => $links,
       'type' => 'ul',
-      'attributes' => array(
+      'attributes' => array (
         'class' => 'link-list',
       ),
     ));
@@ -782,26 +833,6 @@ class os_sv_list_box extends os_boxes_default {
 
     return $options;
   }
-}
-
-/**
- * AJAX callback to add query details (e.g. the vocabulary to use).
- *
- * Since the controlling logic for populating the form is in the form builder
- * function, all we do here is select the element and return it to be updated.
- */
-function os_sv_list_query_details_ajax($form, &$form_state) {
-  return $form['options']['query_details'];
-}
-
-/**
- * AJAX callback for adding terms to the query.
- *
- * Since the controlling logic for populating the form is in the form builder
- * function, all we do here is select the element and return it to be updated.
- */
-function os_sv_list_terms_details_ajax($form, &$form_state) {
-  return $form['options']['query_details']['terms'];
 }
 
 /**

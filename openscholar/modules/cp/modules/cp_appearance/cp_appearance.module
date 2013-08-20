@@ -68,7 +68,7 @@ function cp_appearance_menu(){
  */
 function cp_appearance_sub_theme_access() {
   if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
-    return og_user_access('node', $vsite->group->nid, 'manage subtheme');
+    return og_user_access('node', $vsite->group->nid, 'manage subtheme', NULL, FALSE, TRUE);
   }
 }
 
@@ -337,7 +337,7 @@ function cp_appearance_cp_settings() {
       '#type' => 'checkbox',
 
       '#default_value' => variable_get('enable_responsive', false),
-      '#title' => t('Enable responsive behaviors'),
+      '#title' => t('Enable responsive behaviors - EXPERIMENTAL'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
         on smaller devices.'),
@@ -380,7 +380,8 @@ function theme_cp_appearance_add_subtheme_list($variables) {
   $types = $variables['types'];
 
   if ($types) {
-    $output = '<ul class="admin-list">';
+    $output = '<h4>Download the <a target="_blank" href="https://github.com/openscholar/starterkit">Subtheme Starter Kit</a> to begin developing your custom theme.</h4>';
+    $output .= '<ul class="admin-list">';
     foreach ($types as $type => $info) {
       $output .= '<li class="clearfix">';
       $output .= '<span class="label">' . l($info->name, 'cp/appearance/add-subtheme/' . $type) . '</span>';
@@ -390,7 +391,7 @@ function theme_cp_appearance_add_subtheme_list($variables) {
     $output .= '</ul>';
   }
   else {
-    $output = '<p>' . t('There is no subtheme types. Go to the <a href="@url">subtheme types create page</a> to add a new subtheme type.', array('@url' => url('admin/structure/subtheme'))) . '</p>';
+    $output = '<p>' . t('There are no subtheme types. Go to the <a href="@url">subtheme types create page</a> to add a new subtheme type.', array('@url' => url('admin/structure/subtheme'))) . '</p>';
   }
 
   return $output;
@@ -488,14 +489,14 @@ function cp_appearance_validate_subtheme($info, $form_element_name, $in_form = T
 
   if (empty($info['module'])) {
     if ($in_form) {
-      form_set_error($form_element_name, t('The theme you uploaded is not valid: theme name to be based on is missing.'));
+      form_set_error($form_element_name, t('The theme you uploaded is not valid.  `module` directive missing.'));
     }
 
     return FALSE;
   }
   else if (!in_array($info['module'], array_keys($themes))) {
     if ($in_form) {
-      form_set_error($form_element_name, t('The theme you uploaded is not valid: the base theme is not listed in the theme list.'));
+      form_set_error($form_element_name, t('The theme you uploaded is not valid.  `module` refers to a theme that does not exist.'));
     }
 
     return FALSE;

@@ -113,13 +113,27 @@ function os_events_process_node(&$variables) {
 
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
-    list(,,$field,$delta) = explode('.', $variables['date_id']);
+    list(,,$field,$delta) = explode('.', is_array($variables['date_id']) ? reset($variables['date_id']) : $variables['date_id']);
+    $delta = intval($delta);
     $date = field_get_items('node', $variables['node'], $field);
     $date = $date[$delta]['value'];
     $variables['link_title_text'] = t('On @date', array('@date' => gmdate('D M j', strtotime($date))));
     if (isset($variables['content']['links']['node']['#links']['node-readmore'])) {
       $variables['content']['links']['node']['#links']['node-readmore']['attributes']['title'] .= ' on '.gmdate('D M j', strtotime($date));
     }
+  }
+
+  if ($variables['page']) {
+    $options = array('absolute' => TRUE, 'attributes' => array('class' => array('subscribe')));
+    $subscribe = l(t('subscribe'), 'calendar/export.ics/' . $variables['node']->nid, $options);
+    $subscribe = str_replace('http://', 'webcal://', $subscribe);
+
+    $ical = l(t('iCal'), 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
+
+    $variables['content']['export'] = array(
+      '#markup' => $subscribe . ' ' . $ical,
+      '#weight' => 10,
+    );
   }
 }
 
@@ -154,7 +168,13 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
   }
 
   if (!in_array($display_id, array('block_2', 'block_1'))) {
-    foreach (array('iCal' => 'calendar/export.ics', 'rss' => 'calendar/rss.xml') as $label => $path) {
+    $buttons = array(
+      'subscribe' => 'calendar/export.ics',
+      'iCal' => 'calendar/export.ics',
+      'rss' => 'calendar/rss.xml'
+    );
+
+    foreach ($buttons as $label => $path) {
 
       // When the user is filtering events by taxonomy term we need to add the
       // path to the iCal/rss export path.
@@ -164,12 +184,15 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
         $path .= str_replace('calendar', '', $_GET['q']);
       }
 
-      $links[] = array(
+      $links[$label] = array(
         'title' => t($label),
         'href' => $path,
         'attributes' => array('class' => array(strtolower($label))),
       );
     }
+
+    // Make sure webcal link uses webcal protocol.
+    $links['subscribe']['href'] = str_replace('http://', 'webcal://', url($links['subscribe']['href'], array('absolute' => TRUE)));
 
     $view->attachment_before .= theme('links', array(
       'links' => $links,
@@ -507,8 +530,17 @@ function os_events_menu_alter(&$items) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Hide the tokens list for sending messages to registrants
  */
-function os_events_form_registration_form_alter(&$form, $form_state) {
+function os_events_form_registration_registrations_broadcast_form_alter(&$form, $form_state) {
+  unset($form['token_tree']);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_events_form_registration_form_alter(&$form, &$form_state) {
   // Remove the entity from the form - we don't need it and it disable the
   // header.
   // @TODO: figure out why the $form['#entity'] disable the header.
@@ -528,7 +560,7 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     '#type' => 'fieldset',
     '#title' => t('Sign up for @label', array('@label' => $node->title)),
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => empty($form_state['input']),
 
     'field_full_name' => $form['field_full_name'],
     'field_department' => $form['field_department'],
@@ -536,11 +568,10 @@ function os_events_form_registration_form_alter(&$form, $form_state) {
     'actions' => $form['actions'],
   );
 
-  if (!empty($form['captcha'])) {
-    $form['event_register']['captcha'] = $form['captcha'];
-  }
-
-  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['captcha'], $form['user']);
+  // Make sure the form it rebuilt, so if there's a validation error, we can
+  // keep the event registration fieldset open.
+  $form_state['rebuild'] = TRUE;
+  unset($form['actions'], $form['field_full_name'], $form['field_department'], $form['anon_mail'], $form['user']);
 }
 
 /**

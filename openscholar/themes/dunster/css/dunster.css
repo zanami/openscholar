@@ -303,7 +303,7 @@ background:#EDEDED;
 	}
 
 #content-column a:link, #content-column a:visited{
-	text-decoration:underline !important;
+	text-decoration:underline;
 	}
 
 .views-field-field-gallery-image-fid img:hover {

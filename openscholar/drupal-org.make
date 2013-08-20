@@ -1,4 +1,4 @@
-; Drupal.org MakeFile for OpenScholar.
+; Drupal.org MakeFile for OpenScholar
 core = 7.x
 api = 2
 
@@ -25,9 +25,6 @@ projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 projects[calendar][patch][] = "http://raw.github.com/openscholar/openscholar/72d63ee3537c31505b7481975886ec13789feeb5/patches/calendar-fix-week-view-overflow.patch"
-
-projects[captcha][subdir] = "contrib"
-projects[captcha][version] = 1.0-beta2
 
 projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
@@ -111,7 +108,7 @@ projects[eva][revision] = "6d92c27"
 
 projects[facetapi][subdir] = "contrib"
 projects[facetapi][version] = 1.1
-projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-1.patch"
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-2.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
@@ -166,6 +163,7 @@ projects[hierarchical_taxonomy][download][type] = git
 projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
 projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
 projects[hierarchical_taxonomy][download][revision] = 5bbe344
+projects[hierarchical_taxonomy][patch][] = "https://drupal.org/files/2034713-hs-comaprse-name-2.patch"
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -262,7 +260,7 @@ projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -271,6 +269,7 @@ projects[og_vocab][version] = 1.x-dev
 projects[og_vocab][download][type] = git
 projects[og_vocab][download][branch] = 7.x-1.x-dev
 projects[og_vocab][download][revision] = 61a6b9f
+projects[og_vocab][patch][] = "https://drupal.org/files/og-vocab-prevent-old-term-refernce-error.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -284,7 +283,9 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][tag] = 7.x-3.2
+;projects[pinserver][tag] = 7.x-3.3
+projects[pinserver][branch] = 7.x-3.x
+; @todo Make tag when QA is finished 1234
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -315,6 +316,9 @@ projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x
 projects[services][download][revision] = 761e620
+
+projects[services_basic_auth][subdir] = "contrib"
+projects[services_basic_auth][version] = "1.1"
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
@@ -381,10 +385,6 @@ libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
 
-libraries[iCalcreator][type] = "libraries"
-libraries[iCalcreator][download][type] = "file"
-libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
-
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
@@ -423,3 +423,7 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
 libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
+
+libraries[html5shiv[type] = "libraries"
+libraries[html5shiv][download][type] = "file"
+libraries[html5shiv][download][url] = "http://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv.js"

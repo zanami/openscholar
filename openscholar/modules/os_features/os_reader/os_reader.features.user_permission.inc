@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * os_reader.features.user_permission.inc
@@ -16,10 +15,10 @@ function os_reader_user_default_permissions() {
     'name' => 'create feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-      4 => 'content editor',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -38,10 +37,10 @@ function os_reader_user_default_permissions() {
     'name' => 'delete own feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-      4 => 'content editor',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -61,10 +60,10 @@ function os_reader_user_default_permissions() {
     'name' => 'edit own feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-      4 => 'content editor',
+      1 => 'content editor',
+      2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'node',
   );

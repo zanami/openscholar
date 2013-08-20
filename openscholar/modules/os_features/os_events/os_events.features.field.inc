@@ -331,11 +331,7 @@ function os_events_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'event',
-      'default_value' => array(
-        0 => array(
-          'registration_type' => 'event_signup_simple',
-        ),
-      ),
+      'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -502,6 +498,8 @@ function os_events_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
