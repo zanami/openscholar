@@ -298,7 +298,7 @@ function os_reader_field_default_fields() {
       'bundle' => 'feed_importer',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Path to the feed that you would like to use to import content to your site.',
       'display' => array(
         'default' => array(
           'label' => 'above',
