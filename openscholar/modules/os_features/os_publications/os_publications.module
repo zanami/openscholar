@@ -855,7 +855,7 @@ function os_publications_import_type($name, $field_settings) {
   // Creating the new publication type. The biblio types table don't have auto
   // increment ont he tid property. Using the biblio module logic for calculate
   // the tid value.
-  $values = array('name' => 'Data');
+  $values = array('name' => $name);
   $query = db_select('biblio_types', 'bt');
   $query->addExpression('MAX(tid)', 'max_tid');
   $result = $query->execute();
@@ -871,6 +871,9 @@ function os_publications_import_type($name, $field_settings) {
   $result = db_query('SELECT * FROM {biblio_field_type} WHERE tid=0', array(), array('fetch' => PDO::FETCH_ASSOC));
   foreach ($result as $delta => $row) {
     // Adding settings of the Data publications.
+    if (!isset($field_settings[$delta])) {
+      continue;
+    }
     $row = array_merge($row, $field_settings[$delta], array('tid' => $values['tid']));
     db_insert('biblio_field_type')
       ->fields($row)
