@@ -469,12 +469,14 @@ function os_files_update_7005(&$sb) {
     foreach ($eids as $module => $ids) {
       foreach ($ids as $id => $count) {
         $file = file_load($id);
-        file_usage_add($file, $module, 'node', $nid, $count);
+        if ($file) {
+          file_usage_add($file, $module, 'node', $nid, $count);
 
-        // Update group membership if necessary
-        if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
-          $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
-          file_save($file);
+          // Update group membership if necessary
+          if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
+            $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
+            file_save($file);
+          }
         }
       }
     }
