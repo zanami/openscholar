@@ -446,3 +446,15 @@ function os_reader_process_node(&$variables) {
 
   drupal_goto('reader', array('fragment' => 'overlay=' . $url));
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
+  // Place URL field before title field.
+  $form['field_rss_url']['#weight'] = -6;
+
+  // Add descriptions to URL field and title field.
+  $form['field_rss_url']['#description'] = t('Path to the feed that you would like to use to import content to your site.');
+  $form['title']['#description'] = t('Administrative title used to describe this feed ex. \'Sports from The Gazette\'.');
+}
