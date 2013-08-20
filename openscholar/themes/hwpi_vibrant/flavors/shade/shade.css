@@ -103,12 +103,10 @@ body.front #columns{
     box-shadow: 0 0;
 }
 .front #content-panels .block-title {
-    border-bottom: 3px solid #A61D31;
-    font-size: 22px;
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      margin-bottom: 25px;
+      background-color:#E3EAEF;
    }
 sidebar .block-title {
     border-bottom: 3px solid #A61D31;
@@ -244,8 +242,8 @@ ul.links li.link-count-node-readmore {
 }
 .sidebar .block-title {
     border-bottom: none;
-    font-size: 22px;
     font-weight: normal;
+    background-color:#E3EAEF;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
@@ -318,14 +316,12 @@ h2.field-label {
 }
 .branding-right {
     font-size: 12px;
-
 }
 #columns {
     background-image: url("/profiles/openscholar/themes/hwpi_vibrant/images/standard-body-gradient_sh.png");
 }
 .view .node-teaser{
 	border-bottom:1px dotted #ccc;
-	
 }
 #footer a,
 #powerby-login a{
@@ -335,15 +331,14 @@ h2.field-label {
 	max-width:65%
 }
 .block-no-title .view .date-nav-wrapper{
-	
 	border-top:0;
 }
 
-#block-boxes-os-addthis{
-	background:transparent;
-}
 .caption h2{
 	border-bottom:0 none;
+}
+.one-sidebar.sidebar-first .content-inner {
+    padding-bottom: 35px;
 }
 .boxes-box-content .caption h2{
 	border-bottom:0!important;
