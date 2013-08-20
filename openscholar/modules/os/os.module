@@ -79,19 +79,6 @@ function os_menu() {
     'context' => MENU_CONTEXT_INLINE,
     'weight' => 3,
   );
-  
-  $items['acquia_backups'] = array(
-    'title' => 'Backups',
-    'page callback' => 'os_acquia_backups_page',
-    'file' => 'os.pages.inc',
-    'file path' => drupal_get_path('module', 'os'),
-    'access callback' => TRUE, //me too!
-    'type' => MENU_CALLBACK,
-    //'access arguments' => array('access content'),     //fixme!
-  );
-  
-  $items['acquia_backups/%'] = $items['acquia_backups'];
-  $items['acquia_backups/%']['page arguments'] = array(1);
 
   return $items;
 }

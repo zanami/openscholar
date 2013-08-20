@@ -1,0 +1,5 @@
+name = Harvard
+description = Collection of pages and alterations for Harvard's OpenScholar installations
+core = 7.x
+package = IQSS
+php = 5.2.4
