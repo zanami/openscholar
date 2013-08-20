@@ -394,6 +394,11 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->field_os_feed_item->set($feed->id);
   $wrapper->save();
 
+  // Reference the feed to the node.
+  $feed_wrapper = entity_metadata_wrapper('os_feed_item', $feed);
+  $feed_wrapper->field_nodes_reference[] = $vsite->id;
+  $feed_wrapper->save();
+
   return $node;
 }
 
