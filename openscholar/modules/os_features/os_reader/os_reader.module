@@ -435,7 +435,7 @@ function os_reader_node_insert($node) {
  * Implements hook_node_preprocess().
  */
 function os_reader_process_node(&$variables) {
-  if (!$variables['page'] || $variables['page']['type'] != 'feed_importer') {
+  if (!$variables['page'] || $variables['type'] != 'feed_importer') {
     return;
   }
 
