@@ -97,8 +97,6 @@ h1, h2, h3, h4 {
 }
 .sidebar .block {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 transparent;
-    border: medium none;
     border-radius: 3px;
     box-shadow: 0 0;
 }
@@ -243,9 +241,10 @@ ul.links li.link-count-node-readmore {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
 }
 .sidebar .block-title {
-    border-bottom: 3px solid #A61D31;
+    border-bottom: none;
     font-size: 22px;
     font-weight: normal;
+    color:#fff!important;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
