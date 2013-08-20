@@ -226,7 +226,7 @@ function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
   }
   elseif ($form_id == 'taxonomy_overview_terms_reset') {
     $form['actions']['cancel'] = array(
-      '#markup' => l(t('Reset to alphabetical'), 'cp/build/taxonomy/' . $form_state['build_info']['args'][0]->machine_name),
+      '#markup' => l(t('Cancel'), 'cp/build/taxonomy/' . $form_state['build_info']['args'][0]->machine_name),
     );
   }
 }
