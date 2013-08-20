@@ -36,8 +36,10 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
         continue;
       }
 
-      if (os_reader_is_feed_item_copied_to_vsite($values->id, $vsite->nid)) {
-        $items[] = !empty($current_vsite) ? t('Imported') : t('Imported to @vsite', array('@vsite' => $vsite->title));
+      if ($news_node = os_reader_get_news_by_feed_item($values->id, $vsite->nid)) {
+        $generic_message = t('Imported to @vsite. ', array('@vsite' => $vsite->title)) . l(t('View'), 'node/' . $news_node->nid);
+        $vsite_message = t('Imported. ') . l(t('View'), 'node/' . $news_node->nid);
+        $items[] = empty($current_vsite) ? $generic_message : $vsite_message;
       }
       else {
         $token = drupal_get_token($values->id . ':' . $vsite->nid);

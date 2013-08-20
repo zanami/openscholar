@@ -210,7 +210,10 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
   if ($ajax == 'ajax') {
-    $message = empty($current_vsite) ? t('Feed item imported to @vsite', array('@vsite' => $vsite->og->title)) : t('Imported');
+    $generic_message = t('Imported to @vsite. ', array('@vsite' => $vsite->og->title)) . l(t('View'), 'node/' . $news_node->nid);
+    $vsite_message = t('Imported. ') . l(t('View'), 'node/' . $news_node->nid);
+    $message = empty($current_vsite) ?  $generic_message: $vsite_message;
+
     $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", $message);
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
@@ -388,18 +391,14 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->field_news_date->set(time());
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
+  $wrapper->field_os_feed_item->set($feed->id);
   $wrapper->save();
-
-  // Reference the feed to the node.
-  $feed_wrapper = entity_metadata_wrapper('os_feed_item', $feed);
-  $feed_wrapper->field_nodes_reference[] = $vsite->id;
-  $feed_wrapper->save();
 
   return $node;
 }
 
 /**
- * Return TRUE if feed item already copied to VSite.
+ * Get news node that was imported from a given OS feed item in a given VSite.
  *
  * @param $feed_id
  *  The feed ID.
@@ -407,17 +406,24 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
  *  The VSite ID.
  *
  * @return
- *  Return TRUE if the feed item was already copied to the VSite, otherwise
- *  return FALSE.
+ *  Return node object of the news node related to the feed item if the feed
+ *  item was already imported to the VSite, otherwise return FALSE.
  */
-function os_reader_is_feed_item_copied_to_vsite($feed_id, $vsite_id) {
-  $wrapper = entity_metadata_wrapper('os_feed_item', $feed_id);
+function os_reader_get_news_by_feed_item($feed_id, $vsite_id) {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'news')
+    ->fieldCondition('field_os_feed_item', 'target_id', $feed_id)
+    ->fieldCondition('og_group_ref', 'target_id', $vsite_id)
+    ->execute();
 
-  if (!$vsite_ids = $wrapper->field_nodes_reference->value(array('identifier' => TRUE))) {
-    return;
+  if (empty($result['node'])) {
+    // Feed item was not imported to VSite.
+    return FALSE;
   }
 
-  return in_array($vsite_id, $vsite_ids);
+  return node_load(key($result['node']));
 }
 
 /**
