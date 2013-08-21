@@ -380,6 +380,13 @@ function os_reader_feeds_plugins() {
 function os_reader_copy_feed_item_to_news($feed, $vsite) {
   global $user;
 
+  // Check if the feed was already imported to the VSite.
+  $news_node = os_reader_get_news_by_feed_item($feed->id, $vsite->id);
+  if (!empty($news_node)) {
+    // Feed already imported to VSite.
+    return $news_node;
+  }
+
   // Create the "News" node.
   $node = new stdClass();
   $node->type = 'news';
@@ -396,7 +403,6 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   // Reference the feed to the VSite.
   $feed_wrapper = entity_metadata_wrapper('os_feed_item', $feed);
   $feed_wrapper->field_vsites_reference[] = $vsite->id;
-  $feed_wrapper->save();
 
   // Reference the feed to the News node.
   $feed_wrapper->field_news_reference[] = $node->nid;
@@ -418,20 +424,22 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
  *  item was already imported to the VSite, otherwise return FALSE.
  */
 function os_reader_get_news_by_feed_item($feed_id, $vsite_id) {
-  $query = new EntityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'news')
-    //->fieldCondition('field_os_feed_item', 'target_id', $feed_id)
-    ->fieldCondition('og_group_ref', 'target_id', $vsite_id)
-    ->execute();
+  // Load news nodes that were imported from the given feed item.
+  $wrapper_feed = entity_metadata_wrapper('os_feed_item', $feed_id);
+  $news_nodes = $wrapper_feed->field_news_reference->value();
 
-  if (empty($result['node'])) {
-    // Feed item was not imported to VSite.
-    return FALSE;
+  // Run through imported news nodes to see if any of them belong to the VSite.
+  foreach ($news_nodes as $news_node) {
+    $wrapper_news = entity_metadata_wrapper('node', $news_node);
+
+    if (!empty($wrapper_news->og_group_ref) && $wrapper_news->og_group_ref->get(0)->getIdentifier() == $vsite_id) {
+      // Found news node that matches both feed item and VSite.
+      return $news_node;
+    }
   }
 
-  return node_load(key($result['node']));
+  // Feed item was not imported to VSite.
+  return FALSE;
 }
 
 /**
