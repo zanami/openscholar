@@ -120,6 +120,9 @@ body.front #columns{
 .navigation ul li, .navigation ul.menu li{
 	background-color:#fef7f5;
 }
+.rslices_tabs li{
+	background-color:#575f66!important;
+}
 .image-style-profile-thumbnail,
 .image-style-book-cover-thumb{
 	border:1px solid #f4f4f4;
