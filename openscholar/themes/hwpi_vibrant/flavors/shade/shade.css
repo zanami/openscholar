@@ -107,6 +107,12 @@ body.front #columns{
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
+    border-bottom:none;
+}
+.front #content-panels .block{
+	background: none repeat scroll 0 0 transparent;
+	border:none;
+	
 }
 .sidebar .navigation .block-content{
 	padding:0;
