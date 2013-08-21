@@ -164,6 +164,26 @@ function os_reader_views_default_views() {
   $handler->display->display_options['arguments']['importer_nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['importer_nid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['importer_nid']['summary_options']['items_per_page'] = '25';
+  /* Filter criterion: OS feed item: Is Imported */
+  $handler->display->display_options['filters']['feed_is_imported']['id'] = 'feed_is_imported';
+  $handler->display->display_options['filters']['feed_is_imported']['table'] = 'os_feed_item';
+  $handler->display->display_options['filters']['feed_is_imported']['field'] = 'feed_is_imported';
+  $handler->display->display_options['filters']['feed_is_imported']['value'] = '0';
+  $handler->display->display_options['filters']['feed_is_imported']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['feed_is_imported']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['feed_is_imported']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['feed_is_imported']['expose']['operator'] = 'feed_is_imported_op';
+  $handler->display->display_options['filters']['feed_is_imported']['expose']['identifier'] = 'feed_is_imported';
+  $handler->display->display_options['filters']['feed_is_imported']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+  );
   $export['os_reader_feeds'] = $view;
 
   $view = new view();
