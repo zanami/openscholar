@@ -114,6 +114,13 @@ body.front #columns{
 .navigation ul li, .navigation ul.menu li{
 	background-color:#fef7f5;
 }
+.image-style-profile-thumbnail,
+.image-style-book-cover-thumb{
+	border:1px solid #f4f4f4;
+}
+#layout_16_9_overlay .caption.slide-copy > h2{
+	padding-left:25px;
+}
 #layout_16_9_below .slide-copy,
 #layout_16_9_below .rslides_tabs{
 	background-color:#8A97A1;
