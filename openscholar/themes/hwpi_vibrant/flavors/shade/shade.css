@@ -108,6 +108,16 @@ body.front #columns{
     line-height: 28px;
     padding: 7px 15px;
 }
+.sidebar .navigation .block-content{
+	padding:0;
+}
+.navigation ul li, .navigation ul.menu li{
+	background-color:#fef7f5;
+}
+#layout_16_9_below .slide-copy,
+#layout_16_9_below .rslides_tabs{
+	background-color:#8A97A1;
+}
 .front article{
 	padding-bottom:25px;
 	border-bottom:1px dotted #ccc;
