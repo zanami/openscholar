@@ -211,7 +211,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
 
   if ($ajax == 'ajax') {
     $generic_message = t('Imported to @vsite. ', array('@vsite' => $vsite->og->title)) . l(t('View'), 'node/' . $news_node->nid);
-    $vsite_message = t('Imported.') . ' ' . l(t('View'), 'node/' . $news_node->nid);
+    $vsite_message = t('Imported. !view', array('!view' => l(t('View'), 'node/' . $news_node->nid)));
     $message = empty($current_vsite) ?  $generic_message : $vsite_message;
 
     $commands[] = ajax_command_html("#feed-{$feed_id}-{$vsite_id}", $message);

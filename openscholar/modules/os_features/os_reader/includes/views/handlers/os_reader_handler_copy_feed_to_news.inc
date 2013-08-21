@@ -38,7 +38,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
 
       if ($news_node = os_reader_get_news_by_feed_item($values->id, $vsite->nid)) {
         $generic_message = t('Imported to @vsite.', array('@vsite' => $vsite->title)) . ' ' .l(t('View'), 'node/' . $news_node->nid);
-        $vsite_message = t('Imported.') . ' ' . l(t('View'), 'node/' . $news_node->nid);
+        $vsite_message = t('Imported. !view', array('!view' => l(t('View'), 'node/' . $news_node->nid)));
         $items[] = empty($current_vsite) ? $generic_message : $vsite_message;
       }
       else {
