@@ -479,3 +479,21 @@ function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
   // Add description to title field.
   $form['title']['#description'] = t('Administrative title used to describe this feed ex. \'Sports from The Gazette\'.');
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter(); Remove filter when not inside a VSite.
+ */
+function os_reader_form_views_exposed_form_alter(&$form, &$form_state) {
+  if (empty($form['feed_is_imported'])) {
+    // Not os-reader exposed form.
+    return;
+  }
+
+  $vsite = vsite_get_vsite();
+
+  if (empty($vsite)) {
+    // Not in a VSite, remove views filter.
+    unset($form['feed_is_imported']);
+    unset($form['#info']);
+  }
+}
