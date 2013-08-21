@@ -515,9 +515,11 @@ function os_reader_field_default_fields() {
   t('Body');
   t('Nodes reference');
   t('OS feed item');
+  t('News reference');
   t('Path to the feed that you would like to import/aggregate to your site.');
   t('RSS url');
   t('URL');
+  t('VSites reference');
 
   return $fields;
 }
