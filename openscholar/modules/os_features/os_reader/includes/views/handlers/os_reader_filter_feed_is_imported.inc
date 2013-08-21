@@ -6,7 +6,7 @@
  */
 
 /**
- * Filter feed items by whether or not they were imported to VSite.
+ * Filter feed items by whether or not they were imported to the VSite.
  */
 class os_reader_filter_feed_is_imported extends views_handler_filter {
   function value_form(&$form, &$form_state) {
@@ -20,26 +20,45 @@ class os_reader_filter_feed_is_imported extends views_handler_filter {
 
   function query($group_by) {
     $input_value = $this->view->exposed_raw_input['feed_is_imported'];
-    $table = 'field_data_field_vsites_reference';
-    $field = 'field_vsites_reference_target_id';
 
     if (empty($input_value)) {
-      // 'All' is selected.
+      // 'All' is selected, no need to filter.
       return;
     }
 
-    $db = db_or();
+    // Get current VSite.
+    $vsite = vsite_get_vsite();
 
-    // Adding relation ship for the table of the field.
-    $this->query->add_table($table, $this->relationship);
+    if ($input_value == 1) {
+      // 'Imported' was selected.
+      $table = 'field_data_field_vsites_reference';
+      $field = 'field_vsites_reference_target_id';
 
-    // Input value is 1 on 'Imported', 2 on 'Not imported'.
-    $operator = $input_value == 1 ? 'IN' : 'NOT IN';
+      // Adding relationship for the table of the field.
+      $this->query->add_table($table, $this->relationship);
 
-    // Alter the query.
-    $this->query->add_where($this->options['group'], "{$table}.{$field}", array(1), $operator);
+      // Alter the query.
+      $this->query->add_where($this->options['group'], "{$table}.{$field}", $vsite->id, '=');
+    }
+    else {
+      // 'Not Imported' was selected.
 
-    return;
+      // Get IDs of all feed items that were imported to the VSite.
+      $query = new EntityFieldQuery();
+      $result = $query
+        ->entityCondition('entity_type', 'os_feed_item')
+        ->fieldCondition('field_vsites_reference', 'target_id', $vsite->id)
+        ->execute();
+
+      if (empty($result['os_feed_item'])) {
+        // No feed items were imported, display them all.
+        return;
+      }
+      $imported_feed_ids = array_keys($result['os_feed_item']);
+
+      // Alter the query so it will exclude the imported feed IDs.
+      $this->query->add_where($this->options['group'], '{os_feed_item}.{id}', $imported_feed_ids, 'NOT IN');
+    }
   }
 
   function admin_summary() {
