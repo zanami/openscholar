@@ -103,11 +103,12 @@ body.front #columns{
     box-shadow: 0 0;
 }
 .front #content-panels .block-title {
+    background-color: #8A97A1;
+    color: #FFFFFF;
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      background-color:#E3EAEF;
-   }
+}
 sidebar .block-title {
     border-bottom: 3px solid #A61D31;
     font-size: 20px;
@@ -241,9 +242,10 @@ ul.links li.link-count-node-readmore {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
 }
 .sidebar .block-title {
-    border-bottom: none;
+    background-color: #8A97A1;
+    border-bottom: medium none;
+    color: #FFFFFF;
     font-weight: normal;
-    background-color:#E3EAEF;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
