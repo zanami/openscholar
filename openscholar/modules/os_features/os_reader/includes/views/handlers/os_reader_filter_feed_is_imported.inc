@@ -11,7 +11,7 @@
 class os_reader_filter_feed_is_imported extends views_handler_filter {
   function value_form(&$form, &$form_state) {
     $values = array();
-    $form['is_imported'] = array(
+    $form['value'] = array(
       '#type' => 'select',
       '#title' => t('Status'),
       '#options' => array(
