@@ -11,10 +11,14 @@
 class os_reader_filter_feed_is_imported extends views_handler_filter {
   function value_form(&$form, &$form_state) {
     $values = array();
-    $form['value'] = array(
+    $form['is_imported'] = array(
       '#type' => 'select',
       '#title' => t('Status'),
-      '#options' => array(t('All'), t('Imported'), t('Not Imported')),
+      '#options' => array(
+        'all' => t('All'),
+        'imported' => t('Imported'),
+        'not_imported' => t('Not Imported'),
+      ),
     );
   }
 
@@ -29,7 +33,7 @@ class os_reader_filter_feed_is_imported extends views_handler_filter {
     // Get current VSite.
     $vsite = vsite_get_vsite();
 
-    if ($input_value == 1) {
+    if ($input_value == 'imported') {
       // 'Imported' was selected.
       $table = 'field_data_field_vsites_reference';
       $field = 'field_vsites_reference_target_id';
