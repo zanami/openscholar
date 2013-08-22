@@ -1586,11 +1586,39 @@ function os_files_filter_info_alter(&$info) {
 }
 
 /**
+ * Stores media tags and their HASH keys for when they need to be retrieved later
+ */
+function os_files_stash_tags($tag) {
+  $tags = &drupal_static(__FUNCTION__, array());
+
+  // if the tag is valid JSON, we insert it and return the hash
+  // otherwise, it'll be an md5 hash and we return the original
+  if (!isset($tags[$tag]) && drupal_json_decode($tag)) {
+    $key = md5($tag);
+    $tags[$key] = $tag;
+    return $key;
+  }
+  else {
+    return $tags[$tag];
+  }
+}
+
+/**
  * Prepare callback for media_filter
  * Escapes the JSON strings to prevent other filters from messing with them
  */
 function os_files_filter_media_prepare($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
   return $text;
+}
+
+/**
+ * Escape the data in media JSON strings to prevent other filters from changing it
+ */
+function os_files_escape_media_tags($tag) {
+  $data = trim($tag, '[]');
+  $key = os_files_stash_tags($data);
+  return '[['.$key.']]';
 }
 
 /**
@@ -1598,6 +1626,6 @@ function os_files_filter_media_prepare($text) {
  * Unescapes media's JSON strings and then calls media_filter on the original text
  */
 function os_files_filter_media_process($text) {
-
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
   return media_filter($text);
 }
