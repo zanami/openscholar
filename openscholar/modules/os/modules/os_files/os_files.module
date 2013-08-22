@@ -1575,3 +1575,29 @@ function os_files_file_mimetype_mapping_alter(&$mimes) {
     $mimes['extensions'][$ext] = $key;
   }
 }
+
+/*
+ * Implements hook_filter_info_alter().
+ * Adds a prepare function media's filter to escape the data in the JSON strings
+ */
+function os_files_filter_info_alter(&$info) {
+  $info['media_filter']['prepare callback'] = 'os_files_filter_media_prepare';
+  $info['media_filter']['process callback'] = 'os_files_filter_media_process';
+}
+
+/**
+ * Prepare callback for media_filter
+ * Escapes the JSON strings to prevent other filters from messing with them
+ */
+function os_files_filter_media_prepare($text) {
+  return $text;
+}
+
+/**
+ * Process callback for media_filter
+ * Unescapes media's JSON strings and then calls media_filter on the original text
+ */
+function os_files_filter_media_process($text) {
+
+  return media_filter($text);
+}
