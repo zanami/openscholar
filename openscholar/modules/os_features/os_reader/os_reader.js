@@ -5,7 +5,7 @@
 
 
       $('.feed-item-title').click(function() {
-        $(this).parent().find(' .feed-item-description').toggle();
+        $(this).parent().find('.feed-item-description').toggle();
       });
 
 

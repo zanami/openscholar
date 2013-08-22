@@ -168,18 +168,17 @@ function os_reader_views_default_views() {
   $handler->display->display_options['arguments']['importer_nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['importer_nid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['importer_nid']['summary_options']['items_per_page'] = '25';
-  /* Filter criterion: OS feed item: Label */
-  $handler->display->display_options['filters']['title']['id'] = 'title';
-  $handler->display->display_options['filters']['title']['table'] = 'os_feed_item';
-  $handler->display->display_options['filters']['title']['field'] = 'title';
-  $handler->display->display_options['filters']['title']['operator'] = 'contains';
-  $handler->display->display_options['filters']['title']['group'] = 1;
-  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
-  $handler->display->display_options['filters']['title']['expose']['label'] = 'Title contains';
-  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
-  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
-  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+  /* Filter criterion: OS feed item: Contains */
+  $handler->display->display_options['filters']['feed_by_text']['id'] = 'feed_by_text';
+  $handler->display->display_options['filters']['feed_by_text']['table'] = 'os_feed_item';
+  $handler->display->display_options['filters']['feed_by_text']['field'] = 'feed_by_text';
+  $handler->display->display_options['filters']['feed_by_text']['group'] = 1;
+  $handler->display->display_options['filters']['feed_by_text']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['feed_by_text']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['feed_by_text']['expose']['label'] = 'Contains';
+  $handler->display->display_options['filters']['feed_by_text']['expose']['operator'] = 'feed_by_text_op';
+  $handler->display->display_options['filters']['feed_by_text']['expose']['identifier'] = 'feed_by_text';
+  $handler->display->display_options['filters']['feed_by_text']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
     3 => 0,

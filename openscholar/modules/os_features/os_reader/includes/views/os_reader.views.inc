@@ -30,6 +30,15 @@ class OsReaderViewsController extends EntityDefaultViewsController {
       ),
     );
 
+    // Filter feed items by text in the title or body.
+    $data['os_feed_item']['feed_by_text'] = array(
+      'title' => t('Contains'),
+      'help' => t('Filter feed items by text in the title or body.'),
+      'filter' => array(
+        'handler' => 'os_reader_filter_feed_by_text',
+      ),
+    );
+
     // Allow some HTML.
     $data['os_feed_item']['description']['field']['handler'] = 'views_handler_field_markup';
     $data['os_feed_item']['description']['field']['format'] = 'filtered_html';

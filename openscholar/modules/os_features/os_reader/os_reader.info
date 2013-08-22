@@ -78,6 +78,7 @@ files[] = plugins/OsFeedReaderFetcher.inc
 files[] = plugins/OsFeedFetcher.inc
 files[] = includes/views/handlers/os_reader_handler_copy_feed_to_news.inc
 files[] = includes/views/handlers/os_reader_filter_feed_is_imported.inc
+files[] = includes/views/handlers/os_reader_filter_feed_by_text.inc
 files[] = includes/views/os_reader.views.inc
 spaces[types][] = site
 spaces[types][] = og
