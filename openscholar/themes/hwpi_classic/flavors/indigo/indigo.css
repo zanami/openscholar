@@ -22,7 +22,7 @@ border-top:3px solid #DDD;
     color: #FFFFFF;
 }
 
-#menu-bar ul.menu ul ul {
+#menu-bar ul.nice-menu ul {
     background: #293352;
 }
 
@@ -49,16 +49,17 @@ border-top:3px solid #DDD;
     font-size: 14px;
     text-transform: none;
     padding: 3px 7px;
+    margin-bottom: 10px;
  
 }
 
 a.rslides_nav.prev {
-    background: url('/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png') repeat scroll 2px 2px #D16103;
+    background: url('/profiles/openscholar/themes/os_basetheme/images/images/ss_arrow.png') repeat scroll 2px 2px #D16103;
 }
 
 
 a.rslides_nav.next {
-    background: url('/profiles/openscholar/themes/hwpi_basetheme/images/ss_arrow.png') repeat scroll -20px 2px #D16103;
+    background: url('/profiles/openscholar/themes/os_basetheme/images/images/ss_arrow.png') repeat scroll -20px 2px #D16103;
 }
 
 

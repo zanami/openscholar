@@ -1,0 +1,76 @@
+.first-region {
+  float: left; /* LTR */
+  height: 100%;
+  width: 15%;
+}
+
+.first-region .item-list ul,
+.second-region .item-list ul  {
+  margin: 0px;
+}
+
+.first-region .item-list ul li,
+.second-region .item-list ul li  {
+  list-style-type: none;
+}
+
+.first-region .item-list ul li {
+  border: 2px solid #C4C2C2;
+  padding: 2px 5px;
+  background-color: #DDDDDD;
+  width: 100%;
+}
+
+.first-region .item-list ul li.active {
+  background-color: #EEEEEE;
+}
+
+.first-region .item-list ul li a {
+  display: block;
+}
+
+.first-region .add-new {
+  display: block;
+  margin-top: 10px;
+}
+
+.second-region {
+  float: left; /* LTR */
+  width: 85%;
+}
+
+.second-region .views-table {
+  border: 2px solid #C4C2C2;
+  width: 100%;
+}
+
+.second-region .views-table tr {
+  background-color: #EEE;
+  border-bottom: 1px solid #CCC;
+  padding: 0.1em 0.6em;
+}
+
+.second-region .views-field-title {
+  padding: 0px;
+}
+
+.second-region .feed-item-title {
+  padding: 0.6em;
+  cursor: pointer;
+}
+
+.second-region .feed-item-description {
+  display: none;
+  padding-left: 0.6em; /* LTR */
+}
+
+.second-region .views-field-copy-feed-to-news {
+  border-left: 2px solid #C4C2C2; /* LTR */
+  text-align: right; /* LTR */
+}
+
+.second-region .views-field-copy-feed-to-news .item-list ul {
+  list-style-type: none;
+}
+
+

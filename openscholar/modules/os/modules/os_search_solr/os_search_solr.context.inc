@@ -14,6 +14,7 @@ function os_search_solr_context_default_contexts() {
     $delta_created = '';
     $delta_bundle = '';
     $delta_og = '';
+  $export = array();
 
   	$searcher_name = os_search_solr_get_searcher_name();
     // Gets delta map
@@ -31,6 +32,10 @@ function os_search_solr_context_default_contexts() {
       // Filter by Site block.
       $string_og = facetapi_build_delta($searcher_name, 'block', 'sm_og_group_ref');
       $delta_og = array_search($string_og, $map);
+
+      // Filter by OG vocab.
+      $string_og_vocab = facetapi_build_delta($searcher_name, 'block', 'sm_og_vocabulary');
+      $delta_og_vocab = array_search($string_og_vocab, $map);
 
     }
   }
@@ -93,8 +98,14 @@ function os_search_solr_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-5',
         ),
-      )
-    )
+        'facetapi-' . $delta_og_vocab => array(
+          'module' => 'facetapi',
+          'delta' => $delta_og_vocab,
+          'region' => 'sidebar_second',
+          'weight' => '-4',
+        ),
+      ),
+    ),
   );
   $context->condition_mode = 1;
 

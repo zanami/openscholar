@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Verify that the active book TOC widget works fine.
-     Given I am logged in as a user with the "administrator" role
+     Given I am logging in as "john"
        And the widget "Active book TOC" is set in the "Publications" page with the following <settings>:
            | Which Book | All about nodes | select list |
        And I visit "john/publications"

@@ -69,7 +69,11 @@ abstract class OsMigrate extends Migration {
   }
 
   public function prepareRow($row) {
-    $row->uid = 1;
+    // The migrate content isn't belong to any one, the default will be the
+    // admin user.
+    if (!$row->uid) {
+      $row->uid = 1;
+    }
 
     if ($this->entityType == 'taxonomy_term' && $this->ogVocab) {
       $this->prepareRowTaxonomyTerm($row);
@@ -116,6 +120,7 @@ abstract class OsMigrate extends Migration {
   private function prepareTaxonomyTerm($entity, $row) {
     $vocabulary = taxonomy_vocabulary_machine_name_load($entity->vocabulary_machine_name);
     $gid = $entity->og_group_ref['destid1'];
+
     og_vocab_relation_save($vocabulary->vid, 'node', $gid);
   }
 

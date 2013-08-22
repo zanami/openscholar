@@ -38,6 +38,15 @@ function vsite_vocab_menu() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function vsite_vocab_admin_paths() {
+  return array(
+    'cp/build/taxonomy/*/add' => TRUE,
+  );
+}
+
+/**
  * Implements hook_menu_alter().
  *
  * Adding custom paths to the vocabulary actions.
@@ -46,6 +55,7 @@ function vsite_vocab_menu_alter(&$items) {
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name'];
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name/add'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name/add'];
   $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name/edit'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name/edit'];
+  $items['cp/build/taxonomy/%taxonomy_vocabulary_machine_name/reset'] = $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name/reset'];
 
   if (variable_get('og_vocab_term_page_access', FALSE)) {
     $items['taxonomy/term/%taxonomy_term']['access callback'] = 'vsite_vocab_term_page_access';
@@ -207,10 +217,18 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
  * invokes order of the hooks.
  */
 function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
-  if (!in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || !$context = og_vocab_is_group_admin_context()) {
-    return;
+  if (in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || $context = og_vocab_is_group_admin_context()) {
+    $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
   }
-  $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
+
+  if ($form_id == 'taxonomy_overview_terms') {
+    $form['actions']['reset_alphabetical']['#markup'] = l(t('Reset to alphabetical'), 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/reset');
+  }
+  elseif ($form_id == 'taxonomy_overview_terms_reset') {
+    $form['actions']['cancel'] = array(
+      '#markup' => l(t('Cancel'), 'cp/build/taxonomy/' . $form_state['build_info']['args'][0]->machine_name),
+    );
+  }
 }
 
 /**

@@ -15,6 +15,7 @@ dependencies[] = list
 dependencies[] = og
 dependencies[] = vsite_access
 dependencies[] = og_context
+dependencies[] = og_tasks
 dependencies[] = og_ui
 dependencies[] = os
 dependencies[] = robotstxt

@@ -36,9 +36,21 @@ padding:1px 20px 20px;
 }
 
 /**** BLOCK STYLES ****/
-#columns .block {background: url('../images/blockTitleBg.png') left top repeat-x;}
-#columns .block .content {background: url('../images/blockBg.png') repeat-x center bottom;}
-#columns .region-content-top .block {padding-top:0;}
+.sidebar .block,
+.region-content-first .block,
+.region-content-second .block,
+.region-content-bottom .block {
+	background: url('../images/blockTitleBg.png') left top repeat-x;
+	}
+.not-front #columns #content-column .block {
+	background: none !important;
+	}
+.sidebar .block .content {
+	background: url('../images/blockBg.png') repeat-x center bottom;
+	}
+#columns .region-content-top .block {
+	padding-top:0;
+	}
 
 #columns #block-boxes-os_addthis.block .content {background: none;}
 
@@ -109,6 +121,7 @@ p span {
   
   .page-people .node-person.node-teaser ul.links.inline li a {display:none;}
   
+  h1.node-title {font-weight:normal;} 
  .at-panel.gpanel.content h1.node-title a {font-weight:normal;font-size: 13px;} 
   
  .block-boxes-os_taxonomy_fbt ul li {  
@@ -134,11 +147,17 @@ p span {
   .front h2.block-title {
   background: url('../images/blockIcon.png') 0 7px no-repeat;
   margin-left:8px;
-  padding-left: 34px;
+  padding-left: 37px;
   padding-top:11px;
   font-family: 'Oswald', arial;
    } 
   
+  
+ .front .sidebar h2.block-title {
+     background: none;
+     font-family: arial;
+     padding-left: 0;
+}
  
  .front .block-boxes-os_boxes_twitterfeed h2.block-title {
   background: url('../images/twitterIcon.png') 0 7px no-repeat;
@@ -212,7 +231,7 @@ p span {
  height:43px;
   }
 
-#menu-bar ul.menu {
+#menu-bar ul.nice-menu {
  margin-left:-4px;
  float:left;
  display:inline;
@@ -447,4 +466,30 @@ text-transform:none;
     height: 13px;
 }
 
+/* FOR IQSS SITE. IQSS FLAVOR ISN'T LOADING TO ANON USERS, SO LEAVING THIS IN UNTIL 
+IT CAN BE RESOLVED */
 
+.og-context-node-6235 #iqss-weekly ul {margin-left:0;}
+.og-context-node-6235 #iqss-weekly ul li {list-style-type:none;}
+.og-context-node-6235 #iqss-weekly h4 {margin: 1.5em 0 0.22em .1em; color:#666;}
+.og-context-node-6235 #iqss-weekly h4:nth-child(1) {margin: .1em 0 0.22em .1em;}
+.og-context-node-6235 #iqss-weekly-cal {display:none;}
+
+.og-context-node-6235 .region-content-bottom .block-boxes-os_boxes_html  h2.block-title {
+  background: url('/profiles/openscholar/themes/custom/department/flavors/iqss/images/eventsIcon.png') no-repeat;
+  padding-left: 42px;
+   } 
+  
+.og-context-node-6235 #block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:1px;clear: both;}
+
+.og-context-node-6235 h5 {
+	font-family: georgia,arial;
+	font-size: 18px;
+	color:#8C8179;
+	font-weight:normal;
+}
+
+.og-context-node-6235 h5 span {
+	color:#A51C30;
+	
+}

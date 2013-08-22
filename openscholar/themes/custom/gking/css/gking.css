@@ -267,6 +267,15 @@ a.more {
     z-index: 10;
 }
 
+.not-front  #content-column .contextual-controls-wrapper {
+margin: -20px 0 10px;
+}
+
+.not-front.page-node-72251 #content-column .contextual-controls-wrapper {
+margin: 15px 0 10px;
+}
+
+
 
 /*
 .section-biocv #content .context-links ul {

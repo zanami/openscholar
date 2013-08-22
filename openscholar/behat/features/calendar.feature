@@ -2,8 +2,7 @@ Feature: Testing OpenScholar calendar page.
 
   @api
   Scenario: Test the Calendar tab
-    Given I visit "john"
-     When I click "Calendar"
+    Given I visit "john/calendar?month=2013-05&type=month"
      Then I should see "John F. Kennedy birthday"
 
   @api
@@ -30,6 +29,6 @@ Feature: Testing OpenScholar calendar page.
   @api
   Scenario: Test the Calendar tab with year events filtered by terms.
     Given I visit "john/calendar/authors/stephen-william-hawking?type=year&year=2013"
-      And I should see the link "29" under "mini future has-events"
+      And I should see the link "29" under "has-events"
      When I visit "john/calendar/authors/douglas-noël-adams?type=year&year=2013"
      Then I should not see the link "29" under "view-display-id-page_1"

@@ -1222,46 +1222,52 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
         }
       }
 
-      $elements['images'] = array(
-        '#theme' => 'links',
-        '#links' => $images,
-        '#attributes' => array(
-          'class' => array(
-            'os-files-image-list',
-            'jcarousel-skin-default'
+      if (!empty($images)) {
+        $elements['images'] = array(
+          '#theme' => 'links',
+          '#links' => $images,
+          '#attributes' => array(
+            'class' => array(
+              'os-files-image-list',
+              'jcarousel-skin-default'
+            )
           )
-        )
-      );
-      if (module_exists('jcarousel')) {
-        $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
+        );
+        if (module_exists('jcarousel')) {
+          $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
+        }
       }
 
-      $elements['videos'] = array(
-        '#type' => 'container',
-        '#attributes' => array(
-          'class' => array('os-files-videos-list'),
-        )
-      );
-      foreach ($videos as $v) {
-        $elements['videos'][] = array(
+      if (!empty($videos)) {
+        $elements['videos'] = array(
           '#type' => 'container',
           '#attributes' => array(
-            'class' => array('os-files-video-single'),
-          ),
-          'video' => $v,
+            'class' => array('os-files-videos-list'),
+          )
         );
+        foreach ($videos as $v) {
+          $elements['videos'][] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array('os-files-video-single'),
+            ),
+            'video' => $v,
+          );
+        }
       }
 
-      $elements['other'] = array(
-        '#theme' => 'table',
-        '#rows' => $other,
-        '#header' => array(),
-        '#attributes' => array(
-          'class' => array(
-            'os-files-other-list'
+      if (!empty($other)) {
+        $elements['other'] = array(
+          '#theme' => 'table',
+          '#rows' => $other,
+          '#header' => array(),
+          '#attributes' => array(
+            'class' => array(
+              'os-files-other-list'
+            )
           )
-        )
-      );
+        );
+      }
       break;
   }
 
@@ -1297,7 +1303,9 @@ function os_files_file_default_types() {
     'mimetypes' => array(
       'application/x-msdos-program',
       'application/zip',
-      'application/octet-stream'
+      'application/octet-stream',
+      'application/x-gzip',
+      'application/x-compressed',
     ),
     'streams' => array(
       'public',
@@ -1344,8 +1352,10 @@ function os_files_file_default_types_alter(&$types){
     'audio/x-ogg',
     'application/x-ogg',
     // *.wmv files
-    'video/x-ms-wmv'
+    'video/x-ms-wmv',
+    'text/oembed'
   ));
+  $types['video']->streams[] = 'oembed';
 
   $types['audio']->mimetypes = array_merge($types['audio']->mimetypes, array(
     // *.mp3 files
@@ -1392,7 +1402,13 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
     'application/x-vnd.oasis.opendocument.presentation',
+    'application/x-wtml',
+    'application/x-wtt',
+    'application/x-wwtfig'
   ));
+
+  $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
+  $types['document']->streams = array_diff($types['document']->streams, array('oembed'));
 }
 
 /**
@@ -1508,6 +1524,9 @@ function _os_files_extensions_from_type($type) {
       'odp',
       'xml',
       'tex',
+      'wtml',
+      'wtt',
+      'wwtfig'
     );
 
     $types['executable'] = array(
@@ -1519,4 +1538,46 @@ function _os_files_extensions_from_type($type) {
   }
   
   return isset($types[$type])?$types[$type]:array();
+}
+
+/**
+ * Return the list of fields name which may contain reference to non existed
+ * files.
+ */
+function os_files_file_fields() {
+  $field_instances = field_info_instances('node');
+  $file_fields = array();
+
+  foreach ($field_instances as $bundle => $instances) {
+    foreach ($instances as $instance) {
+      $field_info = field_info_field($instance['field_name']);
+
+      if (!in_array($field_info['type'], array('file', 'imagefield_crop'))) {
+        continue;
+      }
+
+      $file_fields[] = $instance['field_name'];
+    }
+  }
+
+  $file_fields = array_unique($file_fields);
+
+  return $file_fields;
+}
+
+/**
+ * Adds worldwide telescope mimetypes and extensions to Drupal
+ */
+function os_files_file_mimetype_mapping_alter(&$mimes) {
+  $types = array(
+    'application/x-wtt' => 'wtt',
+    'application/x-wtml' => 'wtml',
+    'application/x-wwtfig' => 'wwtfig'
+  );
+
+  foreach ($types as $mime => $ext) {
+    $key = max(array_keys($mimes['mimetypes'])) + 1;
+    $mimes['mimetypes'][$key] = $mime;
+    $mimes['extensions'][$ext] = $key;
+  }
 }
