@@ -52,6 +52,10 @@
   margin-top: 1.4em;
 }
 
+.second-region .view-empty {
+  padding-left: 5px;
+}
+
 .second-region .views-table {
   border: 2px solid #C4C2C2;
   width: 100%;
