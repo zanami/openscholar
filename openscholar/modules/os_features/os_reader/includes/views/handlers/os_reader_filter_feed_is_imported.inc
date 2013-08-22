@@ -23,12 +23,12 @@ class os_reader_filter_feed_is_imported extends views_handler_filter {
   }
 
   function query($group_by) {
-    $input_value = $this->view->exposed_raw_input['feed_is_imported'];
-
-    if (empty($input_value)) {
+    if (empty($this->view->exposed_raw_input['feed_is_imported'])) {
       // 'All' is selected, no need to filter.
       return;
     }
+
+    $input_value = $this->view->exposed_raw_input['feed_is_imported'];
 
     // Get current VSite.
     $vsite = vsite_get_vsite();

@@ -43,6 +43,15 @@
   height: 70px;
 }
 
+.second-region .view-filters .form-text {
+  width: 130px;
+}
+
+.second-region .view-filters .form-submit {
+  padding: 0.4em;
+  margin-top: 1.4em;
+}
+
 .second-region .views-table {
   border: 2px solid #C4C2C2;
   width: 100%;

@@ -496,7 +496,9 @@ function os_reader_form_views_exposed_form_alter(&$form, &$form_state) {
 
   if (empty($vsite)) {
     // Not in a VSite, remove views filter.
-    unset($form['feed_is_imported']);
-    unset($form['#info']);
+    $form['#info'] = array();
+    $form['title']['#access'] = FALSE;
+    $form['submit']['#access'] = FALSE;
+    $form['feed_is_imported']['#access'] = FALSE;
   }
 }

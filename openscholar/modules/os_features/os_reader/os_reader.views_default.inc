@@ -101,7 +101,8 @@ function os_reader_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['distinct'] = TRUE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Filter';
+  $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'table';
@@ -167,11 +168,33 @@ function os_reader_views_default_views() {
   $handler->display->display_options['arguments']['importer_nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['importer_nid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['importer_nid']['summary_options']['items_per_page'] = '25';
+  /* Filter criterion: OS feed item: Label */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'os_feed_item';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['group'] = 1;
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Title contains';
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+  );
   /* Filter criterion: OS feed item: Is Imported */
   $handler->display->display_options['filters']['feed_is_imported']['id'] = 'feed_is_imported';
   $handler->display->display_options['filters']['feed_is_imported']['table'] = 'os_feed_item';
   $handler->display->display_options['filters']['feed_is_imported']['field'] = 'feed_is_imported';
   $handler->display->display_options['filters']['feed_is_imported']['value'] = '0';
+  $handler->display->display_options['filters']['feed_is_imported']['group'] = 1;
   $handler->display->display_options['filters']['feed_is_imported']['exposed'] = TRUE;
   $handler->display->display_options['filters']['feed_is_imported']['expose']['operator_id'] = '';
   $handler->display->display_options['filters']['feed_is_imported']['expose']['label'] = 'Status';
@@ -227,7 +250,7 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Content: URL */
+  /* Field: Content: Redirect */
   $handler->display->display_options['fields']['field_url']['id'] = 'field_url';
   $handler->display->display_options['fields']['field_url']['table'] = 'field_data_field_url';
   $handler->display->display_options['fields']['field_url']['field'] = 'field_url';
