@@ -4,7 +4,7 @@
     attach: function (context, settings) {
 
 
-      $('.feed-item-title').click(function() {
+      $('.feed-item-title').unbind('click').click(function() {
         $(this).parent().find('.feed-item-description').toggle();
       });
 
