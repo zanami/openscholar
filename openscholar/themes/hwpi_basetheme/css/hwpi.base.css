@@ -527,6 +527,10 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
 }
 
+#content-column article.node-teaser.node-person .field-name-field-person-photo ~ .node-header {
+	margin-left: 5.4em;
+}
+
 .node-type-person .node-person .field-name-field-person-photo,
 .node-person.node-teaser .field-name-field-person-photo,
 .node-person.node-sidebar-teaser .field-name-field-person-photo {
