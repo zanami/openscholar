@@ -484,7 +484,7 @@ ol.search-results li.search-result:last-child {
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
-  border-bottom: 1px solid #2769AC;
+  text-decoration: underline;
 }
 
 .node-class .view-os-classes .views-row {
