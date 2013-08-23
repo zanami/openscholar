@@ -1616,6 +1616,7 @@ function os_files_filter_media_prepare($text) {
  * Escape the data in media JSON strings to prevent other filters from changing it
  */
 function os_files_escape_media_tags($tag) {
+  $tag = $tag[0];
   $data = trim($tag, '[]');
   $key = os_files_stash_tags($data);
   return '[['.$key.']]';
