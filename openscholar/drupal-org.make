@@ -125,7 +125,6 @@ projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
 projects[feeds_xpathparser][subdir] = "contrib"
-;projects[feeds_xpathparser][version] = 1.0-beta3+7-dev
 projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
 projects[feeds_xpathparser][download][revision] = 5bea17e
@@ -205,6 +204,7 @@ projects[media][revision] = "c49692b"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 
 projects[media_gallery][subdir] = "contrib"
+projects[media_gallery][version] = 2.x-dev
 projects[media_gallery][download][type] = git
 projects[media_gallery][download][branch] = 7.x-2.x
 projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"

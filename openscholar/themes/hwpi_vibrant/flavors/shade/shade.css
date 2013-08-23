@@ -91,10 +91,6 @@ body.front #columns{
 	background-image:none;
 }
 .front #content-panels .block {
-    -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #f6f8f8;
-    border: medium none;
-    border-radius: 3px;
     box-shadow: 0 0;
 }
 .sidebar .block {
@@ -102,12 +98,48 @@ body.front #columns{
     border-radius: 3px;
     box-shadow: 0 0;
 }
+#layout_16_9_overlay .slide-copy p, #layout_16_9_overlay .slide-copy h2, #layout_16_9_side .slide-copy p, #layout_16_9_side .slide-copy h2, .slide-copy p {
+    font-family: open sans,arial,sans-serif;
+}
 .front #content-panels .block-title {
+    background-color: #e3eaef;
+    color: #000000;
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      background-color:#E3EAEF;
-   }
+    border-bottom:none;
+}
+.front #content-panels .block{
+	background: none repeat scroll 0 0 transparent;
+	border:none;
+}
+.sidebar .navigation .block-content{
+	padding:0;
+}
+.navigation ul li, .navigation ul.menu li{
+	background-color:#fef7f5;
+}
+.rslides_tabs li{
+	background-color:#575f66!important;
+}
+.image-style-profile-thumbnail,
+.image-style-book-cover-thumb{
+	border:1px solid #f4f4f4;
+}
+#layout_16_9_overlay .caption.slide-copy > h2{
+	padding-left:25px;
+}
+#layout_16_9_below .slide-copy,
+#layout_16_9_below .rslides_tabs{
+	background-color:#8A97A1;
+}
+.front article{
+	padding-bottom:25px;
+	border-bottom:1px dotted #ccc;
+}
+.front .node{
+	margin-bottom:25px!important;
+}
 sidebar .block-title {
     border-bottom: 3px solid #A61D31;
     font-size: 20px;
@@ -241,9 +273,10 @@ ul.links li.link-count-node-readmore {
     background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
 }
 .sidebar .block-title {
-    border-bottom: none;
+    background-color: #8A97A1;
+    border-bottom: medium none;
+    color: #FFFFFF;
     font-weight: normal;
-    background-color:#E3EAEF;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {

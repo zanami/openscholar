@@ -98,7 +98,7 @@ background: none !important;
 }
 /*Secondary menu*/
 .at-panel.gpanel.panel-display.three-col.clearfix {
-    padding-right: 30px;
+    padding-right: 15px;
 }
 .region-header-third  #block-os-secondary-menu{
 display:none;
@@ -120,6 +120,7 @@ display:none;
     display: block;
     position: static;
     width:100%;
+    margin: 0 15px;
 }
 
 .region-header-third .os-custom-menu,
@@ -178,10 +179,11 @@ display:none;
     height: 0;
     visibility: hidden;
 }
-.mobile-buttons {
-    display: block!important;
-    margin: 0;
+ul.mobile-buttons {
+    display: block !important;
+    margin: 0 0 0 15px !important;
 }
+
 .mobile-buttons li {
     float: left;
     list-style-type: none;
