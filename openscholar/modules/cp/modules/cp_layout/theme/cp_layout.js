@@ -144,4 +144,14 @@
     e.stopPropagation();
     e.preventDefault();
   }
+  
+  
+ 
 })(jQuery);
+
+//GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
+ jQuery(document).ready(function () {
+	var layoutdivheight = jQuery('.cp-region-content').height();
+	jQuery('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
+   });
+
