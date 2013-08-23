@@ -130,6 +130,9 @@ table caption {
   list-style: circle;
 }
 
+.block .node:last-child {
+    margin-bottom: 0;
+}
 
 /* Search Results */
 .page-search input.form-text {
@@ -371,7 +374,9 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-
+#content-column .view-os-events.view-id-os_events .view-header {
+  padding-top: 30px;
+}
 
 /* Views Node Lists */
 .view .node-teaser {
