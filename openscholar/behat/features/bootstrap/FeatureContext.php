@@ -1022,5 +1022,23 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-}
 
+  /**
+   * @Given /^I set feed item to import$/
+   */
+  public function iSetFeedItemToImport() {
+    return array(
+      new Step\When('I visit "admin"'),
+      new Step\When('I visit "admin/structure/feeds/os_reader/settings/OsFeedFetcher"'),
+      new Step\When('I check the box "Debug mode"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Given /^I import feeds items$/
+   */
+  public function iImportFeedsItems() {
+    $this->invoke_code('os_migrate_demo_import_feeds_items');
+  }
+}

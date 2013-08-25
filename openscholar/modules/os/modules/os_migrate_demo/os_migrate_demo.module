@@ -75,6 +75,21 @@ function os_migrate_demo_import_courses() {
 }
 
 /**
+ * Crate a dummy feed import and import his items.
+ */
+function os_migrate_demo_import_feeds_items() {
+  $entity = entity_create('node', array(
+    'title' => 'Dummy feed importer',
+    'language' => LANGUAGE_NONE,
+    'type' => 'feed_importer',
+    'uid' => 1,
+  ));
+  $node = entity_save('node', $entity);
+
+  feeds_source('os_reader', $node->nid)->startImport();
+}
+
+/**
  * Implements hook_migrate_api().
  */
 function os_migrate_demo_migrate_api() {
