@@ -10,7 +10,6 @@ Feature:
   @api
   Scenario: Test the OS reader feed importer
     Given I am logging in as "admin"
-     When I set feed item to import
       And I import feeds items
      When I visit "john/os-reader"
       And I import the feed item "JFK has ben murdered"
