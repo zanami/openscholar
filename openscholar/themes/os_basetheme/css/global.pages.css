@@ -142,13 +142,23 @@ div.messages {
  .footer .region-footer {
     	width: 100%;
   	}
+  	
+ .footer .region {
+    	display: inline-block;
+  	} 	  	  	
+ 
+ .footer .region.region-footer-bottom {
+    	display: block !important;
+  	} 
+ 
+ 
  
   .footer.footer-right .region-footer,
   .footer-left.footer .region-footer {
-    	width: 75%;
+    	width: 74%;
   	}
   
-  .footer-left.footer.footer-right .region-footer {width: 50%;}
+  .footer-left.footer.footer-right .region-footer {width: 49%;}
 
   .footer-left.footer.footer-right .region-footer-first,
   .footer-left.footer.footer-right .region-footer-third,
@@ -163,6 +173,28 @@ div.messages {
 
   .footer-left.footer-right .at-panel .region.region-footer-third,
   .footer-right .at-panel .region.region-footer-third {float: right;}
+  
+  
+ /* MAKE IT POSSIBLE TO HAVE WIDGETS IN THE LEFT AND RIGHT HEADER REGIONS ONLY */ 
+.header-left.header-main.header-right .region-header-first,
+.header-left.header-main .region-header-first {margin-left:-100%;}
+
+.header-main.header-right .region-header-first {
+    margin-left: 0;
+}
+
+.header-main.header-right .region-header-third {
+	float:right !important;
+}
+
+.header-main .region-header-first {
+    margin-left: 0;
+}
+  
+.header-right .region-header-third {
+	float:right !important;
+}
+  
 /*
  * Branding
  */
@@ -186,11 +218,6 @@ div.messages {
     bottom:-29px;
 }
 
-logged-in.page-cp #block-os-powered-by {
-  
-    bottom:0;
-   
-}
 
 #powered-by a {
     background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
@@ -580,7 +607,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 /* CTools MODAL OVERRIDES */
 
 #modalContent {
-  top: 0 !important;
+  top: 0;
   color: #666;
   position: fixed !important;
 }
@@ -727,7 +754,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 } 
  
  #media-browser-tabset .media-browser-tab {
-    border: NONE;
+    border: none;
 }
 
 #media-browser-tabset .ui-tabs-nav {
@@ -738,7 +765,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 }
 	
 .ui-widget-header {
-    background:none;
+    background:none !important;
 }	
 	
 /** OS LOGIN CONTAINER STYLES **/	

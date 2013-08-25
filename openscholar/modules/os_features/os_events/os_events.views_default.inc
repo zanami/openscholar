@@ -610,13 +610,22 @@ function os_events_views_default_views() {
   $handler->display->display_options['cache']['results_lifespan_custom'] = '0';
   $handler->display->display_options['cache']['output_lifespan'] = '518400';
   $handler->display->display_options['cache']['output_lifespan_custom'] = '0';
-  $handler->display->display_options['cache']['og_access'] = 1;
+  $handler->display->display_options['cache']['og_access'] = 0;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'date_ical';
   $handler->display->display_options['row_plugin'] = 'date_ical';
   $handler->display->display_options['row_options']['date_field'] = 'field_data_field_date.field_date_value';
   $handler->display->display_options['row_options']['location_field'] = 'none';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
@@ -675,7 +684,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['cache']['results_lifespan_custom'] = '0';
   $handler->display->display_options['cache']['output_lifespan'] = '518400';
   $handler->display->display_options['cache']['output_lifespan_custom'] = '0';
-  $handler->display->display_options['cache']['og_access'] = 1;
+  $handler->display->display_options['cache']['og_access'] = 0;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'rss';

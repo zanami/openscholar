@@ -72,7 +72,16 @@ function os_drush_command() {
       ),
       'aliases' => array('os-dl'),
     ),
- 
+
+    'os-domain-sync' => array(
+      'description' => dt('Syncs acquia managed domains into domains.list file.'),
+      'options' => $path_options,
+      'arguments' => array(),
+      'examples' => array(
+        'drush @prod os-ds' => dt('Recreats domains list file from acquia\'s settings.'),
+      ),
+      'aliases' => array('os-ds'),
+    ),
   );
 }
 
@@ -267,6 +276,29 @@ function drush_os_domain_list() {
 }
 
 /**
+ * @function drush_os_domain_sync
+ *
+ * Command callback for os-domain-sync
+ **/
+function drush_os_domain_sync() {
+  drush_invoke('os-domain-check');
+  $args = func_get_args();
+  $srv_conf = _drush_os_domain_get_server_conf();
+  $domains_list = $srv_conf['domains_list'];
+  
+  ob_start();
+  $ac_domain_list = drush_invoke_process(drush_sitealias_get_record('@self'), 'ac-domain-list', array(), array() );
+  ob_get_clean();
+
+  if ($ac_domain_list['error_status']) {
+    drush_die('Could not connect to acquia cloud api');
+  }
+  
+  $ac_domain_list = array_map(create_function('$a', 'return $a["name"];'), $ac_domain_list['object'][1]);
+  _os_drush_confirm_file_overwrite(implode("\n", $ac_domain_list), $domains_list);
+}
+  
+/**
  * @function drush_os_domain_check
  *
  * Command callback for os-domain-check
@@ -363,6 +395,7 @@ Using os-domains* consists of:
   * `os-domains-remove` Removes a domain from the list, rebuilds config files 
   * `os-domains-build` Builds config files from list without modifying it 
   * `os-domains-check` Confirms that config files are accessible and set up for these scripts
+  * `os-domains-sync` Sync domains.list from acquia's current state.  domains.list will be thrown out.
   * `os-domains-help` This documentation
       
 To override the location of the files mentioned above, use the --{domains,htaccess,sites}-file= option
@@ -386,7 +419,8 @@ function _os_drush_confirm_file_overwrite($contents, $destination) {
   file_put_contents($temp, $contents);
   
   
-  $prompt_loop = TRUE;
+  $action = 'u'; 
+  $prompt_loop = !(drush_get_option('y')); //skip the prompt and use the new files when -y is enabled
   while ($prompt_loop) {
     $action = drush_prompt(dt('Created @filename file.  [v]iew, [d]iff, [u]se this file, or [q]uit?', array('@filename' => $filename)));
     switch ($action) {

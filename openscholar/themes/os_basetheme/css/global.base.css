@@ -90,7 +90,7 @@ body {
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   margin: 0;
- 
+
 }
 
 h1,h2,h3,h4,h5,h6,
@@ -194,6 +194,35 @@ a, a:visited {
     color: #005C9C;
 }
 
+/* INFINITE SCROLL BUTTON */
+#autopager-load-more, #autopager-load-prev {
+     text-align: center;
+}
+
+#autopager-load-more:hover, #autopager-load-prev:hover {
+     background-color: #FFFFFF;
+}
+
+#autopager-load-prev a,
+#autopager-load-more a {
+     background: #f1f1f1;
+     border-radius: 4px 4px 4px 4px;
+     border: 1px solid #CCCCCC;
+     color: #215990;
+     display: block;
+     font-size: 13px;
+     font-weight: bold;
+     margin: 0px auto;
+     padding: 3px;
+     width: 25%;
+}
+
+#autopager-load-prev a:hover,
+#autopager-load-more a:hover {
+    text-decoration:none !important;
+    cursor: pointer;
+}
+
 em,
 dfn {
   font-style: italic;
@@ -280,7 +309,7 @@ margin: 0 0 1.5em 17px;
 .block.block-boxes-os_boxes_html ul,
 .block .field-name-body ul {
      list-style: disc;
-  
+
 }
 
 ul ul,
@@ -302,7 +331,7 @@ ol ul,
 
 .mceContentBody ol,
 #content-column ol {
- list-style-type:decimal; 
+ list-style-type:decimal;
 }
 
 .mceContentBody ol ol,
@@ -375,7 +404,7 @@ ul ul ul ul {
 .sidebar .block-boxes-os_taxonomy_fbt ul ul {margin: 0 10px;}
 
 .boxes-box ul.featured-links {
- 
+
     margin-left: 0;
 }
 
@@ -401,6 +430,72 @@ ul ul ul ul {
     display: block;
 }
 
+.view-os-events.view-id-os_events {
+  position: relative;
+}
+
+.view-display-id-page_4 .view-content,
+.view-display-id-page_5 .view-content {
+  padding-top: 10px;
+}
+
+.view-os-events.view-id-os_events .view-header {
+  padding-top: 30px;
+}
+
+.node-event {
+  position: relative;
+}
+
+.attachment.attachment-before ul li {
+  border-bottom: none;
+}
+
+/* Don't display the ical link in the floating box. */
+#cboxWrapper .node-event .links {
+  display: none;
+}
+
+.view-os-events.view-id-os_events .attachment-before {
+  position: absolute;
+  top: -10px;
+  right: 0px;
+}
+
+.node-event.article .node-content .links,
+.view-os-events.view-id-os_events .attachment-before .links {
+ display:inline-block;
+ margin-left:8px;
+}
+
+.ical {
+  background:url('../images/ical_icon.gif') no-repeat !important;
+  padding:3px 0 3px 25px !important;
+  border-bottom:none !important;
+ 
+}
+
+.webcal {
+  background:url('../images/ical_icon.gif') no-repeat !important;
+  padding:3px 0 3px 25px !important;
+  border-bottom:none !important;
+
+}
+
+.subscribe {
+  background:url('../images/calendar_icon.gif') no-repeat !important;
+  padding:3px 0 3px 25px !important;
+  border-bottom:none !important;
+
+}
+
+
+.rss {
+background:url('../images/rss_icon.gif') no-repeat !important;
+padding:3px 0 3px 25px !important;
+ border-bottom:none !important;
+
+}
 
 /* BOOK NAVS */
 .book-menu {
@@ -422,7 +517,7 @@ ul ul ul ul {
   margin: 0;
   }
 
-.book-menu ul.menu li, 
+.book-menu ul.menu li,
 #block-book-navigation ul.menu li,
 .block-boxes-os_boxes_booktoc ul.menu li {
   list-style: none;
@@ -439,14 +534,14 @@ ul ul ul ul {
   list-style: circle;
 }
 
-.book-menu ul.menu li li, 
+.book-menu ul.menu li li,
 #block-book-navigation ul.menu li li,
 .block-boxes-os_boxes_booktoc ul.menu li li {
   margin-bottom: 0;
   font-weight: normal;
   }
 
-.book-menu ul.menu li a, 
+.book-menu ul.menu li a,
 #block-book-navigation ul.menu li a,
 .block-boxes-os_boxes_booktoc ul.menu li a {
   display:block;
@@ -454,14 +549,14 @@ ul ul ul ul {
   padding-top: .3em;
   padding-bottom: .1em;
   }
-  
-.sidebar .book-menu ul.menu li a, 
+
+.sidebar .book-menu ul.menu li a,
 .sidebar #block-book-navigation ul.menu li a,
 .sidebar .block-boxes-os_boxes_booktoc ul.menu li a {
   border-bottom: none;
-  }  
+  }
 
-.book-menu ul.menu ul a, 
+.book-menu ul.menu ul a,
 #block-book-navigation ul.menu ul a,
 .block-boxes-os_boxes_booktoc ul.menu ul a {
   padding:0 0 0 .5em;
@@ -484,17 +579,17 @@ ul ul ul ul {
 .block-boxes-os_boxes_booktoc ul.menu ul ul ul ul a {
   padding:0 0 0 2.5em;
   }
-  
-  
-#boxes-box-scholar_book_recent_docs a.active, 
+
+
+#boxes-box-scholar_book_recent_docs a.active,
 #boxes-box-scholar_book_current_toc a.active,
 #block-book-navigation a.active,
 .block-boxes-os_boxes_booktoc a.active,
 .book-menu .active {
     font-weight: bolder;
     font-style: italic;
-     } 
-  
+     }
+
 
 
 dt {
@@ -542,6 +637,10 @@ table video {
   max-width: none;
 }
 
+.lt-ie9 div img,
+.lt-ie9 div object,
+.lt-ie9 div embed,
+.lt-ie9 div video,
 .lt-ie9 table img,
 .lt-ie9 table object,
 .lt-ie9 table embed,
@@ -632,11 +731,11 @@ header[role=banner],
 }
 
 /** TABLES **/
-	
+
 tbody {
 border-top: none;
-}	
-	
+}
+
 th, td {
     color: #4A4A4A;
     padding: 0.6em;
@@ -656,4 +755,8 @@ td img {
 .publication-cover-container {
   float:left;
   margin: 0 1.5em .5em 0;
+}
+
+.entity-registration .field-label {
+  padding-right: 5px;
 }

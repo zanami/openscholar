@@ -1,4 +1,4 @@
-; Drupal.org MakeFile for OpenScholar.
+; Drupal.org MakeFile for OpenScholar
 core = 7.x
 api = 2
 
@@ -36,7 +36,6 @@ projects[comment_sources][download][branch] = 7.x-2.x
 projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
-; patches needed
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
@@ -47,7 +46,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
-; rbrandon needs to push updates to contrib
+; needs patches to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
@@ -100,10 +99,6 @@ projects[entityreference_prepopulate][download][type] = git
 projects[entityreference_prepopulate][download][revision] = e2c2811
 projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
 
-; projects[entity_dependency][subdir] = "contrib"
-; projects[entity_dependency][version] = 1.x-dev
-; projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
-
 projects[elysia_cron][subdir] = "contrib"
 projects[elysia_cron][version] = 2.1
 
@@ -113,11 +108,7 @@ projects[eva][revision] = "6d92c27"
 
 projects[facetapi][subdir] = "contrib"
 projects[facetapi][version] = 1.1
-; 7.x-1.0+21 = 1.1
-;projects[facetapi][download][type] = git
-;projects[facetapi][download][branch] = 7.x-1.0
-;projects[facetapi][download][revision] = f7b7168
-projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-1.patch"
+projects[facetapi][patch][] = "http://drupal.org/files/2006704-facetapi-er-regroup-2.patch"
 
 projects[fb_social][subdir] = "contrib"
 ;projects[fb_social][version] = 2.0-beta4+1-dev
@@ -134,7 +125,6 @@ projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
 projects[feeds_xpathparser][subdir] = "contrib"
-;projects[feeds_xpathparser][version] = 1.0-beta3+7-dev
 projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
 projects[feeds_xpathparser][download][revision] = 5bea17e
@@ -172,6 +162,7 @@ projects[hierarchical_taxonomy][download][type] = git
 projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
 projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
 projects[hierarchical_taxonomy][download][revision] = 5bbe344
+projects[hierarchical_taxonomy][patch][] = "https://drupal.org/files/2034713-hs-comaprse-name-2.patch"
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -213,6 +204,7 @@ projects[media][revision] = "c49692b"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 
 projects[media_gallery][subdir] = "contrib"
+projects[media_gallery][version] = 2.x-dev
 projects[media_gallery][download][type] = git
 projects[media_gallery][download][branch] = 7.x-2.x
 projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
@@ -268,7 +260,7 @@ projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -277,6 +269,7 @@ projects[og_vocab][version] = 1.x-dev
 projects[og_vocab][download][type] = git
 projects[og_vocab][download][branch] = 7.x-1.x-dev
 projects[og_vocab][download][revision] = 61a6b9f
+projects[og_vocab][patch][] = "https://drupal.org/files/og-vocab-prevent-old-term-refernce-error.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -290,7 +283,9 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][tag] = 7.x-3.1
+;projects[pinserver][tag] = 7.x-3.3
+projects[pinserver][branch] = 7.x-3.x
+; @todo Make tag when QA is finished 1234
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -321,6 +316,9 @@ projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x
 projects[services][download][revision] = 761e620
+
+projects[services_basic_auth][subdir] = "contrib"
+projects[services_basic_auth][version] = "1.1"
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
@@ -387,10 +385,6 @@ libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
 
-libraries[iCalcreator][type] = "libraries"
-libraries[iCalcreator][download][type] = "file"
-libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
-
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
@@ -429,3 +423,7 @@ libraries[twitter-api-php][download][url] = "https://github.com/J7mbo/twitter-ap
 libraries[autopager][type] = "libraries"
 libraries[autopager][download][type] = "file"
 libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopager/archive/v1.2.zip"
+
+libraries[html5shiv[type] = "libraries"
+libraries[html5shiv][download][type] = "file"
+libraries[html5shiv][download][url] = "http://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv.js"

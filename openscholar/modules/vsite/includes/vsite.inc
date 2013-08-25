@@ -44,6 +44,36 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = FALSE){
 }
 
 /**
+ * Add the passed $node to the specified $vsite.
+ */
+function vsite_add_node($node, $gid = FALSE, $update_alias = TRUE) {
+  // Loads the vsite to add the node as group content.
+  // Only sets reset = TRUE when we need to update the alias; this is because
+  // the purl value will be cached as NULL on newly created vsites, but we'll
+  // need the purl value in order to update the alias properly.
+  // @see vsite_pathauto_alias_alter()
+  $vsite = vsite_get_vsite($gid, $update_alias);
+  $og_membership = vsite_add_entity($node, 'node', $vsite);
+  // Optionally update the pathauto alias to reflect the new vsite.
+  if ($update_alias) {
+    if (!isset($node->path)) {
+      $node->path = array();
+    }
+    // Tells pathauto to update this node's alias.
+    $node->path['pathauto'] = TRUE;
+    $node->vsite_pathauto_alias_alter = TRUE;
+    // @todo verify if we need this?
+    // Prevents a collision with an existing system path.
+    //_vsite_alter_node_path_settings($node);
+
+    // Saves the node to trigger
+    node_save($node);
+  }
+
+  return $og_membership;
+}
+
+/**
  * Remove the passed entity from a vsite
  *
  * The entity that you wish to add to the vsite.
@@ -73,13 +103,13 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = FALSE){
  * Creates a new vsite
  *
  * @param $name
- * 	 Name of site.
+ *   Name of site.
  * @param $domain
- * 	 Path for new site.
+ *   Path for new site.
  * @param $uid
- * 	The user ID to assocaite with the new VSite.
+ *  The user ID to assocaite with the new VSite.
  * @param $preset
- * 	Type of vsite to create.
+ *  Type of vsite to create.
  *
  * @return
  *   the SPACE object if created or FALSE.
@@ -104,7 +134,7 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
     $node->field_group_parent = array(
       LANGUAGE_NONE => array(
         array(
-      	  'target_id' => $parent,
+          'target_id' => $parent,
           'entity' => $parent_node,
           'access' => TRUE,
         )
@@ -150,7 +180,7 @@ function vsite_get_vsite_by_owner($uid = NULL) {
   }
 
   if (empty($uid)) {
-  	return array();
+    return array();
   }
 
   $group_bundles = og_get_all_group_bundle();

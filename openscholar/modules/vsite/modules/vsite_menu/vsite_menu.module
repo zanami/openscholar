@@ -123,12 +123,14 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
  * @return
  * The mlid of the saved menu link, or FALSE if the menu link could not be saved.
  */
-function vsite_menu_menu_link_save(&$item){
+function vsite_menu_menu_link_save(&$item, $gid = FALSE) {
   drupal_alter('menu_link', $item);
   ctools_include('menu', 'os');
-  $vsite = vsite_get_vsite();
-  if (! $vsite)
-    return false;
+
+  $vsite = vsite_get_vsite($gid);
+  if (!$vsite) {
+    return FALSE;
+  }
 
   $default_menu = key(os_get_menus());
   $existing_menu = FALSE;
@@ -154,7 +156,7 @@ function vsite_menu_menu_link_save(&$item){
   $menu = $item['menu_name'];
 
   //Retrieve the existing menu data
-  $existing_menu = _vsite_menu_get_menu_links($menu);
+  $existing_menu = _vsite_menu_get_menu_links($menu, $vsite);
 
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
@@ -295,9 +297,9 @@ function vsite_menu_get_link_path($menu, $path){
   $menu_links = _vsite_menu_get_menu_links($menu);
 
   foreach ($menu_links as $mlid => $link) {
-  	if($link['link_path'] == $path && $link['mlid']){
-  	  return $link['mlid'];
-  	}
+    if($link['link_path'] == $path && $link['mlid']){
+      return $link['mlid'];
+    }
   }
 }
 
@@ -438,7 +440,7 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
 function _vsite_menu_get_menu_links($menu){
   $vsite = vsite_get_vsite();
 
-  if($vsite){
+  if ($vsite) {
     //Retrieve the menu data from the controller
     $existing_menu = $vsite->controllers->menus->get($menu);
   }
@@ -564,7 +566,7 @@ function vsite_menu_cp_menu_form_submit($form, &$form_state) {
     switch ($op){
     	case t('Reset to defaults'):
     	  if(os_menu_revert()){
-    	    drupal_set_message(t('The menus have been reset to thier default values.'));
+    	    drupal_set_message(t('The menus have been reset to their default values.'));
     	  }
     	  break;
     	case t('Save to @title', array('@title' => $preset->title)):
@@ -621,4 +623,39 @@ function vsite_menu_preprocess_block(&$vars) {
       $vars['classes_array'][] = 'os-custom-menu';
     }
   }
+}
+
+/**
+ * Simple API function wrapper to add a new menu item to a vsite's menu.
+ */
+function vsite_menu_create_menu_link($title, $path, $gid, $plid = FALSE, $options = array()) {
+  // Adds the parameters into the correct array format.
+  $options['link_title'] = $title;
+  $options['link_path'] = $path;
+  if ($plid !== FALSE) {
+    $options['plid'] = $plid;
+  }
+
+  // Adds default settings.
+  $defaults = array(
+    'menu_name' => 'primary-menu',
+  );
+  $options += $defaults;
+
+  $mlid = vsite_menu_menu_link_save($options, $gid);
+  return $mlid;
+}
+
+/**
+ * Adds a menu item for a node in the primary menu.
+ */
+function vsite_menu_add_node($nid, $gid, $title = '') {
+  if (empty($title)) {
+    $node = node_load($nid);
+    $title = $node->title;
+  }
+  // Note: the final menu item will use any available path alias.
+  $path = "node/$nid";
+  $mlid = vsite_menu_create_menu_link($title, $path, $gid);
+  return $mlid;
 }

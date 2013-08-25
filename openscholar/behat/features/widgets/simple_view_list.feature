@@ -3,11 +3,23 @@ Feature:
 
   @api
   Scenario: Verify the simple view widget works after tagging node to term.
-     Given I am logged in as "john"
+     Given I am logging in as "john"
        And the widget "Simple view list" is set in the "Classes" page with the following <settings>:
-           | Content Type | Class   | select list |
-           | Vocabulary   | authors | select list |
+        | Only vocabularies     | check   | checkbox    |
+        | Vocabulary            | authors | select list |
       When I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
        And I visit "john/classes"
       Then I should see "Simple view list"
        And I should see "John F. Kennedy"
+
+  @api
+  Scenario: Verify the simple view widget works after tagging node to term.
+     Given I am logging in as "john"
+      When I assign the node "First blog" with the type "blog" to the term "Stephen William Hawking"
+       And I assign the node "First blog" with the type "blog" to the term "Air"
+      When the widget "Simple view list" is set in the "Classes" page with the following <settings>:
+        | Only vocabularies     | uncheck                       | checkbox    |
+        | Term                  | Air, Stephen William Hawking  | select list |
+       And I visit "john/classes"
+      Then I should see "First blog"
+

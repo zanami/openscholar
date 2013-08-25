@@ -79,6 +79,10 @@ class os_boxes_mailchimp extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
+      return;
+    }
+
     $block = parent::render();
     global $user;
     $defaults = $this->options_defaults();
@@ -111,7 +115,21 @@ class os_boxes_mailchimp extends os_boxes_default {
         ctools_include('ajax');
         ctools_include('modal');
         ctools_modal_add_js();
-        $block['content'] = ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe/' . $this->delta, 'Subscribe to this mailing list', 'ctools-use-modal');
+        $modal_style = array(
+          'mailchimp-modal-style' => array(
+            'modalSize' => array(
+              'type' => 'fixed',
+              'width' => 600,
+              'height' => 360,
+              'addWidth' => 10,
+              'addHeight' => 10,
+              'contentRight' => 0,
+              'contentBottom' => 0,
+            ),
+          )
+        );
+        drupal_add_js($modal_style, 'setting');
+        $block['content'] = ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe/' . $this->delta, 'Subscribe to this mailing list', 'ctools-use-modal ctools-modal-mailchimp-modal-style');
         break;
     }
 

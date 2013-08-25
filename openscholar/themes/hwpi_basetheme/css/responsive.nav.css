@@ -1,6 +1,9 @@
 
 @media (max-width: 1008px) {
 /*Header*/
+.region-header-second {
+    max-height: 105px!important;
+}
 .branding-right {
     display: none; 
 }
@@ -8,10 +11,10 @@
     width: 100%;
 }
   
-.region-header-third ul.menu {
+.region-header-third ul.nice-menu {
     float: left!important;
 }
-.region-header-third ul.menu {
+.region-header-third ul.nice-menu {
     margin-bottom: 0;
 }
 
@@ -81,12 +84,21 @@
     font-size: 20px;
     padding-left: 15px !important;
 }
-#menu-bar #block-os-primary-menu  li ul li a{
-	font-size:15px;
+
+#menu-bar ul.nice-menu .menuparent a,
+#menu-bar ul.nice-menu .menuparent a span, 
+#menu-bar ul.nice-menu .menuparent a:hover span, 
+#menu-bar ul.nice-menu .menuparent a.active span {
+background: none !important;
+}
+
+#menu-bar ul.nice-menu ul,
+#menu-bar ul.nice-menu ul ul {
+	display:none !important;
 }
 /*Secondary menu*/
 .at-panel.gpanel.panel-display.three-col.clearfix {
-    padding-right: 30px;
+    padding-right: 15px;
 }
 .region-header-third  #block-os-secondary-menu{
 display:none;
@@ -98,41 +110,42 @@ display:none;
 .region-header-third #block-os-search-solr-site-search.opened {
     background-color: #1E1E1E;
     display: block;
-    left: 15px;
-    margin-bottom: 0 !important;
     padding: 12px 0;
-    position: absolute;
-    text-align: left;
-    top: 59px;
+    position: static;
     width: 100%;
-    z-index: 19;
 }
-.region-header-third #block-os-secondary-menu.opened {
+.region-header-third #block-os-secondary-menu.opened,
+.region-header-third .os-custom-menu.opened {
     background-color: #2A527A;
     display: block;
-    left: 15px;
-    position: absolute;
-    top: 59px;
-    z-index: 3;
+    position: static;
     width:100%;
+    margin: 0 15px;
 }
+
+.region-header-third .os-custom-menu,
 .region-header-third #block-os-secondary-menu{
 	width:99%;
 }
+
+.region-header-third .os-custom-menu .menu,
 .region-header-third #block-os-secondary-menu .menu{
 	width:100%;
 }
+
+.region-header-third .os-custom-menu #nice-menu-third_menu,
 .region-header-third #block-os-secondary-menu #nice-menu-secondary-menu{
 		width:100%;
 }
+
+.region-header-third .os-custom-menu li,
 .region-header-third #block-os-secondary-menu li{
 	border-bottom: 1px solid #2E5A86;
     border-top: 1px solid #25496C !important;
     margin-left:0!important;
 }
-.logged-in .region-header-third #block-os-secondary-menu.opened {
-    z-index: 19;
-}
+
+.region-header-third .os-custom-menu li a,
 .region-header-third #block-os-secondary-menu li a{
 	padding:12px 15px !important;
 }
@@ -153,7 +166,6 @@ display:none;
 .region-header-third ol {
     margin: 0 !important;
 }
-/**/
 .flexslider {
     background: none repeat scroll 0 0 transparent;
     min-height: 315px;
@@ -167,10 +179,11 @@ display:none;
     height: 0;
     visibility: hidden;
 }
-.mobile-buttons {
-    display: block!important;
-    margin: 0;
+ul.mobile-buttons {
+    display: block !important;
+    margin: 0 0 0 15px !important;
 }
+
 .mobile-buttons li {
     float: left;
     list-style-type: none;
@@ -239,8 +252,15 @@ ul.primary li a {
 }
 }
 
+/*--------------------------------------------------------*/
 @media (max-width: 768px) {
 	
+.region-header-second {
+    height: 130px !important;
+}
+.block.block-boxes.block-boxes-os_boxes_site_logo {
+    width: 100%!important;
+}
 .link-count-mobi-search a {
       min-height: 20px;
 }	
@@ -249,27 +269,26 @@ ul.primary li a {
     min-height: 20px;
 }
 .region-header-third #block-os-secondary-menu.opened {
-    top: 44px!important;
+    top: 65px!important;
     width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
-    top: 44px!important;
+    top: 65px!important;
 }
 .region-header-third {
-    margin-left: 0 !important;
+    margin-left: 15px!important;
     width: 100%!important;
     float:left!important;
 }  
-	
 }
+
+/*--------------------------------------------------------*/
 @media (max-width:400px){
 	
-.region-header-third #block-os-secondary-menu.opened {
-	width: 99.99% !important;
-}	
 #search-block-form .container-inline .form-item .form-text {
     width: 75% !important;
 }
+
 
 }
