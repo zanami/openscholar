@@ -347,7 +347,17 @@ class FeatureContext extends DrupalContext {
     foreach ($hash as $form_elements) {
       switch ($form_elements[2]) {
         case 'select list':
-          $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          $values = explode(",", $form_elements[1]);
+
+          if (count($values) > 1) {
+            foreach ($values as $value) {
+              // Select multiple values from the terms options.
+              $this->getSession()->getPage()->selectFieldOption($form_elements[0], trim($value), true);
+            }
+          }
+          else {
+            $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          }
           break;
         case 'checkbox':
           $metasteps[] = new Step\When('I '. $form_elements[1] . ' the box "' . $form_elements[0] . '"');
@@ -379,6 +389,21 @@ class FeatureContext extends DrupalContext {
    */
   public function iAssignTheNodeToTheTerm($node, $term) {
     $this->invoke_code('os_migrate_demo_assign_node_to_term', array("'$node'","'$term'"));
+  }
+
+  /**
+   * @Given /^I unassign the node "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeFromTheTerm($node, $term) {
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'"));
+  }
+
+  /**
+   * @Given /^I unassign the node "([^"]*)" with the type "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeWithTheTypeFromTheTerm($node, $type, $term) {
+    $node = str_replace("'", "\'", $node);
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'","'$type'"), TRUE);
   }
 
   /**

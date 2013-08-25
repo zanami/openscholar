@@ -62,7 +62,7 @@ function vsite_domain_cp_settings_domain_validate($form, $form_state) {
   // Checks that the custom domain is not the same as purl_base_domain.
   $purl_base_domain = variable_get('purl_base_domain', '');
   $purl_base_domain = preg_replace("(https?://)", "", $purl_base_domain);
-  if (strtolower($domain) == strtolower($purl_base_domain)) {
+  if ($domain && strtolower($domain) == strtolower($purl_base_domain)) {
     form_set_error('vsite_domain_name', t('You may not use the sitewide URL as a custom url.'));
   }
 
