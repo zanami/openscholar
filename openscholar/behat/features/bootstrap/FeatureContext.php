@@ -1041,4 +1041,32 @@ class FeatureContext extends DrupalContext {
   public function iImportFeedsItems() {
     $this->invoke_code('os_migrate_demo_import_feeds_items');
   }
+
+  /**
+   * @Given /^I import the feed item "([^"]*)"$/
+   */
+  public function iImportTheFeedItem($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Import')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should dee the feed item "([^"]*)" has imported$/
+   */
+  public function iShouldDeeTheFeedItemHasImported($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'View')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
 }

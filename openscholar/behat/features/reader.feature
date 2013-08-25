@@ -12,3 +12,7 @@ Feature:
     Given I am logging in as "admin"
      When I set feed item to import
       And I import feeds items
+     When I visit "john/os-reader"
+      And I import the feed item "JFK has ben murdered"
+     Then I should dee the feed item "JFK has ben murdered" has imported
+      And I should see "The president JFK has been murdered"
