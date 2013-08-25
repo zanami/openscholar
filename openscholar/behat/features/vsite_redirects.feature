@@ -33,11 +33,13 @@ Feature:
       | "john/news"     | 301  | "news"    |
 
   @api
-  Scenario: Verifying that the redirect of user between sites with domain and
-  sited without domain is working properly.
+  Scenario: Verifying redirect of sites with a share domain.
     Given I visit "http://lincoln.local/lincoln/blog/first-blog"
-      And I should be on "john/blog/first-blog"
-     When I login as "admin" in "Abraham"
+     Then I should be on "john/blog/first-blog"
+
+  @api
+  Scenario: Verifying redirect of sites without a share domain.
+    Given I login as "admin" in "Abraham"
       And I set the Share domain name to "0"
      When I visit "http://lincoln.local/blog/first-blog"
      Then I should be on "john/blog/first-blog"
