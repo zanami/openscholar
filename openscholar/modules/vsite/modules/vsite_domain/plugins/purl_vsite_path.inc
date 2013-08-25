@@ -88,12 +88,14 @@ if (!class_exists('purl_vsite_path')) {
         }
       }
 
-      // Disables addition of URL prefix if prefix is part of the path alias
+      // Disables addition of URL prefix if prefix is part of the path alias.
       if (!empty($path) && $path != '<front>') {
         $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
         $alias = drupal_get_path_alias($path, $language);
         if ($alias == $path || $alias == $this->remove($alias, $element)) {
           global $base_url;
+          // The user access to the page with the wrong base url. Change the
+          // base url to the correct one.
           $options['base_url'] = variable_get('purl_base_domain', $base_url);
         }
         else {
