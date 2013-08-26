@@ -13,8 +13,8 @@ a:visited {
   color: #215990;
 }
 
-.block-boxes-os_boxes_html a,
-.field-name-body a {
+#columns .block-boxes-os_boxes_html a,
+#columns .field-name-body a {
      text-decoration: underline;
 }
 

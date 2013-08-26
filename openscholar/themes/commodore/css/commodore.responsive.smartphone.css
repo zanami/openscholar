@@ -55,7 +55,7 @@
 }
 
 
-@media (max-width: 1025px) {
+@media (max-width: 900px) {
 .block-boxes-os_shields_box,
 .block-boxes-os_boxes_site_logo {
 	display:none;
