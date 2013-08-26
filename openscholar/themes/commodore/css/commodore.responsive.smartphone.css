@@ -1,7 +1,16 @@
-@media only screen and (min-width:320px) and (max-width:800px) {
+@media (max-width: 768px) {
 	
 #columns {
     width: 95%;
+}
+
+
+.gpanel .region {
+	display:block !important;
+	width:100% !important;
+	clear:both !important;
+	float:left !important;
+	margin:0 !important;
 }	
 	
 #menu-bar {
@@ -36,11 +45,19 @@
     margin:0;
 }
 
-#header-container img {width:100%;}
 
+
+
+#powerby-login {
+    width: 100%;
+}
+
+}
+
+
+@media (max-width: 1025px) {
 .block-boxes-os_shields_box,
 .block-boxes-os_boxes_site_logo {
 	display:none;
-}
-
-}
+ }
+ }
