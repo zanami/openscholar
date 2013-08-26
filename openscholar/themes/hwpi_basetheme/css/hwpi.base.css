@@ -374,8 +374,8 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-#content-column .view-os-events.view-id-os_events .view-header {
-  padding-top: 30px;
+.block .view-os-events.view-id-os_events .view-header {
+  padding-top: 0;
 }
 
 /* Views Node Lists */
