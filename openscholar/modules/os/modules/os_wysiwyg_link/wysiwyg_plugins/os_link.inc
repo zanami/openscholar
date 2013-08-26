@@ -1,10 +1,13 @@
-<?php 
+<?php
 
+/**
+ * Define wysiwyg plugin.
+ */
 function os_wysiwyg_link_os_link_plugin() {
   media_include_browser_js();
-  
+
   os_wysiwyg_link_include_browser_js();
-  
+
   $path = drupal_get_path('module', 'os_wysiwyg_link');
   $plugins['os_link'] = array(
     'title' => 'OS Link',
@@ -24,17 +27,20 @@ function os_wysiwyg_link_os_link_plugin() {
       ),
     ),
   );
-  
+
   return $plugins;
 }
 
+/**
+ * Helper function; Include media browser library and js.
+ */
 function os_wysiwyg_link_include_browser_js() {
   static $included = false;
   if ($included) {
     return;
   }
   $included = TRUE;
-  
+
   $settings = array(
     'browserUrl' => url('os/wysiwyg/link/insert', array(
         'query' => array('render' => 'media-popup'))),

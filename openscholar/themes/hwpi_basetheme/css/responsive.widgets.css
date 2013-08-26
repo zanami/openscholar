@@ -42,6 +42,13 @@
 }
 }
 
+@media (max-width: 479px){
+	#boxes-box-site_info {
+    padding-top: 0 !important;
+}
+	
+}
+
 /*--------------------------------------------------------*/
 @media (max-width: 768px) {
 

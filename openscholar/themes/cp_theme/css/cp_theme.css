@@ -381,7 +381,7 @@ width:30%;
     border-radius: 10px 10px 0 0;
     -webkit-border-radius: 10px 10px 0 0;
     -moz-border-radius: 10px 10px 0 0;
-    padding: 0;
+    padding: 5px;
 } 	
 
 /* Shrinks the node form to take up less vertical space. */
