@@ -13,8 +13,8 @@ a:visited {
   color: #215990;
 }
 
-.block-boxes-os_boxes_html a,
-.field-name-body a {
+#columns .block-boxes-os_boxes_html a,
+#columns .field-name-body a {
      text-decoration: underline;
 }
 
@@ -130,6 +130,9 @@ table caption {
   list-style: circle;
 }
 
+.block .node:last-child {
+    margin-bottom: 0;
+}
 
 /* Search Results */
 .page-search input.form-text {
@@ -371,7 +374,9 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-
+.block .view-os-events.view-id-os_events .view-header {
+  padding-top: 0;
+}
 
 /* Views Node Lists */
 .view .node-teaser {
@@ -484,7 +489,7 @@ ol.search-results li.search-result:last-child {
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
-  border-bottom: 1px solid #2769AC;
+  text-decoration: underline;
 }
 
 .node-class .view-os-classes .views-row {
