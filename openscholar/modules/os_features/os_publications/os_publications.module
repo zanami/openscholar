@@ -28,8 +28,6 @@ function os_publications_os_app_info() {
  * Defines the overview menu entry
  */
 function os_publications_menu_alter(&$items) {
-  $items['node/add/biblio'] = $items['biblio/add'];
-
   $items['publications/export'] = array(
     'title' => '',
     'page callback' => 'os_publications_export',
@@ -651,7 +649,10 @@ function os_publications_os_add_new_links_alter(&$links) {
       'href' => 'publications/import',
       'html' => TRUE,
     );
-    $links['biblio']['title'] = 'Publication';
+    $links['biblio'] = array(
+      'href' => 'biblio/add',
+      'title' => 'Publication',
+    );
   }
 }
 
