@@ -612,7 +612,9 @@ class os_sv_list_box extends os_boxes_default {
     // Execute the Query.
     switch ($options['content_type']) {
       case 'biblio':
-        $nids = $query->execute()->fetchCol();
+        // TODO: Fix.
+//        $nids = $query->execute()->fetchCol();
+        $nids = array();
         break;
 
       case 'image':

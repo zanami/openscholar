@@ -28,15 +28,6 @@ function os_publications_os_app_info() {
  * Defines the overview menu entry
  */
 function os_publications_menu_alter(&$items) {
-  $items['publications'] = array(
-    'title' => 'Publications',
-    'page callback' => 'os_publications_overview',
-    'access callback' => 'spaces_access_feature',
-    'access arguments' => array('view', 'os_publications'),
-    'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
-    'menu_name' => 'primary',
-  );
-
   $items['publications/export'] = array(
     'title' => '',
     'page callback' => 'os_publications_export',
