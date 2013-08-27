@@ -25,6 +25,9 @@ function os_reader_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_admin_paths().
+ */
 function os_reader_admin_paths() {
   return array(
     'os-reader' => TRUE,
@@ -219,7 +222,8 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
     ajax_deliver($page);
   }
   else {
-    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->title));
+    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->og->title));
+    drupal_goto('os-reader');
   }
 }
 
