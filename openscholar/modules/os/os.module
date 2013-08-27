@@ -568,6 +568,10 @@ function os_preprocess_page(&$vars) {
   $_node_types = _node_types_build();
 
   foreach ($types as $type => $name) {
+    if (empty($_node_types->names[$type])) {
+      continue;
+    }
+
     $printed = FALSE;
     foreach ($active as $a) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
