@@ -8,6 +8,7 @@
  * Implements hook_user_default_permissions().
  */
 function os_publications_user_default_permissions() {
+  return;
   $permissions = array();
 
   // Exported permission: access biblio content.

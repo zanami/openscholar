@@ -42,6 +42,7 @@ dependencies[] = feeds
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
+dependencies[] = biblio_ui
 dependencies[] = advanced_help
 
 ; media / files / wysiwyg
