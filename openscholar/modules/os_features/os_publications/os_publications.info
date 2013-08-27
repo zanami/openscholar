@@ -82,3 +82,5 @@ features[views_view][] = publication_years
 files[] = os_publications_autopager.js
 spaces[types][] = og
 spaces[types][] = site
+
+files[] = includes/views/os_publication_biblio_space_filter.inc

@@ -923,3 +923,18 @@ function os_publications_import_type($name, $field_settings) {
       ->execute();
   }
 }
+
+/**
+ * Implements hook_views_data().
+ */
+function os_publications_views_data() {
+  $data['biblio']['space'] = array(
+    'title' => t('Biblio in space'),
+    'help' => t('Filter biblio entries which belong to your vsite.'),
+    'filter' => array(
+      'handler' => 'os_publication_biblio_space_filter',
+    ),
+  );
+
+  return $data;
+}
