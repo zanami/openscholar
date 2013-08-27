@@ -62,7 +62,7 @@ function vsite_user_remove($account, $site_id) {
  *   The Group Type
  */
 function vsite_role_grant($uid, $role_name, $site_id = FALSE, $group_type = 'node') {
-  _vsite_role_grant($uid, $role_name, $site_id, $group_type, 'revoke');
+  _vsite_role_manage($uid, $role_name, $site_id, $group_type);
 }
 
 /**
