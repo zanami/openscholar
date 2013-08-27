@@ -580,6 +580,10 @@ function os_files_update_7008(&$sb) {
   error_log($sb['progress'].'/'.$sb['count'].': '.($sb['progress']/$sb['count'] * 100).'%');
   $sb['#finished'] = $sb['progress']/$sb['count'];
   if ($sb['#finished'] >= 1) {
+
+    db_query('DELETE FROM file_usage WHERE type = "file" AND module != "imagefield_crop"')->execute();
+    db_query('DELETE FROM file_usage WHERE type = "node" AND id NOT IN (SELECT nid FROM node)')->execute();
+
     return t('File usage has been corrected for all files.');
   }
 }
