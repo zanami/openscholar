@@ -17,7 +17,7 @@ function os_publications_install() {
 
   // Attaching OG audience fields to the biblio bundles.
   $types = biblio_get_types_info();
-  foreach ($types as $type) {
+  foreach (array_keys($types) as $type) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['instance']['display'] = array(
       'default' => array(
@@ -1039,7 +1039,7 @@ function os_publications_update_7012() {
 function os_publications_update_7013() {
   // Attaching OG audience fields to the biblio bundles.
   $types = biblio_get_types_info();
-  foreach ($types as $type) {
+  foreach (array_keys($types) as $type) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['instance']['display'] = array(
       'default' => array(
