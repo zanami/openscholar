@@ -15,6 +15,29 @@ function os_publications_install() {
     biblio_create_field('biblio_url_title', 'biblio', $type);
   }
 
+  // Attaching OG audience fields to the biblio bundles.
+  $types = biblio_get_types_info();
+  foreach ($types as $type) {
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['instance']['display'] = array(
+      'default' => array(
+        'type' => 'hidden'
+      ),
+      'teaser' => array(
+        'type' => 'hidden'
+      )
+    );
+    // Enable Entity reference prepopulate.
+    $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+      'status' => TRUE,
+      'action' => 'hide',
+      'fallback' => 'hide',
+      'skip_perm' => FALSE,
+      'og_context' => TRUE,
+      'action_on_edit' => TRUE
+    );
+    og_create_field(OG_AUDIENCE_FIELD, 'biblio', $type, $og_field);
+  }
 
   // Will be un use until the biblio citeproc will be back.
   return;
@@ -1008,4 +1031,33 @@ function os_publications_update_7012() {
     ),
   );
   os_publications_import_type('Working Paper', $field_settings);
+}
+
+/**
+ * Attaching OG audience fields to the new biblio bundles.
+ */
+function os_publications_update_7013() {
+  // Attaching OG audience fields to the biblio bundles.
+  $types = biblio_get_types_info();
+  foreach ($types as $type) {
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['instance']['display'] = array(
+      'default' => array(
+        'type' => 'hidden'
+      ),
+      'teaser' => array(
+        'type' => 'hidden'
+      )
+    );
+    // Enable Entity reference prepopulate.
+    $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+      'status' => TRUE,
+      'action' => 'hide',
+      'fallback' => 'hide',
+      'skip_perm' => FALSE,
+      'og_context' => TRUE,
+      'action_on_edit' => TRUE
+    );
+    og_create_field(OG_AUDIENCE_FIELD, 'biblio', $type, $og_field);
+  }
 }
