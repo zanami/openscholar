@@ -41,6 +41,11 @@ function os_news_process_node(&$vars) {
     return;
   }
 
+  $wrapper = entity_metadata_wrapper('node', $vars['node']);
+  if ($vars['page'] && !empty($wrapper->field_url) && $url = $wrapper->field_url->value()) {
+    drupal_goto($url['url']);
+  }
+
   // Helps poor theme developers find these changes to $variables
   $vars['classes'] .= ' modified-in-os_news_process_node';
 

@@ -400,6 +400,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
+  $wrapper->field_url->set(array('url' => $feed->url));
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
