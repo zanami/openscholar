@@ -483,6 +483,12 @@ function os_news_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
+        'full' => array(
+          'label' => 'above',
           'module' => 'field_redirection',
           'settings' => array(
             '404_if_empty' => FALSE,
