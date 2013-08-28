@@ -90,8 +90,9 @@ function os_news_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_field_access().
+ *
  * Restrict access to the redirect field on the news node.
- * @return boolean
  */
 function os_news_field_access($op, $field, $entity_type, $entity, $account) {
   if (!empty($entity) && $field['field_name'] == 'field_url' && $entity_type == 'node' && $entity->type == 'news' && $op == 'edit') {
