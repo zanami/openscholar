@@ -43,7 +43,7 @@ function os_news_process_node(&$vars) {
 
   // The URL field is populated, redirect the user to URL.
   $wrapper = entity_metadata_wrapper('node', $vars['node']);
-  if ($vars['page'] && !empty($wrapper->field_url) && $url = $wrapper->field_url->value()) {
+  if ($vars['page'] && $url = $wrapper->field_url->value()) {
     drupal_goto($url['url']);
   }
 
