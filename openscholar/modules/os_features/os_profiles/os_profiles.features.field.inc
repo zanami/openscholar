@@ -936,13 +936,9 @@ function os_profiles_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'field_redirection',
-          'settings' => array(
-            '404_if_empty' => 0,
-            'code' => '301',
-          ),
-          'type' => 'field_redirection',
-          'weight' => '19',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '11',
         ),
         'full' => array(
           'label' => 'above',
