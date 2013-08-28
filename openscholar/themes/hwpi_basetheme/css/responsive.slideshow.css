@@ -20,7 +20,7 @@
 #layout_16_9_side .slide-copy,
 #layout_16_9_below .slide-copy,
 #layout_3_1_overlay .slide-copy {
- height:100px !important;
+ height:auto !important;
  min-height:100px !important;
  position: static !important;
   background: #444 !important;
