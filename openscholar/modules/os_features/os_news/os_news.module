@@ -41,12 +41,6 @@ function os_news_process_node(&$vars) {
     return;
   }
 
-  // The URL field is populated, redirect the user to URL.
-  $wrapper = entity_metadata_wrapper('node', $vars['node']);
-  if ($vars['page'] && $url = $wrapper->field_url->value()) {
-    drupal_goto($url['url']);
-  }
-
   // Helps poor theme developers find these changes to $variables
   $vars['classes'] .= ' modified-in-os_news_process_node';
 
@@ -84,7 +78,6 @@ function os_news_process_node(&$vars) {
       'data' => drupal_get_path('module', 'os_news') . '/os_news.css',
     ),
   );
-
 }
 
 /**

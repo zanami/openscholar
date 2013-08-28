@@ -483,10 +483,13 @@ function os_news_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'link',
-          'settings' => array(),
-          'type' => 'link_default',
-          'weight' => 7,
+          'module' => 'field_redirection',
+          'settings' => array(
+            '404_if_empty' => FALSE,
+            'code' => '301',
+          ),
+          'type' => 'field_redirection',
+          'weight' => '7',
         ),
         'sidebar_teaser' => array(
           'label' => 'above',

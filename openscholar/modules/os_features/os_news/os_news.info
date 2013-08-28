@@ -10,6 +10,7 @@ dependencies[] = context
 dependencies[] = ctools
 dependencies[] = date
 dependencies[] = features
+dependencies[] = field_redirection
 dependencies[] = file_entity
 dependencies[] = filefield_paths
 dependencies[] = link
