@@ -113,6 +113,7 @@ display:none;
     padding: 12px 0;
     position: static;
     width: 100%;
+    margin: 0 15px;
 }
 .region-header-third #block-os-secondary-menu.opened,
 .region-header-third .os-custom-menu.opened {
