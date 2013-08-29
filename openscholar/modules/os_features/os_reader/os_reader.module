@@ -410,7 +410,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $feed_wrapper->field_vsites_reference[] = $vsite->id;
 
   // Reference the feed to the News node.
-  $feed_wrapper->field_news_reference[] = $node->nid;
+  $feed_wrapper->field_nodes_reference[] = $node->nid;
   $feed_wrapper->save();
 
   return $node;
@@ -431,7 +431,12 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
 function os_reader_get_news_by_feed_item($feed_id, $vsite_id) {
   // Load news nodes that were imported from the given feed item.
   $wrapper_feed = entity_metadata_wrapper('os_feed_item', $feed_id);
-  $news_nodes = $wrapper_feed->field_news_reference->value();
+  $news_nodes = $wrapper_feed->field_nodes_reference->value();
+
+  if (empty($news_nodes)) {
+    // No imported news nodes.
+    return FALSE;
+  }
 
   // Run through imported news nodes to see if any of them belong to the VSite.
   foreach ($news_nodes as $news_node) {
