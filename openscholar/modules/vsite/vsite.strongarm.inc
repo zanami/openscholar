@@ -172,6 +172,8 @@ function vsite_strongarm() {
     'os_scholar' => 'os_scholar',
     'os_project' => 'os_project',
     'hwp_administrative' => 'hwp_administrative',
+    'hwp_lab_research_group' => 'hwp_lab_research_group',
+    'hwp_project' => 'hwp_project',
   );
   $export['os_enabled_spaces_presets'] = $strongarm;
 
