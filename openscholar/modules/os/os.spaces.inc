@@ -57,7 +57,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'ballard',
+      'theme_default' => 'hwpi_classic',
       'os_menus' => array(
         'primary-menu' => 'Primary Menu',
         'secondary-menu' => 'Secondary Menu',
