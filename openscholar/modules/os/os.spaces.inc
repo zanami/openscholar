@@ -57,37 +57,14 @@ function os_spaces_presets() {
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'hwpi_classic',
-      'os_menus' => array(
-        'primary-menu' => 'Primary Menu',
-        'secondary-menu' => 'Secondary Menu',
-      ),
     ),
     'menus' => array(
       'primary-menu' => array(
         900 => array(
           'link_path' => 'home',
-          'menu_name' => 'primary-menu',
           'link_title' => 'HOME',
           'options' => array(),
-          'external' => 1,
-          'weight' => 0,
-          'hidden' => 0,
-          'has_children' => 0,
-          'expanded' => 0,
-          'module' => 'menu',
-          'customized' => 0,
-          'updated' => 0,
-          'mlid' => 0,
-          'plid' => 0,
           'p1' => 900,
-          'p2' => 0,
-          'p3' => 0,
-          'p4' => 0,
-          'p5' => 0,
-          'p6' => 0,
-          'p7' => 0,
-          'p8' => 0,
-          'p9' => 0,
           'depth' => 1,
           'router_path' => 'home',
         ),
@@ -98,8 +75,6 @@ function os_spaces_presets() {
   // Translatables
   // Included for use with string extractors like potx.
   t('OS Department');
-  t('Primary Menu');
-  t('Secondary Menu');
   t('HOME');
   $export['os_department'] = $spaces_presets;
 
