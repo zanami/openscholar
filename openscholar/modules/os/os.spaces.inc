@@ -26,6 +26,7 @@ function os_spaces_presets() {
       'vsite_preset_section_activities',
       'vsite_preset_section_resources',
       'vsite_preset_section_news_&_events',
+      'vsite_preset_section_home',
     ),
     'variable' => array(
       'spaces_features' => array(
