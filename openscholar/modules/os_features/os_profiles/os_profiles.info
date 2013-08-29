@@ -51,6 +51,7 @@ features[variable][] = comment_form_location_person
 features[variable][] = comment_person
 features[variable][] = comment_preview_person
 features[variable][] = comment_subject_field_person
+features[variable][] = field_bundle_settings_node__person
 features[variable][] = menu_options_person
 features[variable][] = menu_parent_person
 features[variable][] = node_options_person
