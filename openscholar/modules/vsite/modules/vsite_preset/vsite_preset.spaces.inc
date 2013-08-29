@@ -129,6 +129,13 @@ function vsite_preset_spaces_presets() {
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('project'),
+    'og_tasks' => array(
+      'vsite_preset_section_research',
+      'vsite_preset_section_resources',
+      'vsite_preset_section_news_&_events',
+      'vsite_preset_section_about',
+      'vsite_preset_section_home',
+    ),
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
@@ -136,6 +143,7 @@ function vsite_preset_spaces_presets() {
         'os_news' => '1',
         'os_events' => '1',
         'os_profiles' => '1',
+        'os_publications' => '1',
       ),
       'spaces_features_available' => array(
         'os_blog',
