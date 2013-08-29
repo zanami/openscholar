@@ -26,7 +26,6 @@ function os_spaces_presets() {
       'vsite_preset_section_activities',
       'vsite_preset_section_resources',
       'vsite_preset_section_news_&_events',
-      'vsite_preset_section_home',
     ),
     'variable' => array(
       'spaces_features' => array(
@@ -65,7 +64,7 @@ function os_spaces_presets() {
     ),
     'menus' => array(
       'primary-menu' => array(
-        0 => array(
+        900 => array(
           'link_path' => 'home',
           'menu_name' => 'primary-menu',
           'link_title' => 'HOME',
@@ -80,7 +79,7 @@ function os_spaces_presets() {
           'updated' => 0,
           'mlid' => 0,
           'plid' => 0,
-          'p1' => 0,
+          'p1' => 900,
           'p2' => 0,
           'p3' => 0,
           'p4' => 0,
@@ -99,6 +98,9 @@ function os_spaces_presets() {
   // Translatables
   // Included for use with string extractors like potx.
   t('OS Department');
+  t('Primary Menu');
+  t('Secondary Menu');
+  t('HOME');
   $export['os_department'] = $spaces_presets;
 
   $spaces_presets = new stdClass();
