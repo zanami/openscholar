@@ -171,7 +171,6 @@ function vsite_strongarm() {
     'os_department_minimal' => 'os_department_minimal',
     'os_scholar' => 'os_scholar',
     'os_project' => 'os_project',
-    'hwp_administrative' => 'hwp_administrative',
   );
   $export['os_enabled_spaces_presets'] = $strongarm;
 
