@@ -5,3 +5,5 @@ package = OpenScholar vsite
 dependencies[] = vsite
 dependencies[] = og_tasks
 files[] = includes/vsite_task.inc
+features[ctools][] = spaces:spaces:3
+features[features_api][] = api:1
