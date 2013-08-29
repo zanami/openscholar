@@ -1581,3 +1581,65 @@ function os_files_file_mimetype_mapping_alter(&$mimes) {
     $mimes['extensions'][$ext] = $key;
   }
 }
+
+/*
+ * Implements hook_filter_info_alter().
+ * Adds a prepare function media's filter to escape the data in the JSON strings
+ */
+function os_files_filter_info_alter(&$info) {
+  $info['media_filter']['prepare callback'] = 'os_files_filter_media_prepare';
+  $info['media_filter']['process callback'] = 'os_files_filter_media_process';
+}
+
+/**
+ * Stores media tags and their HASH keys for when they need to be retrieved later
+ * $tag can be one of 2 things:
+ * 1. An unedited media tag, in the format of [[{Json: data}]]
+ *    This will generate an md5 hash of the tag, store it in an array, using the md5 as a key,
+ *    and then return the hash.
+ * 2. An md5 hash
+ *    This will return the original media tag, or null if it doesn't exist
+ */
+function os_files_stash_tags($tag) {
+  $tags = &drupal_static(__FUNCTION__, array());
+
+  // if the tag is valid JSON, we insert it and return the hash
+  // otherwise, it'll be an md5 hash and we return the original
+  if (!isset($tags[$tag]) && drupal_json_decode($tag)) {
+    $key = md5($tag);
+    $tags[$key] = $tag;
+    return $key;
+  }
+  else {
+    return $tags[$tag];
+  }
+}
+
+/**
+ * Prepare callback for media_filter
+ * Escapes the JSON strings to prevent other filters from messing with them
+ */
+function os_files_filter_media_prepare($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return $text;
+}
+
+/**
+ * Escape the data in media JSON strings to prevent other filters from changing it
+ * Will toggle all tags from the normal [[{Json: data}]] form to an md5 hash form wrapped in brackets
+ */
+function os_files_escape_media_tags($tag) {
+  $tag = $tag[0];
+  $data = trim($tag, '[]');
+  $key = os_files_stash_tags($data);
+  return '[['.$key.']]';
+}
+
+/**
+ * Process callback for media_filter
+ * Unescapes media's JSON strings and then calls media_filter on the original text
+ */
+function os_files_filter_media_process($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return media_filter($text);
+}
