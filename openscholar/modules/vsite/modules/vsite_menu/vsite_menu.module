@@ -660,3 +660,25 @@ function vsite_menu_add_node($nid, $gid, $title = '') {
   $mlid = vsite_menu_create_menu_link($title, $path, $gid);
   return $mlid;
 }
+
+/**
+ * Attempts to order menu links to the front of the given menu.
+ */
+function vsite_menu_order_links($order, $gid, $menu_name = 'primary-menu') {
+  $vsite = vsite_get_vsite($gid);
+  if (!$vsite) {
+    return FALSE;
+  }
+  $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
+  if (empty($menu) || empty($links)) {
+    return FALSE;
+  }
+
+  $modified = FALSE;
+  foreach ($links as $title) {
+    // 1. Check if the stored title matches the link title.
+    // 2. If so, modify the link weight and increment weight.
+  }
+
+  return $modified;
+}
