@@ -28,6 +28,10 @@ function os_spaces_presets() {
       'vsite_preset_section_news_&_events',
     ),
     'variable' => array(
+      'vsite_preset_menu_order' => array(
+        'HOME',
+        'About',
+      ),
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
