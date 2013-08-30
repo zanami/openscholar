@@ -173,7 +173,7 @@ function _os_files_install_find_files($node) {
 }
 
 function _os_files_install_get_files_from_string($string, $space = null) {
-  $fid_pattern = '~"fid":"([\d]+)"|data\-fid="([\d]+)"~';
+  $fid_pattern = '~"fid":"([\d]+)"|<a[^>]+data\-fid="([\d]+)"~';
   $image_pattern = '~<img[^>]+src="([^"]*)"[^>]*>~';
   $link_pattern = '~<a[^>]+href="([^"]*)"[^>]*>[^<]*<\/a>~';
   $files = array();
@@ -194,13 +194,13 @@ function _os_files_install_get_files_from_string($string, $space = null) {
   foreach ($matches[1] as $m) {
     $filename = basename($m);
     if ($space) {
-      $uri = 'public://'.$space.'/files/'.$filename;
+      $path = $space.'/files/'.$filename;
     }
     else {
-      $uri = 'public://'.$filename;
+      $path = $filename;
     }
-    $file = file_uri_to_object($uri);
-    if (!empty($file->fid)) {
+    $file = file_uri_to_object('public://'.$path);
+    if (!empty($file->fid) && strpos($m, '/'.$path) !== FALSE) {
       $files[$file->fid]++;
     }
   }
@@ -208,16 +208,14 @@ function _os_files_install_get_files_from_string($string, $space = null) {
   preg_match_all($link_pattern, $string, $matches, PREG_SET_ORDER);
   foreach ($matches as $m) {
     if (strpos($m[0], 'data-fid') === FALSE) {
-      $filename = basename($m[1]);
       if ($space) {
-        $uri = 'public://'.$space.'/files/'.$filename;
+        $path = $space.'/files/'.$filename;
       }
       else {
-        $uri = 'public://'.$filename;
+        $path = $filename;
       }
-      $uri = 'public://'.$space.'/files/'.$filename;
-      $file = file_uri_to_object($uri);
-      if (!empty($file->fid)) {
+      $file = file_uri_to_object('public://'.$path);
+      if (!empty($file->fid) && strpos($m, '/'.$path) !== FALSE) {
         $files[$file->fid]++;
       }
     }
