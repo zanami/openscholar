@@ -46,10 +46,3 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
   $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
 }
 
-/**
- * Task callback to create an About page section and menu.
- */
-function _vsite_preset_section_home_task($entity, $task, &$context) {
-  // Adds the top-level section menu link to existing front page.
-  $mlid = vsite_menu_create_menu_link('HOME', 'home', $entity->nid);
-}

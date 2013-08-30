@@ -34,16 +34,6 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     $tasks[$key] = _vsite_preset_new_section_task($title, $info);
   }
 
-  // Provides task for 'HOME'.
-  $task = array(
-    'title' => t('HOME Section'),
-    'description' => t('Sets up standard template for a HOME section.'),
-    'required' => TRUE,
-    'callback' => '_vsite_preset_section_home_task',
-    'file' => $path . '/includes/menu.inc',
-  );
-  $tasks['vsite_preset_section_home'] = new vsite_task($task);
-
   return $tasks;
 }
 
