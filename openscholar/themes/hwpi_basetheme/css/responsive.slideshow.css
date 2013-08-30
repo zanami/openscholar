@@ -62,6 +62,12 @@ line-height:21px !important;
     width: 100% !important;
 
 }
+
+.rslides_tabs li { 
+z-index:5 !important;
+position:relative !important;	
+}
+
 }
 
 @media (max-width: 479px){
