@@ -46,7 +46,9 @@ function _vsite_preset_menu_order_task($entity, $task, &$context) {
   else {
     return;
   }
-  $modified = vsite_menu_order_links($order, $entity->nid, 'primary-menu');
+
+  $modified = _vsite_preset_menu_order($order, $entity->nid, 'primary-menu');
+  return $modified;
 }
 
 /**
@@ -65,20 +67,34 @@ function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
     return FALSE;
   }
   $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
-  if (empty($menu) || empty($links)) {
+  if (empty($menu) || empty($order)) {
     return FALSE;
   }
 
   // Assume no modifications.
   $modified = FALSE;
-  // @todo find the smallest weight in the existing menu links.
-  $weight = 0;
+  // Finds the smallest existing weight, then decrements by 1 to be less than.
+  $weight = _vsite_preset_get_menu_item_weight($menu);
+  $weight = $weight - 1;
+  // Reverses order array to "count backwards" from the front-most menu link weight.
+  $order = array_reverse($order);
   foreach ($order as $title) {
-    // 1. Search for an existing menu link matching the title.
-    // 2. If any is found, act on the first one:
-    //  - modify the link weight
-    //  - increment $weight
-    //  - $modified = TRUE
+    // Loops through the existing menu items to search for this title.
+    foreach ($menu as $mlid => $item) {
+      // Skips (doesn't order) child menu items; only orders top-level links.
+      if (isset($item['depth']) && $item['depth'] > 1) {
+        continue;
+      }
+      // If the title matches...
+      if ($item['link_title'] == $title) {
+        // Modify the weight.
+        $menu[$mlid]['weight'] = $weight;
+        $weight = $weight - 1;
+        $modified = TRUE;
+        // Goes on to next specified title; skips over remaining items.
+        break;
+      }
+    }
   }
 
   if ($modified) {
@@ -98,4 +114,34 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
 
   // Adds the primary menu link for the section page node.
   $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
+}
+
+/**
+ * Helper function to find min/max menu weight.
+ */
+function _vsite_preset_get_menu_item_weight($menu, $mode = 'minimum') {
+  $default = 0;
+  $weight = FALSE;
+  foreach ($menu as $item) {
+    if (!isset($item['weight'])) {
+      continue;
+    }
+    if ($weight === FALSE) {
+      $weight = $item['weight'];
+    }
+    else {
+      $update = FALSE;
+      if ($mode == 'minimum') {
+        $update = (bool) $item['weight'] < $weight;
+      }
+      if ($mode == 'maximum') {
+        $update = (bool) $item['weight'] > $weight;
+      }
+      if ($update) {
+        $weight = $item['weight'];
+      }
+    }
+  }
+
+  return ($weight !== FALSE) ? $weight : $default;
 }
