@@ -35,6 +35,13 @@ function _vsite_preset_section_task($entity, $task, &$context) {
 }
 
 /**
+ * A generic task which attempts to order existing menu items.
+ */
+function _vsite_preset_menu_order_task($entity, $task, &$context) {
+  // @todo write the function
+}
+
+/**
  * Task callback to create a News & Events page section and menu.
  */
 function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
