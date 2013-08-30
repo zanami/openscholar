@@ -38,7 +38,54 @@ function _vsite_preset_section_task($entity, $task, &$context) {
  * A generic task which attempts to order existing menu items.
  */
 function _vsite_preset_menu_order_task($entity, $task, &$context) {
-  // @todo write the function
+  // Loads the preset menu order from the preset's variable.
+  $preset = spaces_preset_load($entity->spaces_preset_og, 'og');
+  if (isset($preset->value['variable']['vsite_preset_menu_order'])) {
+    $order = $preset->value['variable']['vsite_preset_menu_order'];
+  }
+  else {
+    return;
+  }
+  $modified = vsite_menu_order_links($order, $entity->nid, 'primary-menu');
+}
+
+/**
+ * Attempts to order menu links to the front of the given menu.
+ *
+ * @param array $order
+ * @param int $gid
+ * @param string $menu_name
+ *
+ * @return bool $modified
+ *   Whether or not the vsite's menu object was modified.
+ */
+function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
+  $vsite = vsite_get_vsite($gid);
+  if (!$vsite) {
+    return FALSE;
+  }
+  $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
+  if (empty($menu) || empty($links)) {
+    return FALSE;
+  }
+
+  // Assume no modifications.
+  $modified = FALSE;
+  // @todo find the smallest weight in the existing menu links.
+  $weight = 0;
+  foreach ($order as $title) {
+    // 1. Search for an existing menu link matching the title.
+    // 2. If any is found, act on the first one:
+    //  - modify the link weight
+    //  - increment $weight
+    //  - $modified = TRUE
+  }
+
+  if ($modified) {
+    $vsite->controllers->menus->set($menu_name, $menu);
+  }
+
+  return $modified;
 }
 
 /**
@@ -52,4 +99,3 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
   // Adds the primary menu link for the section page node.
   $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
 }
-
