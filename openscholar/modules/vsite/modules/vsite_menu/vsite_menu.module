@@ -663,6 +663,13 @@ function vsite_menu_add_node($nid, $gid, $title = '') {
 
 /**
  * Attempts to order menu links to the front of the given menu.
+ *
+ * @param array $order
+ * @param int $gid
+ * @param string $menu_name
+ *
+ * @return bool
+ *   Whether or not the vsite's menu object was modified.
  */
 function vsite_menu_order_links($order, $gid, $menu_name = 'primary-menu') {
   $vsite = vsite_get_vsite($gid);
@@ -674,10 +681,20 @@ function vsite_menu_order_links($order, $gid, $menu_name = 'primary-menu') {
     return FALSE;
   }
 
+  // Assume no modifications.
   $modified = FALSE;
-  foreach ($links as $title) {
-    // 1. Check if the stored title matches the link title.
-    // 2. If so, modify the link weight and increment weight.
+  // @todo find the smallest weight in the existing menu links.
+  $weight = 0;
+  foreach ($order as $title) {
+    // 1. Search for an existing menu link matching the title.
+    // 2. If any is found, act on the first one:
+    //  - modify the link weight
+    //  - increment $weight
+    //  - $modified = TRUE.
+  }
+
+  if ($modified) {
+    $vsite->controllers->menus->set($menu_name, $menu);
   }
 
   return $modified;
