@@ -541,7 +541,7 @@ function os_files_update_7008(&$sb) {
   if (!isset($sb['progress'])) {
     $sb['count'] = $q->countQuery()->execute()->fetchField();
     $sb['progress'] = 0;
-    $sb['limit'] = 50;
+    $sb['limit'] = 20;
   }
 
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
@@ -577,12 +577,11 @@ function os_files_update_7008(&$sb) {
     $sb['progress']++;
   }
 
-  error_log($sb['progress'].'/'.$sb['count'].': '.($sb['progress']/$sb['count'] * 100).'%');
   $sb['#finished'] = $sb['progress']/$sb['count'];
   if ($sb['#finished'] >= 1) {
 
-    db_query('DELETE FROM file_usage WHERE type = "file" AND module != "imagefield_crop"')->execute();
-    db_query('DELETE FROM file_usage WHERE type = "node" AND id NOT IN (SELECT nid FROM node)')->execute();
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'file\' AND module != \'imagefield_crop\'')->execute();
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'node\' AND id NOT IN (SELECT nid FROM node)')->execute();
 
     return t('File usage has been corrected for all files.');
   }
