@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Reverts the vsite.module variable component to enable new presets.
+ */
+function vsite_preset_update_7001() {
+  features_revert(array('vsite' => array('variable')));
+}
