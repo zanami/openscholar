@@ -47,7 +47,7 @@ function _vsite_preset_menu_order_task($entity, $task, &$context) {
     return;
   }
 
-  $modified = _vsite_preset_menu_order($order, $entity->nid, 'primary-menu');
+  $modified = _vsite_preset_menu_order($order, $entity->nid);
   return $modified;
 }
 
@@ -61,48 +61,53 @@ function _vsite_preset_menu_order_task($entity, $task, &$context) {
  * @return bool $modified
  *   Whether or not the vsite's menu object was modified.
  */
-function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
+function _vsite_preset_menu_order($order, $gid) {
   $vsite = vsite_get_vsite($gid);
   if (!$vsite) {
     return FALSE;
   }
-  $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
-  if (empty($menu) || empty($order)) {
-    return FALSE;
-  }
 
-  // Assumes no modifications.
-  $modified = FALSE;
-  // By default, all newly created menu items will have weight 0.
-  // Starts our menu weights at -1 in order to be at the beginning.
-  $weight = -1;
-  // Reverses order array to "count backwards" from the front-most menu link weight.
-  $order = array_reverse($order);
-  foreach ($order as $title) {
-    // Loops through the existing menu items to search for this title.
-    foreach ($menu as $mlid => $item) {
-      // Skips (doesn't order) child menu items; only orders top-level links.
-      if (isset($item['depth']) && $item['depth'] > 1) {
-        continue;
+  $any_modified = FALSE;
+  foreach ($order as $menu_name => $titles) {
+    $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
+    if (empty($menu) || empty($order)) {
+      return FALSE;
+    }
+
+    // Assumes no modifications.
+    $this_modified = FALSE;
+    // By default, all newly created menu items will have weight 0.
+    // Starts our menu weights at -1 in order to be at the beginning.
+    $weight = -1;
+    // Reverses order array to "count backwards" from the front-most menu link weight.
+    $titles = array_reverse($titles);
+    foreach ($titles as $title) {
+      // Loops through the existing menu items to search for this title.
+      foreach ($menu as $mlid => $item) {
+        // Skips (doesn't order) child menu items; only orders top-level links.
+        if (isset($item['depth']) && $item['depth'] > 1) {
+          continue;
+        }
+        // If the title matches...
+        if ($item['link_title'] == $title) {
+          // Modify the weight.
+          $menu[$mlid]['weight'] = $weight;
+          $weight = $weight - 1;
+          $this_modified = TRUE;
+          $any_modified = TRUE;
+          // We've already found the link we wanted to order;
+          // Goes on to next specified title; skips over remaining items.
+          break;
+        }
       }
-      // If the title matches...
-      if ($item['link_title'] == $title) {
-        // Modify the weight.
-        $menu[$mlid]['weight'] = $weight;
-        $weight = $weight - 1;
-        $modified = TRUE;
-        // We've already found the link we wanted to order;
-        // Goes on to next specified title; skips over remaining items.
-        break;
-      }
+    }
+
+    if ($this_modified) {
+      $vsite->controllers->menus->set($menu_name, $menu);
     }
   }
 
-  if ($modified) {
-    $vsite->controllers->menus->set($menu_name, $menu);
-  }
-
-  return $modified;
+  return $any_modified;
 }
 
 /**

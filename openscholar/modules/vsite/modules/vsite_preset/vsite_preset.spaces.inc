@@ -29,13 +29,15 @@ function vsite_preset_spaces_presets() {
     ),
     'variable' => array(
       'vsite_preset_menu_order' => array(
-        'HOME',
-        'Services',
-        'Activities',
-        'People',
-        'Resources',
-        'News & Events',
-        'About',
+        'primary-menu' => array(
+          'HOME',
+          'Services',
+          'Activities',
+          'People',
+          'Resources',
+          'News & Events',
+          'About',
+        ),
       ),
       'spaces_features' => array(
         'os' => '1',
@@ -126,13 +128,15 @@ function vsite_preset_spaces_presets() {
     ),
     'variable' => array(
       'vsite_preset_menu_order' => array(
-        'HOME',
-        'Overview',
-        'Activities',
-        'People',
-        'Resources',
-        'News & Events',
-        'About',
+        'primary-menu' => array(
+          'HOME',
+          'Overview',
+          'Activities',
+          'People',
+          'Resources',
+          'News & Events',
+          'About',
+        ),
       ),
       'spaces_features' => array(
         'os' => '1',
@@ -220,13 +224,15 @@ function vsite_preset_spaces_presets() {
     ),
     'variable' => array(
       'vsite_preset_menu_order' => array(
-        'HOME',
-        'Research',
-        'Publications',
-        'People',
-        'Resources',
-        'News & Events',
-        'About',
+        'primary-menu' => array(
+          'HOME',
+          'Research',
+          'Publications',
+          'People',
+          'Resources',
+          'News & Events',
+          'About',
+        ),
       ),
       'spaces_features' => array(
         'os' => '1',
