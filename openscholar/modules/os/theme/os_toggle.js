@@ -3,25 +3,34 @@
  * that block content
  *
  */
+(function ($) {
 Drupal.behaviors.os_toggle = {
   attach: function (ctx) {
-    var $ = jQuery;
     $('.toggle', ctx).click(function(){
-      $(this).toggleClass("expanded")
+      $(this).toggleClass("expanded");
+      var slider = null;
+
+      $(this).add($(this).parents()).each(function () {
+        var potentials = $(this).siblings('.os-slider');
+        if (potentials.length) {
+          slider = $(potentials[0]);
+        }
+      })
 
       if (!$.browser.msie) {
-        $(this).nextAll('.os-slider').slideToggle("fast");
+        slider.slideToggle("fast");
       }
       else {
         // IE8 Does not work with the slider.
         if ($(this).hasClass('expanded')) {
-          $(this).nextAll('.os-slider').show();
+         slider.show();
         }
         else {
-          $(this).nextAll('.os-slider').hide();
+          slider.hide();
         }
       }
       return false;
     });
   }
 };
+})(jQuery);

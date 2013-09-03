@@ -136,4 +136,8 @@ ul.menu {
     right: 90%;
 }
 
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+background: none !important;
+}
+
 }

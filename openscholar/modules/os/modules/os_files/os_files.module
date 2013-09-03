@@ -369,15 +369,33 @@ function os_files_redirect_after_delete_file($form, &$form_state) {
  * Save the file usage before the file usage list is being deleted.
  */
 function os_files_save_file_usage($form, &$form_state) {
+  // Get all the usage of the files.
   $file = $form_state['file'];
-
   $usage = file_usage_list($file);
 
-  if (empty($usage['file']['node'])) {
+  // Get all the nodes the file is relate to.
+  if (empty($usage)) {
     return;
   }
 
-  $form_state['file_usage'] = array_keys($usage['file']['node']);
+  // We could get node, image_fieldcrop or any other module in the file manage
+  // schema - this is a generic way to the defined module name in the schema.
+  $key = reset(array_keys($usage));
+
+  if ($key == 'file') {
+    $usage_nids = array_keys($usage['file']['node']);
+  }
+  else {
+    // The imagefield crop save the usage of the file in a different way in the
+    // schema of the usage file. We need to get the file object which the field
+    // crop is referencing to and pass the file object to the bath API.
+    $file = file_load(reset(array_keys($usage[$key]['file'])));
+    $form_state['file'] = $file;
+    $usage = file_usage_list($file);
+    $usage_nids = array_keys($usage['file']['node']);
+  }
+
+  $form_state['file_usage'] = $usage_nids;
 }
 
 /**
@@ -422,39 +440,27 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
   $nodes = node_load_multiple($nids);
 
   foreach ($nodes as $node) {
-    $wrapper = entity_metadata_wrapper('node', $node);
-    $fields = field_info_instances('node', $wrapper->getBundle());
+    $fields = field_info_instances('node', $node->type);
 
     // Searching for the field that contain the reference to the file.
     foreach (array_keys($fields) as $field) {
       $info = field_info_field($field);
 
-      // This is a field file, break the loop.
-      if ($info['type'] != 'file') {
+      // Verify the field type.
+      if (!in_array($info['type'], array('file', 'imagefield_crop'))) {
         continue;
       }
 
-      $file_field = $wrapper->{$field}->value();
-      $field_info = field_info_field($field);
+      $file_field = &$node->{$field}[LANGUAGE_NONE];
 
-      if ($field_info['cardinality'] === 1 || $field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
-        if ($file_field['fid'] == $file->fid) {
-          $file_field = NULL;
+      foreach ($file_field as $delta => $value) {
+        if ($value['fid'] == $file->fid) {
+          unset($file_field[$delta]);
         }
       }
-      else {
-        // Dealing with a multiple field.
-        foreach ($file_field as $delta => $value) {
-          if ($value['fid'] == $file->fid) {
-            unset($file_field[$delta]);
-          }
-        }
-      }
-
-      $wrapper->{$field}->set($file_field);
     }
 
-    $wrapper->save();
+    node_save($node);
   }
 }
 
@@ -1574,4 +1580,66 @@ function os_files_file_mimetype_mapping_alter(&$mimes) {
     $mimes['mimetypes'][$key] = $mime;
     $mimes['extensions'][$ext] = $key;
   }
+}
+
+/*
+ * Implements hook_filter_info_alter().
+ * Adds a prepare function media's filter to escape the data in the JSON strings
+ */
+function os_files_filter_info_alter(&$info) {
+  $info['media_filter']['prepare callback'] = 'os_files_filter_media_prepare';
+  $info['media_filter']['process callback'] = 'os_files_filter_media_process';
+}
+
+/**
+ * Stores media tags and their HASH keys for when they need to be retrieved later
+ * $tag can be one of 2 things:
+ * 1. An unedited media tag, in the format of [[{Json: data}]]
+ *    This will generate an md5 hash of the tag, store it in an array, using the md5 as a key,
+ *    and then return the hash.
+ * 2. An md5 hash
+ *    This will return the original media tag, or null if it doesn't exist
+ */
+function os_files_stash_tags($tag) {
+  $tags = &drupal_static(__FUNCTION__, array());
+
+  // if the tag is valid JSON, we insert it and return the hash
+  // otherwise, it'll be an md5 hash and we return the original
+  if (!isset($tags[$tag]) && drupal_json_decode($tag)) {
+    $key = md5($tag);
+    $tags[$key] = $tag;
+    return $key;
+  }
+  else {
+    return $tags[$tag];
+  }
+}
+
+/**
+ * Prepare callback for media_filter
+ * Escapes the JSON strings to prevent other filters from messing with them
+ */
+function os_files_filter_media_prepare($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return $text;
+}
+
+/**
+ * Escape the data in media JSON strings to prevent other filters from changing it
+ * Will toggle all tags from the normal [[{Json: data}]] form to an md5 hash form wrapped in brackets
+ */
+function os_files_escape_media_tags($tag) {
+  $tag = $tag[0];
+  $data = trim($tag, '[]');
+  $key = os_files_stash_tags($data);
+  return '[['.$key.']]';
+}
+
+/**
+ * Process callback for media_filter
+ * Unescapes media's JSON strings and then calls media_filter on the original text
+ */
+function os_files_filter_media_process($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return media_filter($text);
 }

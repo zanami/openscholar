@@ -42,14 +42,17 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
     $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
     foreach ($links as $link) {
       $l = $link['link'];
-      $url = !empty($l['link_path'])?url($l['link_path'], array(
-        'absolute' => true
-      )):false;
+      //Show links as absolute
+      $l['options']['absolute'] = TRUE;
+      $url = !empty($l['link_path'])?url($l['link_path'], $l['options']):false;
+
+      // Show the first 80 charcters of the URL.
+      $url_display = ($url && strlen($url) > 80) ? substr($url, 0, 80)."...":$url;
       $form['menus'][$m][$l['mlid']] = array(
         'title' => array(
           '#type' => 'item',
           '#markup' => $l['link_title'],
-          '#description' => $url?l($url, $url):"",
+          '#description' => $url?l($url_display, $url):"",
         ),
         'delete_link' => array(
           '#markup' => ctools_modal_text_button('Delete Link', 'cp/build/' . $l['mlid'] . '/delete/nojs/', '')

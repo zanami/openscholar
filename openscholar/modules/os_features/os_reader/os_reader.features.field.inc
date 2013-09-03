@@ -298,7 +298,7 @@ function os_reader_field_default_fields() {
       'bundle' => 'feed_importer',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Path to the feed that you would like to use to import content to your site.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -336,6 +336,91 @@ function os_reader_field_default_fields() {
         ),
         'type' => 'text_textarea',
         'weight' => '32',
+      ),
+    ),
+  );
+
+  // Exported field: 'os_feed_item-feed_item-field_vsites_reference'.
+  $fields['os_feed_item-feed_item-field_vsites_reference'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_vsites_reference',
+      'foreign keys' => array(
+        'node' => array(
+          'columns' => array(
+            'target_id' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'sort' => array(
+            'type' => 'none',
+          ),
+          'target_bundles' => array(),
+        ),
+        'target_type' => 'node',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'feed_item',
+      'default_value' => NULL,
+      'default_value_function' => '',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'os_feed_item',
+      'field_name' => 'field_vsites_reference',
+      'label' => 'VSites reference',
+      'required' => 0,
+      'settings' => array(
+        'behaviors' => array(
+          'prepopulate' => array(
+            'status' => 0,
+          ),
+        ),
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'entityreference',
+        'settings' => array(
+          'match_operator' => 'CONTAINS',
+          'path' => '',
+          'show_identifier' => 1,
+          'size' => '60',
+        ),
+        'type' => 'entityreference_autocomplete',
+        'weight' => '1',
       ),
     ),
   );
@@ -400,7 +485,7 @@ function os_reader_field_default_fields() {
       ),
       'entity_type' => 'os_feed_item',
       'field_name' => 'field_nodes_reference',
-      'label' => 'Nodes reference',
+      'label' => 'News reference',
       'required' => 0,
       'settings' => array(
         'behaviors' => array(
@@ -429,9 +514,12 @@ function os_reader_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Body');
   t('Nodes reference');
+  t('OS feed item');
+  t('News reference');
   t('Path to the feed that you would like to import/aggregate to your site.');
   t('RSS url');
   t('URL');
+  t('VSites reference');
 
   return $fields;
 }

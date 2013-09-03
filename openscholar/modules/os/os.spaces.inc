@@ -26,8 +26,19 @@ function os_spaces_presets() {
       'vsite_preset_section_activities',
       'vsite_preset_section_resources',
       'vsite_preset_section_news_&_events',
+      'vsite_preset_menu_order',
     ),
     'variable' => array(
+      'vsite_preset_menu_order' => array(
+        'HOME',
+        'Academics',
+        'Research',
+        'Activities',
+        'People',
+        'Resources',
+        'News & Events',
+        'About',
+      ),
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
@@ -56,38 +67,15 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'ballard',
-      'os_menus' => array(
-        'primary-menu' => 'Primary Menu',
-        'secondary-menu' => 'Secondary Menu',
-      ),
+      'theme_default' => 'hwpi_classic',
     ),
     'menus' => array(
       'primary-menu' => array(
-        0 => array(
+        900 => array(
           'link_path' => 'home',
-          'menu_name' => 'primary-menu',
           'link_title' => 'HOME',
           'options' => array(),
-          'external' => 1,
-          'weight' => 0,
-          'hidden' => 0,
-          'has_children' => 0,
-          'expanded' => 0,
-          'module' => 'menu',
-          'customized' => 0,
-          'updated' => 0,
-          'mlid' => 0,
-          'plid' => 0,
-          'p1' => 0,
-          'p2' => 0,
-          'p3' => 0,
-          'p4' => 0,
-          'p5' => 0,
-          'p6' => 0,
-          'p7' => 0,
-          'p8' => 0,
-          'p9' => 0,
+          'p1' => 900,
           'depth' => 1,
           'router_path' => 'home',
         ),
@@ -98,6 +86,7 @@ function os_spaces_presets() {
   // Translatables
   // Included for use with string extractors like potx.
   t('OS Department');
+  t('HOME');
   $export['os_department'] = $spaces_presets;
 
   $spaces_presets = new stdClass();
