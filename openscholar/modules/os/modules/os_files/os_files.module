@@ -1330,6 +1330,8 @@ function os_files_file_default_types() {
       'application/octet-stream',
       'application/x-gzip',
       'application/x-compressed',
+      'application/x-tar',
+      'application/x-gtar',
     ),
     'streams' => array(
       'public',
