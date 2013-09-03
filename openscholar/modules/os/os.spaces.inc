@@ -31,14 +31,14 @@ function os_spaces_presets() {
     'variable' => array(
       'vsite_preset_menu_order' => array(
         'primary-menu' => array(
-          'HOME',
-          'Academics',
-          'Research',
-          'Activities',
-          'People',
-          'Resources',
-          'News & Events',
-          'About',
+          'HOME' => -8,
+          'Academics' => -7,
+          'Research' => -6,
+          'Activities' => -5,
+          'People' => -4,
+          'Resources' => -3,
+          'News & Events' => -2,
+          'About' => -1,
         ),
       ),
       'spaces_features' => array(
