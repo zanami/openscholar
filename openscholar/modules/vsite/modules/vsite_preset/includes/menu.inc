@@ -91,6 +91,7 @@ function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
         $menu[$mlid]['weight'] = $weight;
         $weight = $weight - 1;
         $modified = TRUE;
+        // We've already found the link we wanted to order;
         // Goes on to next specified title; skips over remaining items.
         break;
       }
