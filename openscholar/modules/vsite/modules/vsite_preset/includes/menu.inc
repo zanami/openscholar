@@ -46,7 +46,9 @@ function _vsite_preset_menu_order_task($entity, $task, &$context) {
   else {
     return;
   }
-  $modified = vsite_menu_order_links($order, $entity->nid, 'primary-menu');
+
+  $modified = _vsite_preset_menu_order($order, $entity->nid, 'primary-menu');
+  return $modified;
 }
 
 /**
@@ -65,20 +67,35 @@ function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
     return FALSE;
   }
   $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
-  if (empty($menu) || empty($links)) {
+  if (empty($menu) || empty($order)) {
     return FALSE;
   }
 
-  // Assume no modifications.
+  // Assumes no modifications.
   $modified = FALSE;
-  // @todo find the smallest weight in the existing menu links.
-  $weight = 0;
+  // By default, all newly created menu items will have weight 0.
+  // Starts our menu weights at -1 in order to be at the beginning.
+  $weight = -1;
+  // Reverses order array to "count backwards" from the front-most menu link weight.
+  $order = array_reverse($order);
   foreach ($order as $title) {
-    // 1. Search for an existing menu link matching the title.
-    // 2. If any is found, act on the first one:
-    //  - modify the link weight
-    //  - increment $weight
-    //  - $modified = TRUE
+    // Loops through the existing menu items to search for this title.
+    foreach ($menu as $mlid => $item) {
+      // Skips (doesn't order) child menu items; only orders top-level links.
+      if (isset($item['depth']) && $item['depth'] > 1) {
+        continue;
+      }
+      // If the title matches...
+      if ($item['link_title'] == $title) {
+        // Modify the weight.
+        $menu[$mlid]['weight'] = $weight;
+        $weight = $weight - 1;
+        $modified = TRUE;
+        // We've already found the link we wanted to order;
+        // Goes on to next specified title; skips over remaining items.
+        break;
+      }
+    }
   }
 
   if ($modified) {
