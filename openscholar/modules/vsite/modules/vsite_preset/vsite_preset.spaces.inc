@@ -229,6 +229,14 @@ function vsite_preset_spaces_presets() {
           'depth' => 1,
           'router_path' => 'home',
         ),
+        901 => array(
+          'link_path' => 'publications',
+          'link_title' => 'Publications',
+          'options' => array(),
+          'p1' => 901,
+          'depth' => 1,
+          'router_path' => 'publications',
+        ),
       ),
     ),
   );
