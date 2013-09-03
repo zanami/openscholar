@@ -71,11 +71,11 @@ function _vsite_preset_menu_order($order, $gid, $menu_name = 'primary-menu') {
     return FALSE;
   }
 
-  // Assume no modifications.
+  // Assumes no modifications.
   $modified = FALSE;
-  // Finds the smallest existing weight, then decrements by 1 to be less than.
-  $weight = _vsite_preset_get_menu_item_weight($menu);
-  $weight = $weight - 1;
+  // By default, all newly created menu items will have weight 0.
+  // Starts our menu weights at -1 in order to be at the beginning.
+  $weight = -1;
   // Reverses order array to "count backwards" from the front-most menu link weight.
   $order = array_reverse($order);
   foreach ($order as $title) {
@@ -114,34 +114,4 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
 
   // Adds the primary menu link for the section page node.
   $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
-}
-
-/**
- * Helper function to find min/max menu weight.
- */
-function _vsite_preset_get_menu_item_weight($menu, $mode = 'minimum') {
-  $default = 0;
-  $weight = FALSE;
-  foreach ($menu as $item) {
-    if (!isset($item['weight'])) {
-      continue;
-    }
-    if ($weight === FALSE) {
-      $weight = $item['weight'];
-    }
-    else {
-      $update = FALSE;
-      if ($mode == 'minimum') {
-        $update = (bool) $item['weight'] < $weight;
-      }
-      if ($mode == 'maximum') {
-        $update = (bool) $item['weight'] > $weight;
-      }
-      if ($update) {
-        $weight = $item['weight'];
-      }
-    }
-  }
-
-  return ($weight !== FALSE) ? $weight : $default;
 }
