@@ -30,6 +30,12 @@ function os_spaces_presets() {
     'variable' => array(
       'vsite_preset_menu_order' => array(
         'HOME',
+        'Academics',
+        'Research',
+        'Activities',
+        'People',
+        'Resources',
+        'News & Events',
         'About',
       ),
       'spaces_features' => array(
