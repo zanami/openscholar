@@ -45,6 +45,9 @@
       out: function(event, ui) {
         $(event.target).removeClass('active');
       }
+      
+     
+      
     };
     
     $regions.each(function () {
@@ -61,6 +64,10 @@
     $('.cp-layout-widget .close-this').click(remove); // L#113
     
     $('#widget-categories a').click(tab_change); // L#120
+    
+    //ON LOAD - GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
+     var layoutdivheight = jQuery('.cp-region-content').height();
+	jQuery('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
   }
   
   /**
@@ -113,7 +120,9 @@
    * Do things when we drop a widget
    */
   function on_start() {
-    
+  	//WHEN USER DRAGS WIDGETS AROUND - GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
+    var layoutdivheight = jQuery('.cp-region-content').height();
+	jQuery('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
   }
   
   /**
@@ -144,4 +153,10 @@
     e.stopPropagation();
     e.preventDefault();
   }
+  
+  
+ 
 })(jQuery);
+
+
+

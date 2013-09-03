@@ -92,9 +92,13 @@ ul.menu {
     border-radius: 0 0 0 0;
     box-shadow: 0 ;
 }
+
+
+.region-header-third .os-custom-menu.opened,
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #F7F7F7!important;
 }
+.region-header-third .os-custom-menu li,
 .region-header-third #block-os-secondary-menu li{
   border-bottom: 1px solid #DEDEDC!important;
     border-top: medium none!important;
@@ -106,11 +110,7 @@ ul.menu {
 .mobile-buttons a {
     font: bold 16px arial,sans-serif !important;
 }
-#layout_16_9_side .hero-copy {
-    left: 50px!important;
-    position: relative;
 
-}
 #columns .region-inner {
     margin-bottom: 25px !important;
 }
@@ -135,8 +135,9 @@ ul.menu {
 .one-sidebar #main-content .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
-#layout_16_9_side .slidecontrol.rslides_tabs.rslides1_tabs{
-	top:290px;
+
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+background: none !important;
 }
 
 }

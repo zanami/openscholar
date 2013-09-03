@@ -38,6 +38,7 @@ dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = date_ical
 dependencies[] = entity
+dependencies[] = feeds
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
@@ -81,7 +82,6 @@ dependencies[] = os_shields
 dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
-dependencies[] = os_tasks
 dependencies[] = os_wysiwyg_link
 
 ; Control Panel
