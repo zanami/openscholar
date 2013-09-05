@@ -433,10 +433,10 @@ border-radius: 4px;
 }
 
 
-#edit-pin-fieldset {margin: 20px 0 0 10px;}
+#edit-pin-fieldset {margin: 20px 0 0 10px !important;}
 
 @-moz-document url-prefix() { 
-#edit-pin-fieldset {margin: 10px 0 0 0;}
+#edit-pin-fieldset {margin: 10px 0 0 0 !important;}
 }
 
 
