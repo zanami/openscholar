@@ -182,7 +182,7 @@ display:none;
 }
 ul.mobile-buttons {
     display: block !important;
-
+  	margin-bottom: 0;
 }
 
 .mobile-buttons li {
