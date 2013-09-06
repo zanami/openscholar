@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Enables new presets by reverting the vsite strongarm component.
+ */
+function vsite_preset_update_7001() {
+  $revert = array(
+    'vsite' => array('variable'),
+    'os' => array('spaces_presets'),
+  );
+  features_revert($revert);
+}

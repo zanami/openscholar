@@ -805,8 +805,6 @@ function os_publications_preprocess_page(&$variables) {
   }
 }
 
-
-
 /**
  * Adds alt and title text where appropriate
  */
@@ -820,5 +818,77 @@ function os_publications_field_attach_load($entity_type, $entities, $view_mode) 
         $e->field_biblio_image[LANGUAGE_NONE][0]['title'] = $e->title;
       }
     }
+  }
+}
+
+/**
+ * Create publication manually.
+ *
+ * @param $name
+ *  The name of the publication.
+ * @param $field_settings
+ *  The publications field settings.
+ *
+ * How to get the field settings?
+ *  Run the query against the DB which holds the publication you would like to
+ *  export:
+ *  $result = db_query('SELECT * FROM {biblio_field_type} WHERE tid=' . PUBLICATION_TYPE_ID, array(), array('fetch' => PDO::FETCH_ASSOC));
+ *  $data = array();
+ *  foreach ($result as $delta => $row) {
+ *    unset($row['tid'], $row['fid'], $row['ftdid'], $row['cust_tdid'], $row['common'], $row['required']);
+ *    $data[] = $row;
+ *  }
+ *
+ * Use the function var_export to get the fields settings in exported structure.
+ */
+function os_publications_import_type($name, $field_settings) {
+  $result = db_select('biblio_types', 'bt')
+    ->fields('bt')
+    ->condition('name', $name)
+    ->execute()
+    ->fetchAssoc();
+
+  if ($result) {
+    return;
+  }
+
+  // Creating the new publication type. The biblio types table don't have auto
+  // increment ont he tid property. Using the biblio module logic for calculate
+  // the tid value.
+  $values = array('name' => $name);
+  $query = db_select('biblio_types', 'bt');
+  $query->addExpression('MAX(tid)', 'max_tid');
+  $result = $query->execute();
+  $record = $result->fetchAssoc();
+  $values['tid'] = $record['max_tid'] + 1;
+  db_insert('biblio_types')
+    ->fields($values)
+    ->execute();
+
+  // Create the fields for the publication type.
+  variable_set('biblio_max_user_tid', $values['tid']);
+
+  $result = db_query('SELECT * FROM {biblio_field_type} WHERE tid=0', array(), array('fetch' => PDO::FETCH_ASSOC));
+  foreach ($result as $delta => $row) {
+    // Adding settings of the Data publications.
+    if (!isset($field_settings[$delta])) {
+      continue;
+    }
+    $row = array_merge($row, $field_settings[$delta], array('tid' => $values['tid']));
+    db_insert('biblio_field_type')
+      ->fields($row)
+      ->execute();
+  }
+  // Fill contributor types. Use the first 4 defaults.
+  for ($type = 1; $type <= 4; $type++) {
+    $ct_vals = array(
+      'auth_category' => $type,
+      'biblio_type' => $values['tid'],
+      'auth_type' => $type,
+    );
+
+    db_insert('biblio_contributor_type')
+      ->fields($ct_vals)
+      ->execute();
   }
 }

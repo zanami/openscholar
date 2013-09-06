@@ -13,10 +13,12 @@ a:visited {
   color: #215990;
 }
 
-.field-name-body a {
+#columns .block-boxes-os_boxes_html a,
+#columns .field-name-body a {
      text-decoration: underline;
 }
 
+.block-boxes-os_boxes_html a:hover,
 .field-name-body a:hover {
      text-decoration: none;
 }
@@ -128,6 +130,9 @@ table caption {
   list-style: circle;
 }
 
+.block .node:last-child {
+    margin-bottom: 0;
+}
 
 /* Search Results */
 .page-search input.form-text {
@@ -186,12 +191,12 @@ ol.search-results li.search-result:last-child {
 
 
 .view .date-nav-wrapper .date-prev {
-    right: 590px;
+    right: 90%;
 }
 
 
 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 430px;
+    right: 88%;
 }
 
 .no-sidebars .view .date-nav-wrapper .date-prev {
@@ -369,7 +374,9 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-
+.block .view-os-events.view-id-os_events .view-header {
+  padding-top: 0;
+}
 
 /* Views Node Lists */
 .view .node-teaser {
@@ -421,7 +428,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .node-event .field-name-field-date {
-  color: #7e7e7e;
+  color: #6D6D6D;
   margin-bottom: 7px;
 }
 
@@ -482,7 +489,7 @@ ol.search-results li.search-result:last-child {
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
-  border-bottom: 1px solid #2769AC;
+  text-decoration: underline;
 }
 
 .node-class .view-os-classes .views-row {
@@ -523,6 +530,10 @@ ol.search-results li.search-result:last-child {
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
+}
+
+#content-column article.node-teaser.node-person .field-name-field-person-photo ~ .node-header {
+	margin-left: 5.4em;
 }
 
 .node-type-person .node-person .field-name-field-person-photo,
@@ -588,6 +599,11 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 .node-teaser.node-person {
   padding: 15px 0 30px;
 }
+
+.node-link.node-teaser {
+	padding: 10px 0 5px;
+	}
+
 
 /**
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
@@ -716,7 +732,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #215990;
+  text-decoration: underline;
 }
 
 

@@ -29,8 +29,8 @@ function os_basetheme_preprocess_page(&$vars) {
 
   //Adds OpenScholar header region awareness to body classes
   $header = array(
-    'header-left' => $vars['page']['header_second'],
-    'header-main' => $vars['page']['header_first'],
+    'header-left' => $vars['page']['header_first'],
+    'header-main' => $vars['page']['header_second'],
     'header-right' => $vars['page']['header_third'],
   );
   $content = array(

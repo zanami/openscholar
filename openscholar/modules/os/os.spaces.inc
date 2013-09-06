@@ -14,16 +14,33 @@ function os_spaces_presets() {
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_department';
-  $spaces_presets->title = 'Academic Department';
+  $spaces_presets->title = 'HWP Academic';
   $spaces_presets->description = '';
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('department'),
     'og_tasks' => array(
-      'vsiteTaskNewsEventsSection',
-      'vsiteTaskAboutSection'
+      'vsite_preset_section_about',
+      'vsite_preset_section_academics',
+      'vsite_preset_section_research',
+      'vsite_preset_section_activities',
+      'vsite_preset_section_resources',
+      'vsite_preset_section_news_&_events',
+      'vsite_preset_menu_order',
     ),
     'variable' => array(
+      'vsite_preset_menu_order' => array(
+        'primary-menu' => array(
+          'HOME' => -8,
+          'Academics' => -7,
+          'Research' => -6,
+          'Activities' => -5,
+          'People' => -4,
+          'Resources' => -3,
+          'News & Events' => -2,
+          'About' => -1,
+        ),
+      ),
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
@@ -52,13 +69,46 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'ballard',
+      'theme_default' => 'hwpi_classic',
+    ),
+    'menus' => array(
+      'primary-menu' => array(
+        900 => array(
+          'link_path' => 'home',
+          'link_title' => 'HOME',
+          'options' => array(),
+          'mlid' => 900,
+          'p1' => 900,
+          'depth' => 1,
+          'router_path' => 'home',
+          // @todo move these defaults to a hook_preset_alter() ?
+          'menu_name' => 'primary-menu',
+          'external' => 1,
+          'weight' => 0,
+          'hidden' => 0,
+          'has_children' => 0,
+          'expanded' => 0,
+          'module' => 'menu',
+          'customized' => 0,
+          'updated' => 0,
+          'plid' => 0,
+          'p2' => 0,
+          'p3' => 0,
+          'p4' => 0,
+          'p5' => 0,
+          'p6' => 0,
+          'p7' => 0,
+          'p8' => 0,
+          'p9' => 0,
+        ),
+      ),
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('OS Department');
+  t('HWP Academic');
+  t('HOME');
   $export['os_department'] = $spaces_presets;
 
   $spaces_presets = new stdClass();

@@ -1,7 +1,7 @@
 Feature:
   Testing the visibility field.
 
-  @api @current
+  @api
   Scenario Outline: Define the site visibility field to "Anyone with the link"
                     and test that anonymous users can view the site.
      Given I visit <request-url>
