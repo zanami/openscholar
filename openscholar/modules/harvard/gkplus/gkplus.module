@@ -98,8 +98,27 @@ function gkplus_upload_filefield_page() {
   $loc = 'public://gking/files/';
   $exists_and_writable = file_prepare_directory($loc, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
   if ($exists_and_writable) {
-    $file = file_save_data($_POST['contents'], $loc . $filename, FILE_EXISTS_REPLACE);
-    if (!$file) {
+    // Write the file data.
+    if ($uri = file_unmanaged_save_data($_POST['contents'], $loc . $filename, FILE_EXISTS_REPLACE)) {
+      // Create a file object.
+      $file = new stdClass();
+      $file->fid = NULL;
+      $file->uri = $uri;
+      $file->filename = drupal_basename($uri);
+      $file->filemime = file_get_mimetype($file->uri);
+      $file->uid      = $user->uid;
+      $file->status   = FILE_STATUS_PERMANENT;
+      // When replacing an existing file re-use its database record.
+      $existing_files = file_load_multiple(array(), array('uri' => $uri));
+      if (count($existing_files)) {
+        $existing = reset($existing_files);
+        $file->fid = $existing->fid;
+        $file->filename = $existing->filename;
+        $file->origname = $existing->origname;
+      }
+      $file = file_save($file);
+    }
+    else {
       print "Error: could not upload file. Debug info:<br/><br/>";
       print print_r(var_dump($_POST));
       exit();
@@ -138,8 +157,7 @@ function _gkplus_upload_filefield_access($compare = 'af485c726a866b57f1a53519226
   $filename = $_POST['filename'];
   $uri = db_select('file_managed', 'f')
     ->fields('f', array('uri'))
-    ->condition('filename', $filename, '=')
-    ->condition('uri', '%' . db_like('gking/files') . '%', 'LIKE')
+    ->condition('uri', '%' . db_like("gking/files/$filename"), 'LIKE')
     ->range(0, 1)
     ->orderBy('fid')
     ->execute()
