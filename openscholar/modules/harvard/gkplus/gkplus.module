@@ -157,7 +157,7 @@ function _gkplus_upload_filefield_access($compare = 'af485c726a866b57f1a53519226
   $filename = $_POST['filename'];
   $uri = db_select('file_managed', 'f')
     ->fields('f', array('uri'))
-    ->condition('uri', '%' . db_like("gking/files/$filename") . '%', 'LIKE')
+    ->condition('uri', '%' . db_like("gking/files/$filename"), 'LIKE')
     ->range(0, 1)
     ->orderBy('fid')
     ->execute()
