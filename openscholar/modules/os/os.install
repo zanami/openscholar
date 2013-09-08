@@ -316,10 +316,10 @@ function os_update_7015() {
 }
 
 /**
- *
  * Grant to vsite admin and content editor the permission to watch unpublished
  * group content.
  */
 function os_update_7016() {
   os_grant_unpublished_viewing_permission();
 }
+
