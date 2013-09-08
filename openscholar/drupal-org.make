@@ -257,7 +257,7 @@ projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing
 projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
 projects[og_moderation][subdir] = "contrib"
-projects[og_moderation][version] = 1.0
+projects[og_moderation][version] = 2.0
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
