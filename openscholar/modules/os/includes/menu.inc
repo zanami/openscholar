@@ -6,10 +6,10 @@
  * os_get_menus
  *  Return a list of menus avalible on the site.
  *
- * os_menu_add
- *  Add a new menu to be used in the OS Menu system.
+ * os_menu_create
+ * Creates (inserts) a new menu to be used in the OS Menu system.
  *
- * os_menu_del
+ * os_menu_delete
  *  Delete a menu from the OS Menu system.
  *
  * os_menu_link_load
@@ -21,8 +21,8 @@
  * os_menu_load_link_path
  *  Load return a menu link given a drupal path (ex node/123).
  *
- * os_menu_link_delete_link
- *  Delete and existing menu link.
+ * os_menu_link_delete
+ *  Deletes and existing menu link.
  *
  * os_menu_tree
  *  Return a fully themed menu tree for a menu.
@@ -50,7 +50,7 @@ function os_get_menus() {
 }
 
 /**
- * Add a new menu to be used in the OS Menu system.
+ * Creates (inserts) a new menu to be used in the OS Menu system.
  *
  * @param $title
  *  The human readable menu title.
@@ -62,7 +62,7 @@ function os_get_menus() {
  * @param $description (optional)
  *  The custom menu description.
  */
-function os_menu_add($title, $menu_name = false, $description = '') {
+function os_menu_create($title, $menu_name = false, $description = '') {
 
   if (!$menu_name) {
     // Strip non alphanumeric char's.
@@ -93,7 +93,7 @@ function os_menu_add($title, $menu_name = false, $description = '') {
  *
  * @param $menu_name
  */
-function os_menu_del($menu_name) {
+function os_menu_delete($menu_name) {
 
   $current_menus = os_get_menus();
   //Is this a valid menu to remove?
@@ -195,17 +195,15 @@ function os_menu_tree($menu_name) {
 }
 
 /**
- * Saves an existing or a new menu link.
+ * Creates (inserts) a new menu link or updates an existing menu link.
  *
- * @param $item
- *
- * An associative array representing a menu link item, with elements:
+ * @param array $item
+ *  An associative array representing a menu link item, with elements:
  *  - link_path: (required) The path of the menu item, which should be
  *    normalized first by calling drupal_get_normal_path() on it.
  *  - link_title: (required) Title to appear in menu for the link.
  *  - menu_name: (optional) The machine name of the menu for the link.
- *
- * Defaults to 'navigation'.
+ *    Defaults to 'navigation'.
  *  - weight: (optional) Integer to determine position in menu. Default is 0.
  *  - expanded: (optional) Boolean that determines if the item is expanded.
  *  - options: (optional) An array of options, see l() for more.
@@ -243,7 +241,7 @@ function os_menu_link_save(&$item) {
  * @param $mlid
  *  A valid menu link mlid
  */
-function os_menu_link_delete_link($menu, $mlid) {
+function os_menu_link_delete($menu, $mlid) {
 
   if (module_exists('vsite_menu')) {
     // Delete a menu item using the vsite controllers.

@@ -5,7 +5,7 @@
 ?>
 
 <div id="<?php echo 'layout_' . $layout; ?>">
-	<div class="hero">
+	<div class="slide">
   <ul class="rslides">
     <?php print implode("\n", $slides); ?>
   </ul>

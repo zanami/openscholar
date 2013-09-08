@@ -60,7 +60,7 @@ class os_boxes_addthis extends os_boxes_default {
     switch ($this->options['widget_type']) {
 
       case 'buttons' :
-        $html = '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-4e9eeefa6983da55"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
+        $html = '<a class="addthis_button" href=" http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-4e9eeefa6983da55 "><img src="/'.drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_addthis/images/addthis_smallbar.png" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
         break;
 
       case 'toolbox_small' :
@@ -97,6 +97,7 @@ class os_boxes_addthis extends os_boxes_default {
 
     $block = parent::render();
     $block['content'] = $html;
+    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_addthis/os_boxes_addthis.css');
     drupal_add_js('http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e9eeefa6983da55', 'external');
 
     //after removing and readding this widget, page needs a reload.  trigger it with js

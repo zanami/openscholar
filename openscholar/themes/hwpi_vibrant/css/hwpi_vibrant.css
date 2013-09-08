@@ -645,16 +645,8 @@ table td.mini {
     font-size:15px;
 }
 
-.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 350px;
-}
-
-.one-sidebar #main-content .view .date-nav-wrapper .date-prev {
-    right: 515px;
-}
-
 .no-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 840px;
+    right: 93%;
 }
 
 .view .date-nav-wrapper .date-next a {
@@ -902,7 +894,7 @@ ul.links li.link-count-node-readmore a {
 }
 
 /* SLIDESHOW */
-#layout_16_9_side .hero {
+#layout_16_9_side .slide {
   background: #ac253a;
 background: -moz-linear-gradient(top, #ac253a 0%, #880f1c 100%);
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ac253a), color-stop(100%, #880f1c));
@@ -919,12 +911,13 @@ a.rslides_nav.next {
 }
 
 
-/* 3-1 SLIDESHOW */
+/* 3-1 SLIDESHOW 
 .front.no-sidebars .region-content-top #layout_3_1_overlay .rslides li {
 padding: 0 0 0 60px;
 }
 
-.front.no-sidebars .region-content-top #layout_3_1_overlay .hero-copy {
+.front.no-sidebars .region-content-top #layout_3_1_overlay .slide-copy {
 margin-top: 48px;
 }
 
+*/
