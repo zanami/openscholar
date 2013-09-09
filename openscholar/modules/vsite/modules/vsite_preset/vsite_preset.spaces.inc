@@ -127,6 +127,47 @@ function vsite_preset_spaces_presets() {
         ),
       ),
     ),
+    'context' => array(
+      'os_public:reaction:block' => array(
+        'blocks' => array(
+          'os-secondary-menu' => array(
+            'module' => 'os',
+            'delta' => 'secondary-menu',
+            'region' => 'sidebar_first',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os-primary-menu' => array(
+            'module' => 'os',
+            'delta' => 'primary-menu',
+            'region' => 'menu_bar',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'boxes-site_info' => array(
+            'module' => 'boxes',
+            'delta' => 'site_info',
+            'region' => 'header_second',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os_search_solr-site-search' => array(
+            'module' => 'os_search_solr',
+            'delta' => 'site-search',
+            'region' => 'header_third',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+        ),
+      ),
+      'os_front:reaction:block' => array(
+        'blocks' => array(),
+      ),
+    ),
   );
 
   // Translatables
@@ -251,6 +292,47 @@ function vsite_preset_spaces_presets() {
           'p8' => 0,
           'p9' => 0,
         ),
+      ),
+    ),
+    'context' => array(
+      'os_public:reaction:block' => array(
+        'blocks' => array(
+          'os-secondary-menu' => array(
+            'module' => 'os',
+            'delta' => 'secondary-menu',
+            'region' => 'sidebar_first',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os-primary-menu' => array(
+            'module' => 'os',
+            'delta' => 'primary-menu',
+            'region' => 'menu_bar',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'boxes-site_info' => array(
+            'module' => 'boxes',
+            'delta' => 'site_info',
+            'region' => 'header_second',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os_search_solr-site-search' => array(
+            'module' => 'os_search_solr',
+            'delta' => 'site-search',
+            'region' => 'header_third',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+        ),
+      ),
+      'os_front:reaction:block' => array(
+        'blocks' => array(),
       ),
     ),
   );
@@ -402,6 +484,47 @@ function vsite_preset_spaces_presets() {
           'p8' => 0,
           'p9' => 0,
         ),
+      ),
+    ),
+    'context' => array(
+      'os_public:reaction:block' => array(
+        'blocks' => array(
+          'os-secondary-menu' => array(
+            'module' => 'os',
+            'delta' => 'secondary-menu',
+            'region' => 'sidebar_first',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os-primary-menu' => array(
+            'module' => 'os',
+            'delta' => 'primary-menu',
+            'region' => 'menu_bar',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'boxes-site_info' => array(
+            'module' => 'boxes',
+            'delta' => 'site_info',
+            'region' => 'header_second',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+          'os_search_solr-site-search' => array(
+            'module' => 'os_search_solr',
+            'delta' => 'site-search',
+            'region' => 'header_third',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
+        ),
+      ),
+      'os_front:reaction:block' => array(
+        'blocks' => array(),
       ),
     ),
   );
