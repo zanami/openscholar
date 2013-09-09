@@ -101,6 +101,33 @@ function os_spaces_presets() {
           'p8' => 0,
           'p9' => 0,
         ),
+        902 => array(
+          'link_path' => 'people',
+          'link_title' => 'People',
+          'options' => array(),
+          'mlid' => 902,
+          'p1' => 902,
+          'depth' => 1,
+          'router_path' => 'people',
+          'menu_name' => 'primary-menu',
+          'external' => 1,
+          'weight' => 0,
+          'hidden' => 0,
+          'has_children' => 0,
+          'expanded' => 0,
+          'module' => 'menu',
+          'customized' => 0,
+          'updated' => 0,
+          'plid' => 0,
+          'p2' => 0,
+          'p3' => 0,
+          'p4' => 0,
+          'p5' => 0,
+          'p6' => 0,
+          'p7' => 0,
+          'p8' => 0,
+          'p9' => 0,
+        ),
       ),
     ),
   );
@@ -109,6 +136,7 @@ function os_spaces_presets() {
   // Included for use with string extractors like potx.
   t('HWP Academic');
   t('HOME');
+  t('People');
   $export['os_department'] = $spaces_presets;
 
   $spaces_presets = new stdClass();
