@@ -179,7 +179,8 @@ function os_spaces_presets() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('OS Department Minimal');
+  t('Department Minimal');
+  t('Minimal');
   $export['os_department_minimal'] = $spaces_presets;
 
   $spaces_presets = new stdClass();
@@ -233,7 +234,7 @@ function os_spaces_presets() {
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_project';
-  $spaces_presets->title = 'OS Project';
+  $spaces_presets->title = 'Project Minimal';
   $spaces_presets->description = '';
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
@@ -273,7 +274,7 @@ function os_spaces_presets() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('OS Project');
+  t('Project Minimal');
   $export['os_project'] = $spaces_presets;
 
   return $export;
