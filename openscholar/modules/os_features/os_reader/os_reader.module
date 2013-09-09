@@ -26,6 +26,40 @@ function os_reader_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function os_reader_menu_alter(&$item) {
+  $item['node/add/feed-importer']['access callback'] = 'os_reader_feed_importer_access_callback';
+}
+
+/**
+ * Custom access callback - Verifying the user can add a feed importer although
+ * the OS reader app is disabled.
+ */
+function os_reader_feed_importer_access_callback() {
+  return _os_reader_feed_importer_access_callback("create");
+}
+
+/**
+ * Helper function for determine the access permission for a node.
+ *
+ * @param $op
+ *  The applied operation on the node.
+ *
+ * @return bool
+ *  TRUE/FALSE for the operation which the user try to apply.
+ */
+function _os_reader_feed_importer_access_callback($op) {
+  $string = "{$op} feed_importer content";
+  if ($vsite = vsite_get_vsite()) {
+    return og_user_access('node', $vsite->id, $string);
+  }
+  else {
+    return user_access($string);
+  }
+}
+
+/**
  * Implements hook_admin_paths().
  */
 function os_reader_admin_paths() {
@@ -488,6 +522,23 @@ function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
 
   // Add description to title field.
   $form['title']['#description'] = t('Administrative title used to describe this feed ex. \'Sports from The Gazette\'.');
+
+  $form['#validate'][] = 'os_reader_validate_address';
+}
+
+/**
+ * Validate the RSS address.
+ */
+function os_reader_validate_address($form, $form_state) {
+  if (!$form_state['values']['field_rss_url']) {
+    return;
+  }
+
+  $url = $form_state['values']['field_rss_url']['und'][0]['value'];
+  $result = drupal_http_request($url);
+  if ($result->code != 200) {
+    form_set_error('field_rss_url', t("The address @url is not a valid address.", array('@url' => $url)));
+  }
 }
 
 /**
