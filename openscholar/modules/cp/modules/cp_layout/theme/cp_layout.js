@@ -1,5 +1,5 @@
 /**
- *
+ * Events and reactions for dragging items in the Layout diagram.
  */
 (function ($) {
   Drupal.behaviors.cp_layout = {
@@ -63,8 +63,8 @@
     $('#widget-categories a').click(tab_change); // L#120
 
     //ON LOAD - GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
-    var layoutdivheight = jQuery('.cp-region-content').height();
-    jQuery('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
+    var layoutdivheight = $('.cp-region-content').height();
+    $('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
   }
 
   /**
@@ -118,8 +118,8 @@
    */
   function on_start() {
     //WHEN USER DRAGS WIDGETS AROUND - GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
-    var layoutdivheight = jQuery('.cp-region-content').height();
-    jQuery('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
+    var layoutdivheight = $('.cp-region-content').height();
+    $('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
   }
 
   /**
