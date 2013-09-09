@@ -77,18 +77,26 @@ function vsite_access_update_7003() {
       $empty_purl = 'Disallow: //';
       if ($directive == $empty_purl) {
         unset($directives[$domain][$gid]);
+        $modified = TRUE;
       }
       // Removes the line if the stored purl doesn't match directive.
       // This case may have happened when a vsite was deleted before
       // directives were also deleted in vsite_access_node_delete().
-      $query = 'SELECT p.value FROM {purl} p WHERE p.id = :gid AND p.provider = "spaces_og"';
-      $result = db_query($query, array(':gid' => $gid));
-      while ($record = db_fetch_object($result)) {
-        $purl = $result->value;
+      $result = db_select('purl', 'p')
+        ->fields('p', array('value'))
+        ->condition('id', $gid)
+        ->condition('provider', 'spaces_og')
+        ->execute();
+      while ($record = $result->fetchAssoc()) {
+        $purl = $record['value'];
+        if (empty($purl)) {
+          continue;
+        }
         $expected_directive = "Disallow: /$purl/";
         $zombie_imposter = (bool) ($directive != $expected_directive);
         if ($zombie_imposter) {
           unset($directives[$domain][$gid]);
+          $modified = TRUE;
         }
       }
     }
