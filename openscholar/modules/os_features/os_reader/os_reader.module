@@ -138,10 +138,17 @@ function os_reader_import_news() {
 function os_reader_get_importers_list($feed_importer_nid = NULL) {
   // Get all feed importer nodes.
   $query = new EntityFieldQuery();
-  $result = $query
+  $query
     ->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'feed_importer')
-    ->propertyCondition('status', NODE_PUBLISHED)
+    ->propertyCondition('status', NODE_PUBLISHED);
+
+  // Display only feeds from this viste.
+  if ($vsite = vsite_get_vsite()) {
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id);
+  }
+
+  $result = $query
     ->execute();
 
   if (empty($result['node'])) {
