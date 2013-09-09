@@ -37,6 +37,7 @@
       cursorAt: {top: 25, left: 38},
       connectWith: region_ids.join(', '),
       start: on_start,
+      update: on_update,
       tolerance: 'pointer',
       forceHelperSize: true,
       over: function (event, ui) {
@@ -114,12 +115,17 @@
   }
 
   /**
-   * Do things when we drop a widget
+   * This event is triggered when sorting starts.
+   * @see http://api.jqueryui.com/sortable/#event-start
    */
   function on_start() {
-    //WHEN USER DRAGS WIDGETS AROUND - GETS THE HEIGHT OF THE cp-region-content WRAPPER DIV AND APPLIES IT TO THE 2 SIDEBARS
-    var layoutdivheight = $('.cp-region-content').height();
-    $('.cp-region-sidebar-first, .cp-region-sidebar-second').css({ height: layoutdivheight});
+  }
+
+  /**
+   * This event is triggered when the user stopped sorting and the DOM position has changed.
+   * @see http://api.jqueryui.com/sortable/#event-update
+   */
+  function on_update(event, ui) {
   }
 
   /**
