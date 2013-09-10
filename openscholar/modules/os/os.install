@@ -314,3 +314,10 @@ function os_update_7014() {
 function os_update_7015() {
   user_role_revoke_permissions(DRUPAL_AUTHENTICATED_RID, array('view user profiles'));
 }
+
+/**
+ * Enable the Field redirection module.
+ */
+function os_update_7016() {
+  module_enable(array('field_redirection'));
+}
