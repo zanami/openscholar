@@ -255,21 +255,21 @@ function os_update_7014() {
     ->condition('object_type', 'menus')
     ->condition('so.value', '%home%', 'LIKE')
     ->fields('so');
-  
+
   //subquery to get domain name
   $subquery = db_select('spaces_overrides', 's')
     ->condition('object_type', 'variable')
     ->condition('object_id', 'vsite_domain_name')
     ->fields('s', array('value', 'id'));
-  
+
   $query->leftJoin($subquery, 'sub', 'sub.id = so.id');
   $query->addField('sub', 'value', 'vsite_domain_name');
-  
+
   //also need purl
   $query->join('purl', 'p', 'p.id = so.id');
   $query->condition('p.provider', 'spaces_og');
   $query->addField('p', 'value', 'purl');
-  
+
   $results = $query->execute();
   while ($row = $results->fetchObject()) {
     $menus = unserialize($row->value);
@@ -277,18 +277,18 @@ function os_update_7014() {
     $domain = unserialize($row->vsite_domain_name);
     $domain = ($domain) ? 'http://'.$domain : variable_get('purl_base_domain', $base_url);
     $purl = $row->purl;
-  
+
     //check each menu item
     foreach ($menus as $id => &$item) {
       //list of replaceable items
       $replace = array('home', '/home', $domain . '/home', "$domain/$purl/home");
-  
+
       if (in_array($item['link_path'], $replace)) {
         $item['link_path'] = preg_replace('/home\/?$/', '', $item['link_path']);
         $updates[$row->id] = TRUE;
       }
     }
-  
+
     //do the update
     if ($updates[$row->id]) {
       db_update('spaces_overrides')
@@ -300,7 +300,7 @@ function os_update_7014() {
         ->execute();
     }
   }
-  
+
   return t('Updated home links in @count sites', array('@count' => count($updates)));
 }
 
@@ -319,5 +319,13 @@ function os_update_7015() {
  * Enable the Field redirection module.
  */
 function os_update_7016() {
+  os_grant_unpublished_viewing_permission();
+}
+
+/**
+ * Grant to vsite admin and content editor the permission to watch unpublished
+ * group content.
+ */
+function os_update_7017() {
   module_enable(array('field_redirection'));
 }
