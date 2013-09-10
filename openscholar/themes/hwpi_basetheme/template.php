@@ -26,13 +26,13 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  * Adds mobile menu controls to menubar.
  */
 function hwpi_basetheme_page_alter(&$page) {
-  $page['header_third']['#sorted'] = false;
-  $page['header_third']['mobile'] = array(
+  $page['header_second']['#sorted'] = false;
+  $page['header_second']['mobile'] = array(
     '#theme' => 'links',
     '#attributes' => array(
       'class' => array('mobile-buttons'),
     ),
-    '#weight' => -1000,
+    '#weight' => 5000,
     '#links' => array(
       'mobi-main' => array(
         'href' => '#',

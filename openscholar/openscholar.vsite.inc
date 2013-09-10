@@ -15,6 +15,7 @@ dependencies[] = vsite_register
 dependencies[] = vsite_access
 dependencies[] = vsite_vocab
 dependencies[] = og
+dependencies[] = og_moderation
 dependencies[] = views_og_cache
 
 ;Depends on og/vsite

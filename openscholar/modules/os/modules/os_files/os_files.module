@@ -209,6 +209,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   
   if (isset($args[0]['types'])) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
+    $form['upload']['#upload_validators']['file_validate_size'] = array(min(parse_size(variable_get('os_files_max_inline_filesize', '128 MB')), $form['upload']['#upload_validators']));
     $extensions = array();
     $include_pps = FALSE;
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
@@ -889,6 +890,10 @@ function os_files_media_browser_params_alter(&$media_params){
       $media_params['file_directory'] = $filepath;
     }
   }
+
+  if (isset($media_params['max_filesize'])) {
+    $media_params['max_filesize'] = variable_get('os_files_max_inline_filesize', '128 MB');
+  }
 }
 
 /**
@@ -933,6 +938,25 @@ function os_files_form_node_form_alter(&$form, &$form_state) {
   if (isset($form['field_upload'])) {
     $form['field_upload'][LANGUAGE_NONE]['add_more']['#value'] = t('Add Another');
   }
+}
+
+/**
+ * Adds field to alter max file size of inline files
+ */
+function os_files_form_media_admin_config_browser_alter(&$form, &$form_state) {
+  $form[media_variable_name('dialog_theme')]['#weight'] = -5;
+  $form[media_variable_name('file_extensions')]['#weight'] = -3;
+
+  $form['os_files_max_inline_filesize'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum Filesize for Inline Files'),
+    '#default_value' => variable_get('os_files_max_inline_filesize', '128 MB'),
+    '#description' => t('Enter a value like "512" (bytes), "80 KB" (kilobytes) or "50 MB" (megabytes) in order to restrict the allowed file size.
+      If left empty the file sizes will be limited only by PHP\'s maximum post and file upload sizes (current limit <strong>%limit</strong>).
+      Must be lower than PHP\'s maximum post and file upload sizes to have any effect.', array('%limit' => format_size(file_upload_max_size()))),
+    '#element_validate' => array('_file_generic_settings_max_filesize'),
+    '#weight' => -1
+  );
 }
 
 /**
@@ -1306,6 +1330,8 @@ function os_files_file_default_types() {
       'application/octet-stream',
       'application/x-gzip',
       'application/x-compressed',
+      'application/x-tar',
+      'application/x-gtar',
     ),
     'streams' => array(
       'public',
@@ -1580,4 +1606,66 @@ function os_files_file_mimetype_mapping_alter(&$mimes) {
     $mimes['mimetypes'][$key] = $mime;
     $mimes['extensions'][$ext] = $key;
   }
+}
+
+/*
+ * Implements hook_filter_info_alter().
+ * Adds a prepare function media's filter to escape the data in the JSON strings
+ */
+function os_files_filter_info_alter(&$info) {
+  $info['media_filter']['prepare callback'] = 'os_files_filter_media_prepare';
+  $info['media_filter']['process callback'] = 'os_files_filter_media_process';
+}
+
+/**
+ * Stores media tags and their HASH keys for when they need to be retrieved later
+ * $tag can be one of 2 things:
+ * 1. An unedited media tag, in the format of [[{Json: data}]]
+ *    This will generate an md5 hash of the tag, store it in an array, using the md5 as a key,
+ *    and then return the hash.
+ * 2. An md5 hash
+ *    This will return the original media tag, or null if it doesn't exist
+ */
+function os_files_stash_tags($tag) {
+  $tags = &drupal_static(__FUNCTION__, array());
+
+  // if the tag is valid JSON, we insert it and return the hash
+  // otherwise, it'll be an md5 hash and we return the original
+  if (!isset($tags[$tag]) && drupal_json_decode($tag)) {
+    $key = md5($tag);
+    $tags[$key] = $tag;
+    return $key;
+  }
+  else {
+    return $tags[$tag];
+  }
+}
+
+/**
+ * Prepare callback for media_filter
+ * Escapes the JSON strings to prevent other filters from messing with them
+ */
+function os_files_filter_media_prepare($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return $text;
+}
+
+/**
+ * Escape the data in media JSON strings to prevent other filters from changing it
+ * Will toggle all tags from the normal [[{Json: data}]] form to an md5 hash form wrapped in brackets
+ */
+function os_files_escape_media_tags($tag) {
+  $tag = $tag[0];
+  $data = trim($tag, '[]');
+  $key = os_files_stash_tags($data);
+  return '[['.$key.']]';
+}
+
+/**
+ * Process callback for media_filter
+ * Unescapes media's JSON strings and then calls media_filter on the original text
+ */
+function os_files_filter_media_process($text) {
+  $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
+  return media_filter($text);
 }

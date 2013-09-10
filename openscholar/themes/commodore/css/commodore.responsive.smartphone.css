@@ -12,7 +12,7 @@
 	float:left !important;
 	margin:0 !important;
 }	
-	
+
 #menu-bar {
     background: none;
     padding:0;
@@ -60,4 +60,17 @@
 .block-boxes-os_boxes_site_logo {
 	display:none;
  }
+ 
+ 
+ }
+ 
+@media (max-width: 1024px) {
+
+ 
+ .region-header-second,
+.region-header-first,
+.region-header-second {
+	margin-left:0 !important;
+}
+ 
  }

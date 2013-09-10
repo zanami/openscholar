@@ -600,6 +600,11 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
   padding: 15px 0 30px;
 }
 
+.node-link.node-teaser {
+	padding: 10px 0 5px;
+	}
+
+
 /**
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */

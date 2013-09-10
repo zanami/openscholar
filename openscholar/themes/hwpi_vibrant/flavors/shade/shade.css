@@ -268,9 +268,13 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu .menuparent ul li a.active {
   background: #1d1d1d !important;
 }
-#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
-    background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
+
+#search-block-form input.form-submit, 
+#search-block-form #edit-submit, 
+#search-form #edit-submit {
+    background-position: 2px -373px;
 }
+
 .sidebar .block-title {
     background-color: #8A97A1;
     border-bottom: medium none;

@@ -2,7 +2,7 @@
 @media (max-width: 1008px) {
 /*Header*/
 .region-header-second {
-    max-height: 105px!important;
+    max-height: 135px!important;
 }
 .branding-right {
     display: none; 
@@ -113,6 +113,7 @@ display:none;
     padding: 12px 0;
     position: static;
     width: 100%;
+    margin: 0 15px;
 }
 .region-header-third #block-os-secondary-menu.opened,
 .region-header-third .os-custom-menu.opened {
@@ -181,7 +182,7 @@ display:none;
 }
 ul.mobile-buttons {
     display: block !important;
-    margin: 0 0 0 15px !important;
+  	margin-bottom: 0;
 }
 
 .mobile-buttons li {

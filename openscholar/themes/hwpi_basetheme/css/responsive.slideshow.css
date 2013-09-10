@@ -20,11 +20,11 @@
 #layout_16_9_side .slide-copy,
 #layout_16_9_below .slide-copy,
 #layout_3_1_overlay .slide-copy {
- height:100px !important;
+ height:auto !important;
  min-height:100px !important;
  position: static !important;
   background: #444 !important;
-  width:100% !important;
+  width:auto !important;
   float:none !important;
   clear:both !important;
   margin:0 !important;
@@ -62,6 +62,12 @@ line-height:21px !important;
     width: 100% !important;
 
 }
+
+.rslides_tabs li { 
+z-index:5 !important;
+position:relative !important;	
+}
+
 }
 
 @media (max-width: 479px){
@@ -76,5 +82,11 @@ display:block !important;
 margin-right:8px !important;	
 }
 
+.rslides_tabs a {
+    margin: 0 !important;
+}
+
 	
 }
+
+

@@ -249,11 +249,15 @@ projects[oembed][download][type] = git
 projects[oembed][download][branch] = 7.x-0.x
 projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
+projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
 projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
+
+projects[og_moderation][subdir] = "contrib"
+projects[og_moderation][version] = 2.0
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0

@@ -25,6 +25,9 @@ function os_reader_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_admin_paths().
+ */
 function os_reader_admin_paths() {
   return array(
     'os-reader' => TRUE,
@@ -219,7 +222,8 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
     ajax_deliver($page);
   }
   else {
-    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->title));
+    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->og->title));
+    drupal_goto('os-reader');
   }
 }
 
@@ -396,6 +400,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
+  $wrapper->field_url->set(array('url' => $feed->url));
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
@@ -405,7 +410,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $feed_wrapper->field_vsites_reference[] = $vsite->id;
 
   // Reference the feed to the News node.
-  $feed_wrapper->field_news_reference[] = $node->nid;
+  $feed_wrapper->field_nodes_reference[] = $node->nid;
   $feed_wrapper->save();
 
   return $node;
@@ -426,7 +431,12 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
 function os_reader_get_news_by_feed_item($feed_id, $vsite_id) {
   // Load news nodes that were imported from the given feed item.
   $wrapper_feed = entity_metadata_wrapper('os_feed_item', $feed_id);
-  $news_nodes = $wrapper_feed->field_news_reference->value();
+  $news_nodes = $wrapper_feed->field_nodes_reference->value();
+
+  if (empty($news_nodes)) {
+    // No imported news nodes.
+    return FALSE;
+  }
 
   // Run through imported news nodes to see if any of them belong to the VSite.
   foreach ($news_nodes as $news_node) {
