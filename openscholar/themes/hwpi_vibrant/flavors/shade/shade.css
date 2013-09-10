@@ -119,9 +119,7 @@ body.front #columns{
 .navigation ul li, .navigation ul.menu li{
 	background-color:#fef7f5;
 }
-.rslides_tabs li{
-	background-color:#575f66!important;
-}
+
 .image-style-profile-thumbnail,
 .image-style-book-cover-thumb{
 	border:1px solid #f4f4f4;
@@ -362,9 +360,6 @@ h2.field-label {
 #footer a,
 #powerby-login a{
 	color:#fff;
-}
-#boxes-box-site_info h1{
-	max-width:65%
 }
 .block-no-title .view .date-nav-wrapper{
 	border-top:0;
