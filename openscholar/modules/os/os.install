@@ -324,8 +324,7 @@ function os_update_7016() {
 }
 
 /**
- * Grant to vsite admin and content editor the permission to watch unpublished
- * group content.
+ * Enable OG-moderation.
  */
 function os_update_7017() {
   module_enable('og_moderation');
