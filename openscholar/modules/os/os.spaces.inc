@@ -136,8 +136,8 @@ function os_spaces_presets() {
           'os-secondary-menu' => array(
             'module' => 'os',
             'delta' => 'secondary-menu',
-            'region' => 'sidebar_first',
-            'weight' => '-10',
+            'region' => 'header_third',
+            'weight' => '-11',
             'status' => 0,
             'title' => '',
           ),
