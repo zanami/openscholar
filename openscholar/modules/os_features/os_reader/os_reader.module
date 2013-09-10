@@ -16,7 +16,7 @@ function os_reader_menu() {
     'access arguments' => array(2, 3, 5),
   );
 
-  $items['os-reader'] = array(
+  $items['cp/content/import'] = array(
     'title' => 'Import news',
     'page callback' => 'os_reader_import_news',
     'access callback' => 'os_reader_import_news_access_callback',
@@ -107,7 +107,7 @@ function os_reader_import_news() {
   drupal_add_js(drupal_get_path('module', 'os_reader') . '/os_reader.js');
 
   $item = menu_get_item();
-  $feed_importer_nid = isset($item['map'][1]) ? $item['map'][1] : NULL;
+  $feed_importer_nid = isset($item['map'][3]) ? $item['map'][3] : NULL;
 
   // Check if user is allowed to import feeds.
   if ($vsite = vsite_get_vsite()) {
@@ -130,10 +130,10 @@ function os_reader_import_news() {
  * Helper function for import news screen; Returns list of feed importer nodes.
  *
  * @param $feed_importer_nid
- *    Currently viewed importer, will get class 'active'.
+ *  Currently viewed importer, will get class 'active'.
  *
- * @return
- *    Themed item list of feed importers.
+ * @return string
+ *  Themed item list of feed importers.
  */
 function os_reader_get_importers_list($feed_importer_nid = NULL) {
   // Get all feed importer nodes.
@@ -160,7 +160,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
   // Create item list of feed importers.
   $items = array(
     array(
-      'data' => l('All feeds', 'os-reader'),
+      'data' => l('All feeds', 'cp/content/import'),
       'class' => empty($feed_importer_nid) ? array('active') : array(),
     ),
   );
@@ -175,7 +175,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
     else {
       // Display importer as link.
       $items[] = array(
-        'data' => l($importer->title, 'os-reader/' . $importer->nid),
+        'data' => l($importer->title, 'cp/content/import/' . $importer->nid),
       );
     }
   }

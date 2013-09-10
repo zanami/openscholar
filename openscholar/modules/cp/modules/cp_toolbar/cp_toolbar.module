@@ -288,6 +288,10 @@ function cp_toolbar_fill_drawer() {
   if ($l['access']){
     $links['comments'] = $l;
   }
+  $l = menu_get_item('cp/content/import');
+  if ($l['access']){
+    $links['import'] = $l;
+  }
 
   $drawer['content-drawer']['list'] = array(
     '#theme' => 'links',
