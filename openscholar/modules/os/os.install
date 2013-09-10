@@ -323,3 +323,10 @@ function os_update_7016() {
   os_grant_unpublished_viewing_permission();
 }
 
+/**
+ * Grant to vsite admin and content editor the permission to watch unpublished
+ * group content.
+ */
+function os_update_7017() {
+  module_enable('og_moderation');
+}
