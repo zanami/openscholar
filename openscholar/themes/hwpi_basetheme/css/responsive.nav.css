@@ -2,7 +2,7 @@
 @media (max-width: 1008px) {
 /*Header*/
 .region-header-second {
-    max-height: 160px!important;
+    /*max-height: 160px!important;*/
 }
 .branding-right {
     display: none; 
@@ -184,6 +184,9 @@ ul.mobile-buttons {
     display: block !important;
   	margin-bottom: 0;
   	margin-left: 15px;
+  	position: absolute;
+	bottom: -7px;
+	width: 95%;
 }
 
 .mobile-buttons li {
@@ -258,7 +261,7 @@ ul.primary li a {
 @media (max-width: 768px) {
 	
 .region-header-second {
-    height: 145px !important;
+    min-height: 145px !important;
 }
 .block.block-boxes.block-boxes-os_boxes_site_logo {
     width: 100%!important;
@@ -293,7 +296,7 @@ ul.primary li a {
 }
 
 .region-header-second {
-    height: 158px !important;
+    height: 165px !important;
 }
 
 
