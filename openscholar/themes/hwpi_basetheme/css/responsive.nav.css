@@ -16,6 +16,7 @@
 }
 .region-header-third ul.nice-menu {
     margin-bottom: 0;
+    width: 100%;
 }
 
 /*Primary menu*/
@@ -120,7 +121,7 @@ display:none;
     background-color: #2A527A;
     display: block;
     position: static;
-    width:100%;
+    width:95% !important;
     margin: 0 15px;
 }
 
@@ -300,7 +301,7 @@ ul.primary li a {
 }
 }
 
-@media (max-width:239px){
+@media (max-width:240px){
 	
 .region-header-second {
     min-height: 195px !important;
