@@ -207,6 +207,21 @@ class vsite extends space_og {
       return TRUE;
     }
 
+    // Check permission for the feed importer even if the os_reader is disabled.
+    if ($feature == 'os_reader') {
+      if ($_GET['q'] != 'node/add/feed-importer') {
+        // Loading the node.
+        $node = node_load(end(explode("/", $_GET['q'])));
+        $check = is_object($node) && $node->type == 'feed_importer';
+      }
+      else {
+        $check = TRUE;
+      }
+      if ($check) {
+        return _os_reader_feed_importer_access_callback($op);
+      }
+    }
+
     $access = parent::access_feature($op, $feature, $account);
 
     // Checks feature 'privacy' settings

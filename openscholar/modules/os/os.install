@@ -316,16 +316,23 @@ function os_update_7015() {
 }
 
 /**
- * Grant to vsite admin and content editor the permission to watch unpublished
- * group content.
+ * Enable the Field redirection module.
  */
 function os_update_7016() {
   os_grant_unpublished_viewing_permission();
 }
 
 /**
- * Enable OG-moderation.
+ * Grant to vsite admin and content editor the permission to watch unpublished
+ * group content.
  */
 function os_update_7017() {
-  module_enable('og_moderation');
+  module_enable(array('field_redirection'));
+}
+
+/**
+ * Enable OG-moderation.
+ */
+function os_update_7018() {
+  module_enable(array('og_moderation'));
 }
