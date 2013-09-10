@@ -1061,7 +1061,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldDeeTheFeedItemHasImported($feed_item) {
     $page = $this->getSession()->getPage();
-    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'View')]");
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
 
     if (!$element) {
       throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));

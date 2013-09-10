@@ -11,7 +11,7 @@ Feature:
   Scenario: Test the OS reader feed importer.
     Given I am logging in as "admin"
       And I import feeds items
-     When I visit "john/os-reader"
+     When I visit "john/cp/content/import"
       And I import the feed item "JFK has ben murdered"
      Then I should dee the feed item "JFK has ben murdered" has imported
       And I should see "JFK has ben murdered"

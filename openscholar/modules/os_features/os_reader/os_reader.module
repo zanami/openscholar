@@ -60,16 +60,6 @@ function _os_reader_feed_importer_access_callback($op) {
 }
 
 /**
- * Implements hook_admin_paths().
- */
-function os_reader_admin_paths() {
-  return array(
-    'os-reader' => TRUE,
-    'os-reader/*' => TRUE,
-  );
-}
-
-/**
  * Implements hook_theme().
  */
 function os_reader_theme() {
@@ -192,7 +182,7 @@ function os_reader_os_add_new_links_alter(&$links) {
   if ($menu['path'] == 'news' && os_reader_import_news_access_callback()) {
     $links['import-news'] = array(
       'title' => t('Import News'),
-      'href' => 'os-reader',
+      'href' => 'cp/content/import',
     );
   }
 }
@@ -256,7 +246,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   }
   else {
     drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->og->title));
-    drupal_goto('os-reader');
+    drupal_goto('cp/content/import');
   }
 }
 
@@ -504,12 +494,7 @@ function os_reader_process_node(&$variables) {
     return;
   }
 
-  $url = 'os-reader';
-  if ($vsite = vsite_get_vsite()) {
-    $url = $vsite->group->name . '/' . $url;
-  }
-
-  drupal_goto('reader', array('fragment' => 'overlay=' . $url));
+  drupal_goto('cp/content/import');
 }
 
 /**
