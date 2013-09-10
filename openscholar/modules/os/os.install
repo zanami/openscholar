@@ -323,3 +323,9 @@ function os_update_7016() {
   os_grant_unpublished_viewing_permission();
 }
 
+/**
+ * Enable OG-moderation.
+ */
+function os_update_7017() {
+  module_enable('og_moderation');
+}
