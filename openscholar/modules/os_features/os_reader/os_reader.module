@@ -14,6 +14,7 @@ function os_reader_menu() {
     'page arguments' => array(2, 3, 4),
     'access callback' => 'os_reader_ajax_copy_feed_to_news_access',
     'access arguments' => array(2, 3, 5),
+    'theme callback' => 'os_reader_ajax_theme_name',
   );
 
   $items['cp/content/import'] = array(
@@ -23,6 +24,15 @@ function os_reader_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Callback function for the theme name. When the ajax action for import the
+ * feed item, the theme may changed. This will prevent from the loading other
+ * themes.
+ */
+function os_reader_ajax_theme_name() {
+  return 'cp_theme';
 }
 
 /**
