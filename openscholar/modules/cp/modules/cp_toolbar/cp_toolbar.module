@@ -288,8 +288,10 @@ function cp_toolbar_fill_drawer() {
   if ($l['access']){
     $links['comments'] = $l;
   }
+
+  // Adding the link to the import news.
   $l = menu_get_item('cp/content/import');
-  if ($l['access']){
+  if ($l['access']) {
     $links['import'] = $l;
   }
 
