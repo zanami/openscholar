@@ -126,6 +126,39 @@
    * @see http://api.jqueryui.com/sortable/#event-update
    */
   function on_update(event, ui) {
+    syncColumnHeights(event, ui);
+  }
+
+  /**
+   * Syncs all div heights that are in rows.
+   *
+   * Finds the max column height in each region: header, content and footer.
+   */
+  function syncColumnHeights(event, ui) {
+    var columns = [
+      ['header-first', 'header-second', 'header-third'],
+      ['content', 'sidebar-first', 'sidebar-second'],
+      ['footer-first', 'footer', 'footer-third']
+    ];
+
+    for (var i = 0; i < columns.length; i++) {
+      var divs = columns[i];
+      var heights = [];
+      for (var j = 0; j < divs.length; j++) {
+        var wrapperID = '#edit-layout-' + divs[j];
+        // Makes sure that the widgets don't overlap the bottom of the div
+        $(wrapperID).height('auto');
+        // Finds the "auto" height in pixels.
+        heights[heights.length] = $(wrapperID).height();
+      }
+      // Finds the maximum height of all 3 divs
+      var max = Math.max.apply(Math, heights);
+      // Applies maximum height to all 3 divs.
+      for (var j = 0; j < divs.length; j++) {
+        var wrapperID = '#edit-layout-' + divs[j];
+        $(wrapperID).height(max);
+      }
+    }
   }
 
   /**
