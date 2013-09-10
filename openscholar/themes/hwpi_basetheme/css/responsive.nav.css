@@ -2,7 +2,7 @@
 @media (max-width: 1008px) {
 /*Header*/
 .region-header-second {
-    max-height: 135px!important;
+    max-height: 160px!important;
 }
 .branding-right {
     display: none; 
@@ -183,6 +183,7 @@ display:none;
 ul.mobile-buttons {
     display: block !important;
   	margin-bottom: 0;
+  	margin-left: 15px;
 }
 
 .mobile-buttons li {
@@ -257,7 +258,7 @@ ul.primary li a {
 @media (max-width: 768px) {
 	
 .region-header-second {
-    height: 130px !important;
+    height: 145px !important;
 }
 .block.block-boxes.block-boxes-os_boxes_site_logo {
     width: 100%!important;
@@ -289,6 +290,10 @@ ul.primary li a {
 	
 #search-block-form .container-inline .form-item .form-text {
     width: 75% !important;
+}
+
+.region-header-second {
+    height: 158px !important;
 }
 
 
