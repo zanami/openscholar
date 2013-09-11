@@ -112,15 +112,20 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       return $id;
     }
 
+    $importer_nid = $source->feed_nid;
+    $wrapper = entity_metadata_wrapper('node', $importer_nid);
+    $vsite_id = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier();
+
     $query = new entityFieldQuery();
-    $result = $query
-      ->entityCondition('entity_type', 'os_feed_item')
-      ->propertyCondition('guid', $result->current_item['guid'])
-      ->fieldCondition('field_vsites_reference', 'target_id', $result->current_item['field_vsites_reference'])
+    $query_result = $query
+      ->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'os_feed_importer')
+      ->propertyCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+      ->fieldCondition('field_rss_url', 'value', $wrapper->field_rss_url->value())
       ->execute();
 
-    if (!empty($result['os_feed_item'])) {
-      return reset(array_keys($result['os_feed_item']));
+    if (!empty($query_result['node'])) {
+      return 1;
     }
 
     return 0;
