@@ -116,6 +116,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     $result = $query
       ->entityCondition('entity_type', 'os_feed_item')
       ->propertyCondition('guid', $result->current_item['guid'])
+      ->fieldCondition('field_vsites_reference', 'target_id', $result->current_item['field_vsites_reference'])
       ->execute();
 
     if (!empty($result['os_feed_item'])) {
