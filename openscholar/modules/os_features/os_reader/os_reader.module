@@ -545,7 +545,7 @@ function os_reader_form_views_exposed_form_alter(&$form, &$form_state) {
   }
 
   // Change option '-Any-' to 'All'.
-  $form['feed_is_imported']['#options']['All'] = 'All';
+  $form['feed_is_imported']['#options']['All'] = t('All');
 
   $vsite = vsite_get_vsite();
 
