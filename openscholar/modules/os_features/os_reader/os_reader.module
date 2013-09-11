@@ -519,9 +519,9 @@ function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Validate the RSS address.
+ * Validate handler; Check the RSS address Prevent duplicate feed importers.
  */
-function os_reader_validate_address($form, $form_state) {
+function os_reader_validate_address($form, &$form_state) {
   if (!$form_state['values']['field_rss_url']) {
     return;
   }
@@ -531,7 +531,31 @@ function os_reader_validate_address($form, $form_state) {
   if ($result->code != 200) {
     form_set_error('field_rss_url', t("The address @url is not a valid address.", array('@url' => $url)));
   }
+
+  $vsite_id = $form_state['values']['og_group_ref']['und'][0]['target_id'];
+
+  // Check for existing nodes in the same VSite.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'feed_importer')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+    ->fieldCondition('field_rss_url', 'value', $url)
+    ->execute();
+
+  if (!empty($result['node'])) {
+    $row = reset($result['node']);
+    $node = node_load($row->nid);
+
+    $params = array(
+      '@url' => url('node/' . $node->nid),
+      '@title' => $node->title,
+    );
+    form_set_error('field_rss_url', t('RSS url already exists in <a href="@url">@title</a>.', $params));
+  }
 }
+
 
 /**
  * Implements hook_form_FORM_ID_alter(); Remove filter when not inside a VSite.
