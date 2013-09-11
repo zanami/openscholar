@@ -1,6 +1,11 @@
 @media (max-width: 1008px) {
 		
 	/* menus */
+	
+ul.mobile-buttons {
+bottom: 0;
+}	
+	
 .link-count-mobi-main a {
     background-color: #fff!important;
     color: #000!important;
