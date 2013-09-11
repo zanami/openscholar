@@ -463,19 +463,7 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       }
     }
 
-    // Try and catch: if the saving of the node will failed we need to display
-    // the error.
-    try {
-      node_save($node);
-    }
-    catch (Exception $e) {
-      $params = array(
-        '@label' => $node->title,
-        '@nid' => $node->nid,
-        '@error' => $e->getMessage(),
-      );
-      drupal_set_message(t('And error occurred when trying to update the node @label with the nid @nid: @error', $params), 'error');
-    }
+    node_save($node);
   }
 }
 
