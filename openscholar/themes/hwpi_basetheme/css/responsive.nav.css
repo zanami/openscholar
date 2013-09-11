@@ -274,9 +274,9 @@ ul.primary li a {
 .link-count-mobi-util a {
     min-height: 20px;
 }
-.region-header-third #block-os-secondary-menu.opened {
+.region-header-third #block-os-secondary-menu.opened,
+.region-header-third .os-custom-menu.opened {
     top: 65px!important;
-    width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
