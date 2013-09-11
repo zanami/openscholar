@@ -316,18 +316,10 @@ function os_update_7015() {
 }
 
 /**
- * Enable the Field redirection module.
+ * Update field redirection and grant to vsite admin and content editor the
+ * permission to watch unpublished group content.
  */
 function os_update_7016() {
-  module_enable(array('og_moderation'));
+  module_enable(array('og_moderation', 'field_redirection'));
   os_grant_unpublished_viewing_permission();
 }
-
-/**
- * Grant to vsite admin and content editor the permission to watch unpublished
- * group content.
- */
-function os_update_7017() {
-  module_enable(array('field_redirection'));
-}
-
