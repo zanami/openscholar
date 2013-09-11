@@ -455,13 +455,27 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       $file_field = &$node->{$field}[LANGUAGE_NONE];
 
       foreach ($file_field as $delta => $value) {
-        if ($value['fid'] == $file->fid) {
+        if ($value['fid'] == $file->fid || !$file_field[$delta]) {
+          // The file we delete is in the current delta or the the value is
+          // NULL. We cannot set a NULL value.
           unset($file_field[$delta]);
         }
       }
     }
 
-    node_save($node);
+    // Try and catch: if the saving of the node will failed we need to display
+    // the error.
+    try {
+      node_save($node);
+    }
+    catch (Exception $e) {
+      $params = array(
+        '@label' => $node->title,
+        '@nid' => $node->nid,
+        '@error' => $e->getMessage(),
+      );
+      drupal_set_message(t('And error occurred when trying to update the node @label with the nid @nid: @error', $params), 'error');
+    }
   }
 }
 
