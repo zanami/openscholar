@@ -119,6 +119,11 @@ ul.menu {
     margin: -40px 0 35px!important;
 }
 /* column layouts */
+
+#content-column, div.sidebar {
+width: 90% !important;
+}
+
 .page-node #content-column .content-inner {
     padding: 0 2% !important;
 }
