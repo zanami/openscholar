@@ -438,7 +438,9 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
   $wrapper->field_url->set(array('url' => $feed->url));
-  $wrapper->field_photo->set((array) $file);
+  if ($file) {
+    $wrapper->field_photo->set((array) $file);
+  }
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
@@ -509,7 +511,7 @@ function os_reader_node_insert($node) {
 function os_reader_process_node(&$variables) {
   if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
     // On the news page allow the next HTML tags in the body field.
-    $value = strip_tags($variables['body'][0]['safe_value'], '<a><strong><p><table><tr><td><div><b><u><i><strike>');
+    $value = strip_tags($variables['body'][0]['safe_value'], '<a><em><strong><cite><blockquote><code><ul><ol><li><dl><dt><dd>');
 
     // Don't break the HTML tags if the string is more then 600 characters.
     $variables['content']['body'][0]['#markup'] = views_trim_text(array('html' => TRUE, 'max_length' => 600), $value);
