@@ -667,7 +667,7 @@ class os_sv_list_box extends os_boxes_default {
       }
       else {
         // The user selected specific terms.
-        $tids = $this->options['vocabs'];
+        $tids = (is_array($this->options['vocabs'])) ? $this->options['vocabs'] : array($this->options['vocabs'] => $this->option['vocabs']);
         $inside_vocab = TRUE;
       }
     }
