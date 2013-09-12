@@ -148,10 +148,9 @@ function os_basetheme_menu_link(array $vars) {
 }
 
 /**
- * Preprocess variables for comment.tpl.php
+ * Preprocess variables for node.tpl.php
  */
 function os_basetheme_preprocess_node(&$vars) {
-
   // Event nodes, inject variables for date month and day shield
   if ($vars['node']->type == 'event' && !$vars['page']) {
     $vars['event_start'] = array();

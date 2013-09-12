@@ -431,6 +431,16 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
     return $news_node;
   }
 
+  // Get the first image src.
+  $doc = new DOMDocument();
+  if ($feed->description) {
+    $doc->loadHTML($feed->description);
+    $src = $doc->getElementsByTagName('img')->item(0)->getAttribute('src');
+    if ($src) {
+      $file = system_retrieve_file($src, 'public://', TRUE);
+    }
+  }
+
   // Create the "News" node.
   $node = new stdClass();
   $node->type = 'news';
@@ -441,6 +451,9 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
   $wrapper->field_url->set(array('url' => $feed->url));
+  if ($file) {
+    $wrapper->field_photo->set((array) $file);
+  }
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
@@ -493,6 +506,8 @@ function os_reader_get_news_by_feed_item($feed_id, $vsite_id) {
 }
 
 /**
+ * Implements hook_node_insert().
+ *
  * Import feed item when the user add the feed importer for the first time.
  */
 function os_reader_node_insert($node) {
@@ -504,14 +519,18 @@ function os_reader_node_insert($node) {
 }
 
 /**
- * Implements hook_node_preprocess().
+ * Node preprocess.
  */
 function os_reader_process_node(&$variables) {
-  if (!$variables['page'] || $variables['type'] != 'feed_importer') {
-    return;
+  if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
+    // On the news page allow the next HTML tags in the body field.
+    $variables['content']['body'][0]['#markup'] = preg_replace("/<img[^>]+\>/i", " ", $variables['content']['body'][0]['#markup']);
   }
 
-  drupal_goto('cp/content/import');
+  // When accessing an importer node redirect the user to the importing page.
+  if ($variables['page'] && $variables['type'] == 'feed_importer') {
+    drupal_goto('cp/content/import');
+  }
 }
 
 /**
@@ -564,7 +583,6 @@ function os_reader_validate_address($form, &$form_state) {
     form_set_error('field_rss_url', t('RSS url already exists in <a href="@url">@title</a>.', $params));
   }
 }
-
 
 /**
  * Implements hook_form_FORM_ID_alter(); Remove filter when not inside a VSite.
