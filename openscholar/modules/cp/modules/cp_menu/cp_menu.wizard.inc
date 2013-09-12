@@ -278,7 +278,18 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 
   // Remove the query string and fragments.
-  list($url, $querystring) = explode('?', $state['values']['url'],2);
+  list($url, ) = explode('?', $state['values']['url'],2);
+
+  // Parses the URL into it's components.
+  $components = parse_url($state['values']['url']);
+  // Builds a string to add to the end of the normalized path.
+  $extra = '';
+  if (!empty($components['query'])) {
+    $extra .= "?{$components['query']}";
+  }
+  if (!empty($components['fragment'])) {
+    $extra .= "#{$components['fragment']}";
+  }
 
   $url = check_url($url);
 
@@ -363,7 +374,7 @@ function cp_menu_url_validate(&$form, &$state) {
   } else {
     //path is valid.  use normal path instead of aliased path
     $values = cp_menu_cache_get($state['object_id']) + $state['input'];
-    $values['url'] = "{$normal_path}?{$querystring}";
+    $values['url'] = "{$normal_path}{$extra}";
     cp_menu_cache_set($state['object_id'], $values);
   }
 }
