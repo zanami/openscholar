@@ -368,7 +368,7 @@ function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
  * the entity cache for the taxonomy terms.
  */
 function vsite_vocab_invalidate_entitycache($form, $form_state) {
-  if (!db_table_exists('entitycache_enabled')) {
+  if (!db_table_exists('cache_entity_taxonomy_term')) {
     // Entity cache module is disabled.
     return;
   }
