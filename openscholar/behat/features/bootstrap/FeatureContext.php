@@ -1036,10 +1036,10 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I import feeds items$/
+   * @Given /^I import feed items$/
    */
-  public function iImportFeedsItems() {
-    $this->invoke_code('os_migrate_demo_import_feeds_items', array("'" . $this->locatePath('os-reader/dummy') . "'"));
+  public function iImportFeedItems() {
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/dummy') . "'", $this->nid));
   }
 
   /**
@@ -1057,14 +1057,14 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Then /^I should dee the feed item "([^"]*)" has imported$/
+   * @Then /^I should see the feed item "([^"]*)" was imported$/
    */
-  public function iShouldDeeTheFeedItemHasImported($feed_item) {
+  public function iShouldSeeTheFeedItemWasImported($feed_item) {
     $page = $this->getSession()->getPage();
     $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
 
     if (!$element) {
-      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+      throw new Exception(sprintf("The feed item %s was not found or is already imported.", $feed_item));
     }
 
     $element->click();
