@@ -103,11 +103,4 @@ class OsFeedReaderFetcher extends FeedsProcessor {
 
     return $targets;
   }
-
-  /**
-   * Prevent duplication of entries.
-   */
-  protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
-    
-  }
 }
