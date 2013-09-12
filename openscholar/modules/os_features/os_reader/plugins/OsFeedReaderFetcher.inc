@@ -103,25 +103,4 @@ class OsFeedReaderFetcher extends FeedsProcessor {
 
     return $targets;
   }
-
-  /**
-   * Prevent duplication of entries.
-   */
-  protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
-    if ($id = parent::existingEntityId($source, $result)) {
-      return $id;
-    }
-
-    $query = new entityFieldQuery();
-    $result = $query
-      ->entityCondition('entity_type', 'os_feed_item')
-      ->propertyCondition('guid', $result->current_item['guid'])
-      ->execute();
-
-    if (!empty($result['os_feed_item'])) {
-      return reset(array_keys($result['os_feed_item']));
-    }
-
-    return 0;
-  }
 }

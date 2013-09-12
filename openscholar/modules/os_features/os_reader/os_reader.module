@@ -320,6 +320,15 @@ function os_reader_entity_info() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function os_reader_admin_paths() {
+  return array(
+    'cp/content/import' => TRUE,
+  );
+}
+
+/**
  * Create an OS feed item object.
  *
  * @param $values
