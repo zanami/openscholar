@@ -1039,7 +1039,7 @@ class FeatureContext extends DrupalContext {
    * @Given /^I import feeds items$/
    */
   public function iImportFeedsItems() {
-    $this->invoke_code('os_migrate_demo_import_feeds_items', array("'" . $this->locatePath('os-reader/dummy') . "'"));
+    $this->invoke_code('os_migrate_demo_import_feeds_items', array("'" . $this->locatePath('os-reader/dummy') . "'", $this->nid));
   }
 
   /**
