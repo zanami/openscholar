@@ -335,6 +335,7 @@ class OsMigrateClassesNode extends OsMigrate {
     array(OG_AUDIENCE_FIELD, 'Site'),
     array(OG_VOCAB_FIELD, 'Terms'),
     array('path', 'Path'),
+    array('status', 'Published'),
     array('uid', 'UID'),
   );
 
@@ -349,6 +350,7 @@ class OsMigrateClassesNode extends OsMigrate {
     parent::__construct();
 
     $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping('status', 'status');
     $this->addFieldMapping('field_semester', 'semester');
 
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
