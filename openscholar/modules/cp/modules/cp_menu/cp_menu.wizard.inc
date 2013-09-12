@@ -333,6 +333,7 @@ function cp_menu_url_validate(&$form, &$state) {
     $path = $url;
   }
 
+  list($path, ) = explode('#', $path, 2);
   $normal_path = drupal_get_normal_path($path);
   $item = menu_get_item($path);
   if ($normal_path == $path && !drupal_valid_path($normal_path)) {
