@@ -212,8 +212,13 @@ class vsite extends space_og {
       if ($_GET['q'] != 'node/add/feed-importer') {
         // Loading the node. Using the menu_get_path/object will cause recursion.
         $path = explode("/", $_GET['q']);
-        $node = node_load($path[1]);
-        $check = is_object($node) && $node->type == 'feed_importer';
+        if (isset($path[1])) {
+          $node = node_load($path[1]);
+          $check = is_object($node) && $node->type == 'feed_importer';
+        }
+        else {
+          $check = FALSE;
+        }
       }
       else {
         $check = TRUE;

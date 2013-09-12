@@ -422,6 +422,11 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
     return $news_node;
   }
 
+  // Get the first image src.
+  $doc = new DOMDocument();
+  $doc->loadHTML($feed->description);
+  $src = $doc->getElementsByTagName('img')->item(0)->getAttribute('src');
+
   // Create the "News" node.
   $node = new stdClass();
   $node->type = 'news';
