@@ -108,26 +108,6 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Prevent duplication of entries.
    */
   protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
-    if ($id = parent::existingEntityId($source, $result)) {
-      return $id;
-    }
 
-    $importer_nid = $source->feed_nid;
-    $wrapper = entity_metadata_wrapper('node', $importer_nid);
-    $vsite_id = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier();
-
-    $query = new entityFieldQuery();
-    $query_result = $query
-      ->entityCondition('entity_type', 'node')
-      ->entityCondition('bundle', 'os_feed_importer')
-      ->propertyCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
-      ->fieldCondition('field_rss_url', 'value', $wrapper->field_rss_url->value())
-      ->execute();
-
-    if (!empty($query_result['node'])) {
-      return 1;
-    }
-
-    return 0;
   }
 }
