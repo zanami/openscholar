@@ -152,7 +152,7 @@ sidebar .block-title {
    }
    
 .event-start-month {
-    color: #666666;
+    color: #474747;
 }
 .event-start-day {
     color: #A61D31;
@@ -166,7 +166,7 @@ border-radius: 15px;
     width: 60px;
 }
 span.date-display-single {
-    color: #666666;
+    color: #474747;
     font-size:14px;
 }
 .front #content-panels .block, .sidebar .block {
@@ -338,7 +338,7 @@ h2.field-label {
     padding: 7px 15px 7px 15px;
 }
 .breadcrumb a, .breadcrumb {
-    color: #666666;
+    color: #474747;
 }
 #footer ul li a {
     font-weight: normal;
