@@ -515,10 +515,7 @@ function os_reader_node_insert($node) {
 function os_reader_process_node(&$variables) {
   if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
     // On the news page allow the next HTML tags in the body field.
-    $value = strip_tags($variables['body'][0]['safe_value'], '<a><em><strong><cite><blockquote><code><ul><ol><li><dl><dt><dd>');
-
-    // Don't break the HTML tags if the string is more then 600 characters.
-    $variables['content']['body'][0]['#markup'] = views_trim_text(array('html' => TRUE, 'max_length' => 600), $value);
+    $variables['content']['body'][0]['#markup'] = preg_replace("/<img[^>]+\>/i", " ", $variables['content']['body'][0]['#markup']);
   }
 
   // When accessing an importer node redirect the user to the importing page.
