@@ -143,10 +143,6 @@ function os_basetheme_menu_link(array $vars) {
     }
   }
 
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
-  }
-
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
 }
