@@ -265,10 +265,13 @@ function os_news_field_default_fields() {
           'weight' => '0',
         ),
         'full' => array(
-          'label' => 'hidden',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '4',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'os_news_full_140_x_180',
+          ),
+          'type' => 'image',
+          'weight' => '0',
         ),
         'sidebar_teaser' => array(
           'label' => 'hidden',
