@@ -507,12 +507,15 @@ function os_reader_node_insert($node) {
  * Node preprocess.
  */
 function os_reader_process_node(&$variables) {
-  if ($variables['type'] == 'news') {
-    if ($variables['view_mode'] == 'teaser' && !$variables['page']) {
-      $variables['content']['body'][0]['#markup'] = strip_tags($variables['content']['body'][0]['#markup'], '<img />');
-    }
+  if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
+    // On the news page allow the next HTML tags in the body field.
+    $value = strip_tags($variables['body'][0]['safe_value'], '<a><strong><p><table><tr><td><div><b><u><i><strike>');
+
+    // Don't break the HTML tags if the string is more then 600 characters.
+    $variables['content']['body'][0]['#markup'] = views_trim_text(array('html' => TRUE, 'max_length' => 600), $value);
   }
 
+  // When accessing an importer node redirect the user to the importing page.
   if ($variables['page'] && $variables['type'] == 'feed_importer') {
     drupal_goto('cp/content/import');
   }
