@@ -636,7 +636,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 	margin-bottom: 14px;
 }
 
-.sidebar .node-faq h1.node-title {font-size:16px;}
+.sidebar .node-faq h1.node-title a {font-size:16px;}
 
 .page-faq .node-faq .field-name-body p {
     margin: 0 0 0.5em;
