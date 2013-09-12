@@ -426,6 +426,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $doc = new DOMDocument();
   $doc->loadHTML($feed->description);
   $src = $doc->getElementsByTagName('img')->item(0)->getAttribute('src');
+  $file = system_retrieve_file($src, 'public://', TRUE);
 
   // Create the "News" node.
   $node = new stdClass();
@@ -437,6 +438,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
   $wrapper->field_news_date->set(time());
   $wrapper->field_url->set(array('url' => $feed->url));
+  $wrapper->field_photo->set((array) $file);
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
   $wrapper->save();
