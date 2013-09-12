@@ -306,6 +306,7 @@ function cp_menu_url_validate(&$form, &$state) {
     $path = explode('/', $url);
     $domain = implode('/', array_slice($path, 0, 3));
     $original_path = implode('/', array_slice($path, 3));
+    list($original_path, ) = explode('#', $original_path, 2);
 
     //external url
     if (!in_array($domain, $domains)) {
