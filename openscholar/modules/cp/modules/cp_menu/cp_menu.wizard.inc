@@ -566,19 +566,21 @@ function cp_menu_wizard_finish(&$form_state) {
       // Parse out the query string and fragments.
       $query = parse_url($values['url'], PHP_URL_QUERY);
       $fragment = parse_url($values['url'], PHP_URL_FRAGMENT);
+      $url = $values['url'];
 
       if(strlen($query)){
         $options['query'] = array();
         // Parse the string to an array.
         parse_str($query,$options['query']);
+        // Removes query string.
+        list($url,) = explode('?', $url,2);
       }
 
       if(strlen($fragment)){
         $options['fragment'] = $fragment;
+        // Removes fragment from URL;
+        list($url,) = explode('#', $url, 2);
       }
-
-      //Remove the query string and fragments.
-      list($url,) = explode('?', $values['url'],2);
 
       $url = ($values['url'] == '<front>') ? '<front>' : check_url($url);
       break;
