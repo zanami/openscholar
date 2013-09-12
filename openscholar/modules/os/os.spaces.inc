@@ -189,6 +189,7 @@ function os_spaces_presets() {
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('department'),
+    'og_tasks' => array(),
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
@@ -233,6 +234,7 @@ function os_spaces_presets() {
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('personal'),
+    'og_tasks' => array(),
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
@@ -280,6 +282,7 @@ function os_spaces_presets() {
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
     'bundles' => array('project'),
+    'og_tasks' => array(),
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
