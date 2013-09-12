@@ -117,7 +117,7 @@ body.front #columns{
 	padding:0;
 }
 .navigation ul li, .navigation ul.menu li{
-	background-color:#fef7f5;
+	background-color:#FFF;
 }
 
 .image-style-profile-thumbnail,
@@ -160,7 +160,9 @@ sidebar .block-title {
 .event-start .event-start {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #E3EAEF;
-    border-radius: 20px 20px 20px 20px;
+    -webkit-border-radius: 15px;
+-moz-border-radius: 15px;
+border-radius: 15px;
     width: 60px;
 }
 span.date-display-single {
@@ -301,7 +303,7 @@ ul.links li.link-count-node-readmore {
 }
 /*sidebar*/
 .section-nav .menu-depth-1 > a {
-    background: none repeat scroll 0 0 #8996A0 !important;
+    background: none repeat scroll 0 0 #687781 !important;
 
 }
 .section-nav ul.menu li a {
@@ -377,6 +379,17 @@ h2.field-label {
 .node{
 	margin-bottom:50px;
 }
+
+.navigation a:link, 
+.navigation a:visited {
+color: #215990;
+}
+
+
 #footer {
     background: none repeat scroll 0 0 #8F323E;
+}
+
+#footer .footer-login {
+color: #FFF;
 }
