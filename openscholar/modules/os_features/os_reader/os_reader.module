@@ -502,14 +502,19 @@ function os_reader_node_insert($node) {
 }
 
 /**
- * Implements hook_node_preprocess().
+ * Node preprocess.
  */
 function os_reader_process_node(&$variables) {
-  if (!$variables['page'] || $variables['type'] != 'feed_importer') {
-    return;
+  if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
+    $allowed = '<a><address><b><blockquote><br><caption><cite><code><dd><div><dl>';
+    $allowed .= '<dt><em><h2><h3><h4><h5><h6><i><li><ol><p><pre><span><strike>';
+    $allowed .= '<strong><sub><sup><table><td><tr><u><ul>';
+    $variables['content']['body'][0]['#markup'] = strip_tags($variables['content']['body'][0]['#markup'], $allowed);
   }
 
-  drupal_goto('cp/content/import');
+  if ($variables['page'] && $variables['type'] == 'feed_importer') {
+    drupal_goto('cp/content/import');
+  }
 }
 
 /**
@@ -562,7 +567,6 @@ function os_reader_validate_address($form, &$form_state) {
     form_set_error('field_rss_url', t('RSS url already exists in <a href="@url">@title</a>.', $params));
   }
 }
-
 
 /**
  * Implements hook_form_FORM_ID_alter(); Remove filter when not inside a VSite.
