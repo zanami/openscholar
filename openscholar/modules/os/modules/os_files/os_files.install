@@ -452,6 +452,8 @@ function os_files_update_7005(&$sandbox) {
     $query = new entityFieldQuery();
     $sandbox['max'] = $query
       ->entityCondition('entity_type', 'node')
+      ->propertyCondition('type', '', '!=')
+      ->propertyCondition('type', 'NULL', '!=')
       ->propertyOrderBy('nid')
       ->count()
       ->execute();
@@ -465,6 +467,8 @@ function os_files_update_7005(&$sandbox) {
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('nid', $nid, '>=')
+    ->propertyCondition('type', '', '!=')
+    ->propertyCondition('type', 'NULL', '!=')
     ->propertyOrderBy('nid')
     ->range(0, $batch)
     ->execute();

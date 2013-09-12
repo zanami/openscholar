@@ -278,7 +278,7 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 
   // Remove the query string and fragments.
-  list($url,) = explode('?', $state['values']['url'],2);
+  list($url, $querystring) = explode('?', $state['values']['url'],2);
 
   $url = check_url($url);
 
@@ -294,7 +294,7 @@ function cp_menu_url_validate(&$form, &$state) {
   if (url_is_external($url)) {
     $path = explode('/', $url);
     $domain = implode('/', array_slice($path, 0, 3));
-    $fragment = implode('/', array_slice($path, 3));
+    $original_path = implode('/', array_slice($path, 3));
 
     //external url
     if (!in_array($domain, $domains)) {
@@ -314,7 +314,7 @@ function cp_menu_url_validate(&$form, &$state) {
       return;
     } else {
       //absolute path to internal url.
-      $path = ($fragment) ? $fragment : '<front>';
+      $path = ($original_path) ? $original_path : '<front>';
     }
   } else {
     //relative url
@@ -363,7 +363,7 @@ function cp_menu_url_validate(&$form, &$state) {
   } else {
     //path is valid.  use normal path instead of aliased path
     $values = cp_menu_cache_get($state['object_id']) + $state['input'];
-    $values['url'] = $normal_path;
+    $values['url'] = "{$normal_path}?{$querystring}";
     cp_menu_cache_set($state['object_id'], $values);
   }
 }

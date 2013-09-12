@@ -210,8 +210,9 @@ class vsite extends space_og {
     // Check permission for the feed importer even if the os_reader is disabled.
     if ($feature == 'os_reader') {
       if ($_GET['q'] != 'node/add/feed-importer') {
-        // Loading the node.
-        $node = node_load(end(explode("/", $_GET['q'])));
+        // Loading the node. Using the menu_get_path/object will cause recursion.
+        $path = explode("/", $_GET['q']);
+        $node = node_load($path[1]);
         $check = is_object($node) && $node->type == 'feed_importer';
       }
       else {

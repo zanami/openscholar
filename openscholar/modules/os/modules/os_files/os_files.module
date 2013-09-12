@@ -455,7 +455,9 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       $file_field = &$node->{$field}[LANGUAGE_NONE];
 
       foreach ($file_field as $delta => $value) {
-        if ($value['fid'] == $file->fid) {
+        if ($value['fid'] == $file->fid || !$file_field[$delta]) {
+          // The file we delete is in the current delta or the the value is
+          // NULL. We cannot set a NULL value.
           unset($file_field[$delta]);
         }
       }

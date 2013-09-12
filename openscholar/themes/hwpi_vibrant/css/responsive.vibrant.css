@@ -1,6 +1,11 @@
 @media (max-width: 1008px) {
 		
 	/* menus */
+	
+ul.mobile-buttons {
+bottom: 0;
+}	
+	
 .link-count-mobi-main a {
     background-color: #fff!important;
     color: #000!important;
@@ -119,6 +124,11 @@ ul.menu {
     margin: -40px 0 35px!important;
 }
 /* column layouts */
+
+#content-column, div.sidebar {
+width: 90% !important;
+}
+
 .page-node #content-column .content-inner {
     padding: 0 2% !important;
 }

@@ -94,9 +94,8 @@ function os_reader_import_news_access_callback() {
   if ($vsite = vsite_get_vsite()) {
     return og_user_access('node', $vsite->id, 'create news content');
   }
-  else {
-    return user_access('create news content');
-  }
+
+  return user_access('create news content');
 }
 
 /**
@@ -148,19 +147,18 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
     $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id);
   }
 
-  $result = $query
-    ->execute();
+  $result = $query->execute();
 
   if (empty($result['node'])) {
     // No feed importer nodes.
-    return 'No feed importers found.';
+    return t('No feed importers found.');
   }
   $importers = node_load_multiple(array_keys($result['node']));
 
   // Create item list of feed importers.
   $items = array(
     array(
-      'data' => l('All feeds', 'cp/content/import'),
+      'data' => l(t('All feeds'), 'cp/content/import'),
       'class' => empty($feed_importer_nid) ? array('active') : array(),
     ),
   );
@@ -168,7 +166,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
     if ($feed_importer_nid == $importer->nid) {
       // Currently viewed importer, display as active text.
       $items[] = array(
-        'data' => $importer->title,
+        'data' => check_plain($importer->title),
         'class' => array('active'),
       );
     }
@@ -255,7 +253,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
     ajax_deliver($page);
   }
   else {
-    drupal_set_message('Feed item added to @vsite', array('@vsite' => $vsite->og->title));
+    drupal_set_message(t('Feed item added to @vsite', array('@vsite' => $vsite->og->title)));
     drupal_goto('cp/content/import');
   }
 }
@@ -521,9 +519,9 @@ function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Validate the RSS address.
+ * Validate handler; Check the RSS address Prevent duplicate feed importers.
  */
-function os_reader_validate_address($form, $form_state) {
+function os_reader_validate_address($form, &$form_state) {
   if (!$form_state['values']['field_rss_url']) {
     return;
   }
@@ -533,7 +531,31 @@ function os_reader_validate_address($form, $form_state) {
   if ($result->code != 200) {
     form_set_error('field_rss_url', t("The address @url is not a valid address.", array('@url' => $url)));
   }
+
+  $vsite_id = $form_state['values']['og_group_ref']['und'][0]['target_id'];
+
+  // Check for existing nodes in the same VSite.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'feed_importer')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite_id)
+    ->fieldCondition('field_rss_url', 'value', $url)
+    ->execute();
+
+  if (!empty($result['node'])) {
+    $row = reset($result['node']);
+    $node = node_load($row->nid);
+
+    $params = array(
+      '@url' => url('node/' . $node->nid),
+      '@title' => $node->title,
+    );
+    form_set_error('field_rss_url', t('RSS url already exists in <a href="@url">@title</a>.', $params));
+  }
 }
+
 
 /**
  * Implements hook_form_FORM_ID_alter(); Remove filter when not inside a VSite.
@@ -544,8 +566,8 @@ function os_reader_form_views_exposed_form_alter(&$form, &$form_state) {
     return;
   }
 
-  // Remove 'Any' option.
-  unset($form['feed_is_imported']['#options']['All']);
+  // Change option '-Any-' to 'All'.
+  $form['feed_is_imported']['#options']['All'] = t('All');
 
   $vsite = vsite_get_vsite();
 

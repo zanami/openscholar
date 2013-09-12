@@ -36,6 +36,7 @@
       helper: 'clone',
       cursorAt: {top: 25, left: 38},
       connectWith: region_ids.join(', '),
+      create: on_create,
       start: on_start,
       update: on_update,
       tolerance: 'pointer',
@@ -112,6 +113,14 @@
     $input.val(data.join('|'));
 
     // TODO: Discuss if we want to have the form submit when the user leaves the page via a link.
+  }
+
+  /**
+   * Triggered when the sortable is created.
+   * @see http://api.jqueryui.com/sortable/#event-create
+   */
+  function on_create(event, ui) {
+    syncColumnHeights(event, ui);
   }
 
   /**
