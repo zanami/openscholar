@@ -278,7 +278,18 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 
   // Remove the query string and fragments.
-  list($url, $querystring) = explode('?', $state['values']['url'],2);
+  list($url, ) = explode('?', $state['values']['url'],2);
+
+  // Parses the URL into it's components.
+  $components = parse_url($state['values']['url']);
+  // Builds a string to add to the end of the normalized path.
+  $extra = '';
+  if (!empty($components['query'])) {
+    $extra .= "?{$components['query']}";
+  }
+  if (!empty($components['fragment'])) {
+    $extra .= "#{$components['fragment']}";
+  }
 
   $url = check_url($url);
 
@@ -295,6 +306,7 @@ function cp_menu_url_validate(&$form, &$state) {
     $path = explode('/', $url);
     $domain = implode('/', array_slice($path, 0, 3));
     $original_path = implode('/', array_slice($path, 3));
+    list($original_path, ) = explode('#', $original_path, 2);
 
     //external url
     if (!in_array($domain, $domains)) {
@@ -321,6 +333,7 @@ function cp_menu_url_validate(&$form, &$state) {
     $path = $url;
   }
 
+  list($path, ) = explode('#', $path, 2);
   $normal_path = drupal_get_normal_path($path);
   $item = menu_get_item($path);
   if ($normal_path == $path && !drupal_valid_path($normal_path)) {
@@ -363,7 +376,7 @@ function cp_menu_url_validate(&$form, &$state) {
   } else {
     //path is valid.  use normal path instead of aliased path
     $values = cp_menu_cache_get($state['object_id']) + $state['input'];
-    $values['url'] = "{$normal_path}?{$querystring}";
+    $values['url'] = "{$normal_path}{$extra}";
     cp_menu_cache_set($state['object_id'], $values);
   }
 }
@@ -555,19 +568,21 @@ function cp_menu_wizard_finish(&$form_state) {
       // Parse out the query string and fragments.
       $query = parse_url($values['url'], PHP_URL_QUERY);
       $fragment = parse_url($values['url'], PHP_URL_FRAGMENT);
+      $url = $values['url'];
 
       if(strlen($query)){
         $options['query'] = array();
         // Parse the string to an array.
         parse_str($query,$options['query']);
+        // Removes query string.
+        list($url,) = explode('?', $url,2);
       }
 
       if(strlen($fragment)){
         $options['fragment'] = $fragment;
+        // Removes fragment from URL;
+        list($url,) = explode('#', $url, 2);
       }
-
-      //Remove the query string and fragments.
-      list($url,) = explode('?', $values['url'],2);
 
       $url = ($values['url'] == '<front>') ? '<front>' : check_url($url);
       break;
