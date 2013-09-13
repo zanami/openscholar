@@ -169,7 +169,7 @@ a.rslides_nav.prev {
     z-index: 1;
 }
 
-.lt-ie9 #layout_3_1_overlay .slide img {
+.lt-ie9  #layout_3_1_overlay .slide img {
     position: static;
 }
 
@@ -181,7 +181,7 @@ a.rslides_nav.prev {
     margin: 5% 0 0 5%;
 }
 
-.lt-ie9 #layout_3_1_overlay .slide-copy {
+.lt-ie9  #layout_3_1_overlay .slide-copy {
     position: absolute;
 }
 
@@ -239,7 +239,7 @@ line-height:18px;
  height:120px;
  }
  
-.lt-ie9 #layout_16_9_below .slide-copy {
+.lt-ie9  #layout_16_9_below .slide-copy {
  padding-top:1%;
  }
  
