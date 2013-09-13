@@ -287,9 +287,7 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-;projects[pinserver][tag] = 7.x-3.3
-projects[pinserver][branch] = 7.x-3.x
-; @todo Make tag when QA is finished 12345
+projects[pinserver][tag] = 7.x-3.4
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
