@@ -627,3 +627,11 @@ function os_events_mollom_form_info($form_id) {
 
   return $form_info;
 }
+
+/**
+ * Implements hook_date_ical_feed_event_render_alter().
+ */
+function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) {
+  // Prevent placing a backslash before a colon, because it makes iCal crash.
+  $event['description'] = str_replace('\:', ':', $event['description']);
+}
