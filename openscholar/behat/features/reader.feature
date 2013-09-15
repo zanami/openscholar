@@ -10,8 +10,9 @@ Feature:
   @api
   Scenario: Test the OS reader feed importer.
     Given I am logging in as "admin"
-      And I import feed items
+      And I import feed items for "john"
      When I visit "john/cp/content/import"
+      And I should see "John feed importer"
       And I import the feed item "JFK was murdered"
      Then I should see the feed item "JFK was murdered" was imported
       And I should see "JFK was murdered"
@@ -22,3 +23,7 @@ Feature:
     Given I visit "john/news"
      When I click "JFK was murdered"
      Then I should see "Assassination of John F. Kennedy"
+
+  @api
+  Scenario: Feed items are displayed for each site
+    Given I am logging in as "admin"
