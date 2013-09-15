@@ -27,3 +27,11 @@ Feature:
   @api
   Scenario: Feed items are displayed for each site
     Given I am logging in as "admin"
+      And I import feed items for "obama"
+     When I visit "obama/cp/content/import"
+      And I should see "Obama feed importer"
+      And I should not see "John feed importer"
+      And I should not see "JFK was murdered"
+      And I import the feed item "Four more years is the most re-tweeted tweet"
+     Then I should see the feed item "Four more years is the most re-tweeted tweet" was imported
+      And I should see "Four more years is the most re-tweeted tweet"
