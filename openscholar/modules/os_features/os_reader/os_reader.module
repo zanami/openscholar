@@ -529,7 +529,20 @@ function os_reader_process_node(&$variables) {
 
   // When accessing an importer node redirect the user to the importing page.
   if ($variables['page'] && $variables['type'] == 'feed_importer') {
-    drupal_goto('cp/content/import');
+    $url = 'cp/content/import';
+
+    if ($vsite = vsite_get_vsite()) {
+      $node = node_load($variables['nid']);
+      $purl = $vsite->group->purl;
+
+      if (!isset($vsite->group->purl) && is_array($node->purl) && !empty($node->purl['value'])) {
+        $purl = $node->purl['value'];
+      }
+
+      $url = $purl . '/' . $url;
+    }
+
+    drupal_goto('news', array('fragment' => 'overlay=' . $url));
   }
 }
 
