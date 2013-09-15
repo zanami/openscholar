@@ -13,12 +13,12 @@ Feature:
       And I import feed items
      When I visit "john/cp/content/import"
       And I import the feed item "JFK was murdered"
-#     Then I should see the feed item "JFK was murdered" was imported
-#      And I should see "JFK was murdered"
+     Then I should see the feed item "JFK was murdered" was imported
+      And I should see "JFK was murdered"
 
   @api
   Scenario: Verify the anonymous user is being redirected to the feed item
             source page.
     Given I visit "john/news"
-#     When I click "JFK was murdered"
-#     Then I should see "Assassination of John F. Kennedy"
+     When I click "JFK was murdered"
+     Then I should see "Assassination of John F. Kennedy"
