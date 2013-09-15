@@ -432,12 +432,17 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   }
 
   // Get the first image src.
+  $file = FALSE;
   $doc = new DOMDocument();
+
   if ($feed->description) {
     $doc->loadHTML($feed->description);
-    $src = $doc->getElementsByTagName('img')->item(0)->getAttribute('src');
-    if ($src) {
-      $file = system_retrieve_file($src, 'public://', TRUE);
+    $images = $doc->getElementsByTagName('img')->item(0);
+
+    if ($images && method_exists($images, 'getAttribute')) {
+      if ($src = $images->getAttribute('src')) {
+        $file = system_retrieve_file($src, 'public://', TRUE);
+      }
     }
   }
 
