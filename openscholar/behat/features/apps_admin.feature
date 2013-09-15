@@ -27,3 +27,4 @@ Feature:
   @api
   Scenario: debug
     Given I debug the page
+      And I should print page
