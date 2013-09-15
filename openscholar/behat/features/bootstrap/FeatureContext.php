@@ -1069,4 +1069,11 @@ class FeatureContext extends DrupalContext {
 
     $element->click();
   }
+
+  /**
+   * @Given /^I debug the page$/
+   */
+  public function iDebugThePage() {
+    print_r($this->locatePath(''));
+  }
 }

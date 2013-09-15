@@ -23,3 +23,7 @@ Feature:
       | Publications  | Public |
       | Reader        | Public |
       | Software      | Public |
+
+  @api
+  Scenario: debug
+    Given I debug the page
