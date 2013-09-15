@@ -613,7 +613,7 @@ class os_sv_list_box extends os_boxes_default {
    * Return the nodes attached to terms of the selected vocabulary.
    */
   public function tagged_nodes() {
-    // The user selected specific terms.
+    // Get the  terms the user selected.
     $tids = (is_array($this->options['vocabs'])) ? $this->options['vocabs'] : array($this->options['vocabs'] => $this->option['vocabs']);
 
     // No terms were found.
