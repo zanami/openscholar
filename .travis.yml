@@ -37,6 +37,7 @@ before_script:
   - drush vset purl_base_domain http://127.0.0.1
   - drush en os_migrate_demo -y
   - drush mi --all --user=1
+  - curl http://12.0.0.1
 
   # Copy Behat configuration file.
   - cd profiles/openscholar/behat
