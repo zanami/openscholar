@@ -66,7 +66,7 @@ Feature:
     Given I am logging in as "admin"
     And I import feed items for "john"
     And I visit "john/cp/content/import"
-    When I click "Dummy feed importer"
+    When I click "John feed importer"
     Then I should see "JFK was murdered"
 
   @api
