@@ -439,10 +439,8 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
     $doc->loadHTML($feed->description);
     $images = $doc->getElementsByTagName('img')->item(0);
 
-    if ($images && method_exists($images, 'getAttribute')) {
-      if ($src = $images->getAttribute('src')) {
-        $file = system_retrieve_file($src, 'public://', TRUE);
-      }
+    if ($images && method_exists($images, 'getAttribute') && $src = $images->getAttribute('src')) {
+      $file = system_retrieve_file($src, 'public://', TRUE);
     }
   }
 
