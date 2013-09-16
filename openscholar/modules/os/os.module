@@ -1140,6 +1140,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   $loop_back_pages = array(
     'user',
+    'user/pin',
     'user/logout',
   );
 
