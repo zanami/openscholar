@@ -155,7 +155,7 @@ class os_sv_list_box extends os_boxes_default {
     );
 
     $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
-    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+    $vocabs_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
 
     foreach ($vocabs as $vid => $vocab) {
       $terms = array();
@@ -168,7 +168,7 @@ class os_sv_list_box extends os_boxes_default {
       $only_vocabs[$vid] = $vocab;
     }
 
-    $form['query_details']['vocabs'] = array(
+    $form['query_details']['terms'] = array(
       '#type' => 'select',
       '#multiple' => TRUE,
       '#title' => t('Term'),
@@ -192,7 +192,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
-    $vocabs_statement = isset($form_state['values']['vocabs']) && $form_state['values']['vocabs'] == -1;
+    $vocabs_statement = isset($form_state['values']['terms']) && $form_state['values']['terms'] == -1;
 
     // Hide the form but keep the prefix and suffix for the AJAX callback.
     if ($terms_statement || $vocabs_statement) {
@@ -563,7 +563,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // For all Queries but image, filter out based on vocab.
-    if ($options['content_type'] != 'image' && !empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
+    if ($options['content_type'] != 'image' && !empty($this->options['terms']) && ($this->options['terms'] != -1)) {
       $tagged_nodes = $this->tagged_nodes();
 
       // If a vocabulary was selected and there were no tagged nodes then
@@ -614,7 +614,7 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function tagged_nodes() {
     // Get the  terms the user selected.
-    $tids = (is_array($this->options['vocabs'])) ? $this->options['vocabs'] : array($this->options['vocabs'] => $this->option['vocabs']);
+    $tids = (is_array($this->options['terms'])) ? $this->options['terms'] : array($this->options['terms'] => $this->option['terms']);
 
     // No terms were found.
     if (empty($tids)) {
