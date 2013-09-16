@@ -5,5 +5,5 @@ Feature:
   Scenario: Check activity stream page
     Given I visit "/activity"
      Then I should see "John created Software Project: Windows 7"
-      And I should print page
+
 

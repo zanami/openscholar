@@ -7,3 +7,4 @@ Feature:
      When I click "Bio"
      Then I should see "John doe biography"
       And I should see "Work in gizra inc."
+      And I should print page
