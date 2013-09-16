@@ -186,7 +186,7 @@ a.rslides_nav.prev {
 }
 
 .lt-ie9  #layout_3_1_overlay .slide-copy {
-    background: #FF0000;
+    background: url('../images/transparent-black.png');
 }
 
 
