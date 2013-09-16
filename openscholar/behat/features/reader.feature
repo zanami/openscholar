@@ -35,3 +35,12 @@ Feature:
       And I import the feed item "Four more years is the most re-tweeted tweet"
      Then I should see the feed item "Four more years is the most re-tweeted tweet" was imported
       And I should see "Four more years is the most re-tweeted tweet"
+
+  @api
+  Scenario: Verify images in feed item description are imported as images.
+    Given I am logging in as "admin"
+    And I import feed items for "john"
+    And I visit "john/cp/content/import"
+    When I import the feed item "JFK was murdered"
+    And I should see the feed item "JFK was murdered" was imported
+    Then I should see the news photo "druplicon.small__"
