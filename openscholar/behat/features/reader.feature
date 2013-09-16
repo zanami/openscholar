@@ -24,14 +24,25 @@ Feature:
      Then I should see "Assassination of John F. Kennedy"
 
   @api
-  Scenario: Test the filters on OS feed import page.
+  Scenario: Test the Contains filter on OS feed import page.
     Given I am logging in as "admin"
     And I import feed items
     And I visit "john/cp/content/import?feed_by_text=president"
     And I should see "JFK was murdered"
-    And I visit "john/cp/content/import?feed_is_imported=All"
-    And I should see "JFK was murdered"
-    And I click "Dummy feed importer"
-    And I should see "JFK was murdered"
     When I visit "john/cp/content/import?feed_by_text=pancakes"
     Then I should not see "JFK was murdered"
+
+  @api
+  Scenario: Test the Status filter on OS feed import page.
+    Given I am logging in as "admin"
+    And I import feed items
+    When I visit "john/cp/content/import?feed_is_imported=All"
+    Then I should see "JFK was murdered"
+
+  @api
+  Scenario: Test the Importer filter on OS feed import page.
+    Given I am logging in as "admin"
+    And I import feed items
+    And I visit "john/cp/content/import"
+    When I click "Dummy feed importer"
+    Then I should see "JFK was murdered"
