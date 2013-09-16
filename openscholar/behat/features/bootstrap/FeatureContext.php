@@ -1036,10 +1036,11 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I import feed items$/
+   * @Given /^I import feed items for "([^"]*)"$/
    */
-  public function iImportFeedItems() {
-    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/dummy') . "'", $this->nid));
+  public function iImportFeedItemsFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite) . "'", $nid));
   }
 
   /**
@@ -1068,5 +1069,17 @@ class FeatureContext extends DrupalContext {
     }
 
     $element->click();
+  }
+
+  /**
+   * @Then /^I should see the news photo "([^"]*)"$/
+   */
+  public function iShouldSeeTheNewsPhoto($image_name) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//section[contains(@class, 'field-name-field-photo')]//img[contains(@src, '{$image_name}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item's image %s was not imported into field_photo.", $image_name));
+    }
   }
 }
