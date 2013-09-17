@@ -60,6 +60,7 @@ h2.block-title {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowBlack.gif") no-repeat scroll right center transparent;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowOn.gif") right center no-repeat #111;

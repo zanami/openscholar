@@ -31,6 +31,7 @@ h1#page-title {
      border-bottom: 1px solid #DDDDDD;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover {
      background: none repeat scroll 0% 0% #666666;
      -moz-border-radius-topleft: 3px;
@@ -46,10 +47,12 @@ border-top-right-radius: 3px;
     top: 3.36em !important;
 }
 
+
 #menu-bar ul.nice-menu .menuparent a {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowIvy.gif") no-repeat right center transparent;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover, #menu-bar ul.nice-menu .menuparent a.active {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowOn.gif") no-repeat right center #666;
     color: #FFFFFF;
