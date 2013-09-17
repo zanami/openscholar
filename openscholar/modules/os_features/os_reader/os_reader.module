@@ -366,7 +366,7 @@ function os_reader_feed_item_load($id) {
  * @param $ids
  *  List of IDs to load.
  *
- * @return Entity[]
+ * @return Entity
  *  List of OS feed item entries.
  */
 function os_reader_feed_item_load_multiple($ids) {
