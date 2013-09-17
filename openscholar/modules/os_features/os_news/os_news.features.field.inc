@@ -265,6 +265,7 @@ function os_news_field_default_fields() {
           'weight' => '0',
         ),
         'full' => array(
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
