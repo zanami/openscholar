@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="file-search" ng-show="files.length">
         <label for="file-search-input">Search</label>
-        <input id="file-search-input" type="text" ng-model="search" class="form-text" size="30" maxlength="128">
+        <input id="file-search-input" type="text" ng-model="$parent.search" class="form-text" size="30" maxlength="128">
     </div>
     <div class="results" ng-show="files.length">
         <div class="media-item" data-fid="{{file.fid}}" ng-click="$parent.setSelection(file.fid)" ng-class="{selected : $parent.selection == file.fid}" ng-repeat="file in files | filter:queryFilename | start:currentPage()*pageSize | limitTo: pageSize">
@@ -21,6 +21,7 @@
         Loading...
     </div>
     <div id="file-edit-section" ng-show="selection">
-        <div ng-include="templatePath+'/templates/'+selected_file.form+'.html'"></div>
+        {{selection}}
+        <div ng-include="selection_form"></div>
     </div>
 </div>

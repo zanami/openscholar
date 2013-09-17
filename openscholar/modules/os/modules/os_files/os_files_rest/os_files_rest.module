@@ -55,8 +55,9 @@ function _os_files_rest_modify_response_row($file) {
 }
 
 function os_files_rest_media_browser() {
+  $root = $GLOBALS['base_url'].'/'.drupal_get_path('module', 'os_files_rest').'/templates/';
   $browser = array(
-    '#prefix' => '<div ng-app="mediaBrowser"><div ng-bind-template="{{browser}}">',
+    '#prefix' => '<div ng-app="mediaBrowser"><div ng-include="\''.$root.'browser.html'.'\'" ng-controller="BrowserCtrl">',
     '#suffix' => '</div></div>',
     '#attached' => array(
       'js' => array(

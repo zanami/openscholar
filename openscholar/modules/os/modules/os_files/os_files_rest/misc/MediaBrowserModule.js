@@ -66,19 +66,24 @@
   controller('BrowserCtrl', ['FileService', '$scope', '$filter', '$http', '$templateCache', function (FileService, $scope, $filter, $http, $templateCache) {
     $scope.files = FileService.getAll();
     $scope.templatePath = rootPath;
+    $scope.selection = 0;
+    $scope.selection_form = '';
 
     // Watch for changes in file list
     $scope.$on('FileService.changed', function (event, files) {
       $scope.files = files;
+      console.log(files);
     });
 
     // Filter list of files by a filename fragment
     $scope.queryFilename = function (item) {
+
+      console.log($scope);
       if ($scope.search) {
         if (item.name.indexOf($scope.search) > -1) {
           return true;
         }
-        else if (item.orig.indexOf($scope.search) > -1) {
+        else if (item.orig && item.orig.indexOf($scope.search) > -1) {
           return true;
         }
         return false;
@@ -103,6 +108,7 @@
     $scope.setSelection = function (fid) {
       $scope.selection = fid;
       $scope.selected_file = angular.copy(FileService.get(fid));
+      $scope.selection_form = rootPath+'/templates/'+$scope.selected_file.form+'.html';
     };
 
     // preload file edit templates
@@ -120,8 +126,11 @@
   }]).
   filter('start', function () {
     return function (input, start) {
-      start = +start;
-      return input.slice(start);
+      if (input) {
+        start = +start;
+        return input.slice(start);
+      }
+      return '';
     }
   });
 })();
