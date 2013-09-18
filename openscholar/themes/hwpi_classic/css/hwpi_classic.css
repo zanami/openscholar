@@ -24,6 +24,10 @@ body {
 	background: #f3f3f1;
 }
 
+.sidebar .block-inner {
+margin-top: 15px;
+}
+
 #content-panels .block-boxes-os_slideshow_box .block-inner {
     margin-top: 0;
 }
@@ -122,9 +126,7 @@ h2.block-title {
 	font-family:arial !important;
 }
 
-.not-front h2.block-title {
-padding: 10px 0;
-}
+
 
 #content-column h2.field-label {font-family: arial;}
 
