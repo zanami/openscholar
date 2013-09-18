@@ -101,11 +101,10 @@ background: none !important;
 .at-panel.gpanel.panel-display.three-col.clearfix {
     padding-right: 15px;
 }
-.region-header-third  #block-os-secondary-menu{
-display:none;
-}
+
+.region-header-third  #block-os-secondary-menu,
 .region-header-third #block-os-search-solr-site-search,
-.os-custom-menu{
+.region-header-third .os-custom-menu {
 	display: none;
 }
 .region-header-third #block-os-search-solr-site-search.opened {
