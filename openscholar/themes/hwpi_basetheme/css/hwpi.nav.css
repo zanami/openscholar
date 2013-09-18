@@ -153,6 +153,17 @@ ul.nice-menu ul {
 	color: #333;
 }
 
+/* BOOK NAV IN CONTENT AREA */
+#content-column .book-menu a.active {
+   font-style: normal;
+   color: #000;
+}
+
+#content-column .book-menu ul li a {
+    color: #215990;
+}
+
+
 
 /* Action Nav Header 3rd*/
 .region-header-third ul.nice-menu {
