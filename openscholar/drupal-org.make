@@ -258,6 +258,7 @@ projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
 projects[og_moderation][subdir] = "contrib"
 projects[og_moderation][version] = 2.0
+projects[og_moderation][patch][] = "http://drupal.org/files/og_moderation-remove_node_grants-2091179-2.patch"
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
