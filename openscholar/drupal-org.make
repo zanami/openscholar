@@ -46,7 +46,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
-; needs patches to contrib
+;needs patches to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
