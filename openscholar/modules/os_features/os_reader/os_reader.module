@@ -325,6 +325,7 @@ function os_reader_entity_info() {
 function os_reader_admin_paths() {
   return array(
     'cp/content/import' => TRUE,
+    'cp/content/import/*' => TRUE,
   );
 }
 
