@@ -83,10 +83,10 @@ function vsite_access_update_7003() {
       // This case may have happened when a vsite was deleted before
       // directives were also deleted in vsite_access_node_delete().
       $result = db_select('purl', 'p')
-                  ->fields('p', array('value'))
-                ->condition('id', $gid)
-                ->condition('provider', 'spaces_og')
-                ->execute();
+        ->fields('p', array('value'))
+        ->condition('id', $gid)
+        ->condition('provider', 'spaces_og')
+        ->execute();
       while ($record = $result->fetchAssoc()) {
         $purl = $record['value'];
         if (empty($purl)) {
