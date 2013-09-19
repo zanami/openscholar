@@ -187,8 +187,10 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
 function os_reader_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();
 
-  if ($menu['path'] == 'news' && os_reader_import_news_access_callback()) {
-    $links['import-news'] = array(
+  $node_is_news_type = isset($menu['map']['1']) && $menu['map']['1']->type == 'news';
+
+  if (($menu['path'] == 'news' || $node_is_news_type) && os_reader_import_news_access_callback()) {
+    $links['news-import'] = array(
       'title' => t('Import News'),
       'href' => 'cp/content/import',
     );
@@ -435,13 +437,18 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $file = FALSE;
   $doc = new DOMDocument();
 
-  if ($feed->description) {
-    $doc->loadHTML($feed->description);
-    $images = $doc->getElementsByTagName('img')->item(0);
+  try {
+    if ($feed->description) {
+      $doc->loadHTML($feed->description);
+      $images = $doc->getElementsByTagName('img')->item(0);
 
-    if ($images && method_exists($images, 'getAttribute') && $src = $images->getAttribute('src')) {
-      $file = system_retrieve_file($src, 'public://', TRUE);
+      if ($images && method_exists($images, 'getAttribute') && $src = $images->getAttribute('src')) {
+        $file = system_retrieve_file($src, 'public://', TRUE);
+      }
     }
+  }
+  catch (Exception $e) {
+    watchdog('os_reader', t('There was a problem when importing the feed item: @message', array('@message' => filter_xss($e->getMessage()))));
   }
 
   // Create the "News" node.
@@ -559,7 +566,11 @@ function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
   // Add description to title field.
   $form['title']['#description'] = t('Administrative title used to describe this feed ex. \'Sports from The Gazette\'.');
 
-  $form['#validate'][] = 'os_reader_validate_address';
+  if (empty($form['#node']->nid)) {
+    $form['#validate'][] = 'os_reader_validate_address';
+  }
+
+  hide($form['menu']);
 }
 
 /**
