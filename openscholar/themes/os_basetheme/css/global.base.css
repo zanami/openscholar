@@ -497,6 +497,13 @@ padding:3px 0 3px 25px !important;
 
 }
 
+.page-node.node-type-event .rss,
+.page-node.node-type-event .subscribe {
+    display: inline-block;
+    margin-top: 7px;
+}
+
+
 /* BOOK NAVS */
 .book-menu {
   width: 33%;
