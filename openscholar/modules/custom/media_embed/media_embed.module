@@ -258,11 +258,11 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
     // Not a WYSIWYG editor instance.
     if (empty($file->override['wysiwyg'])) {
       $file->field_html_code['und'][0]['safe_value'] = $file->field_html_code['und'][0]['value'];
-
-      if (isset($file->override['width'])) {
+dpm($file);
+      if (isset($file->override['attributes']['width'])) {
         $html = &$file->field_html_code[LANGUAGE_NONE][0]['safe_value'];
 
-        $maxwidth = $file->override['width'];
+        $maxwidth = $file->override['attributes']['width'];
         // copied from dead embedfilter module
         preg_match('/height="([0-9]*)"/', $html, $fetchheight);
         preg_match('/width="([0-9]*)"/', $html, $fetchwidth);
@@ -271,8 +271,16 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
           $width = $fetchwidth[1];
         }
 
-        if ($width > $maxwidth) {
-          $diff = $width-$maxwidth;
+        $target_width = 0;
+        if (isset($file->override['attributes']['width'])) {
+          $target_width = $file->override['attributes']['width'];
+        }
+        elseif (isset($file->override['maxwidth']) && $width > $file->override['maxwidth']) {
+          $target_width = $file->override['maxwidth'];
+        }
+dpm($target_width);
+        if ($target_width) {
+          $diff = abs($width-$target_width);
           $ratio = $diff/$width;
           $heightdiff = $ratio*$height;
           $height = round($height-$heightdiff);
