@@ -917,6 +917,12 @@ function os_files_field_widget_form_alter(&$elements, &$form_state, $context){
         $elements[$delta]['#upload_location'] = $upload_location;
       }
     }
+
+    if ($context['field']['type'] == 'imagefield_crop') {
+      foreach ($elements as $d => $f) {
+        $elements[$d]['#process'][] = 'os_files_imagefield_crop_process';
+      }
+    }
   }
 
   if ($context['instance']['widget']['type'] == 'media_generic') {
@@ -930,6 +936,32 @@ function os_files_field_widget_form_alter(&$elements, &$form_state, $context){
  */
 function os_files_media_widget_process($element, $form_state, $form) {
   $element['select']['#title'] = t('Choose File');
+  return $element;
+}
+
+/**
+ * Replaces the upload button with a link to the media browser
+ */
+function os_files_imagefield_crop_process($element, $form_state, $form) {
+  dpm($element);
+  unset($element['upload'], $element['upload_button']);
+  $element['selected_file'] = array(
+    '#type' => 'button',
+    '#value' => t('Choose File'),
+    '#attributes' => array(
+      'class' => array(
+        'media-button',
+      )
+    ),
+    '#attached' => array(
+      'library', array(
+        array('media', 'media_browser')
+      ),
+      'js' => array(
+        drupal_get_path('module', 'os_files').'/theme/os_files.crop.js',
+      )
+    )
+  );
   return $element;
 }
 
