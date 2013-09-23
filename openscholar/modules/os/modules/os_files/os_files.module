@@ -1419,7 +1419,7 @@ function os_files_file_default_types_alter(&$types){
     // *.docx files
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     // *.xlsx files
-    'application.vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     // *.pptx files
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     // *.ppsx files
