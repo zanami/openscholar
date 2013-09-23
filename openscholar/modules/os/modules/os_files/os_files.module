@@ -944,7 +944,10 @@ function os_files_media_widget_process($element, $form_state, $form) {
  */
 function os_files_imagefield_crop_process($element, $form_state, $form) {
   dpm($element);
-  unset($element['upload'], $element['upload_button']);
+  unset($element['upload']);
+  $element['upload_button']['#attributes'] = array(
+    'hidden' => 'hidden'
+  );
   $element['selected_file'] = array(
     '#type' => 'button',
     '#value' => t('Choose File'),
