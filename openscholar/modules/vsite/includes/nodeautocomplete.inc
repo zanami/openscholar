@@ -104,6 +104,7 @@ function _vsite_node_autocomplete_matches($nids) {
   $result = db_select('node')
     ->fields('node', array('nid', 'title'))
     ->condition('nid', $nids, 'IN')
+    ->condition('type', 'feed_importer', '<>')
     ->execute();
   foreach ($result as $node) {
     $matches[$node->title . " [$node->nid]"] = check_plain($node->title);
