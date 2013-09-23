@@ -561,6 +561,9 @@ function os_reader_process_node(&$variables) {
  * Implements hook_form_FORM_ID_alter().
  */
 function os_reader_form_feed_importer_node_form_alter(&$form, &$form_state) {
+  // Remove field 'Feeds'.
+  $form['feeds']['#access'] = FALSE;
+
   // Place URL field before title field.
   $form['field_rss_url']['#weight'] = -6;
 
