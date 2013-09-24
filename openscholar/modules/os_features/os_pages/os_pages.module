@@ -647,3 +647,14 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
     'type' => 'setting',
   );
 }
+
+/**
+ * Gets all parents for a given path
+ */
+function os_pages_get_subpage_parents() {
+  $node = menu_get_object();
+  dpm($node);
+  if (isset($node->book)) {
+    $i = 5;
+  }
+}
