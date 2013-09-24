@@ -66,30 +66,12 @@ function vsite_vocab_menu_alter(&$items) {
 }
 
 /**
- * Implements hook_menu_local_tasks_alter().
- */
-function vsite_vocab_menu_local_tasks_alter(&$data, $router_item, $root_path) {
-  // Verify that the user click on the reset to alphabetical button.
-  if (!(isset($_POST['op']) && $_POST['op'] == t('Reset to alphabetical'))) {
-    return;
-  }
-
-  // Remove the add term link.
-  if ($data['actions']['output'][0]['#link']['path'] != 'cp/build/taxonomy/%/add') {
-    return;
-  }
-
-  unset($data['actions']['output'][0]);
-}
-
-/**
  * Menu access callback - implementing a custom taxonomy term access,
  */
 function vsite_vocab_term_page_access($term) {
   if (!user_access('access content')) {
     return;
   }
-
 
   if (!$relation = og_vocab_relation_get($term->vid)) {
     // Term doesn't belong to OG-vocab
@@ -233,10 +215,11 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
  * invokes order of the hooks.
  */
 function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
-  if (!in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || $context = og_vocab_is_group_admin_context()) {
+  if (!in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || !$context = og_vocab_is_group_admin_context()) {
     return;
   }
   $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
+  $form['#attached']['js'][] = drupal_get_path('module', 'vsite_vocab') . '/js/vsite_vocab.js';
 }
 
 /**
