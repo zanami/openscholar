@@ -70,11 +70,11 @@ class citation_distribute_service_repec extends citation_distribute_service {
 
 		//get node's URL
   	$path = 'node/'. $nid;  //using $node->nid notation here because pathauto changes URL when title changes
-	  if (module_exists('vsite') && (count($node->og_group_ref) == 1)){
-	    $vsite = spaces_load('og', key($node->og_group_ref));
+	  if (module_exists('vsite') && (count($node->og_group_ref[LANGUAGE_NONE]) == 1)){
+	    $vsite = spaces_load('og', $node->og_group_ref[LANGUAGE_NONE][0]['target_id']);
 	    $file_url = $vsite->get_absolute_url() . $path;
 	  }
-	  elseif(module_exists('vsite') && (count($node->og_group_ref) > 1)){
+	  elseif(module_exists('vsite') && (count($node->og_group_ref[LANGUAGE_NONE]) > 1)){
 	    //this should not happen
 	    error_log("Alert: citation_distribute_service_repec has detected that node {$node->nid} belongs to multiple groups");
 	    $vsite = vsite_get_vsite();
