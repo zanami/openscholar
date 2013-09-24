@@ -1,0 +1,3 @@
+name = "OpenScholar ID Authentication"
+description = "Allows users to log in with their OpenScholar ID."
+core = 7.x
