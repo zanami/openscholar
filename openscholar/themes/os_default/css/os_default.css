@@ -413,8 +413,8 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 .pin-button, #user-login fieldset legend {
      background: #FFFFFF;
     -webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
      border: 1px solid #E1E1E1;
      font-size: 13px;
      font-weight: bold;
@@ -447,7 +447,9 @@ border-radius: 4px;
      padding: 2px 5px;
 }
 
-
+#user-login fieldset legend {
+    width: 91% !important;
+}
 
 
 .pin-button:hover, #user-login fieldset legend:hover {
@@ -457,11 +459,15 @@ border-radius: 4px;
     color: #3A72AB !important;
     display: block;
     padding: 2px;
+     text-decoration: underline;
 }
 .pin-button:hover a, #user-login fieldset legend:hover a {
     color: #3A72AB !important;
 }
 
+.pin-button a {
+     background:url('../images/external_link.png') no-repeat 247px center;
+}
 
 
 /* ACCESS DENIED PAGE */
