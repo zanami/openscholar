@@ -411,7 +411,7 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 
 /* Override the PIN Button styles coming from a conrtib css file */
 .pin-button, #user-login fieldset legend {
-     background: #4CD964;
+     background: #FFFFFF;
     -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
 border-radius: 4px;
@@ -432,27 +432,29 @@ border-radius: 4px;
      margin: 0px;
 }
 
-#user-login fieldset legend {
-    width: 91%;
-}
 
-#edit-pin-fieldset {margin: 20px 0 0 10px;}
+#edit-pin-fieldset {margin: 20px 0 0 10px !important;}
 
 @-moz-document url-prefix() { 
-#edit-pin-fieldset {margin: 10px 0 0 0;}
+#edit-pin-fieldset {margin: 10px 0 0 0 !important;}
 }
 
 
 .pin-button a, #user-login fieldset legend a {
-     color: #FFF ! important;
+     color: #3A72AB ! important;
      font-size: 14px;
      font-weight: normal;
      padding: 2px 5px;
 }
 
 
+
+
+.pin-button:hover, #user-login fieldset legend:hover {
+    background-color: #FFF;
+}
 .pin-button a, #user-login fieldset legend a {
-    color: #FFF !important;
+    color: #3A72AB !important;
     display: block;
     padding: 2px;
 }
