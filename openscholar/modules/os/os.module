@@ -1173,6 +1173,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
     'absolute' => FALSE,
     'alias' => FALSE,
     'prefix' => '',
+    'external' => '',
   );
   // Allow other modules to alter the outbound URL and options.
   drupal_alter('url_outbound', $dest_path, $current_options, $dest_path);
