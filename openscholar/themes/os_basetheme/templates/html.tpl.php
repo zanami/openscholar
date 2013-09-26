@@ -8,13 +8,15 @@
 <?php print $head; ?>
 <title><?php print $head_title; ?></title>
 <meta http-equiv="x-ua-compatible" content="IE=8">
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
+<meta name="viewport" content="1000">
 <?php print $styles; ?>
 <?php print $scripts; ?>
 <?php print $polyfills; ?>
 </head>
 <body class="<?php print $classes; ?>"<?php print $attributes; ?>>
   <div id="skip-link">
-    <a href="<?php print $skip_link_target; ?>" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
+    <a href="<?php print $skip_link_target; ?>" class="element-invisible element-focusable" tabindex="1"><?php print t('Skip to main content'); ?></a>
   </div>
   <?php print $page_top; ?>
   <?php print $page; ?>

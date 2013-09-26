@@ -24,6 +24,10 @@ body {
 	background: #f3f3f1;
 }
 
+.sidebar .block-inner {
+margin-top: 15px;
+}
+
 #content-panels .block-boxes-os_slideshow_box .block-inner {
     margin-top: 0;
 }
@@ -33,19 +37,14 @@ body {
 .node-title, 
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
-.not-front #content-column ul li,
-.not-front #content-column ol li,
 .more-link,
-.page-search #content-column p,
-.not-front #content-column p,
 .links a,
 #footer ul.menu a,
 .boxes-box-content h2,
 .section-nav a,
 #content-column h2,
 #content-column h3,
-#content-column h4,
-#content-column .field-name-body {
+#content-column h4 {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
@@ -104,7 +103,7 @@ h1.node-title,
 }
 
 h1#page-title {
-	font-size: 38px;
+	font-size: 30px;
 	line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
 	margin: 15px 0 30px;
 }
@@ -122,9 +121,7 @@ h2.block-title {
 	font-family:arial !important;
 }
 
-.not-front h2.block-title {
-padding: 10px 0;
-}
+
 
 #content-column h2.field-label {font-family: arial;}
 
@@ -211,33 +208,29 @@ padding: 10px 0;
 
 /** SLIDESHOW **/
 	
-.front #content-column .block.block-boxes-os_slideshow_box {
-	margin-top: 0;
-}
-	
 a.rslides_nav.next {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
 }
 
 a.rslides_nav.prev {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #4384C4;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #4384C4;
 }
 
 #layout_16_9_below a.rslides_nav.next {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #284F76;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #284F76;
 }
 
 #layout_16_9_below a.rslides_nav.prev {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #284F76;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #284F76;
 }
 
 
 
 
-#layout_16_9_side .hero-copy h2,
-#layout_3_1_overlay .hero-copy h2,
-#layout_16_9_below .hero-copy h2,
-#layout_16_9_overlay .hero-copy h2 {
+#layout_16_9_side .slide-copy h2,
+#layout_3_1_overlay .slide-copy h2,
+#layout_16_9_below .slide-copy h2,
+#layout_16_9_overlay .slide-copy h2 {
   font-family: Georgia,arial;
   font-size:28px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);

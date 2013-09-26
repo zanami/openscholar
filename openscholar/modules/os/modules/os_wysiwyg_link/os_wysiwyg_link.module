@@ -1,23 +1,11 @@
 <?php
 
-function os_wysiwyg_link_wysiwyg_include_directory($type) {
-  switch ($type) {
-    case 'plugins':
-      return 'wysiwyg_plugins';
-  }
-}
-
-function os_wysiwyg_link_get_media_browser_plugins() {
-  return array();
-}
-
-function os_wysiwyg_link_get_media_browser_types() {
-  return array();
-}
-
+/**
+ * Implements hook_menu().
+ */
 function os_wysiwyg_link_menu() {
   $items = array();
-  
+
   $items['os/wysiwyg/link/insert'] = array(
     'title' => 'Insert Link',
     'access arguments' => array('insert link into wysiwyg'),
@@ -25,33 +13,70 @@ function os_wysiwyg_link_menu() {
     'file' => 'os_wysiwyg_link.insert.inc',
     'type' => MENU_CALLBACK,
   );
-  
+
   return $items;
 }
 
+/**
+ * Implements hook_wysiwyg_include_directory().
+ */
+function os_wysiwyg_link_wysiwyg_include_directory($type) {
+  switch ($type) {
+    case 'plugins':
+      return 'wysiwyg_plugins';
+  }
+}
+
+/**
+ * Helper function; Return media browser plugins.
+ */
+function os_wysiwyg_link_get_media_browser_plugins() {
+  return array();
+}
+
+/**
+ * Helper function; Return media browser types.
+ */
+function os_wysiwyg_link_get_media_browser_types() {
+  return array();
+}
+
+/**
+ * Implements hook_permission().
+ */
 function os_wysiwyg_link_permission() {
   $perms = array();
-  
+
   $perms['insert link into wysiwyg'] = array(
     'title' => 'Insert a link into the Wysiwyg',
     'description' => 'Insert a link into the wysiwyg'
   );
-  
+
   return $perms;
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
 function os_wysiwyg_link_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $args = $form_state['build_info']['args'][0];
-  if (isset($args['no_redirect']) && $args['no_redirect']) {
+  if (!empty($args['no_redirect'])) {
+    // Add a submit handler to prevent redirection.
     $form['#submit'][] = 'os_wysiwyg_link_add_upload_submit';
   }
 }
 
+/**
+ * Submit handler; Prevent redirection after file upload.
+ */
 function os_wysiwyg_link_add_upload_submit($form, &$form_state) {
-  $form_state['no_redirect'] = true;
+  $form_state['no_redirect'] = TRUE;
 }
 
-function os_wysiwyg_link_filter_info() { 
+/**
+ * Implements hook_filter_info().
+ */
+function os_wysiwyg_link_filter_info() {
   $filters['owl_filter'] = array(
     'title' => t('Convert File links to correct path'),
     'description' => t('This filter will convert the paths of links to files to ensure they\'re always correct.'),
@@ -62,20 +87,44 @@ function os_wysiwyg_link_filter_info() {
   return $filters;
 }
 
+/**
+ * Helper function; Replace html links with drupal links in a given string.
+ */
 function os_wysiwyg_link_filter($text) {
+  // Find all html links.
   $matches = _os_wysiwyg_link_find_links($text);
+
   foreach ($matches as $m) {
-    $file = file_load($m[2]);
-    if (isset($file->uri)) {
-      $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
-      $text = str_replace($m[0], $link, $text);
+    switch ($m[2]) {
+      case 'fid':
+        $file = file_load($m[3]);
+        if (isset($file->uri)) {
+          $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
+          $text = str_replace($m[0], $link, $text);
+        }
+        break;
+
+      case 'url':
+        if (url_is_external($m[3])) {
+          $url = url($m[3], array('external' => TRUE));
+        }
+        else {
+          $url = url($m[3], array('absolute' => TRUE));
+        }
+        $link = str_replace('href="'.$m[1], 'href="'.$url, $m[0]);
+        $text = str_replace($m[0], $link, $text);
+        break;
     }
   }
+
   return $text;
 }
 
+/**
+ * Helper function; Find html links in a given string.
+ */
 function _os_wysiwyg_link_find_links($str) {
   $matches = array();
-  preg_match_all('|<a[^>]+href="([^"]+)"[^>]+data-fid="([\d]*)">[^<]*<\/a>|', $str, $matches, PREG_SET_ORDER);
+  preg_match_all('~<a[^>]+href="([^"]+)"[^>]+data-(fid|url)="([^"]*)">[^<]*<\/a>~', $str, $matches, PREG_SET_ORDER);
   return $matches;
 }

@@ -76,7 +76,14 @@ function openscholar_flavor_form($form, &$form_state) {
     '#value' => t('Next'),
   );
 
-  return $form;
+  if (defined('DRUSH_BASE_PATH')) {
+    // Set some sane defaults for Drush/Aegir non-interactive install
+    variable_set('os_profile_flavor', 'production');
+    variable_set('os_dummy_content', FALSE);
+  }
+  else {
+    return $form;
+  }
 }
 
 
@@ -101,7 +108,13 @@ function openscholar_install_type($form, &$form_state) {
     '#value' => t('Submit'),
   );
 
-  return $form;
+  if (defined('DRUSH_BASE_PATH')) {
+    // Set some sane defaults for Drush/Aegir non-interactive install
+    variable_set('os_profile_type', 'vsite');
+  }
+  else {
+    return $form;
+  }
 }
 
 
@@ -328,6 +341,9 @@ function openscholar_install_finished(&$install_state) {
 
   // Remove the variable we used during the installation.
   variable_del('os_dummy_content');
+
+  // Grant permission to view unpublished group content.
+  os_grant_unpublished_viewing_permission();
 
   // Run cron to populate update status tables (if available) so that users
   // will be warned if they've installed an out of date Drupal version.

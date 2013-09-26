@@ -1,6 +1,7 @@
 @media (max-width: 1008px) {
 		
 	/* menus */
+		
 .link-count-mobi-main a {
     background-color: #fff!important;
     color: #000!important;
@@ -92,9 +93,13 @@ ul.menu {
     border-radius: 0 0 0 0;
     box-shadow: 0 ;
 }
+
+
+.region-header-third .os-custom-menu.opened,
 .region-header-third #block-os-secondary-menu.opened {
     background-color: #F7F7F7!important;
 }
+.region-header-third .os-custom-menu li,
 .region-header-third #block-os-secondary-menu li{
   border-bottom: 1px solid #DEDEDC!important;
     border-top: medium none!important;
@@ -106,16 +111,20 @@ ul.menu {
 .mobile-buttons a {
     font: bold 16px arial,sans-serif !important;
 }
-#layout_16_9_side .hero-copy {
-    left: 50px!important;
-    position: relative;
 
+#columns .region-inner {
+    margin-bottom: 25px !important;
 }
 /*Breadcrumb*/
 .node-type-page .breadcrumb, .breadcrumb {
     margin: -40px 0 35px!important;
 }
 /* column layouts */
+
+#content-column, div.sidebar {
+width: 90% !important;
+}
+
 .page-node #content-column .content-inner {
     padding: 0 2% !important;
 }
@@ -127,10 +136,14 @@ ul.menu {
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none repeat scroll 0 0 #24527A !important;
 }
+
 /* calendar arrows */
 .one-sidebar #main-content .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
 
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+background: none !important;
+}
 
 }

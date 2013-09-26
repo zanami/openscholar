@@ -9,16 +9,6 @@
     margin-right: 0;
 }
 /*Menu*/
-
-/*To pass accessibility scans*/
-.mobile-buttons li {
-     background: #000000;
-}
-
-.mobile-buttons li a {
-     color: #FFFFFF;
-}
-
 #menu-bar ul.nice-menu ul {
     background: none repeat scroll 0 0 #24527A;
 }
@@ -46,7 +36,7 @@
     right: 90% ;
 }
 iframe {
-    max-width: 100%;
+    max-width: 95% !important;
 }		
 }
 
@@ -109,5 +99,16 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
 .two-sidebars #content-panels,
 .one-sidebar.sidebar-second #content-panels {
     border-right: 0!important;
-}	
+}
+
+/*Collapses the calendar tabs - Month, Week, Day, Year, etc. */
+.page-calendar #main-content-header ul.primary {
+    white-space: normal !important;
+}
+
+.page-calendar #main-content-header ul.primary {
+    line-height: 27px !important;
+}
+
+	
 }

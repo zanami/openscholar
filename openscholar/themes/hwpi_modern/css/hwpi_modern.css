@@ -69,7 +69,7 @@ ul.nice-menu ul {
 }
 
 
-
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat #7B272B;
@@ -81,11 +81,13 @@ ul.nice-menu ul {
  font-family:arial;
  font-size:13px;
  font-weight:bold;
+ padding-right:8px;
 }
 
 
 #menu-bar ul.nice-menu .menuparent ul li a:hover {
  color:#BAC5C6;
+ padding-right:8px;
 }
 
 
@@ -221,7 +223,7 @@ h2.block-title {
   color: #FFFFFF;
   font-size: 14px;
   line-height: 16px;
-  padding: 7px 19px;
+  padding: 7px 10px;
   text-transform: capitalize;
   font-weight: normal;
 }
@@ -454,32 +456,28 @@ background-color: #e3e3e1 !important;
 }
 	
 a.rslides_nav.next {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #000;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #000;
 }
 
 a.rslides_nav.prev {
-    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #000;
+    background: url(/profiles/openscholar/themes/os_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #000;
 }
 
-.rslides_tabs li {
-    background: none;
-  
-}
-
-#layout_3_1_overlay .rslides_tabs li {
-    background: none;
-}
-
-.hero-copy h2 {
+/*
+.slide-copy h2 {
     margin-bottom: 0;
 }
 
-#layout_16_9_below .hero-copy h2 {
+#layout_16_9_below .slide-copy h2 {
     margin-bottom: 16px;
 }
-
-.hero-copy h2 a {
+*/
+.slide-copy h2 a {
     font-weight: bold;
+}
+
+#layout_3_1_overlay .slide-copy h2 a {
+    font-weight: normal;
 }
 
 /** PEOPLE DETAIL PAGE **/

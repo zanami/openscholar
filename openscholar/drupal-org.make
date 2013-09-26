@@ -125,7 +125,6 @@ projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
 projects[feeds_xpathparser][subdir] = "contrib"
-;projects[feeds_xpathparser][version] = 1.0-beta3+7-dev
 projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
 projects[feeds_xpathparser][download][revision] = 5bea17e
@@ -205,6 +204,7 @@ projects[media][revision] = "c49692b"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 
 projects[media_gallery][subdir] = "contrib"
+projects[media_gallery][version] = 2.x-dev
 projects[media_gallery][download][type] = git
 projects[media_gallery][download][branch] = 7.x-2.x
 projects[media_gallery][download][revision] = "f28ffd1a6f5eaa4eb6554643a3db4dd4543923e1"
@@ -249,18 +249,22 @@ projects[oembed][download][type] = git
 projects[oembed][download][branch] = 7.x-0.x
 projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
+projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
 projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
+projects[og_moderation][subdir] = "contrib"
+projects[og_moderation][version] = 2.0
+
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-6.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -283,7 +287,7 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][tag] = 7.x-3.3
+projects[pinserver][download][tag] = 7.x-3.4
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -314,6 +318,9 @@ projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
 projects[services][download][branch] = 7.x-3.x
 projects[services][download][revision] = 761e620
+
+projects[services_basic_auth][subdir] = "contrib"
+projects[services_basic_auth][version] = "1.1"
 
 projects[spaces][subdir] = "contrib"
 ;projects[spaces][version] = 3.0-alpha1+9-dev
@@ -379,10 +386,6 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 libraries[clippy][type] = "libraries"
 libraries[clippy][download][type] = "file"
 libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.zip"
-
-libraries[iCalcreator][type] = "libraries"
-libraries[iCalcreator][download][type] = "file"
-libraries[iCalcreator][download][url] = "http://kigkonsult.se/downloads/dl.php?f=iCalcreator-2.16.12"
 
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"

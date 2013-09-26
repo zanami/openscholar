@@ -108,8 +108,28 @@ function vsite_register_form($form, &$state) {
       unset($enabled_presets[$key]);
     }
   }
-  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
+  // Sorts presets with Minimal as default, and others alphabetical.
+  if (count($enabled_presets) > 1) {
+    $unsorted_presets = $enabled_presets;
+    $enabled_presets = array();
+    $minimal_title = ucfirst($selected_bundle) . ' Minimal';
+    foreach ($unsorted_presets as $key => $value) {
+      // Only makes any order changes if a "Bundle Minimal" preset exists.
+      if ($value == $minimal_title) {
+        // Adds the minimal value as the first option.
+        $enabled_presets[$key] = t('Minimal');
+        unset($unsorted_presets[$key]);
+        // Sorts and adds the remaining preset options.
+        asort($unsorted_presets);
+        foreach ($unsorted_presets as $key => $value) {
+          $enabled_presets[$key] = $value;
+        }
+        break;
+      }
+    }
+  }
 
+  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
   $form['preset'] = array(
     '#prefix' => '<div id="preset-wrapper">',
     '#suffix' => '</div>',
@@ -281,6 +301,9 @@ function vsite_register_form_submit(&$form, &$state) {
   ctools_include('vsite', 'vsite');
   $values = $state['values'];
 
+  // The site has created on the behalf of a new user.
+  $new_user = FALSE;
+
   // If the specified user account already exists...
   if ($values['vicarious_user'] && $values['existing_username']) {
     // Loads that user account as site owner.
@@ -297,6 +320,10 @@ function vsite_register_form_submit(&$form, &$state) {
       'field_last_name' => $values['last_name'],
     );
     $site_owner = os_user_create($user_options);
+
+    // We created a new user. After creating the vsite we'll grant him the vsite
+    // admin role.
+    $new_user = TRUE;
 
     // Send out an email to notify the user of the newly created account.
     // Email only sent if user requested to be notified of new account.
@@ -326,10 +353,14 @@ function vsite_register_form_submit(&$form, &$state) {
   $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
   $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
   if ($vsite) {
-
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
+
+    // Grant the proper roles to the user.
+    if ($new_user) {
+      os_role_grant($site_owner->uid, 'vsite admin', $vsite->nid);
+    }
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
@@ -730,9 +761,9 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
   // Initialize replacements array with values common to both mail keys.
   $replacements = array(
     '!username' => $author->name,
-    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->purl . '/user/login', array('absolute' => TRUE, 'query' => array('destination' => $vsite->group->purl))),
     '!user_mail' => $author->mail,
-    '!site_url' => url($base_url . '/' . $vsite->group->title, array('absolute' => TRUE)),
+    '!site_url' => url($base_url . '/' . $vsite->group->purl, array('absolute' => TRUE)),
     '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
   );
 
@@ -868,6 +899,77 @@ function vsite_register_validate($type, $value) {
 
   print drupal_json_encode($output);
   exit;
+}
+
+function vsite_register_site_login($form, $form_state, $site_id, $uid, $timestamp, $token) {
+  global $user;
+  $space = spaces_load('og', $site_id);
+  $purl_params = array(
+    'purl' => array(
+      'provider' => "spaces_{$space->type}",
+      'id' => $space->id,
+    ),
+    'fragment' => 'overlay=cp/welcome'
+  );
+
+  // When processing the one-time login link, we have to make sure that a user
+  // isn't already logged in.
+  if ($user->uid) {
+    // The existing user is already logged in.
+    if ($user->uid == $uid) {
+      purl_goto('<front>', $purl_params);
+    }
+    // A different user is already logged in on the computer.
+    else {
+      $reset_link_account = user_load($uid);
+      if (!empty($reset_link_account)) {
+        drupal_set_message(t('Another user (%other_user) is already logged into the site on this computer, but you tried to use a one-time link for user %resetting_user. Please <a href="!logout">logout</a> and try using the link again.',
+          array('%other_user' => $user->name, '%resetting_user' => $reset_link_account->name, '!logout' => url('user/logout'))));
+      } else {
+        // Invalid one-time link specifies an unknown user.
+        drupal_set_message(t('The one-time login link you clicked is invalid.'));
+      }
+    }
+    drupal_goto();
+  }
+  else {
+    // Time out, in seconds, until login URL expires. Defaults to 24 hours =
+    // 86400 seconds.
+    $timeout = variable_get('user_password_reset_timeout', 86400);
+    $current = REQUEST_TIME;
+    // Some redundant checks for extra security ?
+    $users = user_load_multiple(array($uid), array('status' => '1'));
+    if ($timestamp <= $current && $account = reset($users)) {
+      // No time out for first time login.
+      if ($account->login && $current - $timestamp > $timeout) {
+        drupal_set_message(t('You have tried to use a one-time login link that has expired. You must log in through the Admin Login link.'));
+
+        purl_goto('<front>', $purl_params);
+      }
+      elseif ($account->uid && $timestamp >= $account->login && $timestamp <= $current && $token == user_pass_rehash($account->pass, $timestamp, $account->login)) {
+        // First stage is a confirmation form, then login
+        // Set the new user.
+        $user = $account;
+        // user_login_finalize() also updates the login timestamp of the
+        // user, which invalidates further use of the one-time login link.
+        user_login_finalize();
+        watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
+        drupal_set_message(t('You have just used your one-time login link. You will no longer be able to use this link to log in.'));
+
+        purl_goto('<front>', $purl_params);
+      }
+      else {
+        drupal_set_message(t('You have tried to use a one-time login link that has either been used or is no longer valid. You must log in through the Admin Login link.'));
+
+        purl_goto('<front>', $purl_params);
+      }
+    }
+    else {
+      // Deny access, no more clues.
+      // Everything will be in the watchdog's URL for the administrator to check.
+      drupal_access_denied();
+    }
+  }
 }
 
 function vsite_register_user_exists($name) {

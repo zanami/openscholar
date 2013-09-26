@@ -96,6 +96,14 @@ function os_menu_alter(&$items) {
   if (isset($items['node'])) {
     unset($items['node']);
   }
+  // By default, "user/autocomplete" requires "view user profiles" permission.
+  // Since we want authenticated users to have access to the autocomplete
+  // callback, but we don't want authenticated users to have access to other
+  // users' profiles, we provide our own permission and override the default
+  // behavior of the menu item to use our custom permission instead.
+  $items['user/autocomplete']['access arguments'] = array(
+      'access user autocomplete',
+  );
 }
 
 /**
@@ -532,7 +540,8 @@ function os_preprocess_page(&$vars) {
     }
   }
 
-  $types = os_get_bundles();
+  // Display contextual links for private apps as well.
+  $types = os_get_bundles(array(OS_PUBLIC_APP, OS_PRIVATE_APP));
 
   $links = array();
   $active = context_active_contexts();
@@ -1131,6 +1140,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   $loop_back_pages = array(
     'user',
+    'user/pin',
     'user/logout',
   );
 
@@ -1255,6 +1265,10 @@ function os_permission() {
     'edit locked regions' => array(
       'title' => t('Edit Locked Regions'),
       'description' => t('Allows users to edit locked regions')
+    ),
+    'access user autocomplete' => array(
+      'title' => t('Access user autocomplete callback'),
+      'description' => t('Used for Author fields on biblio node forms and Authoring information on all node forms')
     ),
   );
 
@@ -1497,4 +1511,25 @@ function os_restws_resource_info_alter(&$info){
 //     }
 //   }
 
+}
+
+/**
+ * Helper function for permission to view unpublish group content.
+ */
+function os_grant_unpublished_viewing_permission() {
+  $group_content = og_get_all_group_content_bundle();
+
+  foreach (array_keys($group_content['node']) as $bundle) {
+    $group_types = array('department', 'personal', 'project');
+
+    foreach ($group_types as $group_type) {
+      $roles = og_roles('node', $group_type);
+      foreach ($roles as $rid => $role) {
+        if (!in_array($role, array('vsite admin', 'content editor'))) {
+          continue;
+        }
+        og_role_grant_permissions($rid, array('view any unpublished ' . $bundle . ' content'));
+      }
+    }
+  }
 }

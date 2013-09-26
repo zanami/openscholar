@@ -39,6 +39,15 @@ function vsite_register_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['site/login/once/%/%/%/%'] = array(
+    'title' => 'One-time login to website',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_register_site_login', 3, 4, 5, 6),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'vsite_register.form.inc',
+  );
+
   $items['site/purls'] = array(
     'title' => 'Get PURLs',
     'page callback' => 'vsite_register_get_purls',
@@ -315,6 +324,11 @@ function vsite_register_cors_access() {
 function vsite_register_node_insert($node){
   if (og_is_group_type('node', $node->type)) {
     if(($vsite = spaces_load('og', $node->nid))){
+      //PURL is needed but spaces_og_node_insert may not have fired yet
+      if (!isset($vsite->group->purl) && is_array($node->purl) && !empty($node->purl['value'])) {
+        $vsite->group->purl = $node->purl['value'];
+      }
+
 	    // Emails user to inform them of new created site, email is always sent.
 	    // This function may additionally send a second email to a specified
 	    // administrator's email address.
