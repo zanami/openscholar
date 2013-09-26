@@ -532,3 +532,61 @@ function os_files_update_7007(&$sandbox) {
 
   return t('File Types and Displays have been reverted.');
 }
+
+
+/**
+ * Runs through every file and fixes their spaces and file_usage information
+ */
+function os_files_update_7008(&$sb) {
+  module_load_include('inc', 'os_files', 'os_files.install_helpers');
+  $q = db_select('node', 'n')
+      ->fields('n', array('nid'));
+
+  if (!isset($sb['progress'])) {
+    $sb['count'] = $q->countQuery()->execute()->fetchField();
+    $sb['progress'] = 0;
+    $sb['limit'] = 20;
+  }
+
+  $rs = $q->range($sb['progress'], $sb['limit'])->execute();
+
+  foreach ($rs as $obj) {
+    $nid = $obj->nid;
+    $node = node_load($nid);
+
+    // Update file_usage
+    $eids = _os_files_install_find_files($node);
+    db_delete('file_usage')
+      ->condition('id', $nid)
+      ->condition('module', 'imagefield_crop', '<>')
+      ->condition('module', 'os_boxes', '<>')
+      ->condition('type', 'node')
+      ->execute();
+
+    foreach ($eids as $module => $ids) {
+      foreach ($ids as $id => $count) {
+        $file = file_load($id);
+        if ($file) {
+          file_usage_add($file, $module, 'node', $nid, $count);
+
+          // Update group membership if necessary
+          if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
+            $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
+            file_save($file);
+          }
+        }
+      }
+    }
+
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'file\' AND module != \'imagefield_crop\'')->execute();
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'node\' AND id NOT IN (SELECT nid FROM node)')->execute();
+
+    return t('File usage has been corrected for all files.');
+  }
+}
