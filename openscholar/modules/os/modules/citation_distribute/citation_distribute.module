@@ -254,14 +254,14 @@ function _citation_distribute_node_apply_plugins($node) {
 
       if ( $node->{$plugin['name']} ) {
         //node should use this flag
-        $flag->flag('flag', $node->nid); //flag returns if the node was flagged.  my output never gets returned.
+        $flag->flag('flag', $node->nid, NULL, TRUE); //flag returns if the node was flagged.  my output never gets returned.
         $distributed[] = $plugin['name'];
       } else {
         //do NOT use this flag
         if (isset($autoflags[$plugin['class']]) && $autoflags[$plugin['class']]) { //if user has unselected an autoflag, mark noauto.
           _citation_distribute_unlist_db($plugin['name'], $node->nid);
         }
-        $flag->flag('unflag', $node->nid); //remove old flags
+        $flag->flag('unflag', $node->nid, NULL, TRUE); //remove old flags
 
       }
     }

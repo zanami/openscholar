@@ -290,12 +290,10 @@ class citation_distribute_service_repec extends citation_distribute_service {
 
 		/* repec needs at least one author */
 		$has_author = false;
-		foreach ($contributors as $bc) {
-			foreach ($bc as $author) {
-				if ( isset($author['name']) && strlen($author['name'])>0 ) {
-					$has_author = true;
-					break;
-				}
+		foreach ($contributors as $author) {
+			if ( isset($author['name']) && strlen($author['name'])>0 ) {
+				$has_author = true;
+				break;
 			}
 		}
 		if (!$has_author) {
