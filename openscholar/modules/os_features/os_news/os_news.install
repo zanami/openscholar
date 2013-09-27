@@ -39,3 +39,8 @@ function os_news_update_7001(&$sandbox) {
 
   return t('Update %count news nodes', array('%count'=>$count));
 }
+
+/* Reverts os news fields, setting photo to 100x100 preset instead of 50x50 */
+function os_news_update_7002() {
+  features_revert(array('os_news' => array('field')));
+}
