@@ -335,9 +335,8 @@ function cp_appearance_cp_settings() {
     ),
     'form' => array(
       '#type' => 'checkbox',
-
       '#default_value' => variable_get('enable_responsive', false),
-      '#title' => t('Enable responsive behaviors - EXPERIMENTAL'),
+      '#title' => t('Enable responsive behaviors'),
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
         on smaller devices.'),
