@@ -214,14 +214,6 @@ function os_publications_settings() {
     '#description' => t('Each selected format will appear in its own export link.'),
   );
 
-  $form['right']['biblio_google_link'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Link to Google Scholar'),
-    '#return_value' => 1,
-    '#default_value' => variable_get('biblio_google_link', 1),
-    '#description' => t('This adds the necessary metadata to your web site to allow Google Scholar to properly index your publication.'),
-  );
-
   //citation distribute plugins
   /*
    $form['right']['citation_distribute_autoflags'] = array(
