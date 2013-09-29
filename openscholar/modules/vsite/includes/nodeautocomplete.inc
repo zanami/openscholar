@@ -103,9 +103,8 @@ function _vsite_node_autocomplete_matches($nids) {
 
   $exclude = array();
   foreach (os_app_info() as $info) {
-    if (!isset($info['searchable']) || !empty($info['searchable'])) {
-      // Option 'searchable' defaults to TRUE, so continue if it is not set or
-      // if is set to TRUE.
+    if (!empty($info['searchable'])) {
+      // Option 'searchable' defaults to TRUE.
       continue;
     }
 
@@ -115,9 +114,14 @@ function _vsite_node_autocomplete_matches($nids) {
 
   $result = db_select('node')
     ->fields('node', array('nid', 'title'))
-    ->condition('nid', $nids, 'IN')
-    ->condition('type', $exclude, 'NOT IN')
-    ->execute();
+    ->condition('nid', $nids, 'IN');
+
+  if (!empty($exclude)) {
+    $result->condition('type', $exclude, 'NOT IN');
+  }
+
+  $result->execute();
+
   foreach ($result as $node) {
     $matches[$node->title . " [$node->nid]"] = check_plain($node->title);
   }

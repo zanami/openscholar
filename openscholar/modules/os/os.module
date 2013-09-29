@@ -1435,7 +1435,8 @@ function os_app_info($app_name = NULL) {
         foreach ($apps as $key => $app) {
           // Adds default values.
           $app += array(
-          	'path' => '',
+            'path' => '',
+            'searchable' => TRUE,
           );
 
           // Adds the module information.

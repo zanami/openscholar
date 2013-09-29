@@ -183,10 +183,18 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
 
 /**
  * Implements hook_os_add_new_links_alter().
+ *
+ * Add link 'Import News' to button 'Add New' in all 'news' pages.
  */
 function os_reader_os_add_new_links_alter(&$links) {
+  // We want the button to appear both on the main news page and on news nodes
+  // pages. The menu path of news main page is 'news', but the menu path of news
+  // nodes is 'node/%' and so we need to grab the node object from the menu's
+  // map and and check its type.
+
   $menu = menu_get_item();
 
+  // Check if this is a node page and if the type is news.
   $node_is_news_type = isset($menu['map']['1']) && is_object($menu['map']['1']) && $menu['map']['1']->type == 'news';
 
   if (($menu['path'] == 'news' || $node_is_news_type) && os_reader_import_news_access_callback()) {
