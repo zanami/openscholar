@@ -270,10 +270,12 @@ function os_reader_os_app_info() {
     'path' => 'reader',
   	'nodetypes' => array(
   	  'feed',
+      'feed_importer',
     ),
     'views tabs' => array(
       'reader' => array('page'),
     ),
+    'searchable' => FALSE,
   );
 
   return $apps;

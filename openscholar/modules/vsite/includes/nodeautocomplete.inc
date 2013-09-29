@@ -101,10 +101,22 @@ function _vsite_node_autocomplete_title_to_nid($title) {
 function _vsite_node_autocomplete_matches($nids) {
   $matches = array();
 
+  $exclude = array();
+  foreach (os_app_info() as $info) {
+    if (!isset($info['searchable']) || !empty($info['searchable'])) {
+      // Option 'searchable' defaults to TRUE, so continue if it is not set or
+      // if is set to TRUE.
+      continue;
+    }
+
+    // Add the unsearchable node types to the excluded list.
+    $exclude = array_merge($exclude, $info['nodetypes']);
+  }
+
   $result = db_select('node')
     ->fields('node', array('nid', 'title'))
     ->condition('nid', $nids, 'IN')
-    ->condition('type', 'feed_importer', '<>')
+    ->condition('type', $exclude, 'NOT IN')
     ->execute();
   foreach ($result as $node) {
     $matches[$node->title . " [$node->nid]"] = check_plain($node->title);
