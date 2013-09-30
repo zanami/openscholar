@@ -25,28 +25,42 @@ function drush_os_mailchimp_list() {
   $query = db_select('users', 'u')
     ->fields('u', array('mail', 'uid'));
   $query->leftJoin('field_data_field_first_name', 'fn', 'fn.entity_id = u.uid');
+  $query->condition('fn.entity_type', 'user' );
   $query->fields('fn', array('field_first_name_value'));
+  
   $query->leftJoin('field_data_field_last_name', 'ln', 'ln.entity_id = u.uid');
+  $query->condition('ln.entity_type', 'user' );
   $query->fields('ln', array('field_last_name_value'));
   
-  //their vsites
-  $query->join('node', 'n', 'n.uid = u.uid');
-  $query->condition('n.type', array('personal', 'project', 'department'), 'IN');
+   
+  $result = $query->execute();
+  while ($row = $result->fetchAssoc()) {
+    $row[] = $purl;
+    $row['purl'] = _os_mailchimp_user_vsites($row['uid']);
+   
+    unset($row['uid']);
+    print(implode(',', $row) . "\n");
+    unset($row);
+  }
+}
 
+function _os_mailchimp_user_vsites($uid) {
+  //their vsites
+  $query = db_select('node', 'n')
+    ->condition('n.uid', $uid)
+    ->condition('n.type', array('personal', 'project', 'department'), 'IN');
+  
   //each vsite's purl(s).
   $query->leftJoin('purl', 'p1', "n.nid = p1.id AND p1.provider = 'vsite_domain'");
   $query->fields('p1', array('value'));
   $query->join('purl', 'p2', "n.nid = p2.id AND p2.provider = 'spaces_og'");
   $query->fields('p2', array('value'));
- 
   $result = $query->execute();
-  while ($row = $result->fetchAssoc()) {
-    $row[] = $purl;
-    $row['purl'] = ($row['value']) ? $row['value'] : $row['p2_value'];
-    unset($row['value']);
-    unset($row['p2_value']);
-    unset($row['uid']);
-    print(implode(',', $row) . "\n");
+  
+  $purls = array();
+  while ($row = $result->fetch()) {
+    $purls[] = ($row->value) ? $row->value : $row->p2_value; 
   }
+  
+  return implode(' ', $purls);
 }
-
