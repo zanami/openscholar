@@ -31,6 +31,16 @@ function vsite_drush_command() {
     'examples' => array('drush vrl'),
     'aliases' => array('vrl'),
   );
+  $items['vsite-import-properly'] = array(
+    'description' => dt('Import databased dumps properly'),
+    'arguments' => array(
+      'path' => dt('The path of the dump location'),
+    ),
+    'example' => array(
+      'drush vip' => 'drush vip ~/Downloads/hwpi-25061989.sql',
+    ),
+    'aliases' => array('vip'),
+  );
   return $items;
 }
 
@@ -108,5 +118,34 @@ function drush_vsite_redirect_disable() {
   else {
     drush_log(dt('All of the custom URLs were deleted.'), 'success');
   }
+}
 
+/**
+ * Import a database properly in a couple if steps:
+ *
+ * 1. Import the a dump from a file
+ * 2. Run the vrd command
+ * 3. Change the password of the uid 1
+ * 4. Download the acquia connect module
+ * 5. Clear the cache
+ * 6. Login the user as the user 1.
+ */
+function drush_vsite_import_properly($path) {
+  // Import a dump.
+  $path_info = explode("/", $path);
+  drush_log(dt('Starting to import the file @file', array('@file' => end($path_info))), 'warning');
+  echo exec("`drush sql-connect` < {$path}");
+  drush_log(dt('The file @file imported successfully', array('@file' => end($path_info))), 'success');
+
+  // Run the vrd command.
+  drush_invoke('vsite-redirect-disable');
+
+  // Change the password of the user 1.
+
+  // Download the acquia_connector module
+
+  // Clear the cache.
+
+  // Login as uid 1.
+//  $address = drush_invoke('user-login', array('admin'));
 }
