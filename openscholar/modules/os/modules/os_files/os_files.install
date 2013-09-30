@@ -581,8 +581,8 @@ function os_files_update_7008(&$sb) {
       }
     }
     catch (Exception $e) {
-      $sb['error'] = true;
-      error_log('Exception running updates: <br />'.$e->getCode().': '.$e->getMessage());
+      $sb['error'] = true;'<br
+      error_log('Exception running updates: '.$e->getCode().' - '.$e->getMessage());
     }
 
     $sb['progress']++;
@@ -596,7 +596,7 @@ function os_files_update_7008(&$sb) {
 
     $message = t('File usage has been corrected for all files');
     if ($sb['error']) {
-      $message .= '<br />'.t('There was an error running this update. Please consult the error log for more information');
+      $message .=  />'.t('There was an error running this update. Please consult the error log for more information');
     }
 
     return $message;
