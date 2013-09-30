@@ -581,7 +581,7 @@ function os_files_update_7008(&$sb) {
       }
     }
     catch (Exception $e) {
-      $sb['error'] = true;'<br
+      $sb['error'] = true;
       error_log('Exception running updates: '.$e->getCode().' - '.$e->getMessage());
     }
 
