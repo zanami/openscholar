@@ -165,7 +165,7 @@ function _os_profiles_person_node_title($node) {
 function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
   if ($entity_type == 'node') {
     foreach ($entities as $e_id => $e) {
-      if ($e->type != 'person') continue;
+      if ($e->type != 'person' || !isset($e->title)) continue;
 
       if (!empty($e->field_person_photo)) {
         $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
