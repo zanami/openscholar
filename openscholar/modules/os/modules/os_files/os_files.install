@@ -546,36 +546,43 @@ function os_files_update_7008(&$sb) {
     $sb['count'] = $q->countQuery()->execute()->fetchField();
     $sb['progress'] = 0;
     $sb['limit'] = 20;
+    $sb['error'] = false;
   }
 
   $rs = $q->range($sb['progress'], $sb['limit'])->execute();
 
   foreach ($rs as $obj) {
     $nid = $obj->nid;
-    $node = node_load($nid);
+    try {
+      $node = node_load($nid);
 
-    // Update file_usage
-    $eids = _os_files_install_find_files($node);
-    db_delete('file_usage')
-      ->condition('id', $nid)
-      ->condition('module', 'imagefield_crop', '<>')
-      ->condition('module', 'os_boxes', '<>')
-      ->condition('type', 'node')
-      ->execute();
+      // Update file_usage
+      $eids = _os_files_install_find_files($node);
+      db_delete('file_usage')
+        ->condition('id', $nid)
+        ->condition('module', 'imagefield_crop', '<>')
+        ->condition('module', 'os_boxes', '<>')
+        ->condition('type', 'node')
+        ->execute();
 
-    foreach ($eids as $module => $ids) {
-      foreach ($ids as $id => $count) {
-        $file = file_load($id);
-        if ($file) {
-          file_usage_add($file, $module, 'node', $nid, $count);
+      foreach ($eids as $module => $ids) {
+        foreach ($ids as $id => $count) {
+          $file = file_load($id);
+          if ($file) {
+            file_usage_add($file, $module, 'node', $nid, $count);
 
-          // Update group membership if necessary
-          if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
-            $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
-            file_save($file);
+            // Update group membership if necessary
+            if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
+              $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
+              file_save($file);
+            }
           }
         }
       }
+    }
+    catch (Exception $e) {
+      $sb['error'] = true;'<br
+      error_log('Exception running updates: '.$e->getCode().' - '.$e->getMessage());
     }
 
     $sb['progress']++;
@@ -587,6 +594,11 @@ function os_files_update_7008(&$sb) {
     db_query('DELETE FROM {file_usage} WHERE type LIKE \'file\' AND module != \'imagefield_crop\'')->execute();
     db_query('DELETE FROM {file_usage} WHERE type LIKE \'node\' AND id NOT IN (SELECT nid FROM node)')->execute();
 
-    return t('File usage has been corrected for all files.');
+    $message = t('File usage has been corrected for all files');
+    if ($sb['error']) {
+      $message .=  />'.t('There was an error running this update. Please consult the error log for more information');
+    }
+
+    return $message;
   }
 }
