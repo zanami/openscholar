@@ -154,7 +154,7 @@ function drush_vsite_import_properly($path) {
 
   $args = array(
     '@name' => $user->name,
-    '@pass' => $user->pass,
+    '@pass' => $pass,
   );
   drush_log(dt('The user @name password has changed to @pass', $args), 'success');
 
