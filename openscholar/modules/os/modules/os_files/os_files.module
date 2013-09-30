@@ -954,7 +954,8 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
     '#attributes' => array(
       'class' => array(
         'media-button',
-      )
+      ),
+      'data-ajax_url' => url('file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value']),
     ),
     '#attached' => array(
       'library', array(
