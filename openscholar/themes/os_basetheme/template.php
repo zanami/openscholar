@@ -29,8 +29,8 @@ function os_basetheme_preprocess_page(&$vars) {
 
   //Adds OpenScholar header region awareness to body classes
   $header = array(
-    'header-left' => $vars['page']['header_second'],
-    'header-main' => $vars['page']['header_first'],
+    'header-left' => $vars['page']['header_first'],
+    'header-main' => $vars['page']['header_second'],
     'header-right' => $vars['page']['header_third'],
   );
   $content = array(
@@ -143,19 +143,14 @@ function os_basetheme_menu_link(array $vars) {
     }
   }
 
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
-  }
-
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
 }
 
 /**
- * Preprocess variables for comment.tpl.php
+ * Preprocess variables for node.tpl.php
  */
 function os_basetheme_preprocess_node(&$vars) {
-
   // Event nodes, inject variables for date month and day shield
   if ($vars['node']->type == 'event' && !$vars['page']) {
     $vars['event_start'] = array();
@@ -175,6 +170,13 @@ function os_basetheme_preprocess_node(&$vars) {
       $vars['event_start']['day'] = check_plain($date->format('d'));
       $vars['classes_array'][] = 'event-start';
     }
+  }
+
+  // When watching an imported news item - don't apply the site time zone.
+  if ($vars['node']->type == 'news' && os_reader_get_feed_item_by_nid($vars['node']->nid)) {
+    $date = new DateTime(NULL, timezone_open('UTC'));
+    $date->setTimestamp($vars['content']['field_news_date']['#items'][0]['value']);
+    $vars['content']['field_news_date'][0]['#markup'] = $date->format('F j, Y');
   }
 }
 

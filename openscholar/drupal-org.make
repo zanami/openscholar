@@ -258,18 +258,22 @@ projects[oembed][download][type] = git
 projects[oembed][download][branch] = 7.x-0.x
 projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
+projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
 projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
+projects[og_moderation][subdir] = "contrib"
+projects[og_moderation][version] = 2.0
+
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-6.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -292,9 +296,7 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-;projects[pinserver][tag] = 7.x-3.3
-projects[pinserver][branch] = 7.x-3.x
-; @todo Make tag when QA is finished 1234
+projects[pinserver][download][tag] = 7.x-3.4
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev

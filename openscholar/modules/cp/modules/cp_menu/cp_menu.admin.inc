@@ -9,10 +9,10 @@ function cp_menu_admin() {
       '#default_value' => variable_get('cp_menu_link_options_new_window', FALSE),
     ),
     'cp_menu_link_options_tooltip' => array(
-        '#title' => t('Tooltips'),
-        '#description' => t('Allow users to create links with custom tooltips.'),
-        '#type' => 'checkbox',
-        '#default_value' => variable_get('cp_menu_link_options_tooltip', FALSE),
+      '#title' => t('Tooltips'),
+      '#description' => t('Allow users to create links with custom tooltips.'),
+      '#type' => 'checkbox',
+      '#default_value' => variable_get('cp_menu_link_options_tooltip', FALSE),
     ),
   );
 

@@ -187,7 +187,7 @@ function os_pinserver_auth_register_validate_elements(&$form_state) {
   }
 
   // Check if user can create vsites.
-  if ($GLOBALS['user']->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('openscholar_vsites_per_user')) {
+  if ($GLOBALS['user']->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('os_vsites_per_user')) {
     $errors['form'] = t('You do not have permission to create more websites.');
   }
 

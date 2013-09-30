@@ -24,6 +24,10 @@ body {
 	background: #f3f3f1;
 }
 
+.sidebar .block-inner {
+margin-top: 15px;
+}
+
 #content-panels .block-boxes-os_slideshow_box .block-inner {
     margin-top: 0;
 }
@@ -33,19 +37,14 @@ body {
 .node-title, 
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
-.not-front #content-column ul li,
-.not-front #content-column ol li,
 .more-link,
-.page-search #content-column p,
-.not-front #content-column p,
 .links a,
 #footer ul.menu a,
 .boxes-box-content h2,
 .section-nav a,
 #content-column h2,
 #content-column h3,
-#content-column h4,
-#content-column .field-name-body {
+#content-column h4 {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
@@ -122,9 +121,7 @@ h2.block-title {
 	font-family:arial !important;
 }
 
-.not-front h2.block-title {
-padding: 10px 0;
-}
+
 
 #content-column h2.field-label {font-family: arial;}
 

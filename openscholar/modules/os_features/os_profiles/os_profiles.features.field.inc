@@ -938,7 +938,7 @@ function os_profiles_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '19',
+          'weight' => '11',
         ),
         'full' => array(
           'label' => 'above',

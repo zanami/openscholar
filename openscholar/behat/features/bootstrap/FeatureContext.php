@@ -1022,5 +1022,71 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-}
 
+  /**
+   * @Given /^I set feed item to import$/
+   */
+  public function iSetFeedItemToImport() {
+    return array(
+      new Step\When('I visit "admin"'),
+      new Step\When('I visit "admin/structure/feeds/os_reader/settings/OsFeedFetcher"'),
+      new Step\When('I check the box "Debug mode"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Given /^I import feed items for "([^"]*)"$/
+   */
+  public function iImportFeedItemsFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite) . "'", $nid));
+  }
+
+  /**
+   * @Given /^I import the feed item "([^"]*)"$/
+   */
+  public function iImportTheFeedItem($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Import')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the feed item "([^"]*)" was imported$/
+   */
+  public function iShouldSeeTheFeedItemWasImported($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s was not found or is already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the news photo "([^"]*)"$/
+   */
+  public function iShouldSeeTheNewsPhoto($image_name) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[contains(@class, 'field-name-field-photo')]//img[contains(@src, '{$image_name}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item's image %s was not imported into field_photo.", $image_name));
+    }
+  }
+
+  /**
+   * @Given /^I display watchdog$/
+   */
+  public function iDisplayWatchdog() {
+    $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
+  }
+}

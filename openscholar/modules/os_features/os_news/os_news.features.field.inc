@@ -52,6 +52,13 @@ function os_news_field_default_fields() {
           'type' => 'text_default',
           'weight' => '2',
         ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -138,6 +145,20 @@ function os_news_field_default_fields() {
           ),
           'type' => 'date_default',
           'weight' => '1',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'semi_long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '0',
         ),
         'sidebar_teaser' => array(
           'label' => 'hidden',
@@ -234,6 +255,16 @@ function os_news_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'os_news_full_140_x_180',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+        'full' => array(
           'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
@@ -371,6 +402,13 @@ function os_news_field_default_fields() {
           'type' => 'os_files_image_list',
           'weight' => '3',
         ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'os_files',
+          'settings' => array(),
+          'type' => 'os_files_image_list',
+          'weight' => '2',
+        ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -425,11 +463,11 @@ function os_news_field_default_fields() {
           'allowed_types' => array(
             'audio' => 'audio',
             'default' => 'default',
+            'document' => 'document',
+            'executable' => 'executable',
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
-            'document' => 'document',
-            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
@@ -445,12 +483,111 @@ function os_news_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-news-field_url'.
+  $fields['node-news-field_url'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_url',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'link',
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+      ),
+      'translatable' => '0',
+      'type' => 'link_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'news',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'field_redirection',
+          'settings' => array(
+            '404_if_empty' => FALSE,
+            'code' => '301',
+          ),
+          'type' => 'field_redirection',
+          'weight' => '3',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '0',
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_url',
+      'label' => 'Redirect',
+      'required' => 0,
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'configurable_title' => 0,
+          'rel' => '',
+          'target' => 'default',
+          'title' => '',
+        ),
+        'display' => array(
+          'url_cutoff' => '80',
+        ),
+        'enable_tokens' => 1,
+        'rel_remove' => 'default',
+        'title' => 'none',
+        'title_maxlength' => '128',
+        'title_value' => '',
+        'url' => 0,
+        'user_register_form' => FALSE,
+        'validate_url' => 1,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_field',
+        'weight' => '35',
+      ),
+    ),
+  );
   // Translatables
   // Included for use with string extractors like potx.
   t('Attach Files');
   t('Body');
   t('Date');
   t('Photo');
+  t('Redirect');
 
   return $fields;
 }

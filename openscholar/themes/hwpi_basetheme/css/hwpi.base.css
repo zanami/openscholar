@@ -13,8 +13,8 @@ a:visited {
   color: #215990;
 }
 
-.block-boxes-os_boxes_html a,
-.field-name-body a {
+#columns .block-boxes-os_boxes_html a,
+#columns .field-name-body a {
      text-decoration: underline;
 }
 
@@ -374,8 +374,8 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-#content-column .view-os-events.view-id-os_events .view-header {
-  padding-top: 30px;
+.block .view-os-events.view-id-os_events .view-header {
+  padding-top: 0;
 }
 
 /* Views Node Lists */
@@ -600,6 +600,11 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
   padding: 15px 0 30px;
 }
 
+.node-link.node-teaser {
+	padding: 10px 0 5px;
+	}
+
+
 /**
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
@@ -630,6 +635,9 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 .page-faq h1.node-title {
 	margin-bottom: 14px;
 }
+
+.sidebar .node-faq h1.node-title a {font-size:16px !important;}
+
 
 .page-faq .node-faq .field-name-body p {
     margin: 0 0 0.5em;

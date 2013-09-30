@@ -2,7 +2,7 @@
 @media (max-width: 1008px) {
 /*Header*/
 .region-header-second {
-    max-height: 105px!important;
+    /*max-height: 160px!important;*/
 }
 .branding-right {
     display: none; 
@@ -16,6 +16,7 @@
 }
 .region-header-third ul.nice-menu {
     margin-bottom: 0;
+    width: 100%;
 }
 
 /*Primary menu*/
@@ -112,14 +113,15 @@ display:none;
     display: block;
     padding: 12px 0;
     position: static;
-    width: 100%;
+    width: 95% !important;
+    margin: 0 15px;
 }
 .region-header-third #block-os-secondary-menu.opened,
 .region-header-third .os-custom-menu.opened {
     background-color: #2A527A;
     display: block;
     position: static;
-    width:100%;
+    width:95% !important;
     margin: 0 15px;
 }
 
@@ -181,7 +183,11 @@ display:none;
 }
 ul.mobile-buttons {
     display: block !important;
-    margin: 0 0 0 15px !important;
+  	margin-bottom: 0;
+  	margin-left: 15px;
+  	position: absolute;
+	bottom: -7px;
+	width: 95%;
 }
 
 .mobile-buttons li {
@@ -256,7 +262,7 @@ ul.primary li a {
 @media (max-width: 768px) {
 	
 .region-header-second {
-    height: 130px !important;
+    min-height: 145px !important;
 }
 .block.block-boxes.block-boxes-os_boxes_site_logo {
     width: 100%!important;
@@ -268,9 +274,9 @@ ul.primary li a {
 .link-count-mobi-util a {
     min-height: 20px;
 }
-.region-header-third #block-os-secondary-menu.opened {
+.region-header-third #block-os-secondary-menu.opened,
+.region-header-third .os-custom-menu.opened {
     top: 65px!important;
-    width: 99.99% !important;
     z-index: 3;
 }	
 .region-header-third #block-os-search-solr-site-search.opened {
@@ -290,5 +296,14 @@ ul.primary li a {
     width: 75% !important;
 }
 
+.region-header-second {
+    min-height: 165px !important;
+}
+}
 
+@media (max-width:240px){
+	
+.region-header-second {
+    min-height: 195px !important;
+}
 }
