@@ -32,7 +32,7 @@ function vsite_drush_command() {
     'aliases' => array('vrl'),
   );
   $items['vsite-import-properly'] = array(
-    'description' => dt('Import databased dumps properly'),
+    'description' => dt('Import databases dumps properly'),
     'arguments' => array(
       'path' => dt('The path of the dump location'),
     ),
@@ -41,7 +41,6 @@ function vsite_drush_command() {
     ),
     'examples' => array(
       'drush vip ~/Downloads/hwpi-25061989.sql' => dt('Importing specific file'),
-      'drush vip ~/Downloads/hwpi-25061989.sql --password=FourMoreYears' => dt('Importing specific file and change the admin password'),
     ),
     'aliases' => array('vip'),
   );
@@ -149,17 +148,16 @@ function drush_vsite_import_properly($path) {
   drush_invoke('vsite-redirect-disable');
 
   // Change the password of the user 1.
-  $pass = drush_get_option('password', 'admin');
   $user = user_load(1);
-  user_save($user, array('pass' => $pass));
+  user_save($user, array('pass' => 'admin'));
 
   $args = array(
     '@name' => $user->name,
-    '@pass' => $pass,
+    '@pass' => 'admin',
   );
   drush_log(dt('The user @name password has changed to @pass', $args), 'success');
 
-  // Download the acquia_connector module
+  // Download the acquia_connector module, as it is not part of the make file.
   drush_invoke_process('@self', 'pm-download', array('acquia_connector‏'));
   module_enable(array('acquia_search'));
 
@@ -175,7 +173,7 @@ function drush_vsite_import_properly($path) {
   drush_invoke_process('@self', 'cache-clear', array('all'));
 
   // Open the browser for logging in.
-  drush_start_browser(url('user/login', array('absolute' => TRUE)));
+  drush_user_login();
 }
 
 /**
