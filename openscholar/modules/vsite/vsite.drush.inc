@@ -138,7 +138,7 @@ function drush_vsite_import_properly($path) {
   // Import a dump.
   $path_info = explode("/", $path);
   drush_log(dt('Starting to import the file @file', array('@file' => end($path_info))), 'warning');
-  echo exec("`drush sql-connect` < {$path}");
+  drush_shell_exec("`drush sql-connect` < {$path}");
   drush_log(dt('The file @file imported successfully', array('@file' => end($path_info))), 'success');
 
   // Run update for the database if the user approved that.
@@ -159,11 +159,12 @@ function drush_vsite_import_properly($path) {
   drush_log(dt('The user @name password has changed to @pass', $args), 'success');
 
   // Download the acquia_connector module
-  drush_invoke("pm-download", array('acquia_connector‏'));
+  drush_invoke_process('@self', 'pm-download', array('acquia_connector‏'));
+  module_enable(array('acquia_search'));
 
   // Clear the cache.
   drush_invoke_process('@self', 'cache-clear', array('all'));
 
-  // Login as uid 1.
-//  $address = drush_invoke('user-login', array('admin'));
+  // Open the browser for logging in.
+  drush_start_browser(url('user/login', array('absolute' => TRUE)));
 }
