@@ -40,7 +40,8 @@ function vsite_drush_command() {
       'password' => dt('The password of the user 1. The default is admin.'),
     ),
     'examples' => array(
-      'drush vip' => 'drush vip ~/Downloads/hwpi-25061989.sql',
+      'drush vip ~/Downloads/hwpi-25061989.sql' => dt('Importing specific file'),
+      'drush vip ~/Downloads/hwpi-25061989.sql --password=FourMoreYears' => dt('Importing specific file and change the admin password'),
     ),
     'aliases' => array('vip'),
   );
@@ -162,9 +163,39 @@ function drush_vsite_import_properly($path) {
   drush_invoke_process('@self', 'pm-download', array('acquia_connector‏'));
   module_enable(array('acquia_search'));
 
+  // Checking files.
+  $public_path = variable_get('file_public_path');
+  $temp_path = variable_get('file_temporary_path');
+
+  // Handle the public/private folders.
+  _drush_vsite_import_properly($public_path, "sites/default/files", 'file_public_path');
+  _drush_vsite_import_properly($temp_path, "/tmp", 'file_temporary_path');
+
   // Clear the cache.
   drush_invoke_process('@self', 'cache-clear', array('all'));
 
   // Open the browser for logging in.
   drush_start_browser(url('user/login', array('absolute' => TRUE)));
+}
+
+/**
+ * Handle the folders of the OS installation.
+ *
+ * @param $path
+ *  The current path of the temp/private folder.
+ * @param $default
+ *  The default value of the temp/private folder.
+ * @param $variable_name
+ *  The variable name which holds the path of the temp/private folder.
+ */
+function _drush_vsite_import_properly($path, $default, $variable_name) {
+  if (!file_exists($path)) {
+    $path = $default;
+    drush_shell_exec("mkdir {$path} -p");
+    variable_set($variable_name, $path);
+  }
+
+  if (!is_writeable($path)) {
+    drush_shell_exec("chmod -R 777 {$path}");
+  }
 }
