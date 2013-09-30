@@ -943,8 +943,7 @@ function os_files_media_widget_process($element, $form_state, $form) {
  * Replaces the upload button with a link to the media browser
  */
 function os_files_imagefield_crop_process($element, $form_state, $form) {
-  dpm($element);
-  dpm($form_state);
+
   unset($element['upload']);
   $element['upload_button']['#submit'] = array(
     'os_files_no_func'
@@ -961,9 +960,7 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
       ),
       'data-ajax_url' => url('file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value']),
     ),
-    '#ajax' => array(
-
-    ),
+    '#weight' => -10,
     '#attached' => array(
       'library', array(
         array('media', 'media_browser')
