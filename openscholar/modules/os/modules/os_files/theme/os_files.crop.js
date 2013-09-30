@@ -36,7 +36,8 @@ Drupal.behaviors.osFilesImageCropBrowser = {
 
   function mediaButtonClick(e) {
     var settings = {
-      types: ['image']
+      types: ['image'],
+      id: 'os_files_imagefield_crop'
     },
       self = this;
 
