@@ -125,6 +125,10 @@ border-top-right-radius: 3px;
      margin-top: 0px;
 }
 
+.sidebar .block-inner {
+margin-top: 0;
+}
+
 .front #content-panels .block.block-boxes-os_slideshow_box {
      background: none repeat scroll 0px 0px #FFFFFF;
      border-radius: 0px 0px 0px 0px;
