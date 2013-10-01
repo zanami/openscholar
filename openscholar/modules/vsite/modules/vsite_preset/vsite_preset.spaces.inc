@@ -67,6 +67,7 @@ function vsite_preset_spaces_presets() {
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'hwpi_classic',
+      'os_breadcrumbs_show_breadcrumbs' => 1,
     ),
     'menus' => array(
       'primary-menu' => array(
@@ -235,6 +236,7 @@ function vsite_preset_spaces_presets() {
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'hwpi_modern',
+      'os_breadcrumbs_show_breadcrumbs' => 1,
     ),
     'menus' => array(
       'primary-menu' => array(
@@ -400,6 +402,7 @@ function vsite_preset_spaces_presets() {
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'hwpi_modern',
+      'os_breadcrumbs_show_breadcrumbs' => 1,
     ),
     'menus' => array(
       'primary-menu' => array(
