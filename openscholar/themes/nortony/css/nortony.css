@@ -262,23 +262,21 @@ body.header-main-right .region-header-second {
 	margin-bottom:0;
 }	
 	
+#menu-bar ul.nice-menu ul {
+	background:#252A2B;
+}	
+	
 #menu-bar ul.nice-menu ul li {
 	margin-top:0;
-	background:#252A2B;
 }
 	
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
-	background:#353535;
+	background:none !important;
 	padding:5px 15px;
 }
 
 
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#FFF;
-	background:#444;
-
-} 
 
 ul.nice-menu-right li.menuparent {
     background: none;

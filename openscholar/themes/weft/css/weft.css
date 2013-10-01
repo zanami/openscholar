@@ -198,6 +198,7 @@ font-size:12px;
 ul.nice-menu ul {
     top: 2em;
     border-top:none;
+    background: #b8690c;
 }
 
 #menu-bar ul.nice-menu ul li {

@@ -115,7 +115,7 @@ p {
 
 
 /* MENU BAR */
-
+#menu-bar ul.nice-menu ul,
 #menu-bar {
   background:#3b484d;
   }

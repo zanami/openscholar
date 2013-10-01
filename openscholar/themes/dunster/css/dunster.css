@@ -223,7 +223,7 @@ background:#EDEDED;
 	text-decoration:none;
 	color:#fff;
   }
-
+#menu-bar ul.nice-menu ul,
 #menu-bar li a.active,
 #menu-bar li.active-trail a {
   background: #7a3d09;
