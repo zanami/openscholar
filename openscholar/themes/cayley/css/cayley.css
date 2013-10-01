@@ -233,21 +233,15 @@ body.one-sidebar .region-sidebar-first {
 	margin-top:0;
 	background:#252A2B;
 }
-	
+
+#menu-bar ul.nice-menu ul,	
 #menu-bar ul.nice-menu ul li a {
 	color:#544F4F;
 	background:#EAE5AC;
 }
 
 
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#544F4F;
-	background:#e7d504;
 
-}  
-
-
-	
 .region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 

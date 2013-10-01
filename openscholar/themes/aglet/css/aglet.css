@@ -296,6 +296,13 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   color: #000;
   text-decoration: none;
   }
+  
+  
+#menu-bar ul ul li a:hover,
+#menu-bar ul ul li a.active,
+#menu-bar ul ul li.active-trail a {
+  background: none;
+  }  
 
 .sidebar .book-menu ul.menu li a, .sidebar #block-book-navigation ul.menu li a, .sidebar .block-boxes-os_boxes_booktoc ul.menu li a {
     border-bottom: 1px dotted #CCCCCC;

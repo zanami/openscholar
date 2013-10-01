@@ -180,19 +180,14 @@ border-left: 1px solid #919191;
 	margin-top:0;
 	background:#252A2B;
 }
-	
+
+#menu-bar ul.nice-menu ul,	
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#353535;
-	padding:4px 0 4px 8px;
+	padding:4px 0 4px 5px;
 }
 
-
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#FFF;
-	background:#444;
-
-}
 
 ul.nice-menu-left li.menuparent {
     background: none;
