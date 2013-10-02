@@ -694,6 +694,16 @@ header[role=banner],
   word-wrap: break-word;
 }
 
+/* iframe padding when its floated left or right*/
+.lt-ie9 span[style*="FLOAT: LEFT;"] iframe,
+span[style*="float: left;"] iframe {
+	padding-right:15px;
+	}
+.lt-ie9	span[style*="FLOAT: RIGHT;"] iframe,
+span[style*="float: right;"] iframe {
+	padding-left:15px;
+	}
+
 /* Helpful classes for hiding content */
 .element-invisible {
   border: 0;
