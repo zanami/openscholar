@@ -929,10 +929,28 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-medium {
+.file-os-files-large, 
+.file-os-files-xlarge, 
+.file-os-files-xxlarge, 
+.file-os-files-small, 
+.file-os-files-medium {
 	padding-right:10px;
 	}
 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-large, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xlarge, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xxlarge, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-small, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-medium,
+span[style*="float: right;"] .file-os-files-large, 
+span[style*="float: right;"] .file-os-files-xlarge, 
+span[style*="float: right;"] .file-os-files-xxlarge, 
+span[style*="float: right;"] .file-os-files-small, 
+span[style*="float: right;"] .file-os-files-medium {
+	padding-left:10px;
+	padding-right:0;
+	}	
+	
 /**
  * "News" node-type styles.
  *
