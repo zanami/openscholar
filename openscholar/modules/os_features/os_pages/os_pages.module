@@ -430,6 +430,7 @@ function _os_pages_show_portion($form, $form_state) {
  */
 function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
   if ($form['#node']->type == 'page') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'os_pages').'/os_pages.outline.js';
 
     $form['table']['#theme'] = 'os_pages_outline_table';
     $sections = os_pages_get_sections();
@@ -460,6 +461,7 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
     }
 
     $form['save']['#value'] = t('Save Section Outline');
+    $form['#submit'][] = 'os_pages_book_admin_edit_submit';
   }
 }
 
@@ -506,6 +508,21 @@ function os_pages_move_page_callback($form, $form_state) {
     unset($output[$selected_link]);
   }
   return $output;
+}
+
+/**
+ * Saves the hidden field of the menu link
+ */
+function os_pages_book_admin_edit_submit($form, $form_state) {
+  foreach (element_children($form['table']) as $key) {
+    if ($form['table'][$key]['#item']) {
+      $link = $form['table'][$key]['#item'];
+      if ($link['hidden'] != $form_state['values']['table'][$key]['hidden']) {
+        $link['hidden'] = $form_state['values']['table'][$key]['hidden'];
+        menu_link_save($link);
+      }
+    }
+  }
 }
 
 /**
