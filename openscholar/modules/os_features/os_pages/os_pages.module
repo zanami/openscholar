@@ -79,6 +79,19 @@ function os_pages_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function os_pages_theme() {
+  $reg = array();
+
+  $reg['os_pages_outline_table'] = array(
+    'render element' => 'form'
+  );
+
+  return $reg;
+}
+
+/**
  * Implements hook_block_info().
  */
 function os_pages_block_info() {
@@ -417,8 +430,61 @@ function _os_pages_show_portion($form, $form_state) {
  */
 function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
   if ($form['#node']->type == 'page') {
+
+    $form['table']['#theme'] = 'os_pages_outline_table';
+    $sections = os_pages_get_sections();
+
+    $options = array();
+    foreach ($sections as $s) {
+      $options[$s['bid']] = $s['title'];
+    }
+
+    foreach(element_children($form['table']) as $key) {
+      $form['table'][$key]['hidden'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $form['table'][$key]['#item']['hidden']
+      );
+      $form['table'][$key]['move_to'] = array(
+        '#type' => 'select',
+        '#options' => $options,
+        '#default_value' => $form['#node']->book['bid'],
+      );
+      $form['table'][$key]['move_to_sub'] = array(
+        '#type' => 'button',
+        '#value' => t('Move'),
+        '#submit' => array(
+          'os_pages_move_page_submit'
+        )
+      );
+    }
+
     $form['save']['#value'] = t('Save Section Outline');
   }
+}
+
+function os_pages_get_sections() {
+  $q = db_select('book', 'b')
+    ->fields('b', array('bid'))
+    ->distinct();
+
+  $q->join('node', 'n', 'b.bid = n.nid');
+  $q->fields('n', array('title'));
+
+  if ($vsite = spaces_get_space()) {
+    $q->join('og_membership', 'ogm', 'ogm.etid = b.bid AND ogm.entity_type =\'node\'');
+    $q->condition('gid', $vsite->id);
+  }
+
+  $sections = array();
+  $f = $q->execute();
+  foreach ($f as $r) {
+    $sections[] = array(
+      'bid' => $r->bid,
+      'title' => $r->title
+    );
+  }
+
+  return $sections;
 }
 
 /**
@@ -646,4 +712,57 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
     'data' => $data,
     'type' => 'setting',
   );
+}
+
+/**
+ * Renders the section outline table
+ */
+function theme_os_pages_outline_table($variables) {
+  $form = $variables['form'];
+
+  drupal_add_tabledrag('book-outline', 'match', 'parent', 'book-plid', 'book-plid', 'book-mlid', TRUE, MENU_MAX_DEPTH - 2);
+  drupal_add_tabledrag('book-outline', 'order', 'sibling', 'book-weight');
+
+  $header = array(t('Title'), t('Hide'), t('Move To'), t('Hide'), t('Weight'), t('Parent'), array('data' => t('Operations'), 'colspan' => '3'));
+
+  $link_options = array(
+    'attributes' => array(
+      'class' => array(
+        'visibility-toggle-link'
+      )
+    ),
+    'external' => TRUE,
+  );
+
+  $rows = array();
+  $destination = drupal_get_destination();
+  $access = user_access('administer nodes');
+  foreach (element_children($form) as $key) {
+    $nid = $form[$key]['nid']['#value'];
+    $href = $form[$key]['href']['#value'];
+
+    // Add special classes to be used with tabledrag.js.
+    $form[$key]['plid']['#attributes']['class'] = array('book-plid');
+    $form[$key]['mlid']['#attributes']['class'] = array('book-mlid');
+    $form[$key]['weight']['#attributes']['class'] = array('book-weight');
+
+    $data = array(
+      theme('indentation', array('size' => $form[$key]['depth']['#value'] - 2)) . drupal_render($form[$key]['title']),
+      l($form[$key]['hidden']['#default_value']?t('Show'):t('Hide'), $_GET['q'], $link_options).drupal_render($form[$key]['hidden']),
+      drupal_render($form[$key]['move_to']).drupal_render($form[$key]['move_to_sub']),
+      drupal_render($form[$key]['weight']),
+      drupal_render($form[$key]['plid']) . drupal_render($form[$key]['mlid']),
+      l(t('view'), $href),
+      $access ? l(t('edit'), 'node/' . $nid . '/edit', array('query' => $destination)) : '&nbsp;',
+      $access ? l(t('delete'), 'node/' . $nid . '/delete', array('query' => $destination) )  : '&nbsp;',
+    );
+    $row = array('data' => $data);
+    if (isset($form[$key]['#attributes'])) {
+      $row = array_merge($row, $form[$key]['#attributes']);
+    }
+    $row['class'][] = 'draggable';
+    $rows[] = $row;
+  }
+
+  return theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'book-outline'), 'empty' => t('No book content available.')));
 }
