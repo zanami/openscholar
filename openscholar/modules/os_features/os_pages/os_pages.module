@@ -452,8 +452,9 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
       $form['table'][$key]['move_to_sub'] = array(
         '#type' => 'button',
         '#value' => t('Move'),
-        '#submit' => array(
-          'os_pages_move_page_submit'
+        '#ajax' => array(
+          'callback' => 'os_pages_move_page_callback',
+          'wrapper' => 'book-outline'
         )
       );
     }
@@ -487,15 +488,35 @@ function os_pages_get_sections() {
   return $sections;
 }
 
+function os_pages_move_page_callback($form, $form_state) {
+  $output = $form['table'];
+
+  // remove link
+  $links = array_keys($form_state['values']['table']);
+  $selected_link = array_intersect($links, $form_state['triggering_element']['#array_parents']);
+  $selected_link = reset($selected_link);
+  $link = $form_state['values']['table'][$selected_link];
+  $node = node_load($link['nid']);
+
+  if ($node->book['bid'] != $link['move_to']) {
+    $node->book['bid'] = $link['move_to'];
+    _book_update_outline($node);
+
+    // unset the link
+    unset($output[$selected_link]);
+  }
+  return $output;
+}
+
 /**
  * Implements hook_preprocess_table().
  */
 function os_pages_preprocess_table(&$vars) {
   $node = menu_get_object('node', 2);
   if (isset($vars['attributes']['id']) && $vars['attributes']['id'] == 'book-outline' && $node) {
-    $vars['header'] = array_slice($vars['header'], 0, 3);
+    //$vars['header'] = array_slice($vars['header'], 0, 3);
     foreach ($vars['rows'] as $k => $r) {
-      $vars['rows'][$k]['data'] = array_slice($r['data'], 0, 3);
+     // $vars['rows'][$k]['data'] = array_slice($r['data'], 0, 3);
     }
   }
 }
@@ -723,7 +744,7 @@ function theme_os_pages_outline_table($variables) {
   drupal_add_tabledrag('book-outline', 'match', 'parent', 'book-plid', 'book-plid', 'book-mlid', TRUE, MENU_MAX_DEPTH - 2);
   drupal_add_tabledrag('book-outline', 'order', 'sibling', 'book-weight');
 
-  $header = array(t('Title'), t('Hide'), t('Move To'), t('Hide'), t('Weight'), t('Parent'), array('data' => t('Operations'), 'colspan' => '3'));
+  $header = array(t('Title'), t('Hide'), t('Move To'), t('Hide'), t('Weight'));
 
   $link_options = array(
     'attributes' => array(
@@ -752,9 +773,6 @@ function theme_os_pages_outline_table($variables) {
       drupal_render($form[$key]['move_to']).drupal_render($form[$key]['move_to_sub']),
       drupal_render($form[$key]['weight']),
       drupal_render($form[$key]['plid']) . drupal_render($form[$key]['mlid']),
-      l(t('view'), $href),
-      $access ? l(t('edit'), 'node/' . $nid . '/edit', array('query' => $destination)) : '&nbsp;',
-      $access ? l(t('delete'), 'node/' . $nid . '/delete', array('query' => $destination) )  : '&nbsp;',
     );
     $row = array('data' => $data);
     if (isset($form[$key]['#attributes'])) {
