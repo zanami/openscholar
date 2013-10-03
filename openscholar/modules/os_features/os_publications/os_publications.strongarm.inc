@@ -77,19 +77,6 @@ function os_publications_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
-  $strongarm->api_version = 1;
-  $strongarm->name = 'biblio_sort_tabs';
-  $strongarm->value = array(
-    'author' => 'author',
-    'title' => 'title',
-    'type' => 'type',
-    'year' => 'year',
-  );
-  $export['biblio_sort_tabs'] = $strongarm;
-
-  $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
 
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
