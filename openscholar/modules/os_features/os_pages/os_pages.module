@@ -453,6 +453,7 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
       $form['table'][$key]['move_to_sub'] = array(
         '#type' => 'button',
         '#value' => t('Move'),
+        '#name' => $key.'-op',
         '#ajax' => array(
           'callback' => 'os_pages_move_page_callback',
           'wrapper' => 'book-outline'
@@ -494,15 +495,18 @@ function os_pages_move_page_callback($form, $form_state) {
   $output = $form['table'];
 
   // remove link
+  dpm($form_state);
   $links = array_keys($form_state['values']['table']);
   $selected_link = array_intersect($links, $form_state['triggering_element']['#array_parents']);
   $selected_link = reset($selected_link);
+  dpm($selected_link);
   $link = $form_state['values']['table'][$selected_link];
   $node = node_load($link['nid']);
 
   if ($node->book['bid'] != $link['move_to']) {
     $node->book['bid'] = $link['move_to'];
     _book_update_outline($node);
+    dpm($node);
 
     // unset the link
     unset($output[$selected_link]);
@@ -748,7 +752,7 @@ function theme_os_pages_outline_table($variables) {
   drupal_add_tabledrag('book-outline', 'match', 'parent', 'book-plid', 'book-plid', 'book-mlid', TRUE, MENU_MAX_DEPTH - 2);
   drupal_add_tabledrag('book-outline', 'order', 'sibling', 'book-weight');
 
-  $header = array(t('Title'), t('Hide'), t('Move To'), t('Hide'), t('Weight'));
+  $header = array(t('Title'), t('Hide From Menu'), t('Move To'), t('Parent'), t('Weight'));
 
   $link_options = array(
     'attributes' => array(
@@ -773,7 +777,7 @@ function theme_os_pages_outline_table($variables) {
 
     $data = array(
       theme('indentation', array('size' => $form[$key]['depth']['#value'] - 2)) . drupal_render($form[$key]['title']),
-      l($form[$key]['hidden']['#default_value']?t('Show'):t('Hide'), $_GET['q'], $link_options).drupal_render($form[$key]['hidden']),
+      l($form[$key]['hidden']['#default_value']?t('Hide'):t('Show'), $_GET['q'], $link_options).drupal_render($form[$key]['hidden']),
       drupal_render($form[$key]['move_to']).drupal_render($form[$key]['move_to_sub']),
       drupal_render($form[$key]['weight']),
       drupal_render($form[$key]['plid']) . drupal_render($form[$key]['mlid']),

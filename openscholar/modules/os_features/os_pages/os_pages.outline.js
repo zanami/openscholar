@@ -13,10 +13,10 @@ function toggleVisibility(e) {
 
   input.val(Math.abs(input.val()-1));
   if (parseInt(input.val())) {
-    e.target.innerHTML = Drupal.t('Show');
+    e.target.innerHTML = Drupal.t('Hide');
   }
   else {
-    e.target.innerHTML = Drupal.t('Hide');
+    e.target.innerHTML = Drupal.t('Show');
   }
   return false;
 }
