@@ -65,6 +65,14 @@ iframe {
 .footer-right .region-footer-third {
     width: 100%;
 }
+
+/* LEAVING IN FOR NOW, IN THE EVENT ITS STILL REQUIRED AFTER NEWS TEASER IMAGES DOUBLE IN SIZE
+.node-event.node-teaser .node-header {margin-left: 65px ! important;margin-top:-60px;} * */
+
+/* FLOATS EVENT TITLE AND TEASER INFO TO THE RIGHT OF THE SHIELD/DATE ICON */
+  .node-event.node-teaser .node-header { margin-left: 70px !important; margin: -70px 0 10px 0; }
+  .node-event.node-teaser .node-content { margin-left: 70px !important; }
+
 }
 
 /*--------------------------------------------------------*/
@@ -96,6 +104,7 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-header, a
 .node-news.node-teaser .field-name-field-photo {
     float: none !important;
 }	
+
 .two-sidebars #content-panels,
 .one-sidebar.sidebar-second #content-panels {
     border-right: 0!important;
