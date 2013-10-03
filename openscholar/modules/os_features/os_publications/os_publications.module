@@ -242,12 +242,6 @@ function os_publications_theme_registry_alter(&$reg) {
   //Override publications by year box so biblio years display submitted/inpress/etc
   $reg['views_view_summary__publication_years__block'] = $reg['views_view_summary'];
   $reg['views_view_summary__publication_years__block']['preprocess functions'][] = 'theme_os_publications_biblio_year_row';
-
-  $reg['biblio_sort_tabs'] = array_merge($reg['biblio_sort_tabs'], array(
-    'file' => 'os_publications.theme.inc',
-    'theme path' => drupal_get_path('module', 'os_publications'),
-    'function' => 'theme_os_publications_sort_tabs',
-  ));
 }
 
 /**
@@ -772,11 +766,11 @@ function os_publications_preprocess_page(&$variables) {
   if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
     return;
   }
-  
+
   ctools_include('infinite_scroll', 'os');
   _os_add_infinite_scroll('os_publications', '#content li.pager-next>a', '#content>.biblio-category-section', array('pager' => '#content ul.pager', 'hide_biblio_categories' => TRUE));
-  
-  
+
+
   // Make sure both filters are there.
   if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
     return;
