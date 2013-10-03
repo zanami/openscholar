@@ -495,23 +495,38 @@ function os_pages_move_page_callback($form, $form_state) {
   $output = $form['table'];
 
   // remove link
-  dpm($form_state);
   $links = array_keys($form_state['values']['table']);
   $selected_link = array_intersect($links, $form_state['triggering_element']['#array_parents']);
   $selected_link = reset($selected_link);
-  dpm($selected_link);
   $link = $form_state['values']['table'][$selected_link];
   $node = node_load($link['nid']);
 
   if ($node->book['bid'] != $link['move_to']) {
     $node->book['bid'] = $link['move_to'];
     _book_update_outline($node);
-    dpm($node);
 
-    // unset the link
+    $desc = _os_pages_get_children_links($output, $output[$selected_link]);
+
+    // unset the links
     unset($output[$selected_link]);
+    foreach ($desc as $child) {
+      unset($output[$child]);
+    }
   }
   return $output;
+}
+
+function _os_pages_get_children_links($output, $parent) {
+  $children = array();
+  $plid = $parent['mlid']['#default_value'];
+  foreach (element_children($output) as $key) {
+    if ($output[$key]['plid']['#default_value'] == $plid) {
+      $children[] = $key;
+      $children += _os_pages_get_children_links($output, $output[$key]);
+    }
+  }
+
+  return $children;
 }
 
 /**
