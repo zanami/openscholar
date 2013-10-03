@@ -533,9 +533,18 @@ function os_reader_node_insert($node) {
  * Node preprocess.
  */
 function os_reader_process_node(&$variables) {
-  if ($variables['type'] == 'news' && $variables['view_mode'] == 'teaser' && !$variables['page']) {
-    // On the news page allow the next HTML tags in the body field.
-    $variables['content']['body'][0]['#markup'] = preg_replace("/<img[^>]+\>/i", " ", $variables['content']['body'][0]['#markup']);
+  if ($variables['type'] == 'news') {
+    if ($variables['view_mode'] == 'teaser' && !$variables['page']) {
+      // On the news page allow the next HTML tags in the body field.
+      $variables['content']['body'][0]['#markup'] = preg_replace("/<img[^>]+\>/i", " ", $variables['content']['body'][0]['#markup']);
+    }
+
+    if (os_reader_get_feed_item_by_nid($variables['node']->nid)) {
+      // When watching an imported news item - don't apply the site time zone.
+      $date = new DateTime(NULL, timezone_open('UTC'));
+      $date->setTimestamp($variables['content']['field_news_date']['#items'][0]['value']);
+      $vars['content']['field_news_date'][0]['#markup'] = $date->format('F j, Y');
+    }
   }
 
   // When accessing an importer node redirect the user to the importing page.
@@ -652,5 +661,4 @@ function os_reader_get_feed_item_by_nid($nid) {
     ->execute();
 
   return !empty($result['os_feed_item']);
-
 }
