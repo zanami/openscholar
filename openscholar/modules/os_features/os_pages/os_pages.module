@@ -463,6 +463,9 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
 
     $form['save']['#value'] = t('Save Section Outline');
     $form['#submit'][] = 'os_pages_book_admin_edit_submit';
+
+    overlay_request_page_refresh();
+    overlay_trigger_refresh();
   }
 }
 
@@ -512,8 +515,6 @@ function os_pages_move_page_callback($form, $form_state) {
     foreach ($desc as $child) {
       unset($output[$child]);
     }
-    ctools_include('ajax');
-    overlay_commands_add(ctools_ajax_command_reload());
   }
   return $output;
 }
