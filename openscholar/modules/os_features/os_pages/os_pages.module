@@ -770,7 +770,7 @@ function theme_os_pages_outline_table($variables) {
   drupal_add_tabledrag('book-outline', 'match', 'parent', 'book-plid', 'book-plid', 'book-mlid', TRUE, MENU_MAX_DEPTH - 2);
   drupal_add_tabledrag('book-outline', 'order', 'sibling', 'book-weight');
 
-  $header = array(t('Title'), t('Hide From Menu'), t('Move To'), t('Parent'), t('Weight'));
+  $header = array(t('Title'), t('Hide From Section Navigation'), t('Move To Section Navigation'), t('Parent'), t('Weight'));
 
   $link_options = array(
     'attributes' => array(
