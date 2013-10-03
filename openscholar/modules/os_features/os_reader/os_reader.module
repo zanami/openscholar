@@ -666,28 +666,3 @@ function os_reader_get_feed_item_by_nid($nid) {
 
   return !empty($result['os_feed_item']);
 }
-
-/**
- * Implements hook_views_query_alter().
- *
- * Exclude certain node types from views that display nodes.
- */
-function os_reader_views_query_alter(&$view, &$query) {
-  if ($view->base_table != 'node') {
-    // Not node view.
-    return;
-  }
-
-  // Get excluded content types.
-  $exclude = array();
-  foreach (os_app_info() as $info) {
-    if (!empty($info['searchable'])) {
-      // Option 'searchable' defaults to TRUE.
-      continue;
-    }
-    // Add the unsearchable node types to the excluded list.
-    $exclude = array_merge($exclude, $info['nodetypes']);
-  }
-
-  $query->add_where(key($query->where), 'node.type', $exclude, 'not in');
-}
