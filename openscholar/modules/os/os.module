@@ -859,8 +859,6 @@ function os_init() {
   if ($plugin = context_get_plugin('condition', 'os_site')) {
     $plugin->execute();
   }
-
-  dpm(os_pages_get_subpage_parents());
 }
 
 /**

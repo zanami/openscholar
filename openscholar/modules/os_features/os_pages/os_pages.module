@@ -652,9 +652,33 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
  * Gets all parents for a given path
  */
 function os_pages_get_subpage_parents() {
-  $node = menu_get_object();
-  dpm($node);
-  if (isset($node->book)) {
-    $i = 5;
+  $paths = &drupal_static(__FUNCTION__, array());
+
+  if (empty($paths)) {
+    $node = menu_get_object();
+    if (isset($node->book)) {
+      for ($i=1;$i<10;$i++) {
+        if ($node->book["p$i"]) {
+          $link = menu_link_load($node->book["p$i"]);
+          $paths[$link['link_path']] = $link['link_path'];
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+
+  return $paths;
+}
+
+/**
+ * Activates each link that is a parent of the current link
+ */
+function os_pages_preprocess_menu_link(&$vars) {
+  $active_trail = os_pages_get_subpage_parents();
+  if (in_array($vars['element']['#href'], $active_trail)) {
+    $vars['element']['#attributes']['class'][] = 'active-trail';
+    $vars['element']['#localized_options']['attributes']['class'][] = 'active';
   }
 }
