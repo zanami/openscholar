@@ -234,9 +234,8 @@ projects[memcache][version] = 1.0
 projects[migrate][subdir] = "contrib"
 projects[migrate][version] = 2.5
 
-projects[migrate_extras][patch][] = "http://drupal.org/files/migrate_extras-duplicate_MigrateDestinationOgMembership-1788440-5.patch"
 projects[migrate_extras][subdir] = "contrib"
-projects[migrate_extras][version] = 2.4
+projects[migrate_extras][version] = 2.5
 
 projects[mollom][subdir] = "contrib"
 projects[mollom][version] = 2.2
