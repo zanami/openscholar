@@ -512,6 +512,8 @@ function os_pages_move_page_callback($form, $form_state) {
     foreach ($desc as $child) {
       unset($output[$child]);
     }
+    overlay_request_page_refresh();
+    overlay_trigger_refresh();
   }
   return $output;
 }
@@ -521,7 +523,7 @@ function _os_pages_get_children_links($output, $parent) {
   $plid = $parent['mlid']['#default_value'];
   foreach (element_children($output) as $key) {
     if ($output[$key]['plid']['#default_value'] == $plid) {
-      $children[] = $key;
+      $children[$key] = $key;
       $children += _os_pages_get_children_links($output, $output[$key]);
     }
   }
