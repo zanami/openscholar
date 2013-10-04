@@ -360,7 +360,7 @@ projects[views_bulk_operations][version] = 3.0
 projects[views_og_cache][subdir] = "contrib"
 projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
-projects[views_og_cache][download][revision] = 059a845
+projects[views_og_cache][download][revision] = dddbfa2
 
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0
