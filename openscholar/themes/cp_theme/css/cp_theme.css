@@ -429,3 +429,7 @@ fieldset#edit-biblio-authors .fieldset-legend {
 	margin-top: 0;
 	text-transform: none;
 }
+
+.form-type-checkbox.form-disabled .checkbox-disabled {
+    color: #999;
+}

@@ -637,6 +637,9 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   }
 
   $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
+  if (_is_hwpi_theme()) {
+    $hide_breadcrumbs = FALSE;
+  }
   if ($hide_breadcrumbs) {
     return;
   }
@@ -649,14 +652,21 @@ function os_breadcrumbs_preprocess_page(&$variables) {
  * Implements hook_cp_settings().
  */
 function os_breadcrumbs_cp_settings() {
+  ctools_include('themes', 'os');
   $form = array();
-  $space = spaces_get_space();
-  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
 
-  if (!empty($space)) {
-    // Get the vsite_users_contact_form_anonymous varible
-    $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+  // Prepares the form values.
+  $title = t('Hide breadcrumbs from displaying on my site');
+  $disabled = FALSE;
+  $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
+  $default_value = isset($hide_breadcrumbs) ? $hide_breadcrumbs : 1;
+  if (_is_hwpi_theme(os_theme_get())) {
+    $title = '<span class="checkbox-disabled">' . $title . '</span>';
+    $disabled = TRUE;
+    $default_value = 0;
+    $description = '<p>' . t('In accordance with accessibility standards, your site\'s currently selected theme does not allow hiding breadcrumbs.') . '</p>';
   }
+
   $form['os_breadcrumbs_show_breadcrumbs'] = array(
     'group' => array(
       '#id' => 'breadcrumbs',
@@ -664,13 +674,22 @@ function os_breadcrumbs_cp_settings() {
       '#weight' => 50,
     ),
     'form' => array(
-      '#type' => 'radios',
-   	  '#title' => t('Show breadcrumbs on your site?'),
-      '#options' => array(t('Yes'),t('No')),
-      '#default_value' => isset($breadcrumb_show) ? $breadcrumb_show : 1,
-      '#description' => t('This will allow breadcrumbs to be displayed on your site.'),
+      '#prefix' => '<p>'
+        . t('A breadcrumb trail is a navigation aid used for web interfaces. It allows visitors to keep track of their locations within sections your site, displaying links above the main content region that lead back to the home page and to the parent pages of the current page.')
+        . '</p>'
+        . '<p>'
+        . t('i.e. <strong><a name="breadcrumbs" href="#breadcrumbs">Home</a> / <a href="#breadcrumbs">About</a> / <a href="#breadcrumbs">Contact</a></strong>')
+        . '</p>',
+      '#type' => 'checkbox',
+   	  '#title' => $title,
+      '#default_value' => $default_value,
+      '#disabled' => $disabled,
     ),
   );
+
+  if (isset($description)) {
+    $form['os_breadcrumbs_show_breadcrumbs']['form']['#description'] = $description;
+  }
 
   return $form;
 }
