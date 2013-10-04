@@ -754,13 +754,8 @@ function cp_appearance_form_os_settings_form_alter(&$form, &$form_state, $form_i
   ctools_include('themes', 'os');
   $themes = os_get_themes();
   $theme_options = array();
-  // Prevents private themes from being exposed as potential featured themes.
   foreach ($themes as $name => $theme) {
-    if (isset($theme->info['os']['theme_access'])) {
-      if (!($theme->info['os']['theme_access'] == 'private')) {
-        $theme_options[$name] = $theme->info['name'];
-      }
-    }
+    $theme_options[$name] = $theme->info['name'];
   }
 
   $form['cp_appearance_featured_themes'] = array(
