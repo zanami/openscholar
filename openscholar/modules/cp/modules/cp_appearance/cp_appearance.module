@@ -341,7 +341,7 @@ function cp_appearance_cp_settings() {
       '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
         as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
         on smaller devices.'),
-    )
+    ),
   );
 
   return $setting;
@@ -745,4 +745,53 @@ function cp_appearance_get_flavors() {
   }
 
   return $flavors;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for os_settings_form.
+ */
+function cp_appearance_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
+  ctools_include('themes', 'os');
+  $themes = os_get_themes();
+  $theme_options = array();
+  // Prevents private themes from being exposed as potential featured themes.
+  foreach ($themes as $name => $theme) {
+    if (isset($theme->info['os']['theme_access'])) {
+      if (!($theme->info['os']['theme_access'] == 'private')) {
+        $theme_options[$name] = $theme->info['name'];
+      }
+    }
+  }
+
+  $form['cp_appearance_featured_themes'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Featured themes'),
+    '#weight' => 10,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['cp_appearance_featured_themes']['cp_appearance_featured_display_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Display title'),
+    '#weight' => 0,
+    '#size' => 20,
+    '#default_value' => variable_get('cp_appearance_featured_display_title', t('Featured themes')),
+    '#description' => t('The title that displays to users on the Appearance control panel'),
+  );
+  $form['cp_appearance_featured_themes']['cp_appearance_featured_description'] = array(
+    '#type' => 'textarea',
+    '#rows' => 2,
+    '#title' => t('Description'),
+    '#weight' => 1,
+    '#default_value' => variable_get('cp_appearance_featured_description', ''),
+    '#description' => t('Optional'),
+  );
+  $form['cp_appearance_featured_themes']['cp_appearance_featured_themes'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $theme_options,
+    '#title' => t('Featured themes'),
+    '#weight' => 2,
+    '#default_value' => variable_get('cp_appearance_featured_themes', array()),
+    '#description' => t('Which themes to display as featured at the top of the Appearance control panel'),
+  );
 }
