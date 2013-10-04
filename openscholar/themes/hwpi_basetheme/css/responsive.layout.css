@@ -388,6 +388,12 @@ th, td {
 padding: 0.3em 0.1em;
 
 }
+
+table td {
+display: block;
+
+}
+
 .field-name-field-photo {
     float: none!important;
 }
