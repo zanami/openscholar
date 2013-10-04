@@ -431,6 +431,7 @@ function _os_pages_show_portion($form, $form_state) {
 function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
   if ($form['#node']->type == 'page') {
     $form['#attached']['js'][] = drupal_get_path('module', 'os_pages').'/os_pages.outline.js';
+    $form['#attached']['css'][] = drupal_get_path('module', 'os_pages').'/os_pages.outline.css';
 
     $form['table']['#theme'] = 'os_pages_outline_table';
     $sections = os_pages_get_sections();
@@ -775,7 +776,8 @@ function theme_os_pages_outline_table($variables) {
   $link_options = array(
     'attributes' => array(
       'class' => array(
-        'visibility-toggle-link'
+        'visibility-toggle-link',
+        'button'
       )
     ),
     'external' => TRUE,
