@@ -9,6 +9,8 @@ Drupal.behaviors.osPagesOutline = {
 }
 
 function toggleVisibility(e) {
+  if ($(e.target).attr('data-disabled') == 'true') return false;
+
   var input = $(e.target).parent().find('input');
 
   input.val(Math.abs(input.val()-1));
@@ -27,7 +29,8 @@ function toggleChildren(mlid) {
   $('.book-plid[value='+mlid+']').each(function () {
     var hidden = $(this).parents('tr').find('.visibility-toggle-link + input').get(0);
     hidden.value = Math.abs(hidden.value-1);
-    $(this).parents('tr').find('.visibility-toggle-link').html(parseInt(hidden.value)?Drupal.t('Hide'):Drupal.t('Show'));
+    var link = $(this).parents('tr').find('.visibility-toggle-link').html(parseInt(hidden.value)?Drupal.t('Hide'):Drupal.t('Show'))
+      .attr('data-disabled', parseInt(hidden.value)?true:false);
     toggleChildren($(this).parent().find('.book-mlid').val());
   });
 }
