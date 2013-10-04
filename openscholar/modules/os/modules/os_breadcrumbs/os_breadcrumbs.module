@@ -631,19 +631,17 @@ function os_breadcrumbs_get_breadcrumbs($menu_active_trail = NULL, $node = NULL)
  */
 function os_breadcrumbs_preprocess_page(&$variables) {
   $links = array();
-  // Only alter public facing pages for the breadcrumbs.
-  if(context_isset('context', 'os_public')) {
-    }
     $links = os_breadcrumbs_build_breadcrumbs();
     $breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
     if(isset($breadcrumbs)) {
       // Check for users wanting to show their breadcrumbs on their frontpage.
-      if(!drupal_is_front_page() && $breadcrumb_show == 0) {
-        $variables['breadcrumb'] = $breadcrumbs;
-      }else {
-        $variables['breadcrumb'] = '';
-      }
     }
+  // Only alters public, non-front pages.
+  $page_is_applicable = (context_isset('context', 'os_public') && !drupal_is_front_page());
+  if (!$page_is_applicable) {
+    return;
+  }
+
   $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
   if ($hide_breadcrumbs) {
     return;
