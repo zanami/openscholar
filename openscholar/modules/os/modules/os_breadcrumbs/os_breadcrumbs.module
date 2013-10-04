@@ -86,6 +86,7 @@ function _os_breadcrumbs_check_taxonomy($item) {
  *  Array of l() links.
  */
 function os_breadcrumbs_setup_breadcrumbs($links) {
+  $output = '';
 
   // Get the breadcrumb divider variable.
   $theme_divider = theme_get_setting('breadcrumb_divider');
@@ -103,12 +104,10 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
     drupal_set_breadcrumb($links);
     // Get custom breadcrumbs
     $breadcrumbs = drupal_get_breadcrumb();
-    $breadcrumbs_render = '<div class="breadcrumb">'. implode(' <span>'.$breadcrumb_divider.'</span> ', $breadcrumbs) .'</div>';
-  }else {
-    return;
+    $output .= '<div class="breadcrumb">'. implode(' <span>'.$breadcrumb_divider.'</span> ', $breadcrumbs) .'</div>';
   }
 
-  return $breadcrumbs_render;
+  return $output;
 }
 
 /**
