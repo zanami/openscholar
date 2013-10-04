@@ -630,12 +630,6 @@ function os_breadcrumbs_get_breadcrumbs($menu_active_trail = NULL, $node = NULL)
  * Implements hook_preprocess_page().
  */
 function os_breadcrumbs_preprocess_page(&$variables) {
-  $links = array();
-    $links = os_breadcrumbs_build_breadcrumbs();
-    $breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
-    if(isset($breadcrumbs)) {
-      // Check for users wanting to show their breadcrumbs on their frontpage.
-    }
   // Only alters public, non-front pages.
   $page_is_applicable = (context_isset('context', 'os_public') && !drupal_is_front_page());
   if (!$page_is_applicable) {
@@ -646,6 +640,9 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   if ($hide_breadcrumbs) {
     return;
   }
+
+  $breadcrumb = os_breadcrumbs_setup_breadcrumbs(os_breadcrumbs_build_breadcrumbs());
+  $variables['breadcrumb'] = $breadcrumb;
 }
 
 /**
