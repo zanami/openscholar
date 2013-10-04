@@ -633,14 +633,6 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   $links = array();
   // Only alter public facing pages for the breadcrumbs.
   if(context_isset('context', 'os_public')) {
-    $space = spaces_get_space();
-    if(isset($space)) {
-      $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
-    }else {
-      $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
-    }
-    if(!isset($breadcrumb_show)) {
-      $breadcrumb_show = 1;
     }
     $links = os_breadcrumbs_build_breadcrumbs();
     $breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
@@ -652,6 +644,9 @@ function os_breadcrumbs_preprocess_page(&$variables) {
         $variables['breadcrumb'] = '';
       }
     }
+  $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
+  if ($hide_breadcrumbs) {
+    return;
   }
 }
 
