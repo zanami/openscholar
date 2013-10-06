@@ -3,6 +3,7 @@
  * @file
  * Main file for the OS importer module.
  */
+include_once 'os_importer.features.inc';
 
 /**
  * Implements hook_os_app_info().
@@ -25,6 +26,15 @@ function os_importer_os_app_info() {
   );
 
   return $apps;
+}
+
+/**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function hook_vsite_og_node_type_info() {
+  return array(
+    'blog_import' => 'group content',
+  );
 }
 
 /**
@@ -170,18 +180,18 @@ function os_importer_import_submit($form, &$form_state) {
   $node->language = $language->language;
   $node->body[LANGUAGE_NONE][] = array('value' => $values['description']);
 
-  $wrapper = entity_metadata_wrapper('node', $node);
-
   if ($values['format'] == 'rss') {
-    $wrapper->field_rss_url->set($values['url']);
+    $node->field_rss_url['und'][0]['value'] = $values['url'];
   }
   else {
-    // TODO: Fix.
-    $file = file_load($values['file']);
-    $wrapper->field_import_file->set($file);
+    $node->field_import_file[LANGUAGE_NONE][] = array(
+      'fid' => $values['file'],
+      'display' => 1,
+      'description' => '',
+    );
   }
 
-  $wrapper->save();
+  node_save($node);
 
   $params = array(
     '@url' => url('node/'. $node->nid),
