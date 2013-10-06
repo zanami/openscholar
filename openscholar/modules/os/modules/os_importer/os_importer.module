@@ -88,10 +88,11 @@ function os_importer_permission() {
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
-  $form['name'] = array(
+  $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Name of the importer'),
     '#description' => t('A title/name to identify the importer e.g. "New your times feed"'),
+    '#required' => TRUE,
   );
 
   $form['description'] = array(
@@ -110,6 +111,8 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => 'rss',
   );
 
+
+  // TODO: Validate that when the user selected a format he filled the filled.
   $form['import_source'] = array(
     // RSS need url.
     'url' => array(
@@ -129,7 +132,6 @@ function os_importer_import($form, &$form_state, $type) {
       '#title' => t('File'),
       '#type' => 'managed_file',
       '#description' => t('Select a file form your computer to import.'),
-      '#required' => TRUE,
       '#upload_location' => 'public://',
       '#upload_validators' => array(
         'file_validate_extensions' => array('csv', 'ical'),
@@ -152,4 +154,41 @@ function os_importer_import($form, &$form_state, $type) {
   );
 
   return $form;
+}
+
+/**
+ * Form submit.
+ */
+function os_importer_import_submit($form, &$form_state) {
+  global $language, $user;
+  $values = $form_state['values'];
+
+  $node = new stdClass;
+  $node->type = 'blog_import';
+  $node->uid = $user->uid;
+  $node->title = $values['title'];
+  $node->language = $language->language;
+  $node->body[LANGUAGE_NONE][] = array('value' => $values['description']);
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  if ($values['format'] == 'rss') {
+    $wrapper->field_rss_url->set($values['url']);
+  }
+  else {
+    // TODO: Fix.
+    $file = file_load($values['file']);
+    $wrapper->field_import_file->set($file);
+  }
+
+  $wrapper->save();
+
+  $params = array(
+    '@url' => url('node/'. $node->nid),
+    '@name' => $values['title'],
+  );
+  drupal_set_message(t('The importer @name has created successfully. You can <a href="@url">view</a> him.', $params));
+
+  // TODO: Change to the path of the app content.
+  $form_state['redirect'] = 'blog';
 }
