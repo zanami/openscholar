@@ -137,6 +137,7 @@ features[user_role][] = vsite user
 features[user_role][] = content editor
 features[user_role][] = web services
 features[variable][] = configurable_timezones
+features[variable][] = jquery_update_jquery_version
 features[variable][] = pathauto_node_pattern
 features[variable][] = pathauto_update_action
 features[variable][] = site_404
