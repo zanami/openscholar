@@ -172,7 +172,7 @@ function os_importer_import($form, &$form_state, $type) {
 function os_importer_import_submit($form, &$form_state) {
   global $language, $user;
 
-  $og_context = og_context();
+  $vsite = vsite_get_vsite();
   $values = $form_state['values'];
 
   $node = new stdClass;
@@ -192,7 +192,7 @@ function os_importer_import_submit($form, &$form_state) {
       'description' => '',
     );
   }
-  $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE] = array('target_id' => $og_context['gid']);
+  $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE] = array('target_id' => $vsite->id);
 
   node_save($node);
 
