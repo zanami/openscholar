@@ -154,51 +154,31 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
+    drupal_add_js('http://fiddle.jshell.net/js/lib/bootstrap-2.0.2.js', 'external');
+    drupal_add_js(libraries_get_path('select2') . '/select2.js');
+    drupal_add_css(libraries_get_path('select2') . '/select2.css');
+    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/os_boxes.css');
+
     $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
-    $vocabs_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
+
+    $form['terms'] = array(
+      '#prefix' => '<div id="terms">',
+      '#suffix' => '</div>',
+    );
 
     foreach ($vocabs as $vid => $vocab) {
-      $terms = array();
+      $options = array();
       $tree = taxonomy_get_tree($vid);
       foreach ($tree as $item) {
         $term = taxonomy_term_load($item->tid);
-        $terms[$term->tid] = $term->name;
+        $options[$term->tid] = $term->name;
       }
-      $options[$vocab] = $terms;
-      $only_vocabs[$vid] = $vocab;
-    }
 
-    $form['query_details']['terms'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Term'),
-      '#description' => t('Select a term to filter content.'),
-      '#options' => $options,
-      '#default_value' => $vocabs_default_value,
-      '#access' => $vocabs,
-      '#size' => 10,
-    );
-
-    $terms = array();
-    $vocabs_default_value = is_array($vocabs_default_value) ? $vocabs_default_value : array($vocabs_default_value);
-    if ($vocabs_default_value) {
-      foreach ($vocabs_default_value as $vid) {
-        $tree = taxonomy_get_tree($vid);
-        foreach ($tree as $item) {
-          $term = taxonomy_term_load($item->tid);
-          $terms[$term->tid] = $term->name;
-        }
-      }
-    }
-
-    $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
-    $vocabs_statement = isset($form_state['values']['terms']) && $form_state['values']['terms'] == -1;
-
-    // Hide the form but keep the prefix and suffix for the AJAX callback.
-    if ($terms_statement || $vocabs_statement) {
-      $form['query_details']['terms'] = array(
-        '#prefix' => '<div id="terms-details">',
-        '#suffix' => '</div>',
+      $form['terms']['vocab_' . $vid] = array(
+        '#type' => 'select',
+        '#options' => $options,
+        '#title' => $vocab,
+        '#multiple' => TRUE,
       );
     }
 
