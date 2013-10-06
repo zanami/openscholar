@@ -1,0 +1,8 @@
+name = OS importer
+description = Importing content from a CSV/RSS or iCal file.
+core = 7.x
+
+features[features_api][] = api:1
+
+dependencies[] = feeds
+dependencies[] = feeds_ui

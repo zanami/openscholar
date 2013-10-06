@@ -1,0 +1,155 @@
+<?php
+/**
+ * @file
+ * Main file for the OS importer module.
+ */
+
+/**
+ * Implements hook_os_app_info().
+ */
+function os_importer_os_app_info() {
+  $apps = array();
+
+  $apps['os_importer'] = array(
+    'path' => 'importer',
+
+    // TODO: Move the each app individually.
+    // Define which node types this module can import.
+    'imported_apps' => array(
+      'blog',
+    ),
+
+    // TODO: Move the each app individually.
+    // Define which node types can imported via a iCal file.
+    'ical_nodes' => array('events'),
+  );
+
+  return $apps;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function os_importer_admin_paths() {
+  return array(
+    'os-importer/*' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_os_add_new_links_alter().
+ */
+function os_importer_os_add_new_links_alter(&$links) {
+  $menu = menu_get_item();
+  $app_info = os_app_info('os_importer');
+
+  // Get the current app.
+  $current_app = array_search($menu['path'], os_get_app_path());
+
+  if (!in_array($current_app, $app_info['imported_apps'])) {
+    return;
+  }
+
+  $links['os-importer-import'] = array(
+    'title' => t('Import from CSV/RSS'),
+    'href' => 'os-importer/' . $current_app,
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function os_importer_menu() {
+  $items = array();
+
+  $items['os-importer/%'] = array(
+    'title' => 'Importing from a CSV',
+    'access arguments' => array('import via os importer'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_importer_import', 1),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function os_importer_permission() {
+  return array(
+    'import via os importer' => array(
+      'title' => t('Import content from CSV or RSS'),
+      'description' => t('Allow to the user permission to import from a CSV or RSS.'),
+    ),
+  );
+}
+
+/**
+ * Form callback - Adding an importer.
+ */
+function os_importer_import($form, &$form_state, $type) {
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name of the importer'),
+    '#description' => t('A title/name to identify the importer e.g. "New your times feed"'),
+  );
+
+  $form['description'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Description'),
+  );
+
+  $form['format'] = array(
+    '#type' => 'radios',
+    '#title' => t('Format'),
+    '#options' => array(
+      'rss' => t('RSS'),
+      'csv' => t('CSV'),
+      'ical' => t('iCal'),
+    ),
+    '#default_value' => 'rss',
+  );
+
+  $form['import_source'] = array(
+    // RSS need url.
+    'url' => array(
+      '#type' => 'textfield',
+      '#title' => t('URL'),
+
+      '#description' => t('The url of your data source.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+    ),
+
+    // iCal / CSV need upload file from user computer.
+    'file' => array(
+      '#title' => t('File'),
+      '#type' => 'managed_file',
+      '#description' => t('Select a file form your computer to import.'),
+      '#required' => TRUE,
+      '#upload_location' => 'public://',
+      '#upload_validators' => array(
+        'file_validate_extensions' => array('csv', 'ical'),
+      ),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+      '#weight' => -99,
+    ),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+    ),
+  );
+
+  return $form;
+}
