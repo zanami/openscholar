@@ -49,6 +49,27 @@ function vsite_default_og_membership_type() {
 }
 
 /**
+ * Implements hook_og_user_access_alter().
+ *
+ * Allow "support team" members to subscribe without approval to groups.
+ */
+function vsite_og_user_access_alter(&$perm, $context) {
+  $account = $context['account'];
+  if (og_is_member($context['group_type'], $context['group'], 'user', $account)) {
+    // User is already a member of the group.
+    return;
+  }
+
+  if (!user_access('subscribe as support team')) {
+    // Not a support team user.
+    return;
+  }
+
+  // Grant permission to subscribe without approval.
+  $perm['subscribe without approval'] = TRUE;
+}
+
+/**
  * Implements hook_cron().
  *
  * Get up to 10 group memberships that should be expired, and set their status
