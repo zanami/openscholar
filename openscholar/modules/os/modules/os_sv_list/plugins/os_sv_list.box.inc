@@ -179,7 +179,16 @@ class os_sv_list_box extends os_boxes_default {
         $terms[$term->tid] = $term->name;
       }
 
-      $vocab_default_value = !empty($form_state['values']['vocabs']['vocab_' . $vid]) ? $form_state['values']['vocabs']['vocab_' . $vid] : $this->options['vocabs']['vocab_' . $vid];
+      // Get the already selected terms in this vocabulary.
+      if (!empty($form_state['values']['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $form_state['values']['vocabs']['vocab_' . $vid];
+      }
+      elseif (!empty($this->options['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $this->options['vocabs']['vocab_' . $vid];
+      }
+      else {
+        $vocab_default_value = array();
+      }
 
       // Create select field with the terms as options.
       $form['vocabs']['vocab_' . $vid] = array(
