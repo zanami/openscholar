@@ -163,7 +163,20 @@ function os_importer_permission() {
  * Display the imported nodes that can imported to a viste.
  */
 function os_importer_import_content($type) {
-  return $type;
+  $query = db_select('feeds_item', 'fi');
+  $result = $query
+    ->fields('fi', array('entity_id'))
+    ->execute()
+    ->fetchAllAssoc('entity_id');
+
+  return '';
+}
+
+/**
+ * Implements hook_feeds_before_update().
+ */
+function os_importer_feeds_before_update(FeedsSource $source, $item, $entity_id) {
+  // Disable auto grouping of content.
 }
 
 /**
@@ -192,7 +205,6 @@ function os_importer_import($form, &$form_state, $type) {
     ),
     '#default_value' => 'rss',
   );
-
 
   // TODO: Validate that when the user selected a format he filled the filled.
   $form['import_source'] = array(
