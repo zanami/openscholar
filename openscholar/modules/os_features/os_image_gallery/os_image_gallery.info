@@ -29,7 +29,6 @@ features[field][] = node-media_gallery-media_gallery_image_info_where
 features[field][] = node-media_gallery-media_gallery_lightbox_extras
 features[field][] = node-media_gallery-media_gallery_media
 features[field][] = node-media_gallery-media_gallery_rows
-features[image][] = os_square_50_50
 features[image][] = slideshow_480
 features[image][] = slideshow_640
 features[image][] = slideshow_800
