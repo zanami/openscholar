@@ -29,6 +29,15 @@ function os_importer_os_app_info() {
 }
 
 /**
+ * Return the content types which can be cherry picked.
+ *
+ * TODO: Work on the logic.
+ */
+function os_importer_importers_type() {
+  return array('blog');
+}
+
+/**
  * Implements hook_vsite_og_node_type_info().
  */
 function hook_vsite_og_node_type_info() {
@@ -77,6 +86,7 @@ function os_importer_node_insert($node) {
 function os_importer_admin_paths() {
   return array(
     'os-importer/*' => TRUE,
+    'cp/content/import/*'
   );
 }
 
@@ -113,7 +123,28 @@ function os_importer_menu() {
     'page arguments' => array('os_importer_import', 1),
   );
 
+  $items['cp/content/import/%'] = array(
+    'title callback' => 'os_importer_menu_item_title',
+    'title arguments' => array(3),
+    'access arguments' => array('import via os importer'),
+    'page callback' => 'os_importer_import_content',
+    'page arguments' => array(3),
+  );
+
   return $items;
+}
+
+/**
+ * Constructing the title of the importer page.
+ *
+ * @param $type
+ *  The type of the importer.
+ *
+ * @return String
+ *  The string of the menu item.
+ */
+function os_importer_menu_item_title($type) {
+  return t('Importing @type content', array('@type' => $type));
 }
 
 /**
@@ -126,6 +157,13 @@ function os_importer_permission() {
       'description' => t('Allow to the user permission to import from a CSV or RSS.'),
     ),
   );
+}
+
+/**
+ * Display the imported nodes that can imported to a viste.
+ */
+function os_importer_import_content($type) {
+  return $type;
 }
 
 /**
@@ -209,6 +247,7 @@ function os_importer_import_submit($form, &$form_state) {
   $vsite = vsite_get_vsite();
   $values = $form_state['values'];
 
+  // TODO: Check if there already a importer with that URL, if so - group him.
   $node = new stdClass;
   $node->type = 'blog_import';
   $node->uid = $user->uid;

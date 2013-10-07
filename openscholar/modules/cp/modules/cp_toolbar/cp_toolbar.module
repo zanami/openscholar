@@ -295,6 +295,15 @@ function cp_toolbar_fill_drawer() {
     $links['import'] = $l;
   }
 
+  // Adding the importers.
+  $importers_type = os_importer_importers_type();
+  foreach ($importers_type as $importer) {
+    $l = menu_get_item('cp/content/import/' . $importer);
+    if ($l['access']) {
+      $links['import'] = $l;
+    }
+  }
+
   $drawer['content-drawer']['list'] = array(
     '#theme' => 'links',
     '#links' => $links,
