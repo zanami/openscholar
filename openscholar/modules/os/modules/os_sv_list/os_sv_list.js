@@ -68,8 +68,8 @@
 
       });
 
-      $("#terms").ready(function() {
-        $("#terms").find('.form-select').select2({
+      $("#vocabs").ready(function() {
+        $("#vocabs").find('.form-select').select2({
             placeholder: "Click here to select terms"
         });
       });

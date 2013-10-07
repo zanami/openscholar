@@ -161,25 +161,36 @@ class os_sv_list_box extends os_boxes_default {
 
     $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
 
-    $form['terms'] = array(
-      '#prefix' => '<div id="terms">',
+    dpm($this);
+
+    // The 'vocabs' tree will contain select fields - one for each vocabulary.
+    $form['vocabs'] = array(
+      '#prefix' => '<div id="vocabs">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
     );
 
+    // Create a select field for each vocabulary, with the vocabulary's terms as
+    // the field's options.
     foreach ($vocabs as $vid => $vocab) {
-      $options = array();
+      // Get the vocabulary's terms.
+      $terms = array();
       $tree = taxonomy_get_tree($vid);
       foreach ($tree as $item) {
         $term = taxonomy_term_load($item->tid);
-        $options[$term->tid] = $term->name;
+        $terms[$term->tid] = $term->name;
       }
 
-      $form['terms']['vocab_' . $vid] = array(
+      // Create select field with the terms as options.
+      $form['vocabs']['vocab_' . $vid] = array(
         '#type' => 'select',
-        '#options' => $options,
+        '#options' => $terms,
         '#title' => $vocab,
         '#multiple' => TRUE,
+        // The validate function takes the selected terms from all 'vocab'
+        // fields and groups them together as 'terms'.
+        // We are using #element_validate because we cannot reach the #validate
+        // property from here.
         '#element_validate' => array('os_sv_list_terms_element_validate'),
       );
     }
