@@ -154,11 +154,12 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
-    drupal_add_js('http://fiddle.jshell.net/js/lib/bootstrap-2.0.2.js', 'external');
+    // Required JS and CSS for Select2.
     drupal_add_js(libraries_get_path('select2') . '/select2.js');
     drupal_add_css(libraries_get_path('select2') . '/select2.css');
-    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/os_boxes.css');
+    drupal_add_css(drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css');
 
+    // Get all vocabularies.
     $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
 
     // The 'vocabs' tree will contain select fields - one for each vocabulary.
