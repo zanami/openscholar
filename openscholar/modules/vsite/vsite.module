@@ -69,8 +69,8 @@ function vsite_cron() {
     return;
   }
   foreach (og_membership_load_multiple(array_keys($result['og_membership'])) as $og_membership) {
-    $og_membership->state = OG_STATE_PENDING;
-    $og_membership->save();
+    // Remove the user from the group.
+    og_ungroup($og_membership->group_type ,$og_membership->gid, $og_membership->entity_type, $og_membership->etid);
   }
 }
 
