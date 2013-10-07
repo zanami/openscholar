@@ -184,7 +184,14 @@ function os_importer_import_content($type) {
       $imported = t('Imported. <a href="@view-href">View</a>', array('@view-href' => url('node/' . $node->nid)));
     }
     else {
-      $imported = l('Import', 'cp/content/import/group-content/' . $node->nid . '/' . $vsite->id);
+      $options = array(
+        'attributes' => array(
+          'class' => array('use-ajax'),
+          'id' => array($node->type . '-' . $vsite->id . '-' . $node->nid),
+        ),
+      );
+
+      $imported = l('Import', 'cp/content/import/group-content/' . $node->nid . '/' . $vsite->id, $options);
     }
 
     $rows[] = array(drupal_render(node_view($node)), $imported);
@@ -202,18 +209,25 @@ function os_importer_import_content($type) {
  * Implements hook_feeds_after_save().
  */
 function os_importer_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
-  $wrapper = entity_metadata_wrapper('node', $entity);
-  $wrapper->{OG_AUDIENCE_FIELD}->set(array());
-  $wrapper->save();
+
 }
 
 /**
  * Grouping an imported content into my group.
  */
-function os_import_group_content($node, $vsite) {
+function os_import_group_content($node, $vsite, $ajax = 'nojs') {
   $wrapper = entity_metadata_wrapper('node', $node);
-  $wrapper->{OG_AUDIENCE_FIELD}[] = $vsite;
-  $wrapper->save();
+//  $wrapper->{OG_AUDIENCE_FIELD}[] = $vsite;
+//  $wrapper->save();
+
+  if ($ajax == 'ajax') {
+    $commands[] = ajax_command_html("#" . $node->type . '-' . $vsite->id . '-' . $node->nid, 'fo');
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    drupal_goto('cp/content/import/' . $wrapper->getBundle());
+  }
 }
 
 /**

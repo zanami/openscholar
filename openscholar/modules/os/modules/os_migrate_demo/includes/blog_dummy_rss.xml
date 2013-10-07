@@ -3,10 +3,45 @@
     <channel>
       <item>
         <title>Exported blog from RSS</title>
+        <guid>blog1</guid>
         <description><![CDATA[
         <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
         ]]></description>
-        <author_name>admin</author_name>
+      </item>
+      <item>
+        <guid>blog2</guid>
+        <title>Exported blog from RSS</title>
+        <description><![CDATA[
+        <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
+        ]]></description>
+      </item>
+      <item>
+        <guid>blog3</guid>
+        <title>Exported blog from RSS</title>
+        <description><![CDATA[
+        <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
+        ]]></description>
+      </item>
+      <item>
+        <guid>blog4</guid>
+        <title>Exported blog from RSS</title>
+        <description><![CDATA[
+        <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
+        ]]></description>
+      </item>
+      <item>
+        <guid>blog5</guid>
+        <title>Exported blog from RSS</title>
+        <description><![CDATA[
+        <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
+        ]]></description>
+      </item>
+      <item>
+        <guid>blog6</guid>
+        <title>Exported blog from RSS</title>
+        <description><![CDATA[
+        <iframe width="420" height="315" src="//www.youtube.com/embed/LYyHifLHp00" frameborder="0" allowfullscreen></iframe>
+        ]]></description>
       </item>
     </channel>
   </rss>
