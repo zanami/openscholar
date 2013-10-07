@@ -7,7 +7,8 @@ Feature:
     Given I am logging in as "bill"
      When I visit "obama"
       And I click "Support Obama"
-     Then I should see "Are you sure you want to join the web site Obama"
+      And I click "Join"
+     Then I should see "Unsubscribe Obama"
 
   @api @current
   Scenario: Test expiring membership on cron, of an exisiting member
