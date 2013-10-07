@@ -38,6 +38,40 @@ function hook_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_feeds_plugins().
+ */
+function os_importer_feeds_plugins() {
+  $info = array();
+  $info['OsImporterFetcher'] = array(
+    'name'        => t('OS importer fetcher'),
+    'description' => t('Fetch node from a url.'),
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class'  => 'OsImporterFetcher',
+      'file'   => 'OsImporterFetcher.inc',
+      'path'   => drupal_get_path('module', 'os_importer') . '/plugins',
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_node_insert().
+ *
+ * Import feed item when the user add the feed importer for the first time.
+ */
+function os_importer_node_insert($node) {
+  if (!$node->is_new || $node->type != 'blog_import') {
+    return;
+  }
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  $type = $wrapper->field_rss_url->value() ? 'os_blog_import_rss' : 'os_blog_import_file';
+
+  feeds_source($type, $node->nid)->startImport();
+}
+
+/**
  * Implements hook_admin_paths().
  */
 function os_importer_admin_paths() {
