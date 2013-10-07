@@ -68,10 +68,9 @@
 
       });
 
-      $("#vocabs").ready(function() {
-        $("#vocabs").find('.form-select').select2({
-            placeholder: "Click here to select terms"
-        });
+      // Select2.
+      $("#vocabs").find('.form-select').select2({
+          placeholder: "Click here to select terms"
       });
     }
   };
