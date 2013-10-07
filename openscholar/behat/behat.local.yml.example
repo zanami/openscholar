@@ -8,6 +8,8 @@ default:
           'jfk'
         michelle:
           'FourMoreYears'
+        bill:
+          'clinton'
       # the node ID of the group
       vsite:
         1

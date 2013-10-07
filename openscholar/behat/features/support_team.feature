@@ -2,31 +2,32 @@ Feature:
   Testing ability to subscribe as support team for privileged users,
   that creates an expirable membership.
 
-  @api @current
+  @api
   Scenario: Test subscribe for user with permission
     Given I am logging in as "bill"
-     When I visit "obama"
-      And I click "Support Obama"
-      And I click "Join"
-     Then I should see "Unsubscribe Obama"
+    When I visit "obama"
+    And I click "Support Obama"
+    And I press "Join"
+    Then I should see "Unsubscribe Obama"
 
-  @api @current
-  Scenario: Test expiring membership on cron, of an exisiting member
+  @api
+  Scenario: Test expiring membership on cron, of an existing member
     Given I am logging in as "bill"
-     When I visit "obama"
-      And I execute cron
-     Then I should not see "Support Obama"
+    When I visit "obama"
+    And I execute vsite cron
+    Then I should not see "Support Obama"
 
-  @api @current
-  Scenario: Test expiring membership on cron, of an exsiting member
+  @api
+  Scenario: Test expiring membership on cron, of an existing member
     Given I am logging in as "bill"
-     When I visit "obama"
-      And I set "vsite_support_expire" to "1 sec"
-      And I execute cron
-     Then I should see "Support Obama"
+    When I visit "obama"
+    And I set the variable "vsite_support_expire" to "1 sec"
+    And I execute vsite cron
+    And I visit "obama"
+    Then I should see "Support Obama"
 
-  @api @current
+  @api
   Scenario: Test subscribe for user without permission
     Given I am logging in as "michelle"
-     When I visit "obama"
-     Then I should not see "Support Obama"
+    When I visit "obama"
+    Then I should not see "Support Obama"
