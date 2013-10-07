@@ -155,50 +155,39 @@ class os_sv_list_box extends os_boxes_default {
     );
 
     $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
-    $vocabs_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
 
+    // The 'vocabs' tree will contain select fields - one for each vocabulary.
+    $form['vocabs'] = array(
+      '#prefix' => '<div id="vocabs">',
+      '#suffix' => '</div>',
+      '#tree' => TRUE,
+    );
+
+    // Create a select field for each vocabulary, with the vocabulary's terms as
+    // the field's options.
     foreach ($vocabs as $vid => $vocab) {
+      // Get the vocabulary's terms.
       $terms = array();
       $tree = taxonomy_get_tree($vid);
       foreach ($tree as $item) {
         $term = taxonomy_term_load($item->tid);
         $terms[$term->tid] = $term->name;
       }
-      $options[$vocab] = $terms;
-      $only_vocabs[$vid] = $vocab;
-    }
 
-    $form['query_details']['terms'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Term'),
-      '#description' => t('Select a term to filter content.'),
-      '#options' => $options,
-      '#default_value' => $vocabs_default_value,
-      '#access' => $vocabs,
-      '#size' => 10,
-    );
+      $vocab_default_value = !empty($form_state['values']['vocabs']['vocab_' . $vid]) ? $form_state['values']['vocabs']['vocab_' . $vid] : $this->options['vocabs']['vocab_' . $vid];
 
-    $terms = array();
-    $vocabs_default_value = is_array($vocabs_default_value) ? $vocabs_default_value : array($vocabs_default_value);
-    if ($vocabs_default_value) {
-      foreach ($vocabs_default_value as $vid) {
-        $tree = taxonomy_get_tree($vid);
-        foreach ($tree as $item) {
-          $term = taxonomy_term_load($item->tid);
-          $terms[$term->tid] = $term->name;
-        }
-      }
-    }
-
-    $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
-    $vocabs_statement = isset($form_state['values']['terms']) && $form_state['values']['terms'] == -1;
-
-    // Hide the form but keep the prefix and suffix for the AJAX callback.
-    if ($terms_statement || $vocabs_statement) {
-      $form['query_details']['terms'] = array(
-        '#prefix' => '<div id="terms-details">',
-        '#suffix' => '</div>',
+      // Create select field with the terms as options.
+      $form['vocabs']['vocab_' . $vid] = array(
+        '#type' => 'select',
+        '#options' => $terms,
+        '#title' => $vocab,
+        '#multiple' => TRUE,
+        '#default_value' => $vocab_default_value,
+        // The validate function takes the selected terms from all 'vocab'
+        // fields and groups them together as 'terms'.
+        // We are using #element_validate because we cannot reach the #validate
+        // property from here.
+        '#element_validate' => array('os_sv_list_terms_element_validate'),
       );
     }
 
