@@ -185,6 +185,15 @@ function vsite_user_default_permissions() {
     'module' => 'spaces_og',
   );
 
+  // Exported permission: subscribe as support team.
+  $permissions['subscribe as support team'] = array(
+    'name' => 'subscribe as support team',
+    'roles' => array(
+      0 => 'support team',
+    ),
+    'module' => 'vsite',
+  );
+
   // Exported permission: view users outside groups.
   $permissions['view users outside groups'] = array(
     'name' => 'view users outside groups',

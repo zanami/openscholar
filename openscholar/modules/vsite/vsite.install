@@ -57,6 +57,14 @@ function vsite_install() {
     }
   }
 
+  og_create_field(OG_AUDIENCE_FIELD, 'user', 'user');
+  // Add "Support expire" field to allow support team to auto-subscribe to
+  // a group to a set interval.
+  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['instance']['label'] = 'Support expire';
+  $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
+  og_create_field('vsite_support_expire', 'user', 'user', $og_field);
+
   variable_set('og_group_manager_default_rids_node_vsite', $manager_roles);
 
   // Sets the default OG preset to be os_personal
@@ -133,6 +141,13 @@ function vsite_update_7001(&$ctx) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function vsite_uninstall() {
+  variable_del('vsite_support_expire');
 }
 
 /**

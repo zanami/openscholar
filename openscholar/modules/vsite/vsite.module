@@ -36,6 +36,45 @@ function vsite_get_vsite($sid = FALSE, $reset = FALSE){
 }
 
 /**
+ * Implementation of hook_default_og_membership_type().
+ */
+function vsite_default_og_membership_type() {
+  $items = array();
+  $items['support_expire'] = entity_import('og_membership_type', '{
+    "name" : "support_expire",
+    "description" : "Support team expirable membership",
+    "rdf_mapping" : []
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Get up to 10 group memberships that should be expired, and set their status
+ * to pending.
+ */
+function vsite_cron() {
+  $date = variable_get('vsite_support_expire', '3 days');
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'og_membership')
+    ->entityCondition('bundle', 'support_expire')
+    ->propertyCondition('state', OG_STATE_ACTIVE)
+    ->propertyCondition('created', strtotime('-' . $date), '<')
+    ->range(0, 10)
+    ->execute();
+
+  if (empty($result['og_membership'])) {
+    return;
+  }
+  foreach (og_membership_load_multiple(array_keys($result['og_membership'])) as $og_membership) {
+    $og_membership->state = OG_STATE_PENDING;
+    $og_membership->save();
+  }
+}
+
+/**
  * Returns the current purl prefix, or empty string if none found.
  *
  * @param object $vsite
@@ -426,7 +465,7 @@ function _vsite_user_access_create_vsite($vsites = FALSE){
   }
 
   // Returns FALSE if user does not have permission to create vsites at all.
-  if (! user_access('create vsite content on behalf') && ! $user_access_create_vsite) {
+  if (!user_access('create vsite content on behalf') && ! $user_access_create_vsite) {
     return FALSE;
   }
 
@@ -456,6 +495,10 @@ function vsite_permission(){
     'create subsites' => array(
       'title' => t('Create Subsites'),
       'description' => t('Create sites that belong to another site.')
+    ),
+    'subscribe as support team' => array(
+      'title' => t('Subscribe as support team'),
+      'description' => t('Allow users to subscribe as a supporter.')
     )
   );
 }
@@ -492,7 +535,6 @@ function vsite_vsite_og_node_type_info(){
     'department' => 'group'
   );
 }
-
 /**
  * Returns whether bundle is a group or is group content.
  *
@@ -500,8 +542,8 @@ function vsite_vsite_og_node_type_info(){
  *    The node type bundle.
  *
  *  @return
- *    group/group content. If $bundle is empty, all the node types info will be
- *    returned.
+ *    group/group content.
+ *  If $bundle is empty, all the node types info will be returned.
  */
 function vsite_get_type_from_bundle($bundle = NULL){
   $info = module_invoke_all('vsite_og_node_type_info');
@@ -990,6 +1032,37 @@ function vsite_attach_fields_to_subsite($bundle){
     );
     field_create_instance($instance);
   }
+}
+
+/**
+ * Implements hook_field_access().
+ *
+ * Deny access to "vsite_support_expire", thus allow subscribing as supoprt team
+ * only to people with the site-wide permission.
+ */
+function vsite_field_access($op, $field, $entity_type, $entity, $account) {
+  if ($field['field_name'] != 'vsite_support_expire') {
+    return;
+  }
+
+  return user_access('subscribe as support team', $account);
+}
+
+/**
+ * Implements hook_og_membership_presave().
+ *
+ * Set the state of the membership to active for "support team" user.
+ */
+function vsite_og_membership_presave(OgMembership $og_membership) {
+  if (!empty($og_membership->id) || $og_membership->type != 'support_expire') {
+    // Membership already exists, or not a support team related.
+    return;
+  }
+
+  if ($og_membership->state == OG_STATE_PENDING) {
+    $og_membership->state = OG_STATE_ACTIVE;
+  }
+
 }
 
 /**
