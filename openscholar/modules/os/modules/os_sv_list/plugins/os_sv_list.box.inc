@@ -164,6 +164,7 @@ class os_sv_list_box extends os_boxes_default {
     $form['terms'] = array(
       '#prefix' => '<div id="terms">',
       '#suffix' => '</div>',
+      '#tree' => TRUE,
     );
 
     foreach ($vocabs as $vid => $vocab) {
@@ -179,6 +180,7 @@ class os_sv_list_box extends os_boxes_default {
         '#options' => $options,
         '#title' => $vocab,
         '#multiple' => TRUE,
+        '#element_validate' => array('os_sv_list_terms_element_validate'),
       );
     }
 
