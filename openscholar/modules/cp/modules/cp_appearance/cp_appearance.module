@@ -365,7 +365,6 @@ function _cp_appearance_theme_screenshot_item($theme, &$form) {
   $key = 'os_appearance_' . $theme->name . '_flavor';
   if (array_key_exists($key, $form)) {
     $subtheme_select_list = drupal_render($form[$key]);
-    $flavor = $form[$key]['#default_value'];
     if ($flavor = $form[$key]['#default_value']) {
       $flavors = os_theme_get_flavors();
       if (array_key_exists($flavor, $flavors) && array_key_exists('screenshot', $flavors[$flavor]) && $flavors[$flavor]['module'] == $theme->name) {
