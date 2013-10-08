@@ -411,11 +411,15 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     '!link' => l('App settings.', 'cp/build'),
   ));
 
-  //Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
+  // Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
   $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
   $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
 
-  // hide the rest of the vtabs behind a collapsible fieldset
+  // Move field 'Abstract' from the collapsible tabs to the main form.
+  $form['biblio_abst_e'] = $form['biblio_tabs'][1]['biblio_abst_e'];
+  unset($form['biblio_tabs'][1]);
+
+  // Hide the rest of the vtabs behind a collapsible fieldset.
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
     '#title' => 'Publication Extras',
