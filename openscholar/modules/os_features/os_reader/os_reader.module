@@ -78,20 +78,6 @@ function _os_reader_feed_importer_access_callback($op) {
 }
 
 /**
- * Determine imported node type by feed id.
- *
- * @param $feed
- *  The feed ID or object.
- *
- * @return String
- *  The node type to be created from a OS feed item.
- */
-function os_reader_determine_feed_node_type($feed) {
-  $wrapper = entity_metadata_wrapper('os_feed_item', $feed);
-  return $wrapper->importer_type->value() == 'blog_import' ? 'blog' : 'news';
-}
-
-/**
  * Implements hook_theme().
  */
 function os_reader_theme() {
@@ -231,9 +217,10 @@ function os_reader_os_add_new_links_alter(&$links) {
   $node_is_news_type = isset($menu['map']['1']) && in_array($menu['map']['1']->type, $types);
 
   if ((in_array($menu['path'], $types) || $node_is_news_type) && os_reader_import_news_access_callback()) {
+    $type = $node_is_news_type ? $menu['map']['1']->type : $menu['path'];
     $links['news-import'] = array(
-      'title' => t('Import @type', array('@type' => ucfirst($menu['path']))),
-      'href' => 'cp/content/import/' . $menu['path'],
+      'title' => t('Import @type', array('@type' => ucfirst($type))),
+      'href' => 'cp/content/import/' . $type,
     );
   }
 }
@@ -257,8 +244,8 @@ function os_reader_ajax_copy_feed_to_news_access($feed_id, $nid, $token) {
     return;
   }
 
-  $type = os_reader_determine_feed_node_type($feed_id);
-  if (!og_user_access('node', $nid, 'create ' . $type . ' content')) {
+  $feed = os_reader_feed_item_load($feed_id);
+  if (!og_user_access('node', $nid, 'create ' . $feed->type . ' content')) {
     // User does not have access to create "News" in VSite.
     return;
   }
@@ -328,6 +315,7 @@ function os_reader_os_app_info() {
 function os_reader_vsite_og_node_type_info() {
   return array(
     'feed' => 'group content',
+    'blog_import' => 'group content',
     'feed_importer' => 'group content',
   );
 }
@@ -592,8 +580,9 @@ function os_reader_process_node(&$variables) {
   }
 
   // When accessing an importer node redirect the user to the importing page.
-  if ($variables['page'] && $variables['type'] == 'feed_importer') {
-    $url = 'cp/content/import/news';
+  if ($variables['page'] && in_array($variables['type'], array('feed_importer', 'blog_import'))) {
+    $type = $variables['type'] == 'blog_import' ? 'blog' : 'news';
+    $url = 'cp/content/import/' . $type;
 
     if ($vsite = vsite_get_vsite()) {
       $node = node_load($variables['nid']);
@@ -606,7 +595,7 @@ function os_reader_process_node(&$variables) {
       $url = $purl . '/' . $url;
     }
 
-    drupal_goto('news', array('fragment' => 'overlay=' . $url));
+    drupal_goto($type, array('fragment' => 'overlay=' . $url));
   }
 }
 

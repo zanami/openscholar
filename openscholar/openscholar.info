@@ -83,6 +83,7 @@ dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
 dependencies[] = os_wysiwyg_link
+dependencies[] = os_importer
 
 ; Control Panel
 dependencies[] = cp
