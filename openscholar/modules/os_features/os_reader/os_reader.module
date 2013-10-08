@@ -114,10 +114,10 @@ function os_reader_theme() {
  */
 function os_reader_import_news_access_callback() {
   if ($vsite = vsite_get_vsite()) {
-    return og_user_access('node', $vsite->id, 'create news content');
+    return og_user_access('node', $vsite->id, 'create news content') || og_user_access('node', $vsite->id, 'create blog content');
   }
 
-  return user_access('create news content') && user_access('create blog content');
+  return user_access('create news content') || user_access('create blog content');
 }
 
 /**
@@ -134,7 +134,8 @@ function os_reader_import_news() {
   if ($vsite = vsite_get_vsite()) {
     if (og_user_access('node', $vsite->id, 'create feed_importer content')) {
       $options = array('attributes' => array('class' => array('add-new')));
-      $add_new = l(t('+ Add new'), 'node/add/feed-importer', $options);
+      $type = $item['map'][3] == 'news' ? 'feed-importer' : 'blog-import';
+      $add_new = l(t('+ Add new'), 'node/add/' . $type, $options);
     }
   }
 
@@ -226,12 +227,13 @@ function os_reader_get_importers_list($feed_importer_nid = NULL, $type) {
 function os_reader_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();
 
-  $node_is_news_type = isset($menu['map']['1']) && $menu['map']['1']->type == 'news';
+  $types = array('news', 'blog');
+  $node_is_news_type = isset($menu['map']['1']) && in_array($menu['map']['1']->type, $types);
 
-  if (($menu['path'] == 'news' || $node_is_news_type) && os_reader_import_news_access_callback()) {
+  if ((in_array($menu['path'], $types) || $node_is_news_type) && os_reader_import_news_access_callback()) {
     $links['news-import'] = array(
-      'title' => t('Import News'),
-      'href' => 'cp/content/import/news',
+      'title' => t('Import @type', array('@type' => ucfirst($menu['path']))),
+      'href' => 'cp/content/import/' . $menu['path'],
     );
   }
 }
@@ -283,7 +285,6 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   $vsite = vsite_get_vsite($vsite_nid);
   $vsite_id = $vsite->id;
   $current_vsite = vsite_get_vsite();
-  $type = os_reader_determine_feed_node_type($feed_id);
 
   $news_node = os_reader_copy_feed_item_to_news($feed, $vsite);
 
@@ -298,7 +299,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   }
   else {
     drupal_set_message(t('Feed item added to @vsite', array('@vsite' => $vsite->og->title)));
-    drupal_goto('cp/content/import/' . $type);
+    drupal_goto('cp/content/import/' . $feed->importer_type);
   }
 }
 
@@ -475,11 +476,9 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
     return $news_node;
   }
 
-  $node_type = os_reader_determine_feed_node_type($feed);
-
   // Create the "News" node.
   $node = new stdClass();
-  $node->type = $node_type;
+  $node->type = $feed->importer_type;
   $node->title = $feed->title;
   $node->language = LANGUAGE_NONE;
 
@@ -488,7 +487,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
 
-  if ($node_type == 'news') {
+  if ($feed->importer_type == 'news') {
     // Get the first image src.
     $file = FALSE;
     $doc = new DOMDocument();

@@ -16,9 +16,7 @@ function os_importer_os_app_info() {
 
     // TODO: Move the each app individually.
     // Define which node types this module can import.
-    'imported_apps' => array(
-      'blog',
-    ),
+    'imported_apps' => array(),
 
     // TODO: Move the each app individually.
     // Define which node types can imported via a iCal file.

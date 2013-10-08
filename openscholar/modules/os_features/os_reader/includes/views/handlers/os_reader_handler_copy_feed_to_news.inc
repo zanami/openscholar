@@ -14,6 +14,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
     }
 
     $current_vsite = vsite_get_vsite();
+    $feed = os_reader_feed_item_load($values->id);
 
     if (!empty($current_vsite)) {
       // Show button only for current VSite.
