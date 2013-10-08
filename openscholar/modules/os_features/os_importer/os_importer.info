@@ -13,7 +13,6 @@ features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[feeds_importer][] = os_blog_import_rss
 features[field][] = node-blog_import-body
-features[field][] = node-blog_import-field_import_file
 features[field][] = node-blog_import-field_rss_url
 features[node][] = blog_import
 features[variable][] = comment_anonymous_blog_import
