@@ -70,7 +70,7 @@
 
       // Select2.
       $("#vocabs").find('.form-select').select2({
-          placeholder: "Click here to select terms"
+          placeholder: Drupal.t("Click here to select terms")
       });
     }
   };
