@@ -136,5 +136,6 @@ function os_sv_list_terms_element_validate($element, &$form_state) {
   }
 
   // Set 'terms' value to be the selected vocab terms.
-  $form_state['values']['terms'] = $tids;
+  $terms_element = array('#parents' => array('terms'));
+  form_set_value($terms_element, $tids, $form_state);
 }
