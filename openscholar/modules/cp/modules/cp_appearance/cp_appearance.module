@@ -313,7 +313,15 @@ function theme_cp_appearance_theme_picker_form($variables) {
 }
 
 /**
+ * Returns a list item build array to inject into the options list as separator.
  *
+ * @param string $header_type
+ *   One of 'HEADER_FEATURED' or 'HEADER_OTHER'.
+ *   If featured, prepares the value of 2 configurable settings to display,
+ *   otherwise prepares an item with the text "Other themes".
+ *
+ * @return array $build
+ *   An associative array to be sent to theme_list as a $items element.
  */
 function _cp_appearance_theme_header_item($header_type) {
   $build = array();
@@ -323,7 +331,6 @@ function _cp_appearance_theme_header_item($header_type) {
 
   switch ($header_type) {
     case 'HEADER_FEATURED':
-
       $display_title = variable_get('cp_appearance_featured_display_title', '');
       if (!empty($display_title)) {
         $title = '<h2>' . check_plain($display_title) . '</h2>';
@@ -333,6 +340,7 @@ function _cp_appearance_theme_header_item($header_type) {
         $subtitle = '<p>' . check_plain($description) . '</p>';
       }
       break;
+
     case 'HEADER_OTHER':
       $title = '<h2>' . t('Other themes') . '</h2>';
       break;
