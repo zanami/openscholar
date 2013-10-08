@@ -98,15 +98,11 @@ function cp_appearance_theme() {
 }
 
 /**
- * Theme picker form
+ * Form builder for CP > Appearance page.
  */
-function cp_appearance_theme_picker_form($form, &$state){
-  ctools_include('themes', 'os');
-  $themes = os_get_themes();
-  ksort($themes);
-  $radio_options = array();
-  drupal_add_js(drupal_get_path('module', 'cp_appearance') . '/theme/cp_appearance_theme_picker.js');
-
+function cp_appearance_theme_picker_form($form, &$form_state) {
+  // Instantiates the form array and assets.
+  $module_path = drupal_get_path('module', 'cp_appearance');
   $form = array(
     '#title' => t('Theme Picker'),
     '#theme' => array(
@@ -116,59 +112,65 @@ function cp_appearance_theme_picker_form($form, &$state){
       'cp_appearance_theme_picker_form_validate'
     ),
     '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'cp_appearance') . '/theme/cp_appearance_theme_picker.js'
-      ),
-      'css' => array(
-        drupal_get_path('module', 'cp_appearance') . '/theme/cp-appearance-theme_picker.css'
-      )
+      'js' => array("{$module_path}/theme/cp_appearance_theme_picker.js"),
+      'css' => array("{$module_path}/theme/cp-appearance-theme_picker.css"),
     )
   );
 
-  foreach ( $themes as $theme ) {
+  ctools_include('themes', 'os');
+  $themes = os_get_themes();
+  ksort($themes);
+  $radio_options = array();
+  $default_flavor = '';
+
+  // Adds each theme option to the form, and flavor options if available.
+  foreach ($themes as $theme) {
+    // Adds this theme to the radio options.
     $info = $theme->info;
     $info['theme_name'] = $theme->name;
     $radio_options[$info['theme_name']] = $info['theme_name'];
 
-    $theme_flavors = os_theme_get_flavors($theme->name);
-    $elem = 'os_appearance_' . $info['theme_name'] . '_flavor';
-    $default_flavor = '';
-
-    //Get this theme's flavors and add them to the form
+    // Only continues if this theme has flavors.
+    $theme_flavors = os_theme_get_flavors($info['theme_name']);
     $flavor_options = _cp_appearance_get_flavor_options($theme_flavors, $info, $default_flavor);
-    if (count($flavor_options)) {
-      $form[$elem] = array(
-        '#type' => 'select',
-        '#title' => t('Flavor'),
-        '#options' => $flavor_options,
-        '#default_value' => variable_get($elem, $default_flavor),
-        '#ajax' => array(
-          'callback' => 'cp_appearance_swap_screenshot',
-          'wrapper' => 'screenshot_' . $theme->name
-        )
-      );
+    if (!count($flavor_options)) {
+      continue;
     }
+
+    // Adds the flavor select option to the form.
+    $flavor_key = 'os_appearance_' . $info['theme_name'] . '_flavor';
+    $form[$flavor_key] = array(
+      '#type' => 'select',
+      '#title' => t('Flavor'),
+      '#options' => $flavor_options,
+      '#default_value' => variable_get($flavor_key, $default_flavor),
+      '#ajax' => array(
+        'callback' => 'cp_appearance_swap_screenshot',
+        'wrapper' => 'screenshot_' . $theme->name
+      )
+    );
   }
 
-  //Move default theme to the front of the array
-  $theme = os_theme_get();
-  if (isset($themes[$theme])) {
-    $default_theme = $themes[$theme];
-    unset($themes[$theme]);
+  // Moves default theme to the front of the array.
+  $current_theme = os_theme_get();
+  if (isset($themes[$current_theme])) {
+    $default_theme = $themes[$current_theme];
+    unset($themes[$current_theme]);
     $themes = array_merge(array(
-      $theme => $default_theme
+      $current_theme => $default_theme
     ), $themes);
   }
+  // Selects the first option in case the current theme wasn't found.
   else {
-    $theme = key($themes); //We should always have a default, but if not choose the first
+    $current_theme = key($themes);
   }
 
-  //Add themes to form
+  // Adds the theme options to form
   $form['theme_default'] = array(
     '#enabled_themes' => $themes,
     '#type' => 'radios',
     '#options' => $radio_options,
-    '#default_value' => $theme,
+    '#default_value' => $current_theme,
     '#tree' => TRUE
   );
 
