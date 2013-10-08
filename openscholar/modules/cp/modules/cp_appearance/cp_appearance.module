@@ -305,9 +305,8 @@ function theme_cp_appearance_theme_picker_form($variables) {
   unset($form['actions']);
   $form['actions'] = $actions;
 
-  // Remove this theme wrapper and render the the form.
+  // Removes this theme wrapper and renders the the form.
   unset($form['#theme']);
-  dpm($form);
   $output = drupal_render($form);
 
   return $output;
