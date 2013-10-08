@@ -4,7 +4,7 @@
 (function ($) {
 Drupal.behaviors.osPagesOutline = {
   attach: function (ctx) {
-    $('.visibility-toggle-link', ctx).click(toggleVisibility);
+    $('.form-checkbox').change(toggleChild);
   }
 }
 
@@ -25,13 +25,20 @@ function toggleVisibility(e) {
   return false;
 }
 
-function toggleChildren(mlid) {
+function toggleChildren(mlid, value) {
   $('.book-plid[value='+mlid+']').each(function () {
-    var hidden = $(this).parents('tr').find('.visibility-toggle-link + input').get(0);
-    hidden.value = Math.abs(hidden.value-1);
-    var link = $(this).parents('tr').find('.visibility-toggle-link').html(parseInt(hidden.value)?Drupal.t('Hide'):Drupal.t('Show'))
-      .attr('data-disabled', parseInt(hidden.value)?true:false);
-    toggleChildren($(this).parent().find('.book-mlid').val());
+    var row = $(this).parents('tr'),
+        box = row.find('.form-checkbox').get(0);
+    box.checked = value;
+    box.disabled = value;
+    toggleChildren(row.find('.book-mlid').val());
   });
 }
+
+  function toggleChild(e) {
+    var box = e.target,
+      mlid = $(box).parents('tr').find('.book-mlid').val();
+
+    toggleChildren(mlid, box.checked);
+  }
 })(jQuery)

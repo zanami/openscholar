@@ -443,7 +443,7 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
 
     foreach(element_children($form['table']) as $key) {
       $form['table'][$key]['hidden'] = array(
-        '#type' => 'hidden',
+        '#type' => 'checkbox',
         '#default_value' => $form['table'][$key]['#item']['hidden']
       );
       $form['table'][$key]['move_to'] = array(
@@ -797,7 +797,7 @@ function theme_os_pages_outline_table($variables) {
 
     $data = array(
       theme('indentation', array('size' => $form[$key]['depth']['#value'] - 2)) . drupal_render($form[$key]['title']),
-      l($form[$key]['hidden']['#default_value']?t('Hide'):t('Show'), $_GET['q'], $link_options).drupal_render($form[$key]['hidden']),
+      /*l($form[$key]['hidden']['#default_value']?t('Hide'):t('Show'), $_GET['q'], $link_options).*/drupal_render($form[$key]['hidden']),
       drupal_render($form[$key]['move_to']).drupal_render($form[$key]['move_to_sub']),
       drupal_render($form[$key]['weight']),
       drupal_render($form[$key]['plid']) . drupal_render($form[$key]['mlid']),
