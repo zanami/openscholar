@@ -151,14 +151,34 @@ function cp_appearance_theme_picker_form($form, &$form_state) {
     );
   }
 
-  // Moves default theme to the front of the array.
+  // Sorts featured themes to the front.
+  $featured_themes = array_filter(variable_get('cp_appearance_featured_themes', array()));
   $current_theme = os_theme_get();
-  if (isset($themes[$current_theme])) {
-    $default_theme = $themes[$current_theme];
-    unset($themes[$current_theme]);
-    $themes = array_merge(array(
-      $current_theme => $default_theme
-    ), $themes);
+  if (count($featured_themes)) {
+    $first_themes = array();
+    $other_themes = $themes;
+    foreach ($other_themes as $theme_name => $theme) {
+      if (in_array($theme_name, $featured_themes)) {
+        $first_themes[$theme_name] = $theme;
+        unset($other_themes[$theme_name]);
+      }
+    }
+  }
+
+  // Moves default theme to the front of the array.
+  if (count($first_themes)) {
+    if (isset($first_themes[$current_theme])) {
+      $current_theme = _cp_appearance_move_option_to_front($first_themes, $current_theme);
+    }
+    elseif (isset($other_themes[$current_theme])) {
+      $current_theme = _cp_appearance_move_option_to_front($other_themes, $current_theme);
+    }
+    $featured_header =  array('HEADER_FEATURED' => 'HEADER_FEATURED');
+    $other_header = array('HEADER_OTHER' => 'HEADER_OTHER');
+    $themes = array_merge($featured_header, $first_themes, $other_header, $other_themes);
+  }
+  elseif (isset($themes[$current_theme])) {
+    $current_theme = _cp_appearance_move_option_to_front($themes, $current_theme);
   }
   // Selects the first option in case the current theme wasn't found.
   else {
@@ -171,12 +191,32 @@ function cp_appearance_theme_picker_form($form, &$form_state) {
     '#type' => 'radios',
     '#options' => $radio_options,
     '#default_value' => $current_theme,
-    '#tree' => TRUE
+    '#tree' => TRUE,
   );
 
   $form = system_settings_form($form);
 
   return $form;
+}
+
+/**
+ * Helper function for theme picker form.
+ */
+function _cp_appearance_move_option_to_front(&$options, $key) {
+  if (empty($options)) {
+    return FALSE;
+  }
+  if (isset($options[$key])) {
+    $value = $options[$key];
+    unset($options[$key]);
+    $first_option = array($key => $value);
+    $options = array_merge($first_option, $options);
+  }
+  else {
+    $key = key($options);
+  }
+
+  return $key;
 }
 
 /**
@@ -236,59 +276,123 @@ function _cp_appearance_get_flavor_options($theme_flavors, $info, &$default_flav
 }
 
 /**
- * Themes the theme_picker form
+ * Renders the theme_picker form.
  */
-function theme_cp_appearance_theme_picker_form($variables){
+function theme_cp_appearance_theme_picker_form($variables) {
   $form = $variables['form'];
-  $output = drupal_render($form['theme_default']);
+
+  // Builds each item containing a screenshot-option or section separators.
   $items = array();
-
   foreach ($form['theme_default']['#enabled_themes'] as $theme) {
-    $sub_theme = '';
-    $info = array_merge((array) $theme->info, array(
-      'theme_name' => $theme->name
-    ));
-
-    //flavor screenshots
-    $key = 'os_appearance_' . $theme->name . '_flavor';
-    if (array_key_exists($key, $form)) {
-      $sub_theme = drupal_render($form[$key]);
-
-      if ($flavor = $form[$key]['#default_value']) {
-        $flavors = os_theme_get_flavors();
-
-        if (array_key_exists($flavor, $flavors) && array_key_exists('screenshot', $flavors[$flavor]) && $flavors[$flavor]['module'] == $theme->name) {
-          $info['screenshot'] = $flavors[$flavor]['path'] . '/' . $flavors[$flavor]['screenshot'];
-        }
-      }
+    if (in_array($theme, array('HEADER_FEATURED', 'HEADER_OTHER'))) {
+      $items[] = _cp_appearance_theme_header_item($theme);
     }
-
-    //list of screenshots for each theme
-    $items[] = array(
-      'class' => array(
-        'item-theme-picker',
-        ($theme->name == $form['theme_default']['#default_value']) ? 'current' : ''
-      ),
-      'id' => 'theme-' . str_replace('_', '-', $theme->name),
-      'data' => theme('cp-appearance-theme-item', array(
-        'info' => $info,
-        'sub_theme' => $sub_theme
-      ))
-    );
+    else {
+      $items[] = _cp_appearance_theme_screenshot_item($theme, $form);
+    }
   }
 
-  $output .= theme_item_list(array(
-    'items' => $items,
-    'type' => 'ul',
-    'title' => NULL,
-    'attributes' => array(
-      'class' => 'theme-picker'
-    )
-  ));
+  // Builds the "Theme picker" list of tile screenshots.
+  $form['theme_picker'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+    '#title' => NULL,
+    '#attributes' => array('class' => 'theme-picker'),
+  );
+
+  // Moves the actions button group to the bottom of the form.
+  $actions = $form['actions'];
+  unset($form['actions']);
+  $form['actions'] = $actions;
+
+  // Remove this theme wrapper and render the the form.
   unset($form['#theme']);
-  $output .= drupal_render($form);
+  dpm($form);
+  $output = drupal_render($form);
 
   return $output;
+}
+
+/**
+ *
+ */
+function _cp_appearance_theme_header_item($header_type) {
+  $build = array();
+  $build['class'] = array('false-item');
+  $build['id'] = 'theme-' . str_replace('_', '-', strtolower($header_type));
+  $title = $subtitle = '';
+
+  switch ($header_type) {
+    case 'HEADER_FEATURED':
+
+      $display_title = variable_get('cp_appearance_featured_display_title', '');
+      if (!empty($display_title)) {
+        $title = '<h2>' . check_plain($display_title) . '</h2>';
+      }
+      $description = variable_get('cp_appearance_featured_description', '');
+      if (!empty($description)) {
+        $subtitle = '<p>' . check_plain($description) . '</p>';
+      }
+      break;
+    case 'HEADER_OTHER':
+      $title = '<h2>' . t('Other themes') . '</h2>';
+      break;
+  }
+
+  $build['data'] = $title . $subtitle;
+
+  return $build;
+}
+
+/**
+ * Prepares a single theme's screenshot & select list for the theme picker form.
+ *
+ * @param object $theme
+ *   An individual available theme.
+ * @param array $form
+ *   The form object for the entire CP > Appearance page.
+ *
+ * @return array $item
+ *   A Drupal render array to be sent to theme_item_list().
+ */
+function _cp_appearance_theme_screenshot_item($theme, &$form) {
+  $subtheme_select_list = '';
+  $info = array_merge((array) $theme->info, array(
+    'theme_name' => $theme->name
+  ));
+
+  // Prepares each theme's subtheme select list and screenshot URL.
+  $key = 'os_appearance_' . $theme->name . '_flavor';
+  if (array_key_exists($key, $form)) {
+    $subtheme_select_list = drupal_render($form[$key]);
+    unset($form[$key]);
+    if ($flavor = $form[$key]['#default_value']) {
+      $flavors = os_theme_get_flavors();
+      if (array_key_exists($flavor, $flavors) && array_key_exists('screenshot', $flavors[$flavor]) && $flavors[$flavor]['module'] == $theme->name) {
+        $info['screenshot'] = $flavors[$flavor]['path'] . '/' . $flavors[$flavor]['screenshot'];
+      }
+    }
+  }
+
+  // Prepares the list item to be processed by our custom template.
+  // @see cp-appearance-theme-item.tpl.php
+  $status_class = '';
+  if ($theme->name == $form['theme_default']['#default_value']) {
+    $status_class = 'current';
+  }
+  $item = array(
+    'class' => array(
+      'item-theme-picker',
+      $status_class,
+    ),
+    'id' => 'theme-' . str_replace('_', '-', $theme->name),
+    'data' => theme('cp-appearance-theme-item', array(
+      'info' => $info,
+      'sub_theme' => $subtheme_select_list,
+    ))
+  );
+
+  return $item;
 }
 
 /**
