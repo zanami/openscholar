@@ -17,13 +17,21 @@ function os_reader_menu() {
     'theme callback' => 'os_reader_ajax_theme_name',
   );
 
-  $items['cp/content/import'] = array(
-    'title' => 'Import news',
+  $items['cp/content/import/%'] = array(
+    'title callback' => 'os_reader_import_page_title',
+    'title arguments' => array(3),
     'page callback' => 'os_reader_import_news',
     'access callback' => 'os_reader_import_news_access_callback',
   );
 
   return $items;
+}
+
+/**
+ * Title callback for a menu item.
+ */
+function os_reader_import_page_title($type) {
+  return t('import @type', array('@type' => $type));
 }
 
 /**
@@ -106,7 +114,7 @@ function os_reader_import_news() {
   drupal_add_js(drupal_get_path('module', 'os_reader') . '/os_reader.js');
 
   $item = menu_get_item();
-  $feed_importer_nid = isset($item['map'][3]) ? $item['map'][3] : NULL;
+  $feed_importer_nid = isset($item['map'][4]) ? $item['map'][4] : NULL;
 
   // Check if user is allowed to import feeds.
   if ($vsite = vsite_get_vsite()) {
@@ -123,6 +131,21 @@ function os_reader_import_news() {
   );
 
   return theme('os_reader', $variables);
+}
+
+/**
+ * hook_views_query_alter().
+ */
+function os_reader_views_query_alter(&$view, views_plugin_query_default &$query) {
+  if ($view->name != 'os_reader_feeds') {
+    return;
+  }
+
+  $menu = menu_get_item();
+  $type = $menu['original_map'][3];
+
+  $group_key = key($query->where);
+  $query->add_where($group_key, 'os_feed_item.importer_type', $type);
 }
 
 /**
@@ -158,7 +181,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
   // Create item list of feed importers.
   $items = array(
     array(
-      'data' => l(t('All feeds'), 'cp/content/import'),
+      'data' => l(t('All feeds'), 'cp/content/import/news'),
       'class' => empty($feed_importer_nid) ? array('active') : array(),
     ),
   );
@@ -173,7 +196,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL) {
     else {
       // Display importer as link.
       $items[] = array(
-        'data' => l($importer->title, 'cp/content/import/' . $importer->nid),
+        'data' => l($importer->title, 'cp/content/import/news/' . $importer->nid),
       );
     }
   }
@@ -192,7 +215,7 @@ function os_reader_os_add_new_links_alter(&$links) {
   if (($menu['path'] == 'news' || $node_is_news_type) && os_reader_import_news_access_callback()) {
     $links['news-import'] = array(
       'title' => t('Import News'),
-      'href' => 'cp/content/import',
+      'href' => 'cp/content/import/news',
     );
   }
 }
@@ -215,6 +238,7 @@ function os_reader_ajax_copy_feed_to_news_access($feed_id, $nid, $token) {
     // Not a valid token.
     return;
   }
+  // Check for blog also.
   if (!og_user_access('node', $nid, 'create news content')) {
     // User does not have access to create "News" in VSite.
     return;
@@ -256,7 +280,7 @@ function os_reader_ajax_copy_feed_to_news($feed_id, $vsite_nid, $ajax = 'nojs') 
   }
   else {
     drupal_set_message(t('Feed item added to @vsite', array('@vsite' => $vsite->og->title)));
-    drupal_goto('cp/content/import');
+    drupal_goto('cp/content/import/news');
   }
 }
 
@@ -326,7 +350,6 @@ function os_reader_entity_info() {
  */
 function os_reader_admin_paths() {
   return array(
-    'cp/content/import' => TRUE,
     'cp/content/import/*' => TRUE,
   );
 }
@@ -549,7 +572,7 @@ function os_reader_process_node(&$variables) {
 
   // When accessing an importer node redirect the user to the importing page.
   if ($variables['page'] && $variables['type'] == 'feed_importer') {
-    $url = 'cp/content/import';
+    $url = 'cp/content/import/news';
 
     if ($vsite = vsite_get_vsite()) {
       $node = node_load($variables['nid']);

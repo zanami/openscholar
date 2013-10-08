@@ -123,14 +123,6 @@ function os_importer_menu() {
     'page arguments' => array('os_importer_import', 1),
   );
 
-  $items['cp/content/import/%'] = array(
-    'title callback' => 'os_importer_menu_item_title',
-    'title arguments' => array(3),
-    'access arguments' => array('import via os importer'),
-    'page callback' => 'os_importer_import_content',
-    'page arguments' => array(3),
-  );
-
   $items['cp/content/import/group-content/%/%'] = array(
     'title' => 'Group content',
     'page callback' => 'os_import_group_content',
