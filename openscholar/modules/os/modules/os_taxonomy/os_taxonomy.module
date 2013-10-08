@@ -616,6 +616,7 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $form['#vocabulary'] = $wrapper->vocabulary->value();
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
+  $form['#attached']['js'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.js';
   // Giving a unique name for the form element will allow us coloring it when
   // there is a problem in the submission of the form.
   $form['terms_' . $form['#vocabulary']->vid] = array(
@@ -633,6 +634,7 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
     '#type' => 'actions',
     'submit' => array(
       '#type' => 'submit',
+      '#id' => 'os-taxonomy-select-submit',
       '#value' => t('Go'),
     ),
   );
