@@ -1538,6 +1538,11 @@ function os_grant_unpublished_viewing_permission() {
  * Implements hook_preprocess_toolbar().
  */
 function os_preprocess_toolbar(&$vars) {
+  $feeds = variable_get('os_platform_notifications_feeds', '');
+  if (empty($feeds)) {
+    return;
+  }
+
   // Adds the Notifications link to the Admin toolbar.
   $path = drupal_get_path('module', 'os');
   $vars['toolbar']['toolbar_right']['os_notifications'] = array(
