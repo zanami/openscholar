@@ -740,7 +740,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['label'] = 'Link to share';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = '[filename] [os_files_copy_link_1]';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   /* Field: File: Original Name */
