@@ -1539,4 +1539,23 @@ function os_grant_unpublished_viewing_permission() {
  */
 function os_preprocess_toolbar(&$vars) {
   // Adds the Notifications link to the Admin toolbar.
+  $path = drupal_get_path('module', 'os');
+  $vars['toolbar']['toolbar_right']['os_notifications'] = array(
+    '#theme' => 'links',
+    '#links' => array(
+      0 => array(
+        'title' => t('Notifications'),
+        'href' => '',
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => array('os-notifications-icon'),
+          'id' => 'os-notifications-menu-link',
+          'data-tooltip' => t('Learn about updates that affect your site')
+        ),
+      ),
+    ),
+    '#attached' => array(
+      'js' => array("$path/theme/os_notifications.js"),
+    ),
+  );
 }
