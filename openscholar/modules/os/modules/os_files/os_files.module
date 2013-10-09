@@ -112,6 +112,15 @@ function os_files_library_alter(&$libs, $module) {
 }
 
 /**
+ * Implements hook_fields_extra_fields_alter().
+ */
+function os_files_field_extra_fields_alter(&$info) {
+  foreach ($info['file'] as $type => $data) {
+    $info['file'][$type]['form']['preview']['weight'] = -11;
+  }
+}
+
+/**
  * Implements hook_file_insert().
  */
 function os_files_file_insert($file){
@@ -276,26 +285,16 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Title');
   $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  $form['media_title']['#access'] = FALSE;
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
-  
-  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
-  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
-  
-  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
-    $form['preview']['#access'] = FALSE;
-  }
+  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Description');
+  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Give a short description. This will not be seen by your users.');
+
+  //$form['preview']['#weight'] = -1000;
+  $form['replace_upload']['#weight'] = 7;
   
   $form['user']['#access'] = FALSE;
 
-  // only display the field if the file is older than 5 minutes
-  if (isset($form['#entity'])) {
-    $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
-  }
-  else {
-    $form['replace_upload']['#access'] = FALSE;
-  }
   
   // modify the form when we're getting it through ajax
   // this means we'll be getting it through the media browser
