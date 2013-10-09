@@ -295,7 +295,11 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   
   $form['user']['#access'] = FALSE;
 
-  
+  $previewable = array('image', 'video');
+  if (!in_array($form['preview']['#file']->type, $previewable)) {
+    $form['preview']['#theme'] = 'file_link';
+  }
+
   // modify the form when we're getting it through ajax
   // this means we'll be getting it through the media browser
   if (strpos($_GET['q'], 'ajax') !== FALSE) {
