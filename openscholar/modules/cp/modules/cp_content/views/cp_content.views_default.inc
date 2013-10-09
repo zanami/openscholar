@@ -633,7 +633,7 @@ function cp_content_views_default_views() {
     'filemime' => 'filemime',
     'filesize' => 'filesize',
     'timestamp' => 'timestamp',
-    'referencing_nodes' => 'referencing_nodes',
+    'title' => 'title',
     'edit' => 'edit',
     'delete' => 'delete',
     'nothing_1' => 'nothing_1',
@@ -685,7 +685,9 @@ function cp_content_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'referencing_nodes' => array(
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
