@@ -165,6 +165,7 @@ function os_importer_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
+  t('Path to the feed that you would like to use to import content to your site.');
   t('RSS url');
 
   return $fields;
