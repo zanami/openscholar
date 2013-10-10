@@ -532,3 +532,30 @@ function os_files_update_7007(&$sandbox) {
 
   return t('File Types and Displays have been reverted.');
 }
+
+/**
+ * Adds a generic description field to all file types
+ */
+function os_files_update_7009($sb) {
+  $entities = entity_get_info();
+
+  foreach ($entities['file'] as $type => $info) {
+    os_files_add_fields($type);
+  }
+}
+
+/**
+ * Move values from Media Title to Title
+ */
+function os_files_update_7010($sb) {
+
+  $q = db_select('field_data_media_title', 'mt')
+    ->fields('mt')
+    ->execute();
+
+  foreach ($q as $r) {
+    $r->os_files_description_value = $r->media_description_value;
+    $r->os_files_description_format = $r->media_description_format;
+    drupal_write_record('field_data_os_files_description', $r);
+  }
+}
