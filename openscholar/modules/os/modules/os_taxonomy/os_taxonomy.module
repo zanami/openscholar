@@ -253,9 +253,9 @@ function theme_os_taxonomy_term_item($variables) {
   $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
   $variables['link_options']['html'] = TRUE;
+  $variables['link_options']['attributes']['title'] = filter_xss($variables['description'], array());
   $name = !$number && !$variables['link_to_empty_terms'] ? $name : l($name . $number, $variables['url_path']['path'], $variables['link_options']);
   $title = $item_wrapper . $name;
-
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
     $title .= '<div class="description">' . filter_xss($variables['description']) . '</div>';
