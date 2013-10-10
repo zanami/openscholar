@@ -859,6 +859,9 @@ function os_init() {
   if ($plugin = context_get_plugin('condition', 'os_site')) {
     $plugin->execute();
   }
+
+  //os_files_add_fields('image');
+  dpm(entity_get_info());
 }
 
 /**

@@ -1718,7 +1718,7 @@ function os_files_add_fields($type) {
     $field = field_create_field($field);
   }
 
-  if (!field_info_instance('node', 'os_file_description', $type)) {
+  if (!field_info_instance('file', 'os_file_description', $type)) {
     $instance = array(
       'bundle' => $type,
       'default_value' => NULL,
@@ -1764,7 +1764,7 @@ function os_files_add_fields($type) {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '-4',
+        'weight' => '-2',
       ),
     );
     field_create_instance($instance);
