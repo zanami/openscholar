@@ -633,8 +633,10 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
+      '#attributes' => array(
+        'class' => array('os-taxonomy-select-submit'),
+      ),
       '#type' => 'submit',
-      '#id' => 'os-taxonomy-select-submit',
       '#value' => t('Go'),
     ),
   );
