@@ -19,6 +19,7 @@ features[feeds_importer][] = os_classes
 features[feeds_importer][] = os_cv
 features[feeds_importer][] = os_documents
 features[feeds_importer][] = os_links
+features[feeds_importer][] = os_people
 features[field][] = node-blog_import-body
 features[field][] = node-blog_import-field_rss_url
 features[node][] = blog_import
