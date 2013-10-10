@@ -152,21 +152,12 @@ function os_basetheme_menu_link(array $vars) {
  */
 function os_basetheme_preprocess_node(&$vars) {
   // If node is of type person with no image, load a default image
-  if ($vars['node']->type == 'person') {
-    if (empty($vars['field_person_photo'])) {
-      $styles = image_styles();
-      $style = reset($styles['profile_thumbnail']['effects']);
-
-      $variables = array(
-        'path' => variable_get('person_default_image', drupal_get_path('module', 'os_profiles') . '/person-default-image.png'),
-        'attributes' => array(
-          'width' => $style['data']['width'],
-          'height' => $style['data']['height'],
-        )
-      );
-      $image = '<div class="field-name-field-person-photo">' . theme_image($variables) . '</div>';
-      $vars['content']['field_person_photo'][0] = array('#markup' => $image);
-    }
+  if ($vars['node']->type == 'person' && empty($vars['field_person_photo'])) {
+    $variables = array(
+      'path' => variable_get('os_person_default_image', drupal_get_path('module', 'os_profiles') . '/person-default-image.png'),
+    );
+    $image = '<div class="field-name-field-person-photo">' . theme('image', $variables) . '</div>';
+    $vars['content']['field_person_photo'][0] = array('#markup' => $image);
   }
 
   // Event nodes, inject variables for date month and day shield
