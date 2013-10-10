@@ -10,6 +10,7 @@ dependencies[] = ctools
 dependencies[] = elysia_cron
 dependencies[] = features
 dependencies[] = file_entity
+dependencies[] = google_feedapi
 dependencies[] = list
 dependencies[] = media_embed
 dependencies[] = media_internet

@@ -9,6 +9,16 @@ include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
 /**
+ * Time in seconds before OS will re-parse the notifications RSS feed.
+ */
+define('OS_NOTIFICATIONS_CACHE_EXPIRE', 300);
+
+/**
+ * The default maximum number of feed items to display in the Notifications tab.
+ */
+define('OS_NOTIFICATIONS_MAX_DEFAULT', 3);
+
+/**
  * Implements hook_menu().
  */
 function os_menu() {
@@ -102,7 +112,7 @@ function os_menu_alter(&$items) {
   // users' profiles, we provide our own permission and override the default
   // behavior of the menu item to use our custom permission instead.
   $items['user/autocomplete']['access arguments'] = array(
-      'access user autocomplete',
+    'access user autocomplete',
   );
 }
 
@@ -193,8 +203,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar and footer regions.
-  	$theme = (in_array($data->region, array('footer', 'footer_first', 'footer_third', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
+    // Remove nice menus from the sidebar and footer regions.
+    $theme = (in_array($data->region, array('footer', 'footer_first', 'footer_third', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -365,7 +375,7 @@ function os_theme() {
         'link_text' => 'Admin Login',
         'attributes' => array(
           'class' => array(
-          	'footer-login'
+            'footer-login'
           ),
         ),
       ),
@@ -587,8 +597,8 @@ function os_preprocess_page(&$vars) {
   }
 
   $section_links['header'] = array(
-      'title' => 'This Section',
-    );
+    'title' => 'This Section',
+  );
   if ($module != 'os_front') {
     $section_links['settings'] = array(
       'title' => t('Settings'),
@@ -651,11 +661,11 @@ function os_preprocess_page(&$vars) {
     if (isset($flavor['css'])) {
       foreach ($flavor['css'] as $css) {
         drupal_add_css($flavor['path'] . '/' . $css, array(
-            'type' => 'file',
-            'preprocess' => FALSE,
-            'weight' => 100,
-            'group' => CSS_THEME,
-          ));
+          'type' => 'file',
+          'preprocess' => FALSE,
+          'weight' => 100,
+          'group' => CSS_THEME,
+        ));
       }
     }
 
@@ -751,7 +761,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
 function os_entity_form_after_build($form, $form_state) {
   $node = isset($form['#node'])?$form['#node']:NULL;
   if (!isset($node) && isset($form['#entity']) && !isset($form['#entity']->comment)) {
-     // dummy node
+    // dummy node
     $node = (object)array('type' => 'page');
   }
   if (isset($node)) {
@@ -812,10 +822,11 @@ function os_settings_form($form_state) {
     '#default_value' => variable_get('os_platform_notifications_feeds', ''),
     '#description' => t('Enter one or more RSS feeds to create a "Notifications" tab in the Admin Toolbar. Use commas to separate.'),
   );
+  $default = OS_NOTIFICATIONS_MAX_DEFAULT;
   $form['os_platform_notifications']['os_platform_notifications_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Max'),
-    '#default_value' => variable_get('os_platform_notifications_max', '3'),
+    '#default_value' => variable_get('os_platform_notifications_max', $default),
     '#description' => t('Maximum amount of notification items to list for users.'),
   );
 
@@ -931,8 +942,8 @@ function os_os_layout_contexts($privacy = TRUE) {
  */
 function theme_openscholar_powered_by() {
   return '<span>' . t('<a href="@poweredby">OpenScholar</a>', array(
-      '@poweredby' => 'http://openscholar.harvard.edu',
-    )) . '</span>';
+    '@poweredby' => 'http://openscholar.harvard.edu',
+  )) . '</span>';
 }
 
 /**
@@ -950,11 +961,11 @@ function theme_openscholar_login($variables) {
   }
 
   return l($variables['link_text'], "user", array(
-      'purl' => array('disabled' => TRUE,
-      ),
-      'attributes' => $variables['attributes'],
-      'alias' => TRUE,
-    ));
+    'purl' => array('disabled' => TRUE,
+    ),
+    'attributes' => $variables['attributes'],
+    'alias' => TRUE,
+  ));
 }
 
 /**
@@ -970,15 +981,15 @@ function theme_openscholar_get_started() {
   }
 
   $links = theme('item_list', array(
-      'items' => array(
-        l("Enable or disable features for your site", 'cp/build/features'),
-        l("Add/manage content", 'cp/content'),
-        l("Manage who may use your site", 'cp/users'),
-        l("Change the look of your site", 'cp/appearance'),
-        l("Move elements in your page layout", 'cp/build/layout'),
-        l("View documentation", "help/os_help/OpenScholar-Documentation"),
-      ),
-    ));
+    'items' => array(
+      l("Enable or disable features for your site", 'cp/build/features'),
+      l("Add/manage content", 'cp/content'),
+      l("Manage who may use your site", 'cp/users'),
+      l("Change the look of your site", 'cp/appearance'),
+      l("Move elements in your page layout", 'cp/build/layout'),
+      l("View documentation", "help/os_help/OpenScholar-Documentation"),
+    ),
+  ));
 
   // Created in the last 26 hours?
   $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
@@ -1454,7 +1465,7 @@ function os_app_info($app_name = NULL) {
         foreach ($apps as $key => $app) {
           // Adds default values.
           $app += array(
-          	'path' => '',
+            'path' => '',
           );
 
           // Adds the module information.
@@ -1557,8 +1568,8 @@ function os_grant_unpublished_viewing_permission() {
  * Implements hook_preprocess_toolbar().
  */
 function os_preprocess_toolbar(&$vars) {
-  $feeds = variable_get('os_platform_notifications_feeds', '');
-  if (empty($feeds)) {
+  $data = os_notifications_data();
+  if (empty($data)) {
     return;
   }
 
@@ -1579,7 +1590,46 @@ function os_preprocess_toolbar(&$vars) {
       ),
     ),
     '#attached' => array(
-      'js' => array("$path/theme/os_notifications.js"),
+      'js' => array(
+        "$path/theme/os_notifications.js",
+      ),
+      'library' => array(
+        array('google_feedapi', 'google-feeds'),
+      ),
     ),
   );
+}
+
+/**
+ * Returns an array of the max number of notification items, or FALSE if no feeds.
+ */
+function os_notifications_data() {
+  // Only continues if there are feeds to look up.
+  $feeds = variable_get('os_platform_notifications_feeds', '');
+  if (empty($feeds)) {
+    return FALSE;
+  }
+
+  $data = &drupal_static(__FUNCTION__);
+  if (!isset($data)) {
+    if ($cache = cache_get('os_notifications_data')) {
+      $data = $cache->data;
+    }
+    else {
+      $default = OS_NOTIFICATIONS_MAX_DEFAULT;
+      $max = variable_get('os_platform_notifications_max', $default);
+      $data = _os_notifications_data($feeds, $max);
+      $expire = time() + OS_NOTIFICATIONS_CACHE_EXPIRE;
+      cache_set('os_notifications_data', $data, 'cache', $expire);
+    }
+  }
+
+  return $data;
+}
+
+/**
+ * Parses one or more URLs and returns the items as an array.
+ */
+function _os_notifications_data($feeds) {
+  //
 }
