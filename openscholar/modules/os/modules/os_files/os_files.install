@@ -545,11 +545,11 @@ function os_files_update_7009($sb) {
 }
 
 /**
- * Move values from Media Title to Title
+ * Move values from Media Description to os_files_description
  */
 function os_files_update_7010($sb) {
 
-  $q = db_select('field_data_media_title', 'mt')
+  $q = db_select('field_data_media_description', 'mt')
     ->fields('mt')
     ->execute();
 
