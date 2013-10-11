@@ -154,71 +154,65 @@ function vsite_domain_purl_processor() {
  * Implements hook_cp_settings().
  */
 function vsite_domain_cp_settings() {
-  // @todo Form to set domain
-
-  $settings = array();
   $vsite = vsite_get_vsite();
-  if (!empty($vsite)) {
-    // If vsite_domain has been enabled as a purl type then add the form to manage it
-    // This check is here in case another module disables this or in case strongarm has
-    // not initilized the variable yet.
-    if (in_array('vsite_domain', array_keys(variable_get('purl_types', array())))) {
-      $domain = variable_get('vsite_domain_name', '');
-      $shared = variable_get('vsite_domain_shared', '');
-      // Wraps the entire form addition in the user_access check.
-      if (user_access('change vsite domain')) {
-        // Only includes validate and submit callbacks for user 1.
-        ctools_include('form', 'vsite_domain');
 
-        // Adds domain settings to form.
-        $settings['vsite_domain_name'] = array(
-          'group' => array(
-            '#id' => 'domain',
-            '#title' => t('Domain'),
-            '#weight' => 0,
-          ),
-          'form' => purl_form('vsite_domain', $vsite->group->nid, $domain),
-          'submit' => array('vsite_domain_cp_settings_domain_submit'),
-        );
+  //ensure we're in a vsite and can change domains
+  if (!($vsite && in_array('vsite_domain', array_keys(variable_get('purl_types', array()))) && user_access('change vsite domain'))) {
+    return;
+  }   
+  
+  $settings = array();
+  $domain = variable_get('vsite_domain_name', '');
+  $shared = variable_get('vsite_domain_shared', '');
+  ctools_include('form', 'vsite_domain');
 
-        // Overrides the purl form defaults.
-        // Sets the title since purl does not give you control over this
-        $settings['vsite_domain_name']['form']['value']['#title'] = t('Custom domain name');
-        $settings['vsite_domain_name']['form']['value']['#field_prefix'] = 'http://';
-        // Leaving the vsite domain name field blank means use purl base domain.
-        $settings['vsite_domain_name']['form']['value']['#required'] = FALSE;
-        // Use our validate function (which still invokes purl's validate).
-        $settings['vsite_domain_name']['form']['#element_validate'] = array('vsite_domain_cp_settings_domain_validate');
-        $settings['vsite_domain_name']['form']['#access'] = user_access('change vsite domain');
-        $settings['vsite_domain_name']['form']['sid'] = array(
-          '#type' => 'hidden',
-          '#value' => isset($vsite->group->nid) ? $vsite->group->nid : 0,
-        );
-        // Adds the option to share multiple vsites on one domain
-        // If this option is selected, we actually do not make a purl record.
-        $settings['vsite_domain_name']['form']['vsite_domain_shared'] = array(
-          // Adds javascript effects to disable/check the box when no domain
-          // is set. Attempts to align with the actual allowed states.
-          '#states' => array(
-            'enabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => TRUE)),
-            'disabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
-            'checked' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
-          ),
-          '#type' => 'checkbox',
-          '#title' => t('Share domain name'),
-          '#default_value' => $shared,
-          '#weight' => 10,
-          '#description' => t("Add \"<em><strong>/@site</strong></em>\" to the URL and share this domain name with other sites (default).<br/>If you own this custom domain, uncheck to use for just this site.", array('@site' => vsite_get_purl($vsite))),
-        );
-        // If shared, makes sure to display the shared option as "checked".
-        // Needed because checkbox #default_value = 1 does NOT show as checked.
-        // @see http://drupal.org/node/104852
-        if ($shared) {
-          $settings['vsite_domain_name']['form']['vsite_domain_shared']['#states']['checked'][':input[name="vsite_domain_name[value]"]'] = array('enabled' => TRUE);
-        }
-      }
-    }
+  // Adds domain settings to form.
+  $settings['vsite_domain_name'] = array(
+    'group' => array(
+      '#id' => 'domain',
+      '#title' => t('Domain'),
+      '#weight' => 0,
+    ),
+    'form' => purl_form('vsite_domain', $vsite->group->nid, $domain),
+    'submit' => array('vsite_domain_cp_settings_domain_submit'),
+  );
+
+  // Overrides the purl form defaults.
+  // Sets the title since purl does not give you control over this
+  $settings['vsite_domain_name']['form']['value']['#title'] = t('Custom domain name');
+  $settings['vsite_domain_name']['form']['value']['#field_prefix'] = 'http://';
+  // Leaving the vsite domain name field blank means use purl base domain.
+  $settings['vsite_domain_name']['form']['value']['#required'] = FALSE;
+  // Use our validate function (which still invokes purl's validate).
+  $settings['vsite_domain_name']['form']['#element_validate'] = array('vsite_domain_cp_settings_domain_validate');
+  $settings['vsite_domain_name']['form']['#access'] = user_access('change vsite domain');
+  $settings['vsite_domain_name']['form']['sid'] = array(
+    '#type' => 'hidden',
+    '#value' => isset($vsite->group->nid) ? $vsite->group->nid : 0,
+  );
+  // Adds the option to share multiple vsites on one domain
+  // If this option is selected, we actually do not make a purl record.
+  $settings['vsite_domain_name']['form']['vsite_domain_shared'] = array(
+    // Adds javascript effects to disable/check the box when no domain
+    // is set. Attempts to align with the actual allowed states.
+    '#states' => array(
+      'enabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => TRUE)),
+      'disabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
+      'checked' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
+    ),
+    '#type' => 'checkbox',
+    '#title' => t('Share domain name'),
+    '#default_value' => $shared,
+    '#weight' => 10,
+    '#description' => t("Add \"<em><strong>/@site</strong></em>\" to the URL and share this domain name with other sites (default).<br/>If you own this custom domain, uncheck to use for just this site.", array('@site' => vsite_get_purl($vsite))),
+  );
+  // If shared, makes sure to display the shared option as "checked".
+  // Needed because checkbox #default_value = 1 does NOT show as checked.
+  // @see http://drupal.org/node/104852
+  if ($shared) {
+    $settings['vsite_domain_name']['form']['vsite_domain_shared']['#states']['checked'][':input[name="vsite_domain_name[value]"]'] = array('enabled' => TRUE);
   }
+
   return $settings;
 }
 
