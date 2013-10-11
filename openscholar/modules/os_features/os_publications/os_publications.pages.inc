@@ -35,7 +35,7 @@ function os_publications_overview() {
 
   // handle caching
   //cache_set($ckey, $output, 'cache_biblio_lists');
-  
+
   // change the page title to match the menu entry
   ctools_include('menu', 'os');
   $menu_item = os_menu_load_link_path($_GET['q']);
@@ -249,14 +249,6 @@ function os_publications_settings() {
     '#title' => t('Select default order of the sort category'),
     '#default_value' => variable_get('biblio_order', 'DESC'),
     '#options' => array('DESC' => t('Descending'), 'ASC' => t('Ascending')),
-  );
-
-  $form['left']['biblio_sort_tabs'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Allow additional sorting of your publications by'),
-    '#default_value' => variable_get('biblio_sort_tabs', array('author' => 'author', 'title' => 'title', 'type' => 'type', 'year' => 'year')),
-    '#options' => array('author' => t('Author'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
-    //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
   );
 
   $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -1 AND visible = 1');

@@ -171,13 +171,6 @@ function os_basetheme_preprocess_node(&$vars) {
       $vars['classes_array'][] = 'event-start';
     }
   }
-
-  // When watching an imported news item - don't apply the site time zone.
-  if ($vars['node']->type == 'news' && os_reader_get_feed_item_by_nid($vars['node']->nid)) {
-    $date = new DateTime(NULL, timezone_open('UTC'));
-    $date->setTimestamp($vars['content']['field_news_date']['#items'][0]['value']);
-    $vars['content']['field_news_date'][0]['#markup'] = $date->format('F j, Y');
-  }
 }
 
 /**
