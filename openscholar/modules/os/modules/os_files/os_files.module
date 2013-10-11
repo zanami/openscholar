@@ -1760,7 +1760,7 @@ function os_files_add_fields($type) {
       'widget' => array(
         'module' => 'text',
         'settings' => array(
-          'rows' => 20,
+          'rows' => 10,
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
