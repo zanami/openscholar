@@ -547,15 +547,29 @@ function os_files_update_7009($sb) {
 /**
  * Move values from Media Description to os_files_description
  */
-function os_files_update_7010($sb) {
+function os_files_update_7010(&$sb) {
 
   $q = db_select('field_data_media_description', 'mt')
-    ->fields('mt')
+    ->fields('mt');
+
+  if (!isset($sb['progress'])) {
+    $sb['progress'] = 0;
+    $sb['total'] = $q->countQuery()->execute()->fetchField();
+    $sb['limit'] = 50;
+  }
+
+  $q = $q->range($sb['progress'], $sb['limit'])
     ->execute();
 
   foreach ($q as $r) {
-    $r->os_files_description_value = $r->media_description_value;
-    $r->os_files_description_format = $r->media_description_format;
-    drupal_write_record('field_data_os_files_description', $r);
+    $r->os_file_description_value = $r->media_description_value;
+    $r->os_file_description_format = $r->media_description_format;
+    drupal_write_record('field_data_os_file_description', $r);
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['total'];
+  if ($sb['#finished'] >= 1) {
+    return t('Moved data from Media description to OS Files Description.');
   }
 }
