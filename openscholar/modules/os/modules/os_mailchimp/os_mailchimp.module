@@ -44,10 +44,6 @@ function os_mailchimp_menu() {
 function os_mailchimp_user_insert(&$edit, $account, $category) {
   $api = variable_get('os_mailchimp_api', FALSE);
   $list = variable_get('os_mailchimp_list', FALSE);
-
-  $dc = end(explode('-', $api));
-  $url = 'http://' . $dc . '.api.mailchimp.com/1.3/';
-
   $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $edit['name']);
 }
 
@@ -353,4 +349,38 @@ function _os_mailchimp_mailchimp_connect($api) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');  
   $MC = new MCAPI($api);
   return ($MC) ? $MC : FALSE;
+}
+
+function _os_mailchimp_user_get_info($uid = NULL) {
+  if (!$uid) {
+    global $user;
+  } else {
+    if (($user = user_load($uid)) == FALSE) {
+      return FALSE;
+    }
+  }
+  
+  $ret = array(
+    'mail' => $user->mail,
+    'fn' => $user->field_first_name[LANGUAGE_NONE][0]['value'],
+    'ln' => $user->field_last_name[LANGUAGE_NONE][0]['value'],
+  );
+  
+  $vsites = array_map(function($a) {return $a['target_id']; }, $user->og_user_node[LANGUAGE_NONE]);
+  $query = db_select('purl', 'purl')
+    ->condition('purl.id', $vsites, 'IN')
+    ->condition('purl.provider', 'spaces_og')
+    ->fields('purl', array('value'));
+  $query->leftJoin('purl', 'domain', '(purl.id = domain.id AND domain.provider = :param1)', array(':param1' => 'vsite_domain'));
+  $query->fields('domain', array('value'));
+  $results = $query->execute();
+  
+  $sites = array();
+  while ($row = $results->fetchObject()) {
+    $sites[] = ($row->domain_value) ? $row->domain_value : $row->value;
+  }
+  
+  $ret['sites'] = implode(' ', $sites);
+  
+  print_r($ret);
 }
