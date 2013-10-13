@@ -222,7 +222,20 @@ function os_importer_import_content($type) {
  *  configuration form.
  */
 function os_importer_map_files($source, $entity, $target, $value, $mapping) {
+  $field_name = $source->importer->processor->config['file_field'];
+  $files = array();
+
   $sources = explode('|', $value);
+  foreach ($sources as $source) {
+    $file = system_retrieve_file($source, 'public://', TRUE);
+    $files[] = array(
+      'fid' => $file->fid,
+      'display' => 1,
+      'description' => '',
+    );
+  }
+
+  $entity->{$field_name}[$entity->language] = $files;
 }
 
 /**
