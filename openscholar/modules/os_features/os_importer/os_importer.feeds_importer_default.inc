@@ -36,7 +36,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -141,7 +141,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -224,7 +224,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -282,7 +282,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -340,7 +340,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -469,7 +469,7 @@ function os_importer_feeds_importer_default() {
       'config' => array(),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -537,7 +537,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -600,7 +600,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -698,7 +698,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
@@ -766,7 +766,7 @@ function os_importer_feeds_importer_default() {
       ),
     ),
     'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
+      'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
         'expire' => '-1',
         'author' => 0,
