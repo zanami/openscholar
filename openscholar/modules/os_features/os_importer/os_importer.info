@@ -18,6 +18,7 @@ features[feeds_importer][] = os_classes
 features[feeds_importer][] = os_cv
 features[feeds_importer][] = os_documents
 features[feeds_importer][] = os_faq
+features[feeds_importer][] = os_feed
 features[feeds_importer][] = os_gallery
 features[feeds_importer][] = os_ical
 features[feeds_importer][] = os_links
