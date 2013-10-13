@@ -118,69 +118,6 @@ function os_importer_feeds_importer_default() {
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_class_material';
-  $feeds_importer->config = array(
-    'name' => 'OS class material',
-    'description' => 'Importing class material content ',
-    'fetcher' => array(
-      'plugin_key' => 'FeedsFileFetcher',
-      'config' => array(
-        'allowed_extensions' => 'txt csv tsv xml opml',
-        'direct' => FALSE,
-        'directory' => 'public://feeds',
-        'allowed_schemes' => array(
-          0 => 'public',
-        ),
-      ),
-    ),
-    'parser' => array(
-      'plugin_key' => 'FeedsCSVParser',
-      'config' => array(
-        'delimiter' => ',',
-        'no_headers' => 0,
-      ),
-    ),
-    'processor' => array(
-      'plugin_key' => 'FeedsNodeProcessor',
-      'config' => array(
-        'expire' => '-1',
-        'author' => 0,
-        'authorize' => 1,
-        'mappings' => array(
-          0 => array(
-            'source' => 'Title',
-            'target' => 'title',
-            'unique' => FALSE,
-          ),
-          1 => array(
-            'source' => 'Body',
-            'target' => 'body',
-            'unique' => FALSE,
-          ),
-          2 => array(
-            'source' => 'Class',
-            'target' => 'field_class',
-            'unique' => FALSE,
-          ),
-        ),
-        'update_existing' => '0',
-        'input_format' => 'plain_text',
-        'skip_hash_check' => 0,
-        'bundle' => 'class_material',
-      ),
-    ),
-    'content_type' => '',
-    'update' => 0,
-    'import_period' => '-1',
-    'expire_period' => 3600,
-    'import_on_create' => 1,
-    'process_in_background' => 0,
-  );
-  $export['os_class_material'] = $feeds_importer;
-
-  $feeds_importer = new stdClass();
-  $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
-  $feeds_importer->api_version = 1;
   $feeds_importer->id = 'os_classes';
   $feeds_importer->config = array(
     'name' => 'OS Classes',
@@ -438,6 +375,71 @@ function os_importer_feeds_importer_default() {
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
+  $feeds_importer->id = 'os_ical';
+  $feeds_importer->config = array(
+    'name' => 'OS iCal',
+    'description' => 'Importing events from CSV.',
+    'fetcher' => array(
+      'plugin_key' => 'FeedsFileFetcher',
+      'config' => array(
+        'allowed_extensions' => 'txt csv tsv xml opml ics',
+        'direct' => 0,
+        'directory' => 'public://feeds',
+        'allowed_schemes' => array(
+          'public' => 'public',
+        ),
+      ),
+    ),
+    'parser' => array(
+      'plugin_key' => 'DateIcalIcalcreatorParser',
+      'config' => array(),
+    ),
+    'processor' => array(
+      'plugin_key' => 'FeedsNodeProcessor',
+      'config' => array(
+        'expire' => '-1',
+        'author' => 0,
+        'authorize' => 1,
+        'mappings' => array(
+          0 => array(
+            'source' => 'summary',
+            'target' => 'title',
+            'unique' => FALSE,
+          ),
+          1 => array(
+            'source' => 'dtstart',
+            'target' => 'field_date:start',
+            'unique' => FALSE,
+          ),
+          2 => array(
+            'source' => 'dtend',
+            'target' => 'field_date:end',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'description',
+            'target' => 'body',
+            'unique' => FALSE,
+          ),
+        ),
+        'update_existing' => '0',
+        'input_format' => 'plain_text',
+        'skip_hash_check' => 0,
+        'bundle' => 'event',
+      ),
+    ),
+    'content_type' => '',
+    'update' => 0,
+    'import_period' => '-1',
+    'expire_period' => 3600,
+    'import_on_create' => 1,
+    'process_in_background' => 0,
+  );
+  $export['os_ical'] = $feeds_importer;
+
+  $feeds_importer = new stdClass();
+  $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
+  $feeds_importer->api_version = 1;
   $feeds_importer->id = 'os_links';
   $feeds_importer->config = array(
     'name' => 'OS links',
@@ -595,6 +597,74 @@ function os_importer_feeds_importer_default() {
     'process_in_background' => 0,
   );
   $export['os_people'] = $feeds_importer;
+
+  $feeds_importer = new stdClass();
+  $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
+  $feeds_importer->api_version = 1;
+  $feeds_importer->id = 'os_presentation';
+  $feeds_importer->config = array(
+    'name' => 'OS presentation',
+    'description' => 'Importing presentation form csv.',
+    'fetcher' => array(
+      'plugin_key' => 'FeedsFileFetcher',
+      'config' => array(
+        'allowed_extensions' => 'txt csv tsv xml opml',
+        'direct' => FALSE,
+        'directory' => 'public://feeds',
+        'allowed_schemes' => array(
+          0 => 'public',
+        ),
+      ),
+    ),
+    'parser' => array(
+      'plugin_key' => 'FeedsCSVParser',
+      'config' => array(
+        'delimiter' => ',',
+        'no_headers' => 0,
+      ),
+    ),
+    'processor' => array(
+      'plugin_key' => 'FeedsNodeProcessor',
+      'config' => array(
+        'expire' => '-1',
+        'author' => 0,
+        'authorize' => 1,
+        'mappings' => array(
+          0 => array(
+            'source' => 'Title',
+            'target' => 'title',
+            'unique' => FALSE,
+          ),
+          1 => array(
+            'source' => 'Body',
+            'target' => 'body',
+            'unique' => FALSE,
+          ),
+          2 => array(
+            'source' => 'Date',
+            'target' => 'field_presentation_date:start',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Location',
+            'target' => 'field_presentation_location',
+            'unique' => FALSE,
+          ),
+        ),
+        'update_existing' => '0',
+        'input_format' => 'plain_text',
+        'skip_hash_check' => 0,
+        'bundle' => 'presentation',
+      ),
+    ),
+    'content_type' => '',
+    'update' => 0,
+    'import_period' => '-1',
+    'expire_period' => 3600,
+    'import_on_create' => 1,
+    'process_in_background' => 0,
+  );
+  $export['os_presentation'] = $feeds_importer;
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
