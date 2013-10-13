@@ -59,6 +59,17 @@ function os_importer_feeds_plugins() {
       'path'   => drupal_get_path('module', 'os_importer') . '/plugins',
     ),
   );
+  $info['OsImporterNodeProcessor'] = array(
+    'name' => t('OS importer Node processor'),
+    'description' => t('Import node from source. Including files form external URL.'),
+    'help' => t('Create and update nodes from parsed content.'),
+    'handler' => array(
+      'parent' => 'FeedsNodeProcessor',
+      'class' => 'OsImporterNodeProcessor',
+      'file' => 'OsImporterNodeProcessor.inc',
+      'path' => drupal_get_path('module', 'os_importer') . '/plugins',
+    ),
+  );
   return $info;
 }
 
@@ -196,10 +207,22 @@ function os_importer_import_content($type) {
 }
 
 /**
- * Implements hook_feeds_after_save().
+ * Callback function for importing files from out source.
+ *
+ * @param $source
+ *   Field mapper source settings.
+ * @param $entity
+ *   An entity object, for instance a node object.
+ * @param $target
+ *   A string identifying the target on the node.
+ * @param $value
+ *   The value to populate the target with.
+ * @param $mapping
+ *  Associative array of the mapping settings from the per mapping
+ *  configuration form.
  */
-function os_importer_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
-
+function os_importer_map_files($source, $entity, $target, $value, $mapping) {
+  $sources = explode('|', $value);
 }
 
 /**
