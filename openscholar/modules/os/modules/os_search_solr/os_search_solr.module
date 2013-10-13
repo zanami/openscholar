@@ -177,9 +177,15 @@ function os_search_solr_apachesolr_entity_info_alter(&$entity_info) {
 function os_search_solr_apachesolr_index_node_solr_document(ApacheSolrDocument $document, $node, $entity_type, $env_id) {
   $documents = apachesolr_index_node_solr_document($document, $node, $entity_type, $env_id);
 
-  $app_info = os_app_info($node->type);
+  // Check in the app, if we need to index the author.
+  foreach (os_app_info() as $app) {
+    if (in_array($node->type, $app['nodetypes'])) {
+      $index_author = $app['index author'];
+      break;
+    }
+  };
 
-  if (empty($app_info['index author'])) {
+  if (!$index_author) {
     // Don't index the author.
     foreach (array_keys($documents) as $key) {
       unset($documents[$key]->ss_name_formatted);
