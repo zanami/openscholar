@@ -1436,6 +1436,8 @@ function os_app_info($app_name = NULL) {
           // Adds default values.
           $app += array(
           	'path' => '',
+            // Determine if author should be indexed in Solr.
+            'index author' => FALSE,
           );
 
           // Adds the module information.
