@@ -1078,23 +1078,6 @@ function vsite_field_access($op, $field, $entity_type, $entity, $account) {
 }
 
 /**
- * Implements hook_og_membership_presave().
- *
- * Set the state of the membership to active for "support team" user.
- */
-function vsite_og_membership_presave(OgMembership $og_membership) {
-  if (!empty($og_membership->id) || $og_membership->type != 'support_expire') {
-    // Membership already exists, or not a support team related.
-    return;
-  }
-
-  if ($og_membership->state == OG_STATE_PENDING) {
-    $og_membership->state = OG_STATE_ACTIVE;
-  }
-
-}
-
-/**
  * Prevents l() from initalizing the theme.
  *
  * This is used during hook_custom_theme(), so that we can get the space
