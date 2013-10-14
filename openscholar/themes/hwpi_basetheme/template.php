@@ -26,13 +26,13 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  * Adds mobile menu controls to menubar.
  */
 function hwpi_basetheme_page_alter(&$page) {
-  $page['header_third']['#sorted'] = false;
-  $page['header_third']['mobile'] = array(
+  $page['header_second']['#sorted'] = false;
+  $page['header_second']['mobile'] = array(
     '#theme' => 'links',
     '#attributes' => array(
       'class' => array('mobile-buttons'),
     ),
-    '#weight' => -1000,
+    '#weight' => 5000,
     '#links' => array(
       'mobi-main' => array(
         'href' => '#',
@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #header .os-custom-menu',
         ),
       ),
       'mobi-search' => array(
@@ -347,10 +347,6 @@ function hwpi_basetheme_menu_link(array $vars) {
     if (!empty($element['#original_link']['mlid'])) {
       $element['#attributes']['class'][] = 'menu-item-' . $element['#original_link']['mlid'];
     }
-  }
-
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
   }
 
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);

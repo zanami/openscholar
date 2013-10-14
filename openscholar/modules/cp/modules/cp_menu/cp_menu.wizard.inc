@@ -101,9 +101,9 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   if ($js) {
     if ($errors = form_get_errors()) {
       $error_msg = theme('html_tag', array('element' => array(
-        '#tag' => 'div', 
-        '#attributes' => array('class'=> array('messages error')), 
-        '#value' => implode('<br>', $errors), 
+        '#tag' => 'div',
+        '#attributes' => array('class'=> array('messages error')),
+        '#value' => implode('<br>', $errors),
       )));
       $output = $error_msg . '<br>' . $output;
     }
@@ -125,7 +125,11 @@ function cp_menu_type($form, &$form_state) {
   $form['type'] = array(
     '#title' => 'Item Type',
     '#type' => 'radios',
-    '#options' => array('page' => t('Post'), 'url' => t('URL'), 'heading' => t('Menu Heading')),
+    '#options' => array(
+      'page' => t('Post'),
+      'url' => t('URL'),
+      'home' => t('Home'),
+      'heading' => t('Menu Heading')),
     '#description' => t('Select heading or type of content to link to.'),
     '#required' => TRUE,
   );
@@ -161,10 +165,19 @@ function cp_menu_title($form, &$form_state) {
         '#required' => TRUE,
         '#description' => t('The address of the link.'),
       );
-      
+
       $form['#validate'][] = 'cp_menu_url_validate';
       break;
-
+    case 'home':
+      $form['new_node_type'] = array(
+        '#type' => 'hidden',
+        '#value' => 0
+      );
+      $form['url'] = array(
+        '#type' => 'hidden',
+        '#value' => '<front>',
+      );
+      break;
     case 'page':
       $form['new_or_select'] = array(
         '#type' => 'radios',
@@ -213,7 +226,7 @@ function cp_menu_title($form, &$form_state) {
         $url_str = str_replace('_', '-', $key);
         $content_types_list[$url_str] = $value;
       }
-      
+
       $form['new_node_type'] = array(
           '#type' => 'select',
           '#title' => t('Create new'),
@@ -221,7 +234,7 @@ function cp_menu_title($form, &$form_state) {
           '#options' => $content_types_list,
           '#states' => array('visible' => array(':input[name="new_or_select"]' => array('value' => 'new'),),),
       );
-      
+
 
       break;
   }
@@ -264,7 +277,21 @@ function cp_menu_url_validate(&$form, &$state) {
     return;
   }
 
-  $url = check_url($state['values']['url']);
+  // Remove the query string and fragments.
+  list($url, ) = explode('?', $state['values']['url'],2);
+
+  // Parses the URL into it's components.
+  $components = parse_url($state['values']['url']);
+  // Builds a string to add to the end of the normalized path.
+  $extra = '';
+  if (!empty($components['query'])) {
+    $extra .= "?{$components['query']}";
+  }
+  if (!empty($components['fragment'])) {
+    $extra .= "#{$components['fragment']}";
+  }
+
+  $url = check_url($url);
 
   $domains = array(variable_get('purl_base_domain'));
   if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
@@ -272,46 +299,48 @@ function cp_menu_url_validate(&$form, &$state) {
     if ($vsite_domain) {
       $domains[] = 'http://' . $vsite_domain;
     }
-  }  
-  
+  }
+
   //absolute url
   if (url_is_external($url)) {
     $path = explode('/', $url);
     $domain = implode('/', array_slice($path, 0, 3));
-    $fragment = implode('/', array_slice($path, 3));
-    
+    $original_path = implode('/', array_slice($path, 3));
+    list($original_path, ) = explode('#', $original_path, 2);
+
     //external url
     if (!in_array($domain, $domains)) {
       $header = @get_headers($url);
-  
+
       if (!$header) {
         form_set_error('url', t('Could not connect to url: %url', array('%url' => $url)));
       }
       else {
         $http = explode(' ', $header[0]);
         $http_code = $http[1];
-  
-        if ($http_code >= 400) {
+
+        if ($http_code == 404) {
           form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
         }
       }
       return;
     } else {
       //absolute path to internal url.
-      $path = ($fragment) ? $fragment : '<front>';
+      $path = ($original_path) ? $original_path : '<front>';
     }
   } else {
     //relative url
     $path = $url;
-  }    
-  
+  }
+
+  list($path, ) = explode('#', $path, 2);
   $normal_path = drupal_get_normal_path($path);
   $item = menu_get_item($path);
   if ($normal_path == $path && !drupal_valid_path($normal_path)) {
     //prepend site purl if missing.
     if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
       $purl = $vsite->group->purl;
-    
+
       if (strpos($path, $purl.'/') !== 0) {
         $path = $purl . '/' . $path;
         $normal_path = drupal_get_normal_path($path);
@@ -319,17 +348,17 @@ function cp_menu_url_validate(&$form, &$state) {
       }
     }
   }
-  
+
   //check if internal path exists or needs to be created.
-  if (!$item && !drupal_valid_path($normal_path)) {        
+  if (!$item && !drupal_valid_path($normal_path)) {
     if ($state['input']['new_node_type']) {
       //path does not exist but user has opted to create a new node there.
       $values = cp_menu_cache_get($state['object_id']) + $state['input'];
       $values['new_node_type'] = $state['input']['new_node_type'];
       $values['new_node_url'] = $path;
       cp_menu_cache_set($state['object_id'], $values);
-      
-      return;  //Node type will be handled by submit function, cp_menu_wizard_finish. 
+
+      return;  //Node type will be handled by submit function, cp_menu_wizard_finish.
     } else {
       form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
 
@@ -343,11 +372,11 @@ function cp_menu_url_validate(&$form, &$state) {
       $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
       $form['new_node_type']['#suffix'] = '</div>';
       array_unshift($form['new_node_type']['#options'], '-- Select Type --');
-    }          
+    }
   } else {
     //path is valid.  use normal path instead of aliased path
     $values = cp_menu_cache_get($state['object_id']) + $state['input'];
-    $values['url'] = $normal_path;
+    $values['url'] = "{$normal_path}{$extra}";
     cp_menu_cache_set($state['object_id'], $values);
   }
 }
@@ -534,8 +563,28 @@ function cp_menu_wizard_finish(&$form_state) {
 
   // Builds the link from the collected data
   switch ($values['type']) {
+    case 'home':
     case 'url':
-      $url = ($values['url'] == '<front>') ? '<front>' : check_url($values['url']);
+      // Parse out the query string and fragments.
+      $query = parse_url($values['url'], PHP_URL_QUERY);
+      $fragment = parse_url($values['url'], PHP_URL_FRAGMENT);
+      $url = $values['url'];
+
+      if(strlen($query)){
+        $options['query'] = array();
+        // Parse the string to an array.
+        parse_str($query,$options['query']);
+        // Removes query string.
+        list($url,) = explode('?', $url,2);
+      }
+
+      if(strlen($fragment)){
+        $options['fragment'] = $fragment;
+        // Removes fragment from URL;
+        list($url,) = explode('#', $url, 2);
+      }
+
+      $url = ($values['url'] == '<front>') ? '<front>' : check_url($url);
       break;
 
     case 'page':

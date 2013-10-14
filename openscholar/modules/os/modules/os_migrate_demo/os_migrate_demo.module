@@ -11,6 +11,32 @@ function os_migrate_demo_define_harvard_courses() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function os_migrate_demo_menu() {
+
+  $items = array();
+
+  $items['os-reader/%'] = array(
+    'page callback' => 'os_reader_dummy_xml',
+    'access callback' => TRUE,
+    'page arguments' => array(1),
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback; Print a dummy xml of feeds items.
+ */
+function os_reader_dummy_xml($vsite_name) {
+  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
+  $content = file_get_contents(drupal_get_path('module', 'os_migrate_demo') . '/includes/' . $vsite_name . '_dummy_rss.xml');
+
+  print $content;
+}
+
+/**
  * Change the spaces overrides domain easily.
  *
  *  @param $type
@@ -72,6 +98,31 @@ function os_migrate_demo_import_courses() {
       feeds_source('course', $nid)->import();
     }
   }
+}
+
+/**
+ * Create a dummy feed importer and import its items.
+ *
+ * @param $url
+ *    RSS url from which to import the items.
+ * @param $vsite_id
+ *    VSite ID to which to associate the imported feed.
+ */
+function os_migrate_demo_import_feed_items($url, $vsite_id) {
+  $node = node_load($vsite_id);
+  $entity = entity_create('node', array(
+    'title' => $node->title . ' feed importer',
+    'language' => LANGUAGE_NONE,
+    'type' => 'feed_importer',
+    'uid' => 1,
+  ));
+
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->field_rss_url->set($url);
+  $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite_id));
+  $wrapper->save();
+
+  feeds_source('os_reader', $wrapper->getIdentifier())->import();
 }
 
 /**
@@ -285,6 +336,32 @@ function os_migrate_demo_assign_node_to_term($title, $name, $type = 'class') {
 }
 
 /**
+ * Remove term tag from node.
+ *
+ *  @param $title
+ *    The title of the node.
+ *  @param $name
+ *    The name of the term.
+ *  @param $type
+ *    The type of the node. Optional, default is class.
+ */
+function os_migrate_demo_unassign_node_from_term($title, $name, $type = 'class') {
+  $nid = reset(entity_load('node', NULL, array('title' => $title, 'type' => $type)))->nid;
+
+  $wrapper = entity_metadata_wrapper('node', $nid);
+
+  $terms = $wrapper->{OG_VOCAB_FIELD}->value();
+  foreach ($terms as $key => $term) {
+    if ($term->title == $name) {
+      unset($terms[$key]);
+    }
+  }
+
+  $wrapper->{OG_VOCAB_FIELD}->set($terms);
+  $wrapper->save();
+}
+
+/**
  * Set a value for variable.
  */
 function os_migrate_demo_variable_set($name, $value) {
@@ -426,4 +503,20 @@ function os_migrate_demo_define_subtheme($theme, $subtheme, $vsite) {
 
   $vsite->controllers->variable->set('theme_default', $theme);
   $vsite->controllers->variable->set('os_appearance_cleanblue_flavor', $subtheme);
+}
+
+/**
+ * Display the watchdogs.
+ */
+function os_migrate_demo_display_watchdogs() {
+  $results = db_select('watchdog', 'w')
+    ->fields('w')
+    ->execute();
+
+  $string = array();
+  foreach ($results as $result) {
+    $string[] = format_string($result->message, unserialize($result->variables));
+  }
+
+  print implode("\n", $string);
 }

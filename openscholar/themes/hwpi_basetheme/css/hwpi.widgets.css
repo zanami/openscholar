@@ -278,6 +278,10 @@ table td.mini .mini-day-on a {
   width: 100%;
 }
 
+.lt-ie9 .ui-tabs ul.ui-tabs-nav {
+  table-layout: auto;
+}
+
 .ui-tabs ul.ui-tabs-nav li {
   display: table-cell;
   float: none;
@@ -290,6 +294,11 @@ table td.mini .mini-day-on a {
 .ui-tabs ul.ui-tabs-nav li.last {
   border-right: 1px solid #cacaca;
 }
+
+.lt-ie9 .ui-tabs ul.ui-tabs-nav li.last {
+  border-right: 1px solid #cacaca !important;
+}
+
 
 .ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
   background: #fff;
@@ -335,8 +344,11 @@ table td.mini .mini-day-on a {
 
 .ui-state-default,
 .ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default {
+.lt-ie9 .ui-widget-header .ui-state-default {
+	 border: 1px solid #D3D3D3 !important;
 }
+
+
 
 .ui-tabs .ui-state-default a,
 .ui-tabs .ui-state-default a:link,
@@ -570,11 +582,6 @@ table td.mini .mini-day-on a {
   margin-top: 5px;
 }
 
-.block-boxes-os_boxes_follow .item-list ul li {
-  height: 32px;
-  line-height: 32px;
-}
-
 .block-boxes-os_boxes_follow ul.follow-me-links-vertical li {
   margin-bottom: 4px;
 }
@@ -603,7 +610,9 @@ table td.mini .mini-day-on a {
   list-style: none;
 }
 
-
+.block-boxes-os_sv_list_box .os-slider li {
+     list-style: disc;
+}
 
 /* Bio */
 .block-boxes-os_boxes_bio .boxes-box-content {

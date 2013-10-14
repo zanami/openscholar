@@ -1,4 +1,5 @@
-ID,Title,URL,Public,Domain,UID,Members
-personal1,John,john,public,,user2,
-personal2,Obama,obama,private,,user2,user1
-personal3,Abraham,lincoln,public,lincoln.local,user2,
+ID,Title,URL,Public,Domain,Access,UID,Members
+personal1,John,john,public,,0,user2,
+personal2,Obama,obama,private,,0,user2,user1
+personal3,Abraham,lincoln,public,lincoln.local,0,user2,
+personal4,Einstein,einstein,public,,2,user2,

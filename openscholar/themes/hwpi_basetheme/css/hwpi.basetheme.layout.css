@@ -214,6 +214,10 @@
     width:100%;
   }
 
+/* WHEN THERE ARE WIDGETS IN HEADER LEFT AND RIGHT ONLY */
+.header-main.header-right .region-header-first {
+    margin-left: -200px;
+}
 
   /* Content Panels - allows for any combination of content panel regions */
   #content-panels .region-content-first,

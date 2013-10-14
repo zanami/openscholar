@@ -28,6 +28,7 @@
     padding-right: 15px;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url(../images/menu_down_arrowOn.gif) right center no-repeat #1E2540;

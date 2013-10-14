@@ -4,7 +4,7 @@ Feature: Testing the tagged items.
 
   @api
   Scenario: verify that the tagged items filter work as expected.
-      Given I am logged in as "admin"
+      Given I am logging in as "admin"
         And I visit "john/classes"
         And I click "Add Class"
         And I fill in "Title" with "Dummy class"

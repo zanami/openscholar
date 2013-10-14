@@ -23,3 +23,12 @@ h5 span {
 	color:#A51C30;
 	
 }
+
+
+
+.front .region-content-first .block .content,
+.front .region-content-second .block .content,
+.front .region-content-bottom .block .content {
+  background: url('/profiles/openscholar/themes/custom/department/images/blockBg.png') repeat-x center bottom;
+  }
+  

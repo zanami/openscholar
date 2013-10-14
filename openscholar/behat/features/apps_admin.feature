@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Check that all of the apps are turned on
-    Given I am logged in as "john"
+    Given I am logging in as "john"
       And I visit "john"
      When I click "Build"
       #And I should see "Apps"

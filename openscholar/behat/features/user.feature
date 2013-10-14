@@ -1,7 +1,7 @@
 Feature: User page access
   In order to access exclusive personalized content
   As a site visitor
-  I need to be be shown my user profile only when logged in.
+  I need to be be shown my user profile only when logging in.
 
   @api
   Scenario: User pages are inaccessible to anonymous users.
@@ -11,8 +11,8 @@ Feature: User page access
      | users/admin                | 403           | users/admin |
 
   @api
-  Scenario: User pages are accessible to the logged in user.
-    Given I am logged in as "john"
+  Scenario: User pages are accessible to the logging in user.
+    Given I am logging in as "john"
      When I visit "/user"
      Then I should see "View"
       And I should see "Edit"

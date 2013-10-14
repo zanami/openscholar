@@ -24,6 +24,7 @@ function vsite_user_default_permissions() {
     'name' => 'create department content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -82,6 +83,7 @@ function vsite_user_default_permissions() {
     'name' => 'create personal content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -128,6 +130,7 @@ function vsite_user_default_permissions() {
     'name' => 'create project content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );

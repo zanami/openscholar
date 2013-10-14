@@ -4,7 +4,7 @@ Feature:
 
   @api @wip
   Scenario: Page available on purl base domain, but not found on custom domain.
-    Given I am logged in as "admin"
+    Given I am logging in as "admin"
      When I visit "site/register"
       And I fill "edit-domain" with "cross-vsite-request"
       And I press "edit-submit"

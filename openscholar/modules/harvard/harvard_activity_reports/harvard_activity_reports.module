@@ -42,7 +42,7 @@ function harvard_activity_reports_query_user_by_id($hash_id)  {
   if (!module_exists('iqss_pinserver_register')) {
     return FALSE;
   }
-  $result = db_query('SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = :hashID', array(':hashID'=>$hash_id))->fetchObject();
+  $result = db_query('SELECT uid, huid FROM {pinserver_users} WHERE hashID = :hashID', array(':hashID'=>$hash_id))->fetchObject();
   return !empty($result->uid) ? $result->uid : FALSE;
 }
 
@@ -122,14 +122,14 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
 
   // Sanity check to make sure once again that this id does not exist in
   // the table.
-  if ($result = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid' => $uid))->fetchField()) {
+  if ($result = db_query("SELECT count(uid) AS uidCount FROM pinserver_users} WHERE uid = :uid", array(':uid' => $uid))->fetchField()) {
     return;
   }
 
   // Add a new hash ID.
-  return db_insert('iqss_pinserver_register')
+  return db_merge('pinserver_users')
+    ->key(array('uid' => $uid))
     ->fields(array(
-      'uid'=>$uid,
       'hashID'=>$hash_id,
     ))
     ->execute();

@@ -98,8 +98,8 @@ class HarvardFetcher extends FeedsFetcher {
       // Number of batches we need to iterate.
       $batches = floor(intval($found) / 10) + 1;
       $courses = '<courses>';
-      for ($i = 1; $i <= $batches; $i++) {
-        $start = $i == 1 ? 0 : $i * $rows;
+      for ($i = 0; $i <= $batches; $i++) {
+        $start = $i * $rows;
         $result = drupal_http_request($this->buildUrl($import_value, $rows, $start));
         preg_match_all('|<courses*.numFound="(.*)">(.*)<\/courses>|U', $result->data, $matches, PREG_PATTERN_ORDER);
         if (!isset($matches[2][0])) {

@@ -146,6 +146,7 @@ body.two-sidebars .region-sidebar-first {
 #menu-bar ul.nice-menu ul {
 	margin-top:-8px;
 	border:none;
+		background:#777;
 	}
 	
 #menu-bar ul.nice-menu ul ul {
@@ -166,12 +167,6 @@ body.two-sidebars .region-sidebar-first {
 	background:#777;
 }
 
-
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#FFF;
-	background:#A95A3C;
-
-}     
 
 
 	

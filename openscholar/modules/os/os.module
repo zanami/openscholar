@@ -96,6 +96,14 @@ function os_menu_alter(&$items) {
   if (isset($items['node'])) {
     unset($items['node']);
   }
+  // By default, "user/autocomplete" requires "view user profiles" permission.
+  // Since we want authenticated users to have access to the autocomplete
+  // callback, but we don't want authenticated users to have access to other
+  // users' profiles, we provide our own permission and override the default
+  // behavior of the menu item to use our custom permission instead.
+  $items['user/autocomplete']['access arguments'] = array(
+      'access user autocomplete',
+  );
 }
 
 /**
@@ -532,7 +540,8 @@ function os_preprocess_page(&$vars) {
     }
   }
 
-  $types = os_get_bundles();
+  // Display contextual links for private apps as well.
+  $types = os_get_bundles(array(OS_PUBLIC_APP, OS_PRIVATE_APP));
 
   $links = array();
   $active = context_active_contexts();
@@ -779,16 +788,35 @@ function os_settings_form($form_state) {
 
   $form['os_general'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General'),
+    '#title' => t('Dropdown menus'),
     '#weight' => 0,
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
   );
   $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
+  );
+  $form['os_platform_notifications'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Platform notifications'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['os_platform_notifications']['os_platform_notifications_feeds'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Feed URLs'),
+    '#default_value' => variable_get('os_platform_notifications_feeds', ''),
+    '#description' => t('Enter one or more RSS feeds to create a "Notifications" tab in the Admin Toolbar. Use commas to separate.'),
+  );
+  $form['os_platform_notifications']['os_platform_notifications_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max'),
+    '#default_value' => variable_get('os_platform_notifications_max', '3'),
+    '#description' => t('Maximum amount of notification items to list for users.'),
   );
 
   return system_settings_form($form);
@@ -1131,6 +1159,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   $loop_back_pages = array(
     'user',
+    'user/pin',
     'user/logout',
   );
 
@@ -1255,6 +1284,10 @@ function os_permission() {
     'edit locked regions' => array(
       'title' => t('Edit Locked Regions'),
       'description' => t('Allows users to edit locked regions')
+    ),
+    'access user autocomplete' => array(
+      'title' => t('Access user autocomplete callback'),
+      'description' => t('Used for Author fields on biblio node forms and Authoring information on all node forms')
     ),
   );
 
@@ -1497,4 +1530,56 @@ function os_restws_resource_info_alter(&$info){
 //     }
 //   }
 
+}
+
+/**
+ * Helper function for permission to view unpublish group content.
+ */
+function os_grant_unpublished_viewing_permission() {
+  $group_content = og_get_all_group_content_bundle();
+
+  foreach (array_keys($group_content['node']) as $bundle) {
+    $group_types = array('department', 'personal', 'project');
+
+    foreach ($group_types as $group_type) {
+      $roles = og_roles('node', $group_type);
+      foreach ($roles as $rid => $role) {
+        if (!in_array($role, array('vsite admin', 'content editor'))) {
+          continue;
+        }
+        og_role_grant_permissions($rid, array('view any unpublished ' . $bundle . ' content'));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_toolbar().
+ */
+function os_preprocess_toolbar(&$vars) {
+  $feeds = variable_get('os_platform_notifications_feeds', '');
+  if (empty($feeds)) {
+    return;
+  }
+
+  // Adds the Notifications link to the Admin toolbar.
+  $path = drupal_get_path('module', 'os');
+  $vars['toolbar']['toolbar_right']['os_notifications'] = array(
+    '#theme' => 'links',
+    '#links' => array(
+      0 => array(
+        'title' => t('Notifications'),
+        'href' => '',
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => array('os-notifications-icon'),
+          'id' => 'os-notifications-menu-link',
+          'data-tooltip' => t('Learn about updates that affect your site')
+        ),
+      ),
+    ),
+    '#attached' => array(
+      'js' => array("$path/theme/os_notifications.js"),
+    ),
+  );
 }

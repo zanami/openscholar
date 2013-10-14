@@ -94,6 +94,7 @@ class OsMigratePersonalNode extends OsMigrate {
     array('purl', 'URL'),
     array('public', 'Public'),
     array('domain', 'Domain'),
+    array(VSITE_ACCESS_FIELD, 'Access'),
     array('uid', 'UID'),
     array('members', 'Members'),
   );
@@ -106,6 +107,7 @@ class OsMigratePersonalNode extends OsMigrate {
     parent::__construct();
     $this->addFieldMapping('purl', 'purl');
     $this->addFieldMapping('field_site_address', 'purl');
+    $this->addFieldMapping(VSITE_ACCESS_FIELD, VSITE_ACCESS_FIELD);
 
     $this->addFieldMapping('uid', 'uid')
       ->sourceMigration('OsMigrateUsers');
