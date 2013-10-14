@@ -57,6 +57,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -120,6 +125,11 @@ function os_importer_feeds_importer_default() {
           2 => array(
             'source' => 'Files',
             'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),
@@ -257,6 +267,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          8 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -319,6 +334,11 @@ function os_importer_feeds_importer_default() {
           2 => array(
             'source' => 'Files',
             'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),
@@ -385,6 +405,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -449,6 +474,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -506,6 +536,11 @@ function os_importer_feeds_importer_default() {
           1 => array(
             'source' => 'URL',
             'target' => 'field_url:url',
+            'unique' => FALSE,
+          ),
+          2 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),
@@ -583,6 +618,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          5 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -653,6 +693,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          5 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -720,6 +765,11 @@ function os_importer_feeds_importer_default() {
           3 => array(
             'source' => 'Files',
             'target' => 'file',
+            'unique' => FALSE,
+          ),
+          4 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),
@@ -795,6 +845,11 @@ function os_importer_feeds_importer_default() {
           4 => array(
             'source' => 'Files',
             'target' => 'file',
+            'unique' => FALSE,
+          ),
+          5 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),
@@ -900,6 +955,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          11 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -974,6 +1034,11 @@ function os_importer_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          5 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -1036,6 +1101,11 @@ function os_importer_feeds_importer_default() {
           2 => array(
             'source' => 'Files',
             'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),

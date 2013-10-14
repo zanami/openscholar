@@ -242,6 +242,32 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 }
 
 /**
+ * Callback function for importing OG vocab terms.
+ *
+ * @see os_importer_map_files().
+ */
+function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapping) {
+  if (!$value) {
+    return;
+  }
+
+  $terms = explode("|", $value);
+  $vocabs = og_vocab_get_accessible_vocabs('node', $entity->type, OG_VOCAB_FIELD);
+
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('vid', $vocabs, 'IN')
+    ->propertyCondition('name', $terms, 'IN')
+    ->execute();
+
+  $terms = array_keys($result['taxonomy_term']);
+
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->{OG_VOCAB_FIELD}->set($terms);
+}
+
+/**
  * Grouping an imported content into my group.
  */
 function os_import_group_content($node, $vsite, $ajax = 'nojs') {
