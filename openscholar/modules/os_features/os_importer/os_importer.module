@@ -222,6 +222,9 @@ function os_importer_import_content($type) {
  *  configuration form.
  */
 function os_importer_map_files($source, $entity, $target, $value, $mapping) {
+  if (!$value) {
+    return;
+  }
   $field_name = $source->importer->processor->config['file_field'];
   $files = array();
 
