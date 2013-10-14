@@ -32,11 +32,11 @@ class OsImporterNodeProcessor extends FeedsNodeProcessor {
     }
 
     // The user did not map any file source or did not select a bundle.
-    if (!$file || !$this->config['bundle']) {
+    if (!$file || !$this->config['content_type']) {
       return $form;
     }
 
-    $fields_info = field_info_instances('node', $this->config['bundle']);
+    $fields_info = field_info_instances('node', $this->config['content_type']);
 
     $field = array();
     foreach ($fields_info as $name => $info) {
