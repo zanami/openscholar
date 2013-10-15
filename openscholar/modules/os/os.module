@@ -892,6 +892,10 @@ function os_date_format_types() {
  * Implements hook_init().
  */
 function os_init() {
+  // Load the correct jQuery version.
+  global $conf;
+  $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
+
   // Execute the "In a OS Site" context condition
   if ($plugin = context_get_plugin('condition', 'os_site')) {
     $plugin->execute();
