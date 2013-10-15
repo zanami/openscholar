@@ -110,7 +110,7 @@ function os_profiles_feeds_importer_default() {
         'bundle' => 'person',
       ),
     ),
-    'content_type' => '',
+    'content_type' => 'person',
     'update' => 0,
     'import_period' => '-1',
     'expire_period' => 3600,
