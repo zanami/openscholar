@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * os_importer.feeds_importer_default.inc
+ * os_classes.feeds_importer_default.inc
  */
 
 /**
  * Implements hook_feeds_importer_default().
  */
-function os_importer_feeds_importer_default() {
+function os_classes_feeds_importer_default() {
   $export = array();
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_documents';
+  $feeds_importer->id = 'os_classes';
   $feeds_importer->config = array(
-    'name' => 'OS Documents',
-    'description' => 'Import documents from CSV file.',
+    'name' => 'OS Classes',
+    'description' => 'Import classes from CSV.',
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
@@ -53,11 +53,36 @@ function os_importer_feeds_importer_default() {
             'unique' => FALSE,
           ),
           2 => array(
+            'source' => 'Link title',
+            'target' => 'field_class_link:title',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Link url',
+            'target' => 'field_class_link:url',
+            'unique' => FALSE,
+          ),
+          4 => array(
+            'source' => 'Start date',
+            'target' => 'field_offered_year:start',
+            'unique' => FALSE,
+          ),
+          5 => array(
+            'source' => 'End date',
+            'target' => 'field_offered_year:end',
+            'unique' => FALSE,
+          ),
+          6 => array(
+            'source' => 'Semester',
+            'target' => 'field_semester',
+            'unique' => FALSE,
+          ),
+          7 => array(
             'source' => 'Files',
             'target' => 'file',
             'unique' => FALSE,
           ),
-          3 => array(
+          8 => array(
             'source' => 'Terms',
             'target' => 'og_vocab',
             'unique' => FALSE,
@@ -66,7 +91,7 @@ function os_importer_feeds_importer_default() {
         'update_existing' => '0',
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
-        'content_type' => 'book',
+        'content_type' => 'class',
         'file_field' => 'field_upload',
       ),
     ),
@@ -77,7 +102,7 @@ function os_importer_feeds_importer_default() {
     'import_on_create' => 1,
     'process_in_background' => 0,
   );
-  $export['os_documents'] = $feeds_importer;
+  $export['os_classes'] = $feeds_importer;
 
   return $export;
 }

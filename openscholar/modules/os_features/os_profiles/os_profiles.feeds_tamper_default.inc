@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * os_importer.feeds_tamper_default.inc
+ * os_profiles.feeds_tamper_default.inc
  */
 
 /**
  * Implements hook_feeds_tamper_default().
  */
-function os_importer_feeds_tamper_default() {
+function os_profiles_feeds_tamper_default() {
   $export = array();
 
   $feeds_tamper = new stdClass();

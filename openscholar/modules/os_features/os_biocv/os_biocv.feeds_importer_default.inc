@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * os_reader.feeds_importer_default.inc
+ * os_biocv.feeds_importer_default.inc
  */
 
 /**
  * Implements hook_feeds_importer_default().
  */
-function os_reader_feeds_importer_default() {
+function os_biocv_feeds_importer_default() {
   $export = array();
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_feed';
+  $feeds_importer->id = 'os_bio';
   $feeds_importer->config = array(
-    'name' => 'OS feed',
-    'description' => 'Importing feed via CSV',
+    'name' => 'OS bio',
+    'description' => 'Importing a biography from CSV file.',
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
@@ -48,11 +48,16 @@ function os_reader_feeds_importer_default() {
             'unique' => FALSE,
           ),
           1 => array(
-            'source' => 'URL',
-            'target' => 'field_url:url',
+            'source' => 'Body',
+            'target' => 'body',
             'unique' => FALSE,
           ),
           2 => array(
+            'source' => 'Files',
+            'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
             'source' => 'Terms',
             'target' => 'og_vocab',
             'unique' => FALSE,
@@ -61,8 +66,8 @@ function os_reader_feeds_importer_default() {
         'update_existing' => '0',
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
-        'content_type' => 'feed',
-        'file_field' => NULL,
+        'content_type' => 'bio',
+        'file_field' => 'field_upload',
       ),
     ),
     'content_type' => '',
@@ -72,64 +77,76 @@ function os_reader_feeds_importer_default() {
     'import_on_create' => 1,
     'process_in_background' => 0,
   );
-  $export['os_feed'] = $feeds_importer;
+  $export['os_bio'] = $feeds_importer;
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_reader';
+  $feeds_importer->id = 'os_cv';
   $feeds_importer->config = array(
-    'name' => 'OS reader',
-    'description' => '',
+    'name' => 'OS cv',
+    'description' => 'Import curriculum.',
     'fetcher' => array(
-      'plugin_key' => 'OsFeedFetcher',
-      'config' => array(),
-    ),
-    'parser' => array(
-      'plugin_key' => 'FeedsSyndicationParser',
-      'config' => array(),
-    ),
-    'processor' => array(
-      'plugin_key' => 'OsFeedReaderFetcher',
+      'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
-        'type' => array(),
-        'mappings' => array(
-          0 => array(
-            'source' => 'guid',
-            'target' => 'guid',
-            'unique' => 1,
-          ),
-          1 => array(
-            'source' => 'title',
-            'target' => 'title',
-            'unique' => FALSE,
-          ),
-          2 => array(
-            'source' => 'description',
-            'target' => 'description',
-            'unique' => FALSE,
-          ),
-          3 => array(
-            'source' => 'timestamp',
-            'target' => 'created',
-            'unique' => FALSE,
-          ),
-          4 => array(
-            'source' => 'url',
-            'target' => 'url',
-            'unique' => FALSE,
-          ),
+        'allowed_extensions' => 'txt csv tsv xml opml',
+        'direct' => FALSE,
+        'directory' => 'public://feeds',
+        'allowed_schemes' => array(
+          0 => 'public',
         ),
       ),
     ),
-    'content_type' => 'feed_importer',
+    'parser' => array(
+      'plugin_key' => 'FeedsCSVParser',
+      'config' => array(
+        'delimiter' => ',',
+        'no_headers' => 0,
+      ),
+    ),
+    'processor' => array(
+      'plugin_key' => 'OsImporterNodeProcessor',
+      'config' => array(
+        'expire' => '-1',
+        'author' => 0,
+        'authorize' => 1,
+        'mappings' => array(
+          0 => array(
+            'source' => 'Title',
+            'target' => 'title',
+            'unique' => FALSE,
+          ),
+          1 => array(
+            'source' => 'Body',
+            'target' => 'body',
+            'unique' => FALSE,
+          ),
+          2 => array(
+            'source' => 'Files',
+            'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Terms',
+            'target' => 'og_vocab',
+            'unique' => FALSE,
+          ),
+        ),
+        'update_existing' => '0',
+        'input_format' => 'plain_text',
+        'skip_hash_check' => 0,
+        'content_type' => 'cv',
+        'file_field' => 'field_biocv_pdf_upload',
+      ),
+    ),
+    'content_type' => '',
     'update' => 0,
-    'import_period' => '1800',
+    'import_period' => '-1',
     'expire_period' => 3600,
     'import_on_create' => 1,
     'process_in_background' => 0,
   );
-  $export['os_reader'] = $feeds_importer;
+  $export['os_cv'] = $feeds_importer;
 
   return $export;
 }
