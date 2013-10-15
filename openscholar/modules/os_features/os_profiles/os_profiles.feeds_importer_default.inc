@@ -22,10 +22,6 @@ function os_profiles_feeds_importer_default() {
       'config' => array(
         'allowed_extensions' => 'txt csv tsv xml opml',
         'direct' => FALSE,
-        'directory' => 'public://feeds',
-        'allowed_schemes' => array(
-          0 => 'public',
-        ),
       ),
     ),
     'parser' => array(
@@ -107,10 +103,10 @@ function os_profiles_feeds_importer_default() {
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
         'file_field' => 'field_upload',
-        'bundle' => 'person',
+        'content_type' => 'person',
       ),
     ),
-    'content_type' => 'person',
+    'content_type' => '',
     'update' => 0,
     'import_period' => '-1',
     'expire_period' => 3600,
