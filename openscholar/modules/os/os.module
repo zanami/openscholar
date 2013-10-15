@@ -102,8 +102,26 @@ function os_menu_alter(&$items) {
   // users' profiles, we provide our own permission and override the default
   // behavior of the menu item to use our custom permission instead.
   $items['user/autocomplete']['access arguments'] = array(
-      'access user autocomplete',
+    'access user autocomplete',
   );
+
+  $items['node/%node/revisions']['access callback'] = 'os_revisions_tab_access';
+}
+
+/**
+ *  Helper function; checks number of revisions of a node and hides the
+ *  revisions tab for a single revision.
+ *
+ *  @param $node
+ *    The current node being viewed.
+ */
+function os_revisions_tab_access($node) {
+  // Do not display the revisions tab if the node doesn't have any revisions.
+  if (count(node_revision_list($node)) == 1) {
+    return FALSE;
+  }
+
+  return og_moderation_node_revision_access($node);
 }
 
 /**
@@ -1607,3 +1625,4 @@ function os_preprocess_toolbar(&$vars) {
     ),
   );
 }
+
