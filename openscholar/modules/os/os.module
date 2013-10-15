@@ -105,14 +105,17 @@ function os_menu_alter(&$items) {
     'access user autocomplete',
   );
 
-  // Do not display the revisions tab if the node doesn't have any revisions.
   $items['node/%node/revisions']['access callback'] = 'os_check_revisions';
 }
 
 /**
  *  Helper function; checks number of revisions of a node.
+ *
+ *  @param $node
+ *    the current node being viewed
  */
 function os_check_revisions($node) {
+  // Do not display the revisions tab if the node doesn't have any revisions.
   if (count(node_revision_list($node)) == 1) {
     return FALSE;
   }
