@@ -6,45 +6,6 @@
 include_once 'os_importer.features.inc';
 
 /**
- * Implements hook_os_app_info().
- */
-function os_importer_os_app_info() {
-  $apps = array();
-
-  $apps['os_importer'] = array(
-    'path' => 'importer',
-
-    // TODO: Move the each app individually.
-    // Define which node types this module can import.
-    'imported_apps' => array(),
-
-    // TODO: Move the each app individually.
-    // Define which node types can imported via a iCal file.
-    'ical_nodes' => array('events'),
-  );
-
-  return $apps;
-}
-
-/**
- * Return the content types which can be cherry picked.
- *
- * TODO: Work on the logic.
- */
-function os_importer_importers_type() {
-  return array('blog');
-}
-
-/**
- * Implements hook_vsite_og_node_type_info().
- */
-function hook_vsite_og_node_type_info() {
-  return array(
-    'blog_import' => 'group content',
-  );
-}
-
-/**
  * Implements hook_feeds_plugins().
  */
 function os_importer_feeds_plugins() {
@@ -103,20 +64,27 @@ function os_importer_admin_paths() {
  * Implements hook_os_add_new_links_alter().
  */
 function os_importer_os_add_new_links_alter(&$links) {
-  $menu = menu_get_item();
-  $app_info = os_app_info('os_importer');
+  $item = menu_get_item();
+  $apps = os_app_info();
 
-  // Get the current app.
-  $current_app = array_search($menu['path'], os_get_app_path());
+  $current_app = '';
+  foreach ($apps as $app) {
+    if ($item['path'] == $app['path']) {
+      $current_app = $app;
+      break;
+    }
+  }
 
-  if (!in_array($current_app, $app_info['imported_apps'])) {
+  if (!$current_app) {
     return;
   }
 
-  $links['os-importer-import'] = array(
-    'title' => t('Import from CSV/RSS'),
-    'href' => 'os-importer/' . $current_app,
-  );
+  foreach ($current_app['importers'] as $type => $importer) {
+    $links['os-importer-' . $type] = array(
+      'title' => t('Import from @type', array('@type' => $type)),
+      'href' => 'os-importer/' . $importer,
+    );
+  }
 }
 
 /**
@@ -289,59 +257,16 @@ function os_import_group_content($node, $vsite, $ajax = 'nojs') {
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Name of the importer'),
-    '#description' => t('A title/name to identify the importer e.g. "New your times feed"'),
-    '#required' => TRUE,
-  );
+  $source = feeds_source($type);
+  $form_state['type'] = $type;
 
-  $form['description'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Description'),
-  );
-
-  $form['format'] = array(
-    '#type' => 'radios',
-    '#title' => t('Format'),
-    '#options' => array(
-      'rss' => t('RSS'),
-      'csv' => t('CSV'),
-      'ical' => t('iCal'),
-    ),
-    '#default_value' => 'rss',
-  );
-
-  // TODO: Validate that when the user selected a format he filled the filled.
-  $form['import_source'] = array(
-    // RSS need url.
-    'url' => array(
-      '#type' => 'textfield',
-      '#title' => t('URL'),
-
-      '#description' => t('The url of your data source.'),
-      '#states' => array(
-        'visible' => array(
-          ':input[name="format"]' => array('value' => 'rss'),
-        ),
-      ),
-    ),
-
-    // iCal / CSV need upload file from user computer.
-    'file' => array(
-      '#title' => t('File'),
-      '#type' => 'managed_file',
-      '#description' => t('Select a file form your computer to import.'),
-      '#upload_location' => 'public://',
-      '#upload_validators' => array(
-        'file_validate_extensions' => array('csv', 'ical'),
-      ),
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="format"]' => array('value' => 'rss'),
-        ),
-      ),
-      '#weight' => -99,
+  $form['file'] = array(
+    '#title' => t('File'),
+    '#type' => 'managed_file',
+    '#description' => t('Select a file form your computer to import.'),
+    '#upload_location' => 'public://',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('ics csv'),
     ),
   );
 
@@ -362,37 +287,16 @@ function os_importer_import($form, &$form_state, $type) {
 function os_importer_import_submit($form, &$form_state) {
   global $language, $user;
 
-  $vsite = vsite_get_vsite();
   $values = $form_state['values'];
+  $fid = $values['file'];
+  $file = file_load($fid);
 
-  // TODO: Check if there already a importer with that URL, if so - group him.
-  $node = new stdClass;
-  $node->type = 'blog_import';
-  $node->uid = $user->uid;
-  $node->title = $values['title'];
-  $node->language = $language->language;
-  $node->body[LANGUAGE_NONE][] = array('value' => $values['description']);
+  $source = feeds_source($form_state['type']);
+  $fetcher_config = $source->getConfigFor($source->importer->fetcher);
+  $fetcher_config['source'] = $file->uri;
+  $fetcher_config['file'] = $file;
+  $source->setConfigFor($source->importer->fetcher, $fetcher_config);
+  $source->save();
 
-  if ($values['format'] == 'rss') {
-    $node->field_rss_url['und'][0]['value'] = $values['url'];
-  }
-  else {
-    $node->field_import_file[LANGUAGE_NONE][] = array(
-      'fid' => $values['file'],
-      'display' => 1,
-      'description' => '',
-    );
-  }
-  $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE] = array('target_id' => $vsite->id);
-
-  node_save($node);
-
-  $params = array(
-    '@url' => url('node/'. $node->nid),
-    '@name' => $values['title'],
-  );
-  drupal_set_message(t('The importer @name has created successfully. You can <a href="@url">view</a> him.', $params));
-
-  // TODO: Change to the path of the app content.
-  $form_state['redirect'] = 'blog';
+  $source->startImport();
 }
