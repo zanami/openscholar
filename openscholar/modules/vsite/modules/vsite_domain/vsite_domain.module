@@ -190,15 +190,15 @@ function vsite_domain_cp_settings() {
     '#type' => 'hidden',
     '#value' => isset($vsite->group->nid) ? $vsite->group->nid : 0,
   );
+  
   // Adds the option to share multiple vsites on one domain
   // If this option is selected, we actually do not make a purl record.
   $form['vsite_domain_shared'] = array(
-    // Adds javascript effects to disable/check the box when no domain
-    // is set. Attempts to align with the actual allowed states.
+    // Disable/check the box when no domain is set. Attempts to align with the actual allowed states.
     '#states' => array(
-      'enabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => TRUE)),
+      'enabled' =>  array(':input[name="vsite_domain_name[value]"]' => array('filled' => TRUE)),
       'disabled' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
-      'checked' => array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
+      'checked' =>  array(':input[name="vsite_domain_name[value]"]' => array('filled' => FALSE)),
     ),
     '#type' => 'checkbox',
     '#title' => t('Share domain name'),
@@ -215,19 +215,18 @@ function vsite_domain_cp_settings() {
   }
   
   //subsite domains - non-admins can only add domains provided by parent site
-  if (!user_access('change vsite domain')) {
+  if (10 || !user_access('change vsite domain')) {
     $parent_domains = array_map(function($a) {return $a['value'];}, $parent->group->field_subsite_domains[LANGUAGE_NONE]);
     $form['value'] = array_merge($form['value'], array(
       '#type' => 'select',
-      '#options' => drupal_map_assoc(array_merge(array($purl), $parent_domains)),
-      '#default_value' => ($domain) ? $domain : $purl,
+      '#options' => array_merge(array('' => $purl), drupal_map_assoc($parent_domains)), // '' should clear the domain
+      '#value' => ($domain) ? $domain : '',
       '#size' => null,
     ));
-    
-    $form['vsite_domain_shared'] = array_merge($form['vsite_domain_shared'], array(
-      '#type' => 'hidden',
-      '#value' => TRUE,
-    ));
+          
+    $form['vsite_domain_shared']['#states'] = array(
+      'unchecked' =>  array(':input[name="vsite_domain_name[value]"]' => array('value' => '')),
+    );
   } else {
     $form['#access'] = user_access('change vsite domain');
   }
