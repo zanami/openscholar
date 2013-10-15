@@ -759,6 +759,14 @@ function os_form_alter(&$form, &$form_state, $form_id) {
     $paths = os_get_app_path();
     $_GET['destination'] = $paths[$form['#node']->type];
   }
+
+  // Add a cancel link to node forms.
+  if (strpos($form_id, '_node_form')) {
+    $form['actions']['cancel'] = array(
+      '#markup'   => l(t('Cancel'), ''),
+      '#weight' => 15,
+    );
+  }
 }
 
 /**
