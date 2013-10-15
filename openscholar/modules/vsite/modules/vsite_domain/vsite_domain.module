@@ -215,18 +215,21 @@ function vsite_domain_cp_settings() {
   }
   
   //subsite domains - non-admins can only add domains provided by parent site
-  if (10 || !user_access('change vsite domain')) {
+  if (!user_access('change vsite domain')) {
     $parent_domains = array_map(function($a) {return $a['value'];}, $parent->group->field_subsite_domains[LANGUAGE_NONE]);
     $form['value'] = array_merge($form['value'], array(
       '#type' => 'select',
       '#options' => array_merge(array('' => $purl), drupal_map_assoc($parent_domains)), // '' should clear the domain
       '#value' => ($domain) ? $domain : '',
       '#size' => null,
+      '#description' => t('Change your site\'s domain name.  You are responsible for updating your own hyperlinks in content (for example if you have "http://@purl/site/link" and your domain becomes "http://example.com/site/link" that link will no longer work.  A relative link like "/site/link" is recommended.', array('@purl' => $purl)),
     ));
           
-    $form['vsite_domain_shared']['#states'] = array(
-      'unchecked' =>  array(':input[name="vsite_domain_name[value]"]' => array('value' => '')),
-    );
+    $form['vsite_domain_shared'] = array_merge($form['vsite_domain_shared'], array(
+      '#type' => 'hidden',
+      '#value' => TRUE,  
+    ));
+    
   } else {
     $form['#access'] = user_access('change vsite domain');
   }
