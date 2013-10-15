@@ -796,10 +796,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['sorts']['filesize']['field'] = 'filesize';
   $handler->display->display_options['sorts']['filesize']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['filesize']['expose']['label'] = 'Size';
-  $handler->display->display_options['filter_groups']['groups'] = array(
-    1 => 'AND',
-    2 => 'OR',
-  );
   /* Filter criterion: Spaces: Content in current space */
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
@@ -809,6 +805,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['file_name_title']['id'] = 'file_name_title';
   $handler->display->display_options['filters']['file_name_title']['table'] = 'file_managed';
   $handler->display->display_options['filters']['file_name_title']['field'] = 'file_name_title';
+  $handler->display->display_options['filters']['file_name_title']['group'] = 1;
   $handler->display->display_options['filters']['file_name_title']['exposed'] = TRUE;
   $handler->display->display_options['filters']['file_name_title']['expose']['operator_id'] = '';
   $handler->display->display_options['filters']['file_name_title']['expose']['label'] = 'File name or field';
@@ -821,6 +818,14 @@ function cp_content_views_default_views() {
     4 => 0,
     5 => 0,
     6 => 0,
+  );
+  /* Filter criterion: File: Schema type */
+  $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
+  $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['operator'] = 'not in';
+  $handler->display->display_options['filters']['schema_type']['value'] = array(
+    'private' => 'private',
   );
 
   /* Display: Page */
