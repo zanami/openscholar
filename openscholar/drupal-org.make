@@ -125,7 +125,9 @@ projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
 projects[feeds_tamper‏][subdir] = "contrib"
-projects[feeds_tamper‏][version] = 1.0-beta5
+projects[feeds_tamper‏][type] = "module"
+projects[feeds_tamper‏][download][type] = "git"
+projects[feeds_tamper‏][download][url]="http://git.drupal.org/project/feeds_tamper.git"
 
 projects[feeds_xpathparser][subdir] = "contrib"
 projects[feeds_xpathparser][download][type] = git

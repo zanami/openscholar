@@ -25,7 +25,7 @@ function os_events_os_app_info() {
       ),
     ),
     'importers' => array(
-      'csv' => 'os_ical',
+      'iCal' => 'os_ical',
     ),
   );
 

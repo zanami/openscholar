@@ -49,7 +49,7 @@ function os_blog_feeds_importer_default() {
             'unique' => FALSE,
           ),
           1 => array(
-            'source' => 'Body ',
+            'source' => 'Body',
             'target' => 'body',
             'unique' => FALSE,
           ),

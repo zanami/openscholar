@@ -75,7 +75,7 @@ function os_importer_os_add_new_links_alter(&$links) {
     }
   }
 
-  if (!$current_app) {
+  if (!$current_app || empty($current_app['importers'])) {
     return;
   }
 
@@ -285,8 +285,6 @@ function os_importer_import($form, &$form_state, $type) {
  * Form submit.
  */
 function os_importer_import_submit($form, &$form_state) {
-  global $language, $user;
-
   $values = $form_state['values'];
   $fid = $values['file'];
   $file = file_load($fid);
