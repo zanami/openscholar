@@ -42,9 +42,16 @@ function cp_init() {
  */
 function cp_menu() {
   $items = array();
-
   $spaces_path = drupal_get_path('module', 'spaces');
 
+  $items['admin/config/openscholar/cp'] = array(
+    'title' => 'Control Panel',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_admin_form'),
+    'file' => 'cp.admin.inc',
+    'access arguments' => array('administer site configuration'),
+  );
+  
   $items["cp/build"] = array(
     'title' => 'Apps',
     'page callback' => 'drupal_get_form',
@@ -393,24 +400,55 @@ function cp_cp_settings() {
  * Menu callback page for cp/support.
  */
 function cp_site_sitewide_contact() {
-  $id = 6760;
-  $loading = drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif';
-  $image = theme('image', array('path' => $loading));
-  return array(
-    'div' => array(
-      '#type' => 'markup',
-      '#markup' => '<div class="getsat-widget" id="getsat-widget-'.$id.'"><span class="gsfn-loading">Loading...'.$image.'</span></div>',
-    ),
-    '#attached' => array(
-      'js' => array(
-        'https://loader.engage.gsfn.us/loader.js',
-        'if (typeof GSFN !== "undefined") { GSFN.loadWidget('.$id.',{"containerId":"getsat-widget-'.$id.'"}); }' => array('type' => 'inline'),
+  $id = variable_get('cp_support_getsatisfaction_widget');
+
+  //show getsatisfaction form.
+  if ($id) {
+    $loading = drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif';
+    $image = theme('image', array('path' => $loading));
+    return array(
+      'div' => array(
+        '#type' => 'markup',
+        '#markup' => '<div class="getsat-widget" id="getsat-widget-'.$id.'"><span class="gsfn-loading">Loading...'.$image.'</span></div>',
       ),
-      'css' => array(
-        drupal_get_path('module', 'cp') . '/theme/cp-support.css',
-      ),
-    )
-  );
+      '#attached' => array(
+        'js' => array(
+          'https://loader.engage.gsfn.us/loader.js',
+          'if (typeof GSFN !== "undefined") { GSFN.loadWidget('.$id.',{"containerId":"getsat-widget-'.$id.'"}); }' => array('type' => 'inline'),
+        ),
+        'css' => array(
+          drupal_get_path('module', 'cp') . '/theme/cp-support.css',
+        ),
+      )
+    );
+  }
+  
+  //no getsatisfaction form, so use the original one.
+  
+  module_load_include('inc', 'contact', 'contact.pages');
+  // Check to make sure the site email address are set.
+  $results = db_query('SELECT cid, recipients FROM {contact} WHERE category = :category',array(':category'=>'Website feedback'))->fetchAssoc();
+  if ($results['recipients'] == '') {
+    // The recipient email isn't set, set them.
+    $query = db_select('contact', 'c');
+    $query->fields('c', array('cid', 'recipients'));
+    $contact_result = $query->execute();
+    while ($contact = $contact_result->fetchAssoc()) {
+      if ($contact['recipients'] == '') {
+          // Update the record.
+          db_update('contact') // Table name no longer needs {}
+            ->fields(array('recipients' => variable_get('site_mail','')))
+            ->condition('cid', $contact['cid'], '=')
+            ->execute();
+      }
+    }
+  }
+
+  // Return the contact_site_form.
+  $contact_site_form = drupal_get_form('contact_site_form');
+  $output = "<p>Use the form below to send us your comments or report any problems you experienced using your website. We read all feedback carefully and will respond quickly.</p>";
+  $output .= drupal_render($contact_site_form);
+  return $output;
 }
 
 /**
