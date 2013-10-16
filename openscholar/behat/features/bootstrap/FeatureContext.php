@@ -1112,4 +1112,11 @@ class FeatureContext extends DrupalContext {
   public function iDisplayWatchdog() {
     $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
   }
+
+  /**
+   * @Given /^I import the "([^"]*)" csv file$/
+   */
+  public function iImportTheCsvFile($type) {
+    $this->invoke_code('os_migrate_demo_import_csv', array("'$type'"));
+  }
 }

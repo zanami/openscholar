@@ -520,3 +520,29 @@ function os_migrate_demo_display_watchdogs() {
 
   print implode("\n", $string);
 }
+
+/**
+ * Importing nodes from a demo CSV.
+ *
+ * @pram $import
+ *  The file name(without .csv)
+ */
+function os_migrate_demo_import_csv($type) {
+  global $base_url;
+
+  $importers = array(
+    'blog' => 'os_blog_csv',
+  );
+
+  $url = $base_url . '/' . drupal_get_path('module', 'os_migrate_demo') . '/includes/import_csv/' . $type . '.csv';
+  $file = system_retrieve_file($url, 'public://', TRUE);
+
+  $source = feeds_source($importers[$type]);
+  $fetcher_config = $source->getConfigFor($source->importer->fetcher);
+  $fetcher_config['source'] = $file->uri;
+  $fetcher_config['file'] = $file;
+  $source->setConfigFor($source->importer->fetcher, $fetcher_config);
+  $source->save();
+
+  feeds_source('os_blog_csv', 0)->import();
+}
