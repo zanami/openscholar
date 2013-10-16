@@ -1635,6 +1635,9 @@ function os_preprocess_toolbar(&$vars) {
         array('os', 'google_feeds_v1'),
         array('os', 'hopscotch'),
       ),
+      'css' => array(
+        "$path/theme/os_notifications.css",
+      ),
     ),
   );
 }
