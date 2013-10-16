@@ -1521,6 +1521,22 @@ function os_library() {
     ),
   );
 
+  $url = 'https://www.google.com/jsapi?autoload=' . urlencode('{"modules" : [{"name" : "feeds","version" : "1"}]}');
+  $settings = array(
+    'type' => 'external',
+    'scope' => 'header',
+    'group' => JS_LIBRARY,
+    'weight' => -25,
+  );
+  $libraries['google_feeds_v1'] = array(
+    'title' => 'Google FeedAPI Integration',
+    'website' => "https://developers.google.com/feed/v1/devguide",
+    'version' => '1.1',
+    'js' => array(
+      $url => $settings,
+    ),
+  );
+
   return $libraries;
 }
 
