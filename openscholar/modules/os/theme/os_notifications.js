@@ -7,7 +7,7 @@
 
       // Setup.
       var menuLinkSel = '#os-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#');
+      $(menuLinkSel).attr('href', '#').parent('li').append($("<div id='os-notifications-list'/>"));
 
     }
   };
