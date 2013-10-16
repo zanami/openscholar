@@ -102,13 +102,6 @@ function os_importer_menu() {
     'page arguments' => array('os_importer_import', 1),
   );
 
-  $items['cp/content/import/group-content/%/%'] = array(
-    'title' => 'Group content',
-    'page callback' => 'os_import_group_content',
-    'page arguments' => array(4, 5),
-    'access arguments' => array('import via os importer'),
-  );
-
   return $items;
 }
 
@@ -137,58 +130,6 @@ function os_importer_import_access($type) {
   else {
     return user_access($string);
   }
-}
-
-/**
- * Constructing the title of the importer page.
- *
- * @param $type
- *  The type of the importer.
- *
- * @return String
- *  The string of the menu item.
- */
-function os_importer_menu_item_title($type) {
-  return t('Importing @type content', array('@type' => $type));
-}
-
-/**
- * Display the imported nodes that can imported to a vsite.
- */
-function os_importer_import_content($type) {
-  $vsite = vsite_get_vsite();
-  $query = db_select('feeds_item', 'fi');
-  $result = $query
-    ->fields('fi', array('entity_id'))
-    ->execute()
-    ->fetchAllAssoc('entity_id');
-
-  $nodes = node_load_multiple(array_keys($result));
-
-  foreach ($nodes as $node) {
-    if (og_is_member('node', $vsite->id, 'node', $node)) {
-      $imported = t('Imported. <a href="@view-href">View</a>', array('@view-href' => url('node/' . $node->nid)));
-    }
-    else {
-      $options = array(
-        'attributes' => array(
-          'class' => array('use-ajax'),
-          'id' => array($node->type . '-' . $vsite->id . '-' . $node->nid),
-        ),
-      );
-
-      $imported = l('Import', 'cp/content/import/group-content/' . $node->nid . '/' . $vsite->id, $options);
-    }
-
-    $rows[] = array(drupal_render(node_view($node)), $imported);
-  }
-
-  $content = theme('table', array(
-    'header' => array(t('Content'), t('Imported')),
-    'rows' => $rows,
-  ));
-
-  return $content;
 }
 
 /**
@@ -250,24 +191,6 @@ function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapp
 
   $wrapper = entity_metadata_wrapper('node', $entity);
   $wrapper->{OG_VOCAB_FIELD}->set($terms);
-}
-
-/**
- * Grouping an imported content into my group.
- */
-function os_import_group_content($node, $vsite, $ajax = 'nojs') {
-  $wrapper = entity_metadata_wrapper('node', $node);
-//  $wrapper->{OG_AUDIENCE_FIELD}[] = $vsite;
-//  $wrapper->save();
-
-  if ($ajax == 'ajax') {
-    $commands[] = ajax_command_html("#" . $node->type . '-' . $vsite->id . '-' . $node->nid, 'fo');
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
-  }
-  else {
-    drupal_goto('cp/content/import/' . $wrapper->getBundle());
-  }
 }
 
 /**
