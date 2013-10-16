@@ -8,6 +8,10 @@
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
+// Load the correct jQuery version. This is done before the call to os_init().
+global $conf;
+$conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
+
 /**
  * Implements hook_menu().
  */
@@ -900,10 +904,6 @@ function os_date_format_types() {
  * Implements hook_init().
  */
 function os_init() {
-  // Load the correct jQuery version.
-  global $conf;
-  $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
-
   // Execute the "In a OS Site" context condition
   if ($plugin = context_get_plugin('condition', 'os_site')) {
     $plugin->execute();

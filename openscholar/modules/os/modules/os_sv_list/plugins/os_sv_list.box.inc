@@ -164,6 +164,9 @@ class os_sv_list_box extends os_boxes_default {
 
     // The 'vocabs' tree will contain select fields - one for each vocabulary.
     $form['vocabs'] = array(
+      '#type' => 'item',
+      '#title' => t('filter by vocabulary'),
+      '#description' => t('Select for each vocabulary the terms to be used.'),
       '#prefix' => '<div id="vocabs">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
