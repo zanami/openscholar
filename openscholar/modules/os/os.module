@@ -42,6 +42,15 @@ function os_menu() {
     'access arguments' => array('access content'),
     'file path' => drupal_get_path('module', 'os') . '/',
   );
+  $items['os/notifications'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Platform Notifications',
+    'page callback' => 'os_notifications_data',
+    'file' => 'notifications.inc',
+    'access arguments' => array('access content'),
+    'file path' => drupal_get_path('module', 'os') . '/includes',
+  );
+
 
   $items['admin/config/openscholar'] = $items['admin/config/openscholar/openscholar'] = array(
     'title' => 'OpenScholar Settings',
