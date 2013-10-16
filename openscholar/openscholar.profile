@@ -288,6 +288,12 @@ function _openscholar_module_batch($modules) {
  */
 function _openscholar_install_profile_modules_finished($success, $results, $operations) {
   _install_profile_modules_finished($success, $results, $operations);
+
+  if(variable_get('file_default_scheme', 'public') == 'private'){
+    //Disallow indexing for this install. (Uses already enabled robotstxt module)
+    variable_set('robotstxt', "User-agent: *\nDisallow: /");
+  }
+
   if (!module_exists('vsite')) {
     return;
   }
