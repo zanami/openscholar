@@ -24,11 +24,11 @@ Feature:
      When I click "JFK was murdered"
      Then I should see "Assassination of John F. Kennedy"
 
-  @api @current
+  @api
   Scenario: Feed items are displayed for each site
     Given I am logging in as "admin"
       And I import feed items for "obama"
-     When I visit "obama/cp/content/import"
+     When I visit "obama/cp/content/import/news"
       And I should see "Obama feed importer"
       And I should not see "John feed importer"
       And I should not see "JFK was murdered"
@@ -69,7 +69,6 @@ Feature:
   @api
   Scenario: Verify the imported news date is the original feed item date.
     Given I am logging in as "admin"
-      And I import feed items for "john"
       And I visit "john/cp/content/import/news"
       And I import the feed item "JFK was murdered"
      When I visit "john/news"
