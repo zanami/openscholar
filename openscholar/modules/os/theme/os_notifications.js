@@ -28,6 +28,23 @@
         }
       });
 
+      if (typeof hopscotch == 'undefined') {
+        return;
+      }
+      var tour = {
+        showPrevButton: true,
+        scrollTopMargin: 100,
+        id: "platform-notifications",
+        steps: items
+      };
+
+      $('#os-notifications-menu-link').click(function() {
+        hopscotch.startTour(tour);
+        // Removes animation for each step.
+        $('.hopscotch-bubble').removeClass('animated');
+        // Allows us to target just this tour in CSS rules.
+        $('.hopscotch-bubble').addClass('os-notifications');
+      });
     }
   };
 
