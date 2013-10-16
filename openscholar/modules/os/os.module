@@ -1641,37 +1641,3 @@ function os_preprocess_toolbar(&$vars) {
     ),
   );
 }
-
-/**
- * Returns an array of the max number of notification items, or FALSE if no feeds.
- */
-function os_notifications_data() {
-  // Only continues if there are feeds to look up.
-  $feeds = variable_get('os_platform_notifications_feeds', '');
-  if (empty($feeds)) {
-    return FALSE;
-  }
-
-  $data = &drupal_static(__FUNCTION__);
-  if (!isset($data)) {
-    if ($cache = cache_get('os_notifications_data')) {
-      $data = $cache->data;
-    }
-    else {
-      $default = OS_NOTIFICATIONS_MAX_DEFAULT;
-      $max = variable_get('os_platform_notifications_max', $default);
-      $data = _os_notifications_data($feeds, $max);
-      $expire = time() + OS_NOTIFICATIONS_CACHE_EXPIRE;
-      cache_set('os_notifications_data', $data, 'cache', $expire);
-    }
-  }
-
-  return $data;
-}
-
-/**
- * Parses one or more URLs and returns the items as an array.
- */
-function _os_notifications_data($feeds) {
-  //
-}
