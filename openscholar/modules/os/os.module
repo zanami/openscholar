@@ -1625,7 +1625,10 @@ function os_preprocess_toolbar(&$vars) {
     ),
     '#attached' => array(
       'js' => array(
-        "$path/theme/os_notifications.js",
+        0 => array(
+          'type' => 'file',
+          'data' => "$path/theme/os_notifications.js",
+        ),
       ),
       'library' => array(
         array('google_feedapi', 'google-feeds'),
