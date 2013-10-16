@@ -1537,6 +1537,24 @@ function os_library() {
     ),
   );
 
+  $path = libraries_get_path('hopscotch');
+  $settings = array(
+    'group' => JS_LIBRARY,
+    'scope' => 'header',
+    'type' => 'file',
+  );
+  $libraries['hopscotch'] = array(
+    'title' => 'Hopscotch',
+    'website' => 'http://linkedin.github.io/hopscotch',
+    'version' => '0.1.2',
+    'js' => array(
+      "$path/js/hopscotch-0.1.2.min.js" => $settings,
+    ),
+    'css' => array(
+      "$path/css/hopscotch-0.1.2.min.css" => $settings,
+    ),
+  );
+
   return $libraries;
 }
 
