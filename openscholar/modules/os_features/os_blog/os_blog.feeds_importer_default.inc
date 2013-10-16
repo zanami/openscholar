@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * os_reader.feeds_importer_default.inc
+ * os_blog.feeds_importer_default.inc
  */
 
 /**
  * Implements hook_feeds_importer_default().
  */
-function os_reader_feeds_importer_default() {
+function os_blog_feeds_importer_default() {
   $export = array();
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_feed';
+  $feeds_importer->id = 'os_blog_csv';
   $feeds_importer->config = array(
-    'name' => 'OS feed',
-    'description' => 'Importing feed via CSV',
+    'name' => 'OS blog CSV',
+    'description' => 'Import blog from CSV',
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
@@ -38,6 +38,7 @@ function os_reader_feeds_importer_default() {
     'processor' => array(
       'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
+        'file_field' => 'field_upload',
         'expire' => '-1',
         'author' => 0,
         'authorize' => 1,
@@ -48,11 +49,16 @@ function os_reader_feeds_importer_default() {
             'unique' => FALSE,
           ),
           1 => array(
-            'source' => 'URL',
-            'target' => 'field_url:url',
+            'source' => 'Body',
+            'target' => 'body',
             'unique' => FALSE,
           ),
           2 => array(
+            'source' => 'Files',
+            'target' => 'file',
+            'unique' => FALSE,
+          ),
+          3 => array(
             'source' => 'Terms',
             'target' => 'og_vocab',
             'unique' => FALSE,
@@ -61,28 +67,27 @@ function os_reader_feeds_importer_default() {
         'update_existing' => '0',
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
-        'content_type' => 'feed',
-        'file_field' => NULL,
+        'content_type' => 'blog',
       ),
     ),
     'content_type' => '',
     'update' => 0,
-    'import_period' => '-1',
+    'import_period' => 1800,
     'expire_period' => 3600,
-    'import_on_create' => 1,
-    'process_in_background' => 0,
+    'import_on_create' => TRUE,
+    'process_in_background' => FALSE,
   );
-  $export['os_feed'] = $feeds_importer;
+  $export['os_blog_csv'] = $feeds_importer;
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_reader';
+  $feeds_importer->id = 'os_blog_import_rss';
   $feeds_importer->config = array(
-    'name' => 'OS reader',
+    'name' => 'OS blog import - RSS',
     'description' => '',
     'fetcher' => array(
-      'plugin_key' => 'OsFeedFetcher',
+      'plugin_key' => 'OsImporterFetcher',
       'config' => array(),
     ),
     'parser' => array(
@@ -109,27 +114,17 @@ function os_reader_feeds_importer_default() {
             'target' => 'description',
             'unique' => FALSE,
           ),
-          3 => array(
-            'source' => 'timestamp',
-            'target' => 'created',
-            'unique' => FALSE,
-          ),
-          4 => array(
-            'source' => 'url',
-            'target' => 'url',
-            'unique' => FALSE,
-          ),
         ),
       ),
     ),
-    'content_type' => 'feed_importer',
+    'content_type' => 'blog_import',
     'update' => 0,
     'import_period' => '1800',
     'expire_period' => 3600,
     'import_on_create' => 1,
     'process_in_background' => 0,
   );
-  $export['os_reader'] = $feeds_importer;
+  $export['os_blog_import_rss'] = $feeds_importer;
 
   return $export;
 }

@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * os_importer.feeds_importer_default.inc
+ * os_image_gallery.feeds_importer_default.inc
  */
 
 /**
  * Implements hook_feeds_importer_default().
  */
-function os_importer_feeds_importer_default() {
+function os_image_gallery_feeds_importer_default() {
   $export = array();
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_documents';
+  $feeds_importer->id = 'os_gallery';
   $feeds_importer->config = array(
-    'name' => 'OS Documents',
-    'description' => 'Import documents from CSV file.',
+    'name' => 'OS gallery',
+    'description' => 'Import gallery from CSV file',
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
@@ -38,6 +38,7 @@ function os_importer_feeds_importer_default() {
     'processor' => array(
       'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
+        'file_field' => 'media_gallery_file',
         'expire' => '-1',
         'author' => 0,
         'authorize' => 1,
@@ -49,15 +50,25 @@ function os_importer_feeds_importer_default() {
           ),
           1 => array(
             'source' => 'Body',
-            'target' => 'body',
+            'target' => 'media_gallery_description',
             'unique' => FALSE,
           ),
           2 => array(
-            'source' => 'Files',
-            'target' => 'file',
+            'source' => 'Rows',
+            'target' => 'media_gallery_block_rows',
             'unique' => FALSE,
           ),
           3 => array(
+            'source' => 'Columns',
+            'target' => 'media_gallery_block_columns',
+            'unique' => FALSE,
+          ),
+          4 => array(
+            'source' => 'Images',
+            'target' => 'file',
+            'unique' => FALSE,
+          ),
+          5 => array(
             'source' => 'Terms',
             'target' => 'og_vocab',
             'unique' => FALSE,
@@ -66,18 +77,17 @@ function os_importer_feeds_importer_default() {
         'update_existing' => '0',
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
-        'content_type' => 'book',
-        'file_field' => 'field_upload',
+        'content_type' => 'media_gallery',
       ),
     ),
     'content_type' => '',
     'update' => 0,
-    'import_period' => '-1',
+    'import_period' => 1800,
     'expire_period' => 3600,
-    'import_on_create' => 1,
-    'process_in_background' => 0,
+    'import_on_create' => TRUE,
+    'process_in_background' => FALSE,
   );
-  $export['os_documents'] = $feeds_importer;
+  $export['os_gallery'] = $feeds_importer;
 
   return $export;
 }

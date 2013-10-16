@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * os_importer.feeds_importer_default.inc
+ * os_news.feeds_importer_default.inc
  */
 
 /**
  * Implements hook_feeds_importer_default().
  */
-function os_importer_feeds_importer_default() {
+function os_news_feeds_importer_default() {
   $export = array();
 
   $feeds_importer = new stdClass();
   $feeds_importer->disabled = FALSE; /* Edit this to true to make a default feeds_importer disabled initially */
   $feeds_importer->api_version = 1;
-  $feeds_importer->id = 'os_documents';
+  $feeds_importer->id = 'os_news';
   $feeds_importer->config = array(
-    'name' => 'OS Documents',
-    'description' => 'Import documents from CSV file.',
+    'name' => 'OS news',
+    'description' => 'Import news from CSV',
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
@@ -38,6 +38,7 @@ function os_importer_feeds_importer_default() {
     'processor' => array(
       'plugin_key' => 'OsImporterNodeProcessor',
       'config' => array(
+        'file_field' => 'field_upload',
         'expire' => '-1',
         'author' => 0,
         'authorize' => 1,
@@ -48,16 +49,26 @@ function os_importer_feeds_importer_default() {
             'unique' => FALSE,
           ),
           1 => array(
+            'source' => 'Date',
+            'target' => 'field_news_date:start',
+            'unique' => FALSE,
+          ),
+          2 => array(
             'source' => 'Body',
             'target' => 'body',
             'unique' => FALSE,
           ),
-          2 => array(
+          3 => array(
+            'source' => 'Redirect',
+            'target' => 'field_url:url',
+            'unique' => FALSE,
+          ),
+          4 => array(
             'source' => 'Files',
             'target' => 'file',
             'unique' => FALSE,
           ),
-          3 => array(
+          5 => array(
             'source' => 'Terms',
             'target' => 'og_vocab',
             'unique' => FALSE,
@@ -66,18 +77,17 @@ function os_importer_feeds_importer_default() {
         'update_existing' => '0',
         'input_format' => 'plain_text',
         'skip_hash_check' => 0,
-        'content_type' => 'book',
-        'file_field' => 'field_upload',
+        'content_type' => 'news',
       ),
     ),
     'content_type' => '',
     'update' => 0,
-    'import_period' => '-1',
+    'import_period' => 1800,
     'expire_period' => 3600,
-    'import_on_create' => 1,
-    'process_in_background' => 0,
+    'import_on_create' => TRUE,
+    'process_in_background' => FALSE,
   );
-  $export['os_documents'] = $feeds_importer;
+  $export['os_news'] = $feeds_importer;
 
   return $export;
 }
