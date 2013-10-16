@@ -222,7 +222,7 @@ function vsite_domain_cp_settings() {
       '#options' => array_merge(array('' => $purl), drupal_map_assoc($parent_domains)), // '' should clear the domain
       '#value' => ($domain) ? $domain : '',
       '#size' => null,
-      '#description' => t('Change your site\'s domain name.  You are responsible for updating your own hyperlinks in content (for example if you have "http://@purl/site/link" and your domain becomes "http://example.com/site/link" that link will no longer work.  A relative link like "/site/link" is recommended.', array('@purl' => $purl)),
+      '#description' => t('Change your site\'s domain name.'),
     ));
           
     $form['vsite_domain_shared'] = array_merge($form['vsite_domain_shared'], array(
