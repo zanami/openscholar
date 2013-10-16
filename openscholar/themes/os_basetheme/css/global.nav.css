@@ -741,7 +741,7 @@ ul.nice-menu-down li li.menuparent:hover {
 /******************************
  Lists when Naviation is selected
 ******************************/
-
+#content-column .book-menu ul,
 .navigation ul,
 .navigation ul.menu
  {
@@ -751,12 +751,14 @@ ul.nice-menu-down li li.menuparent:hover {
 
 }
 
+#content-column .book-menu ul ul,
 .sidebar .navigation ul.menu ul.menu,
 .sidebar .navigation ul ul {
   border: none;
   margin: 0;
 }
 
+#content-column .book-menu ul li,
 .navigation ul li,
 .navigation ul.menu li {
   list-style: none !important;
@@ -769,7 +771,12 @@ ul.nice-menu-down li li.menuparent:hover {
 
 }
 
+#content-column .book-menu ul li ul li, 
+#content-column .book-menu ul li ul li ul li {
+  background-color: #FFF;
+ }
 
+#content-column .book-menu ul li a,
 .navigation ul.menu li a,
 .navigation ul li a {
   display:block;
@@ -778,23 +785,26 @@ ul.nice-menu-down li li.menuparent:hover {
   color:inherit;
 }
 
-
+#content-column .book-menu ul li a:hover,
 .navigation ul li a:hover {
   background-color: #FFF;
 }
 
+#content-column .book-menu ul li ul li a,
 .navigation ul.menu li ul.menu li a,
 .navigation ul li ul li a {
-  padding-left: 18px;
+  padding-left: 19px;
 }
 
+#content-column .book-menu ul li ul li li a,
 .navigation ul.menu li ul.menu li li a,
 .navigation ul li ul li li a {
   padding: 0.5em 0 0.5em 25px;
 }
 
-.navigation a:link, .navigation a:visited { color: inherit; }
-.navigation a:hover, .navigation a:active { color: inherit;} 
+#content-column .book-menu a,
+.navigation a:link, .navigation a:visited { color: inherit;border-bottom: none !important;}
+.navigation a:hover, .navigation a:active { color: inherit;border-bottom: none !important;} 
 
 /* Section Nav */
 #boxes-box-os_pages_section_nav {
