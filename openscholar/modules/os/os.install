@@ -323,3 +323,10 @@ function os_update_7016() {
   module_enable(array('og_moderation', 'field_redirection'));
   os_grant_unpublished_viewing_permission();
 }
+
+/**
+ * Enables jquery_update.
+ */
+function os_update_7017() {
+  module_enable(array('jquery_update'));
+}

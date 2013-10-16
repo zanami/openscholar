@@ -594,6 +594,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I execute vsite cron$/
+   */
+  public function iExecuteVsiteCron() {
+    $this->invoke_code('vsite_cron');
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
@@ -606,7 +613,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
-    $this->invoke_code($function, array($variable, $value));
+    $this->invoke_code($function, array($variable, "'$value'"));
   }
 
   /**
@@ -975,6 +982,29 @@ class FeatureContext extends DrupalContext {
     $error = $this->getDriver()->drush("php-eval \"{$code}\"");
     if ($error) {
       throw new Exception(sprintf("At least one box returned output outside of a vsite: %s", $key));
+    }
+  }
+
+  /**
+   * @When /^I edit the node "([^"]*)"$/
+   */
+  public function iEditTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
     }
   }
 
