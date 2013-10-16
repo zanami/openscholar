@@ -573,3 +573,41 @@ function os_files_update_7010(&$sb) {
     return t('Moved data from Media description to OS Files Description.');
   }
 }
+
+/**
+ * Migrates Media Title to filename for all files used in Image Galleries
+ */
+function os_files_update_7011(&$sb) {
+  $q = db_select('field_data_media_gallery_file', 'mgf')
+    ->fields('mgf', array('media_gallery_file_fid'));
+
+  if (!isset($sb['progress'])) {
+    $sb['progress'] = 0;
+    $sb['count'] = $q->countQuery()->execute()->fetchField();
+    $sb['limit'] = 50;
+  }
+
+  $q = $q->range($sb['progress'], $sb['limit'])
+     ->execute();
+
+  foreach ($q as $r) {
+    $title = db_select('field_data_media_title', 'mt')
+      ->fields('mt', array('media_title_value'))
+      ->condition('entity_type', 'file')
+      ->condition('entity_id', $r->media_gallery_file_fid)
+      ->execute()
+      ->fetchField();
+
+    db_update('file_managed')
+      ->fields(array('filename' => $title))
+      ->condition('fid', $r->media_gallery_file_fid)
+      ->execute();
+
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+    return t('Migrated Media Titles.');
+  }
+}
