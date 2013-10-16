@@ -59,6 +59,12 @@ function openscholar_flavor_form($form, &$form_state) {
     '#default_value' => 'development'
   );
 
+  $form['intranet_site'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Intranet Site'),
+    '#description' => t('If checked, all sites created will be private and have private files, public websites will not be available.'),
+  );
+
   $form['dummy_content'] = array(
     '#type' => 'checkbox',
     '#title' => t('Add dummy content'),
@@ -128,6 +134,11 @@ function openscholar_flavor_form_submit($form, &$form_state) {
   // Define dummy content migration.
   if (!empty($form_state['input']['dummy_content'])) {
     variable_set('os_dummy_content', TRUE);
+  }
+
+  // Define dummy content migration.
+  if (!empty($form_state['input']['intranet_site'])) {
+    variable_set('file_default_scheme', 'private');
   }
 }
 
@@ -351,4 +362,42 @@ function openscholar_install_finished(&$install_state) {
   drupal_cron_run();
 
   return $output;
+}
+
+/**
+ * Implements field_default_fields_alter() for altering field settings.
+ */
+function openscholar_field_default_fields_alter(&$fields) {
+  //If the default scheme is private change the file field exports to be private
+  if(!is_array($fields) || variable_get('file_default_scheme', 'public') != 'private'){
+    return;
+  }
+
+  foreach ($fields as $id => $config) {
+    if(in_array($config['field_config']['type'], array('file','imagefield_crop','image'))){
+      //Change the field to use private files instead of public
+      $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
+
+      //Change the media widget to use private files instead of public
+      if($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])){
+        unset($config['field_instance']['widget']['settings']['allowed_schemes']['public']);
+        $fields['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
+      }
+
+    }
+  }
+}
+
+/**
+ * Implements views_default_views_alter() for altering view settings.
+ */
+function openscholar_views_default_views_alter(&$views) {
+  if(variable_get('file_default_scheme', 'public') != 'private'){
+    return;
+  }
+
+  //Change the default CP Content view to display private files
+  if (isset($views['cp_files']->display->display_options['filters']['schema_type']['schema_type'])) {
+    $views['cp_files']->display->display_options['filters']['schema_type']['schema_type'] = 'private';
+  }
 }
