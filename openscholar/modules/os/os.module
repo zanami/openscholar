@@ -1640,3 +1640,26 @@ function os_preprocess_toolbar(&$vars) {
   );
 }
 
+/**
+ * Implements field_default_fields_alter() for altering field settings.
+ */
+function os_field_default_fields_alter(&$fields) {
+  //If the default scheme is private change the file field exports to be private
+  if(!is_array($fields) || variable_get('file_default_scheme', 'public') != 'private'){
+    return;
+  }
+
+  foreach ($fields as $id => $config) {
+    if(in_array($config['field_config']['type'], array('file','imagefield_crop','image'))){
+      //Change the field to use private files instead of public
+      $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
+
+      //Change the media widget to use private files instead of public
+      if($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])){
+        unset($config['field_instance']['widget']['settings']['allowed_schemes']['public']);
+        $fields['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
+      }
+
+    }
+  }
+}
