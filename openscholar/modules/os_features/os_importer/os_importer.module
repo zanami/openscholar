@@ -43,11 +43,8 @@ function os_importer_node_insert($node) {
   if (!$node->is_new || $node->type != 'blog_import') {
     return;
   }
-  $wrapper = entity_metadata_wrapper('node', $node);
 
-  $type = $wrapper->field_rss_url->value() ? 'os_blog_import_rss' : 'os_blog_import_file';
-
-  feeds_source($type, $node->nid)->startImport();
+  feeds_source('os_blog_import_rss', $node->nid)->startImport();
 }
 
 /**
@@ -80,6 +77,10 @@ function os_importer_os_add_new_links_alter(&$links) {
   }
 
   foreach ($current_app['importers'] as $type => $importer) {
+    if (!os_importer_import_access($importer)) {
+      continue;
+    }
+
     $links['os-importer-' . $type] = array(
       'title' => t('Import from @type', array('@type' => $type)),
       'href' => 'os-importer/' . $importer,
@@ -95,7 +96,8 @@ function os_importer_menu() {
 
   $items['os-importer/%'] = array(
     'title' => 'Importing from a CSV',
-    'access arguments' => array('import via os importer'),
+    'access callback' => 'os_importer_import_access',
+    'access arguments' => array(1),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_importer_import', 1),
   );
@@ -108,6 +110,33 @@ function os_importer_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Access callback - determine if the user can import content from csv.
+ *
+ * @param $type
+ *  The type of the feeds importer.
+ *
+ * @return bool
+ *  Return TRUE/FALSE.
+ */
+function os_importer_import_access($type) {
+  $source = feeds_source($type);
+  $config = $source->importer->getConfig();
+
+  if (!$bundle = $config['processor']['config']['content_type']) {
+    return FALSE;
+  }
+
+  $string = "create {$bundle} content";
+
+  if ($vsite = vsite_get_vsite()) {
+    return og_user_access('node', $vsite->id, $string);
+  }
+  else {
+    return user_access($string);
+  }
 }
 
 /**
@@ -124,19 +153,7 @@ function os_importer_menu_item_title($type) {
 }
 
 /**
- * Implements hook_permission().
- */
-function os_importer_permission() {
-  return array(
-    'import via os importer' => array(
-      'title' => t('Import content from CSV or RSS'),
-      'description' => t('Allow to the user permission to import from a CSV or RSS.'),
-    ),
-  );
-}
-
-/**
- * Display the imported nodes that can imported to a viste.
+ * Display the imported nodes that can imported to a vsite.
  */
 function os_importer_import_content($type) {
   $vsite = vsite_get_vsite();
@@ -258,6 +275,13 @@ function os_import_group_content($node, $vsite, $ajax = 'nojs') {
  */
 function os_importer_import($form, &$form_state, $type) {
   $source = feeds_source($type);
+
+  if (!in_array('FeedsCSVParser', array_keys($source->getConfig()))) {
+    $message = t('This feed(@name) importer not exists or not support CSV uploading.', array('@name' => $type));
+    watchdog('os_importer', $message);
+    throw new Exception($message);
+  }
+
   $form_state['type'] = $type;
 
   $form['file'] = array(
