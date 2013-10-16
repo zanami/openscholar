@@ -1602,6 +1602,7 @@ function os_grant_unpublished_viewing_permission() {
  * Implements hook_preprocess_toolbar().
  */
 function os_preprocess_toolbar(&$vars) {
+  ctools_include('notifications', 'os');
   $data = os_notifications_data();
   if (empty($data)) {
     return;
