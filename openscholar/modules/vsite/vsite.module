@@ -96,6 +96,22 @@ function vsite_cron() {
 }
 
 /**
+ * Implements hook_og_membership_insert().
+ *
+ * Make the "support team" and admin member of the group.
+ */
+function vsite_og_membership_insert(OgMembership $og_membership) {
+  if ($og_membership->entity_type != 'user' || $og_membership->type != 'support_expire') {
+    // Not a "support team" membership.
+    return;
+  }
+
+  $og_role = og_roles($og_membership->group_type, NULL, $og_membership->gid);
+  $rid = array_search('vsite admin', $og_role);
+  og_role_grant($og_membership->group_type, $og_membership->gid, $og_membership->etid, $rid);
+}
+
+/**
  * Returns the current purl prefix, or empty string if none found.
  *
  * @param object $vsite
