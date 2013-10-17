@@ -768,7 +768,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
   if (strpos($form_id, '_node_form')) {
     $form['actions']['cancel'] = array(
       '#markup'   => l(t('Cancel'), ''),
-      '#weight' => 15,
+      '#weight' => 99,
     );
   }
 }
