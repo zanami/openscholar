@@ -325,8 +325,15 @@ function os_update_7016() {
 }
 
 /**
- * Enables jquery_update.
+ * Enable the OS importer module.
  */
 function os_update_7017() {
+  module_enable(array('os_importer'));
+}
+
+/**
+ * Enable jQuery update module.
+ */
+function os_update_7018() {
   module_enable(array('jquery_update'));
 }
