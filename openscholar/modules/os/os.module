@@ -108,24 +108,6 @@ function os_menu_alter(&$items) {
   $items['user/autocomplete']['access arguments'] = array(
     'access user autocomplete',
   );
-
-  $items['node/%node/revisions']['access callback'] = 'os_revisions_tab_access';
-}
-
-/**
- *  Helper function; checks number of revisions of a node and hides the
- *  revisions tab for a single revision.
- *
- *  @param $node
- *    The current node being viewed.
- */
-function os_revisions_tab_access($node) {
-  // Do not display the revisions tab if the node doesn't have any revisions.
-  if (count(node_revision_list($node)) == 1) {
-    return FALSE;
-  }
-
-  return og_moderation_node_revision_access($node);
 }
 
 /**
@@ -1304,7 +1286,8 @@ function os_node_view_alter(&$build) {
 /**
  * Implements hook_contextual_links_view_alter().
  *
- * Add "Revisions" to the contextual links in the node view.
+ * Add "Revisions" to the contextual links in the node view. Checks number of
+ * revisions of a node and hides the link for a single revision.
  */
 function os_contextual_links_view_alter(&$element, $items) {
   if (empty($element['#element']['#entity_type']) || $element['#element']['#entity_type'] != 'node') {
@@ -1318,6 +1301,16 @@ function os_contextual_links_view_alter(&$element, $items) {
   }
 
   $node = $element['#element']['#node'];
+
+  if (count(node_revision_list($node)) == 1) {
+    // Do not display the revisions tab if the node doesn't have any revisions.
+    return FALSE;
+  }
+
+  if (!og_moderation_node_revision_access($node)) {
+    // User has no access to the revisions.
+    return;
+  }
 
   $element['#links']['node-revisions'] = array(
     'title' => t('Revisions'),
