@@ -7,7 +7,7 @@ Feature:
     When I click "Reader"
     Then I should see "Engadget rss"
 
-  @api
+  @api @wip
   Scenario: Test the OS reader feed importer.
     Given I am logging in as "admin"
     And I import feed items for "john"
@@ -17,14 +17,14 @@ Feature:
     Then I should see the feed item "JFK was murdered" was imported
     And I should see "JFK was murdered"
 
-  @api
+  @api @wip
   Scenario: Verify the anonymous user is being redirected to the feed item
   source page.
     Given I visit "john/news"
     When I click "JFK was murdered"
     Then I should see "Assassination of John F. Kennedy"
 
-  @api
+  @api @wip
   Scenario: Feed items are displayed for each site
     Given I am logging in as "admin"
     And I import feed items for "obama"
