@@ -197,14 +197,6 @@ function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapp
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
-  $source = feeds_source($type);
-
-  if (!in_array('FeedsCSVParser', array_keys($source->getConfig()))) {
-    $message = t('This feed(@name) importer not exists or not support CSV uploading.', array('@name' => $type));
-    watchdog('os_importer', $message);
-    throw new Exception($message);
-  }
-
   $form_state['type'] = $type;
 
   $form['file'] = array(
