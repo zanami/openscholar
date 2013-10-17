@@ -9,6 +9,7 @@ Feature: Testing the importer.
     And I should see <body>
 
   Examples:
-    | import-address                  | address       | title                     | body                            |
-    | "john/os-importer-demo/blog"    | "john/blog"   | "Blog from csv"           | "This is a blog from csv file"  |
-    | "john/os-importer-demo/news"    | "john/news"   | "Testing import news"     | "Testing the import of news"    |
+    | import-address                  | address                                   | title                   | body                            |
+    | "john/os-importer-demo/blog"    | "john/blog"                               | "Blog from csv"         | "This is a blog from csv file"  |
+    | "john/os-importer-demo/news"    | "john/news"                               | "Testing import news"   | "Testing the import of news"    |
+    | "john/os-importer-demo/event"   | "john/calendar?type=day&day=2013-10-17"   | "Testing importing"     | ""                              |
