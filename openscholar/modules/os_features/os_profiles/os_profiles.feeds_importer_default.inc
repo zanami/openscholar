@@ -74,7 +74,7 @@ function os_profiles_feeds_importer_default() {
             'unique' => FALSE,
           ),
           7 => array(
-            'source' => 'Websites title	',
+            'source' => 'Websites title',
             'target' => 'field_website:title',
             'unique' => FALSE,
           ),
