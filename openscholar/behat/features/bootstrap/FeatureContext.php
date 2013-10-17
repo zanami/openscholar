@@ -1121,13 +1121,6 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I import the "([^"]*)" csv file$/
-   */
-  public function iImportTheCsvFile($type) {
-    $this->invoke_code('os_migrate_demo_import_csv', array("'$type'"));
-  }
-
-  /**
    * @Given /^I import the blog for "([^"]*)"$/
    */
   public function iImportTheBlogFor($vsite) {
