@@ -8,6 +8,10 @@
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
+// Load the correct jQuery version. This is done before the call to os_init().
+global $conf;
+$conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
+
 /**
  * Implements hook_menu().
  */
@@ -102,8 +106,26 @@ function os_menu_alter(&$items) {
   // users' profiles, we provide our own permission and override the default
   // behavior of the menu item to use our custom permission instead.
   $items['user/autocomplete']['access arguments'] = array(
-      'access user autocomplete',
+    'access user autocomplete',
   );
+
+  $items['node/%node/revisions']['access callback'] = 'os_revisions_tab_access';
+}
+
+/**
+ *  Helper function; checks number of revisions of a node and hides the
+ *  revisions tab for a single revision.
+ *
+ *  @param $node
+ *    The current node being viewed.
+ */
+function os_revisions_tab_access($node) {
+  // Do not display the revisions tab if the node doesn't have any revisions.
+  if (count(node_revision_list($node)) == 1) {
+    return FALSE;
+  }
+
+  return og_moderation_node_revision_access($node);
 }
 
 /**
@@ -531,10 +553,10 @@ function os_preprocess_page(&$vars) {
   ));
 
 
-  //hide useless tabs
+  // Hide useless tabs.
   if (is_array($vars['tabs']['#primary'])) {
     foreach ($vars['tabs']['#primary'] as $delta => $tab) {
-      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/log' ))) {
+      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/log', 'node/%/revisions'))) {
         unset($vars['tabs']['#primary'][$delta]);
       }
     }
@@ -741,6 +763,14 @@ function os_form_alter(&$form, &$form_state, $form_id) {
     $paths = os_get_app_path();
     $_GET['destination'] = $paths[$form['#node']->type];
   }
+
+  // Add a cancel link to node forms.
+  if (strpos($form_id, '_node_form')) {
+    $form['actions']['cancel'] = array(
+      '#markup'   => l(t('Cancel'), ''),
+      '#weight' => 15,
+    );
+  }
 }
 
 /**
@@ -788,16 +818,35 @@ function os_settings_form($form_state) {
 
   $form['os_general'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General'),
+    '#title' => t('Dropdown menus'),
     '#weight' => 0,
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
   );
   $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
+  );
+  $form['os_platform_notifications'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Platform notifications'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['os_platform_notifications']['os_platform_notifications_feeds'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Feed URLs'),
+    '#default_value' => variable_get('os_platform_notifications_feeds', ''),
+    '#description' => t('Enter one or more RSS feeds to create a "Notifications" tab in the Admin Toolbar. Use commas to separate.'),
+  );
+  $form['os_platform_notifications']['os_platform_notifications_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max'),
+    '#default_value' => variable_get('os_platform_notifications_max', '3'),
+    '#description' => t('Maximum amount of notification items to list for users.'),
   );
 
   return system_settings_form($form);
@@ -1252,6 +1301,30 @@ function os_node_view_alter(&$build) {
 }
 
 /**
+ * Implements hook_contextual_links_view_alter().
+ *
+ * Add "Revisions" to the contextual links in the node view.
+ */
+function os_contextual_links_view_alter(&$element, $items) {
+  if (empty($element['#element']['#entity_type']) || $element['#element']['#entity_type'] != 'node') {
+    // Not a node element.
+    return;
+  }
+
+  if (!user_access('view revisions')) {
+    // User can't view revisions.
+    return;
+  }
+
+  $node = $element['#element']['#node'];
+
+  $element['#links']['node-revisions'] = array(
+    'title' => t('Revisions'),
+    'href' => 'node/' . $node->nid . '/revisions',
+  );
+}
+
+/**
  * Implements hook_permission().
  *
  * Defines permissions for all the regions of the default theme
@@ -1436,6 +1509,8 @@ function os_app_info($app_name = NULL) {
           // Adds default values.
           $app += array(
           	'path' => '',
+            // Determine if author should be indexed in Solr.
+            'index author' => FALSE,
           );
 
           // Adds the module information.
@@ -1533,3 +1608,35 @@ function os_grant_unpublished_viewing_permission() {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_toolbar().
+ */
+function os_preprocess_toolbar(&$vars) {
+  $feeds = variable_get('os_platform_notifications_feeds', '');
+  if (empty($feeds)) {
+    return;
+  }
+
+  // Adds the Notifications link to the Admin toolbar.
+  $path = drupal_get_path('module', 'os');
+  $vars['toolbar']['toolbar_right']['os_notifications'] = array(
+    '#theme' => 'links',
+    '#links' => array(
+      0 => array(
+        'title' => t('Notifications'),
+        'href' => '',
+        'html' => TRUE,
+        'attributes' => array(
+          'class' => array('os-notifications-icon'),
+          'id' => 'os-notifications-menu-link',
+          'data-tooltip' => t('Learn about updates that affect your site')
+        ),
+      ),
+    ),
+    '#attached' => array(
+      'js' => array("$path/theme/os_notifications.js"),
+    ),
+  );
+}
+

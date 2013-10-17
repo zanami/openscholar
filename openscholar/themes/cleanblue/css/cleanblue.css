@@ -283,7 +283,8 @@ ul.nice-menu ul {
 	background:#CCC;
 	
 }
-	
+
+#menu-bar ul.nice-menu ul,	
 #menu-bar ul.nice-menu ul li a {
 	color:#333;
 	background:#CCC;
@@ -292,11 +293,6 @@ ul.nice-menu ul {
 }
 
 
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#FFF;
-	background:#444;
-
-}
 
 
 	

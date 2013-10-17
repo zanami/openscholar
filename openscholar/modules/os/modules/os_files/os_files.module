@@ -697,6 +697,11 @@ function os_files_file_default_displays(){
       'image_style' => 'large',
       'alt' => '',
       'title' => '',
+    ),
+    'image__preview__file_field_image' => array(
+      'image_style' => 'square_thumbnail',
+      'alt' => '',
+      'title' => ''
     )
   );
 
@@ -730,7 +735,7 @@ function os_files_file_formatter_info(){
   $formatters = array();
   
   $formatters['os_files_image'] = array(
-    'label' => t('Image'),
+    'label' => t('Autosized Image'),
     'default settings' => array(),
     'view callback' => 'os_files_file_formatter_os_files_image',
     'settings callback' => 'os_files_file_formatter_os_files_settings',
@@ -1419,7 +1424,7 @@ function os_files_file_default_types_alter(&$types){
     // *.docx files
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     // *.xlsx files
-    'application.vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     // *.pptx files
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     // *.ppsx files
