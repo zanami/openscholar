@@ -73,7 +73,7 @@ function os_mailchimp_user_delete($account) {
 function os_mailchimp_node_insert($node) {
   $vsites = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   if (in_array($node->type, $vsites)) {
-    os_mailchimp_update_subscription($node->uid);
+    os_mailchimp_update_subscription($node->uid, $node);
   }
 }
 
@@ -86,7 +86,7 @@ function os_mailchimp_node_update($node) {
   //only perform 1) on vsite nodes 2) when owner is changed.
   $vsites = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   if (in_array($node->type, $vsites) || $node->uid != $node->original->uid) {
-    os_mailchimp_update_subscription($node->uid);
+    os_mailchimp_update_subscription($node->uid, $node);
   }
 }
 
@@ -411,7 +411,7 @@ function _os_mailchimp_mailchimp_connect($api) {
  * 
  * Updates the stored variables on a user's mailchimp sub
  */
-function os_mailchimp_update_subscription($uid = NULL) {
+function os_mailchimp_update_subscription($uid = NULL, $node = NULL) {
   if (!$uid) {
     global $user;
   } else {
@@ -444,6 +444,9 @@ function os_mailchimp_update_subscription($uid = NULL) {
     $keyname = strtoupper($var);
     if ($keyname && isset($merge_vars[$keyname])) {
       $items = array_merge(explode(',', $merge_vars[$keyname]), $current_info[$var]);
+      if ($node) {
+        $items[] = $node->purl['value'];
+      }
       $merge_vars[$keyname] = implode(',', array_unique(array_filter($items)));
     }
   }
