@@ -1,12 +1,12 @@
 Feature: Testing the importer.
 
-  @api
+  @api @wip
   Scenario Outline: Testing the csv importing for blog.
     Given I am logging in as "admin"
-    When I visit <import-address>
-    And I visit <address>
-    Then I should see <title>
-    And I should see <body>
+     When I visit <import-address>
+      And I visit <address>
+     Then I should see <title>
+      And I should see <body>
 
   Examples:
     | import-address                  | address                                   | title                   | body                            |
