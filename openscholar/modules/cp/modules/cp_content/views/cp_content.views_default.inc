@@ -622,6 +622,9 @@ function cp_content_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['distinct'] = TRUE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Filter';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
+  $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '15';
   $handler->display->display_options['style_plugin'] = 'table';
@@ -633,7 +636,7 @@ function cp_content_views_default_views() {
     'filemime' => 'filemime',
     'filesize' => 'filesize',
     'timestamp' => 'timestamp',
-    'title' => 'title',
+    'referencing_nodes' => 'referencing_nodes',
     'edit' => 'edit',
     'delete' => 'delete',
     'nothing_1' => 'nothing_1',
@@ -685,9 +688,7 @@ function cp_content_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'title' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
+    'referencing_nodes' => array(
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
@@ -760,16 +761,11 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['fields']['timestamp']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['timestamp']['date_format'] = 'medium';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['relationship'] = 'file_to_node';
-  $handler->display->display_options['fields']['title']['label'] = 'Used in';
-  $handler->display->display_options['fields']['title']['spaces'] = array(
-    'type' => 'spaces_og',
-    'frontpage' => 0,
-  );
+  /* Field: File: Referencing content */
+  $handler->display->display_options['fields']['referencing_nodes']['id'] = 'referencing_nodes';
+  $handler->display->display_options['fields']['referencing_nodes']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['referencing_nodes']['field'] = 'referencing_nodes';
+  $handler->display->display_options['fields']['referencing_nodes']['label'] = 'Used in';
   /* Field: File: Edit link */
   $handler->display->display_options['fields']['edit']['id'] = 'edit';
   $handler->display->display_options['fields']['edit']['table'] = 'file_managed';
@@ -789,38 +785,44 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing_1']['label'] = 'Manage';
   $handler->display->display_options['fields']['nothing_1']['alter']['text'] = '[edit] [delete]';
-  $handler->display->display_options['filter_groups']['groups'] = array(
-    1 => 'AND',
-    2 => 'OR',
-  );
   /* Filter criterion: Spaces: Content in current space */
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
   $handler->display->display_options['filters']['current']['group'] = 1;
+  /* Filter criterion: Global: Combine fields filter */
+  $handler->display->display_options['filters']['combine']['id'] = 'combine';
+  $handler->display->display_options['filters']['combine']['table'] = 'views';
+  $handler->display->display_options['filters']['combine']['field'] = 'combine';
+  $handler->display->display_options['filters']['combine']['group'] = 1;
+  $handler->display->display_options['filters']['combine']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['combine']['expose']['operator_id'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['label'] = 'Title contains';
+  $handler->display->display_options['filters']['combine']['expose']['description'] = 'Filter by the file name, or the titles of post(s) files are used in.';
+  $handler->display->display_options['filters']['combine']['expose']['operator'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['identifier'] = 'combine';
+  $handler->display->display_options['filters']['combine']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    11 => 0,
+    16 => 0,
+    21 => 0,
+    26 => 0,
+    31 => 0,
+    36 => 0,
+    37 => 0,
+  );
+  $handler->display->display_options['filters']['combine']['fields'] = array(
+    'filename' => 'filename',
+    'filemime' => 'filemime',
+    'referencing_nodes' => 'referencing_nodes',
+  );
   /* Filter criterion: File: Schema type */
   $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['group'] = 1;
   $handler->display->display_options['filters']['schema_type']['schema_type'] = 'public';
-  /* Filter criterion: File: File name or title */
-  $handler->display->display_options['filters']['file_name_title']['id'] = 'file_name_title';
-  $handler->display->display_options['filters']['file_name_title']['table'] = 'file_managed';
-  $handler->display->display_options['filters']['file_name_title']['field'] = 'file_name_title';
-  $handler->display->display_options['filters']['file_name_title']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['file_name_title']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['file_name_title']['expose']['label'] = 'File name or field';
-  $handler->display->display_options['filters']['file_name_title']['expose']['operator'] = 'file_name_title_op';
-  $handler->display->display_options['filters']['file_name_title']['expose']['identifier'] = 'file_name_title';
-  $handler->display->display_options['filters']['file_name_title']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
-    6 => 0,
-  );
   /* Filter criterion: File: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'file_managed';
@@ -832,6 +834,7 @@ function cp_content_views_default_views() {
     'html' => 'html',
     'image' => 'image',
   );
+  $handler->display->display_options['filters']['type']['group'] = 1;
   $handler->display->display_options['filters']['type']['exposed'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
