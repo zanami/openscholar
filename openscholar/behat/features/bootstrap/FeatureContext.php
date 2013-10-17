@@ -1126,4 +1126,12 @@ class FeatureContext extends DrupalContext {
   public function iImportTheCsvFile($type) {
     $this->invoke_code('os_migrate_demo_import_csv', array("'$type'"));
   }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
 }

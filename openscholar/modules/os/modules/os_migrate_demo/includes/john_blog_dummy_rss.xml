@@ -2,17 +2,17 @@
   <rss version="2.0">
     <channel>
       <item>
-        <title>Exported blog from RSS</title>
-        <guid>blog1</guid>
+        <title>NASA</title>
+        <guid>nasa_blog</guid>
         <description><![CDATA[
-        Arcade fire
+        NASA stands National Aeronautics and Space Administration.
         ]]></description>
       </item>
       <item>
         <guid>blog2</guid>
-        <title>Exported blog from RSS</title>
+        <title>John F. Kennedy International Airport</title>
         <description><![CDATA[
-          The prodigy
+          Located in borough of Queens in New York City.
         ]]></description>
       </item>
     </channel>
