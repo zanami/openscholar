@@ -12,7 +12,7 @@ Feature:
     Given I am logging in as "admin"
       And I import feed items for "john"
      When I visit "john/cp/content/import/news"
-      And I should see "John feed importer"
+      And I should see "John news importer"
       And I import the feed item "JFK was murdered"
      Then I should see the feed item "JFK was murdered" was imported
       And I should see "JFK was murdered"
@@ -29,8 +29,8 @@ Feature:
     Given I am logging in as "admin"
       And I import feed items for "obama"
      When I visit "obama/cp/content/import/news"
-      And I should see "Obama feed importer"
-      And I should not see "John feed importer"
+      And I should see "Obama news importer"
+      And I should not see "John news importer"
       And I should not see "JFK was murdered"
       And I import the feed item "Four more years is the most re-tweeted tweet"
      Then I should see the feed item "Four more years is the most re-tweeted tweet" was imported
@@ -63,7 +63,7 @@ Feature:
   Scenario: Test the Importer filter on OS feed import page.
     Given I am logging in as "admin"
       And I visit "john/cp/content/import/news"
-     When I click "John feed importer"
+     When I click "John news importer"
      Then I should see "JFK was murdered"
 
   @api

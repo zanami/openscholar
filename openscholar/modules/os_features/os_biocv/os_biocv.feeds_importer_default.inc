@@ -20,7 +20,7 @@ function os_biocv_feeds_importer_default() {
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
-        'allowed_extensions' => 'txt csv tsv xml opml',
+        'allowed_extensions' => 'ics csv',
         'direct' => FALSE,
         'directory' => 'public://feeds',
         'allowed_schemes' => array(
@@ -89,7 +89,7 @@ function os_biocv_feeds_importer_default() {
     'fetcher' => array(
       'plugin_key' => 'FeedsFileFetcher',
       'config' => array(
-        'allowed_extensions' => 'txt csv tsv xml opml',
+        'allowed_extensions' => 'ics csv',
         'direct' => FALSE,
         'directory' => 'public://feeds',
         'allowed_schemes' => array(
