@@ -46,7 +46,7 @@ Feature:
     And I display watchdog
     Then I should see the news photo "druplicon.small__"
 
-  @api
+  @api @wip
   Scenario: Test the Contains filter on OS feed import page.
     Given I am logging in as "admin"
       And I visit "john/cp/content/import/news?feed_by_text=president"
@@ -54,20 +54,20 @@ Feature:
      When I visit "john/cp/content/import/news?feed_by_text=pancakes"
      Then I should not see "JFK was murdered"
 
-  @api
+  @api @wip
   Scenario: Test the Status filter on OS feed import page.
     Given I am logging in as "admin"
      When I visit "john/cp/content/import/news?feed_is_imported=All"
      Then I should see "JFK was murdered"
 
-  @api
+  @api @wip
   Scenario: Test the Importer filter on OS feed import page.
     Given I am logging in as "admin"
       And I visit "john/cp/content/import/news"
      When I click "John news importer"
      Then I should see "JFK was murdered"
 
-  @api
+  @api @wip
   Scenario: Verify the imported news date is the original feed item date.
     Given I am logging in as "admin"
     And I import feed items for "john"
