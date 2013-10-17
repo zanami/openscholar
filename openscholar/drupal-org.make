@@ -46,7 +46,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
-; needs patches to contrib
+;needs patches to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
@@ -266,6 +266,7 @@ projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
 projects[og_moderation][subdir] = "contrib"
 projects[og_moderation][version] = 2.0
+projects[og_moderation][patch][] = "http://drupal.org/files/og_moderation-remove_node_grants-2091179-7.patch"
 
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
@@ -367,7 +368,7 @@ projects[views_bulk_operations][version] = 3.0
 projects[views_og_cache][subdir] = "contrib"
 projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
-projects[views_og_cache][download][revision] = 059a845
+projects[views_og_cache][download][revision] = dddbfa2
 
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0

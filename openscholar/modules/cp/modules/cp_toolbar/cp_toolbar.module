@@ -78,6 +78,23 @@ function cp_toolbar_view() {
     if (arg(0) == 'user') {
       $links['account']['attributes']['class'][] = 'active';
     }
+
+    if (module_exists('vsite') && user_access('subscribe as support team') && $vsite = vsite_get_vsite()) {
+      if (!og_is_member('node', $vsite->id)) {
+        $links['support_team_subscribe'] = array(
+          'title' => t('Support @title', array('@title' => $vsite->group->title)),
+          'href' => 'group/node/' . $vsite->id . '/subscribe/vsite_support_expire',
+          'description' => t('Subscribe to group for support'),
+        );
+      }
+      else {
+        $links['support_team_unsubscribe'] = array(
+          'title' => t('Unsubscribe @title' , array('@title' => $vsite->group->title)),
+          'href' => 'group/node/' . $vsite->id . '/unsubscribe',
+          'description' => t('Un-Subscribe from group'),
+        );
+      }
+    }
   }
   else {
      $links = array(
