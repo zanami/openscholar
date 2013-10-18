@@ -202,21 +202,21 @@ function cp_menu_title($form, &$form_state) {
       // Load the bundles.
       $content_types = os_get_bundles();
       $content_types_list = array();
-      if(module_exists('os_biocv')) {
+      if (module_exists('os_biocv')) {
         // Check for an already created bio.
         $bio_check = _os_biocv_bio_exists();
         // Check for an already created cv.
         $cv_check = _os_biocv_cv_exists();
         // Remove bio || cv if they're already created.
-        if($bio_check && array_key_exists('bio', $content_types)) {
+        if ($bio_check && array_key_exists('bio', $content_types)) {
           unset($content_types['bio']);
         }
-        if($cv_check && array_key_exists('cv', $content_types)) {
+        if ($cv_check && array_key_exists('cv', $content_types)) {
           unset($content_types['cv']);
         }
       }
       // Remove the "link" content type from the bundles array.
-      if(array_key_exists('link', $content_types)) {
+      if (array_key_exists('link', $content_types)) {
         unset($content_types['link']);
       }
       // Sort content types alphabetically.
@@ -570,7 +570,7 @@ function cp_menu_wizard_finish(&$form_state) {
       $fragment = parse_url($values['url'], PHP_URL_FRAGMENT);
       $url = $values['url'];
 
-      if(strlen($query)){
+      if (strlen($query)) {
         $options['query'] = array();
         // Parse the string to an array.
         parse_str($query,$options['query']);
@@ -578,7 +578,7 @@ function cp_menu_wizard_finish(&$form_state) {
         list($url,) = explode('?', $url,2);
       }
 
-      if(strlen($fragment)){
+      if (strlen($fragment)) {
         $options['fragment'] = $fragment;
         // Removes fragment from URL;
         list($url,) = explode('#', $url, 2);
@@ -619,7 +619,7 @@ function cp_menu_wizard_finish(&$form_state) {
   ctools_include('menu', 'os');
 
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'], 'options' => $options);
-  if($values['type'] == 'heading'){
+  if ($values['type'] == 'heading') {
     //If we don't have a path set, tell drupal that this link is external
     //so that it does not try and run access functions
     $item['external'] = true;
