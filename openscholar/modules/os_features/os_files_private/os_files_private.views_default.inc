@@ -168,6 +168,9 @@ function os_files_private_views_default_views() {
   $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['value'] = array(
+    'private' => 'private',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
