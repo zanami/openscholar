@@ -24,6 +24,9 @@ function os_events_os_app_info() {
         'feed_2', // rss
       ),
     ),
+    'importers' => array(
+      'iCal' => 'os_ical',
+    ),
   );
 
   return $apps;

@@ -78,6 +78,12 @@ abstract class OsMigrate extends Migration {
     if ($this->entityType == 'taxonomy_term' && $this->ogVocab) {
       $this->prepareRowTaxonomyTerm($row);
     }
+
+    if ($this->entityType == 'node') {
+      // Create a random timestamp from the last year.
+      $year_ago = time() - 3600 * 24 * 365;
+      $row->created = rand($year_ago, time());
+    }
   }
 
   public function prepare($entity, $row) {
