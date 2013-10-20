@@ -17,6 +17,7 @@ Feature: Testing the importer.
     Scenario: Testing the csv importing for blog.
       Given I am logging in as "admin"
        When I visit "john/os-importer-demo/blog"
+       When I should print page
         And I visit "john/blog"
        Then I should see "Blog from csv"
         And I should see "This is a blog from csv file"
