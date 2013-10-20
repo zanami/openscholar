@@ -259,6 +259,7 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
   // Now when we know what the original mapping was we can get the names of the
   // new vocabularies.
   $new_vocabs = array_diff(array_keys($item), $mappings);
+  $tids = array();
   foreach ($new_vocabs as $vocab) {
     // Create the terms and the vocabulary.
     $info = _os_importer_create_vocab($vocab, $item[$vocab]);
@@ -267,10 +268,12 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
     og_vocab_create_og_vocab($info['vid'], 'node', $entity->type)->save();
     og_vocab_relation_save($info['vid'], 'node', $vsite->id);
 
-    // Add the terms the field.
-    $wrapper = entity_metadata_wrapper('node', $entity);
-    $wrapper->{OG_VOCAB_FIELD}->set($info['tids']);
+    // Build the taxonomy terms for the new node.
+    $tids = array_merge($info['tids'], $tids);
   }
+
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->{OG_VOCAB_FIELD}->set($tids);
 }
 
 /**
