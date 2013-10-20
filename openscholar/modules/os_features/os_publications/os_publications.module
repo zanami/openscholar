@@ -421,10 +421,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ));
 
   // Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
-  $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
   $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
-
-  // Disable wysiwyg in field 'Abstract'.
   $form['biblio_abst_e']['#wysiwyg'] = FALSE;
 
   // Hide the rest of the vtabs behind a collapsible fieldset.
