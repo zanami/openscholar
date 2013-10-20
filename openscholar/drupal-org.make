@@ -181,7 +181,7 @@ projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
 
 projects[jquery_update][subdir] = "contrib"
-projects[jquery_update][version] = 2.3
+projects[jquery_update][version] = 2.x-dev
 
 projects[js][subdir] = "contrib"
 projects[js][version] = 1.0-beta2
