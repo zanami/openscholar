@@ -49,3 +49,36 @@ function os_pages_update_7002(&$sandbox) {
     drupal_write_record('spaces_overrides', $r, array('type', 'id', 'object_type', 'object_id'));
   }
 }
+
+/**
+ * Prevents existing sections from having their navs moved
+ */
+function os_pages_update_7003(&$sb) {
+  $sections = os_pages_get_sections();
+
+  foreach ($sections as $s) {
+    $exists = db_select('spaces_overrides', 'so')
+      ->condition('object_id', 'os_pages-section-'.$s['bid'])
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+
+    if (!$exists) {
+      $override = context_load('os_pages-section-'.$s['bid']);
+      $override->reactions['block']['blocks']['boxes-os_pages_section_nav']['region'] = 'sidebar_second';
+
+      $groups = og_get_entity_groups('node', $s['bid']);
+      $group = reset($groups);
+
+      $data = (object)array(
+        'type' => 'og',
+        'id' => $group,
+        'object_type' => 'context',
+        'object_id' => 'os_pages-section-'.$s['bid'].':reaction:block',
+        'value' => $override->reactions['block']
+      );
+
+      drupal_write_record('spaces_overrides', $data);
+    }
+  }
+}
