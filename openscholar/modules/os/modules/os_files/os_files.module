@@ -290,7 +290,7 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['media_description']['#access'] = FALSE;
 
   //$form['preview']['#weight'] = -1000;
-  $form['replace_upload']['#weight'] = 7;
+  $form['replace_upload']['#weight'] = -10.5;
   
   $form['user']['#access'] = FALSE;
 
