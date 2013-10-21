@@ -306,26 +306,35 @@ function cp_toolbar_fill_drawer() {
     $links['comments'] = $l;
   }
 
-  // Adding the link to the import news.
-  $types = array('news', 'blog');
-  foreach ($types as $type) {
-    $l = menu_get_item('cp/content/import/' . $type);
-    if ($l['access']) {
-      $links['import_' . $type] = $l;
-    }
-  }
-
-  // Adding the importers.
-  $l = menu_get_item('cp/content/import/blog');
-  if ($l['access']) {
-    $links['import_blog'] = $l;
-  }
-
   $drawer['content-drawer']['list'] = array(
     '#theme' => 'links',
     '#links' => $links,
     '#attributes' => array(
       'class' => 'toolbar-list',
+    ),
+  );
+
+  $links = array();
+
+  // Adding the link to the import news.
+  $importers = array(
+    'news' => 'cp/content/import/news',
+    'blog' => 'cp/content/import/blog',
+    'event' => 'os-importer/os_ical',
+  );
+
+  foreach ($importers as $type => $importer) {
+    $l = menu_get_item($importer);
+    if ($l['access']) {
+      $links[$type] = $l;
+    }
+  }
+
+  $drawer['content-drawer']['import'] = array(
+    '#theme' => 'links',
+    '#links' => $links,
+    '#attributes' => array(
+      'class' => 'toolbar-import',
     ),
   );
 

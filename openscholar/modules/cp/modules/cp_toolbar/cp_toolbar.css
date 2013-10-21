@@ -185,6 +185,10 @@
   content: "Find";
 }
 
+.toolbar-import:before {
+  content: "Import";
+}
+
 .toolbar-graph:before {
   content: "View";
 }
