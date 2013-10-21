@@ -12,6 +12,7 @@ include_once ('includes/os.inc');
 global $conf;
 $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
 
+
 /**
  * Implements hook_menu().
  */
