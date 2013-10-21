@@ -12,8 +12,6 @@ include_once ('includes/os.inc');
 global $conf;
 $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
 
-
-
 /**
  * Implements hook_menu().
  */
@@ -1617,6 +1615,21 @@ function os_views_query_alter(&$view, &$query) {
     return;
   }
 
+  // Run through the view's filters to get content types that are explicitly
+  // mentioned for this view to display.
+  $allowed_types = array();
+  foreach ($query->where as $where) {
+    foreach ($where['conditions'] as $condition) {
+      // Check if the condition allows specific node types.
+      if ($condition['field'] == 'node.type' && in_array($condition['operator'], array('=', 'in'))) {
+        // Add the node types to the list of allowed types, so they will not be
+        // excluded from the view.
+        $types = !is_array($condition['value']) ? array($condition['value']) : $condition['value'];
+        $allowed_types = array_merge($allowed_types, $types);
+      }
+    }
+  }
+
   // Get excluded content types.
   $exclude = array();
   foreach (os_app_info() as $info) {
@@ -1624,6 +1637,16 @@ function os_views_query_alter(&$view, &$query) {
       // Option 'searchable' defaults to TRUE.
       continue;
     }
+
+    // Make sure the potentially excluded content types are not in the list of
+    // allowed node types.
+    foreach ($info['nodetypes'] as $key => $node_type) {
+      if (in_array($node_type, $allowed_types)) {
+        // Remove the allowed node type from the exclude list.
+        unset($info['nodetypes'][$key]);
+      }
+    }
+
     // Add the unsearchable node types to the excluded list.
     $exclude = array_merge($exclude, $info['nodetypes']);
   }
