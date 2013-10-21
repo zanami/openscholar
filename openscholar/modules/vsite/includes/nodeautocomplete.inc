@@ -112,15 +112,15 @@ function _vsite_node_autocomplete_matches($nids) {
     $exclude = array_merge($exclude, $info['nodetypes']);
   }
 
-  $result = db_select('node')
+  $query = db_select('node')
     ->fields('node', array('nid', 'title'))
     ->condition('nid', $nids, 'IN');
 
   if (!empty($exclude)) {
-    $result->condition('type', $exclude, 'NOT IN');
+    $query->condition('type', $exclude, 'NOT IN');
   }
 
-  $result->execute();
+  $result = $query->execute();
 
   foreach ($result as $node) {
     $matches[$node->title . " [$node->nid]"] = check_plain($node->title);
