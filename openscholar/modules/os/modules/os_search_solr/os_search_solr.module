@@ -495,5 +495,6 @@ function os_search_solr_cp_settings() {
 function os_search_solr_reindex_site() {
   $vsite = vsite_get_vsite();
   os_search_solr_mark_entity_by_bundles($vsite->id);
+  drupal_set_message(t('Site marked for re-indexing. It may take a few minutes until the site is fully indexed.'));
 }
 
