@@ -1,4 +1,8 @@
 @media (max-width: 1229px) {
+	.webkit #content-column,
+.ie #content-column{
+	width:84%!important;
+}
 	
 .page-node #content-column .content-inner {
     margin-top: 10px;
