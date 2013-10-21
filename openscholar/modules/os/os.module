@@ -1700,7 +1700,7 @@ function os_field_default_fields_alter(&$fields) {
   }
 
   foreach ($fields as $id => $config) {
-    if(in_array($config['field_config']['type'], array('file','imagefield_crop','image'))){
+    if(isset($config['field_config'])  && in_array($config['field_config']['type'], array('file','imagefield_crop','image'))){
       //Change the field to use private files instead of public
       $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
 
@@ -1709,7 +1709,6 @@ function os_field_default_fields_alter(&$fields) {
         unset($config['field_instance']['widget']['settings']['allowed_schemes']['public']);
         $fields['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
       }
-
     }
   }
 }
