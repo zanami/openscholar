@@ -306,6 +306,15 @@ function cp_toolbar_fill_drawer() {
     $links['comments'] = $l;
   }
 
+  // Adding the link to the import news.
+  $types = array('news', 'blog');
+  foreach ($types as $type) {
+    $l = menu_get_item('cp/content/import/' . $type);
+    if ($l['access']) {
+      $links['import_' . $type] = $l;
+    }
+  }
+
   $drawer['content-drawer']['list'] = array(
     '#theme' => 'links',
     '#links' => $links,
@@ -318,8 +327,8 @@ function cp_toolbar_fill_drawer() {
 
   // Adding the link to the import news.
   $importers = array(
-    'news' => 'cp/content/import/news',
-    'blog' => 'cp/content/import/blog',
+    'news' => 'os-importer/os_news',
+    'blog' => 'os-importer/os_blog_csv',
     'event' => 'os-importer/os_ical',
   );
 
