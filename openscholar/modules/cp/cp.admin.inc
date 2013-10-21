@@ -13,7 +13,7 @@ function cp_admin_form() {
       '#description' => t('Replace the contact form with a GetSatisfaction widget.  Create the widget in your GetSatisfaction community.  Get its four digit id from the embed code.  (ie &lt;div id="getsat-widget-<b>1234</b>"&gt; ...).  Set to 0 to disable.'),
       '#type' => 'textfield',
       '#default_value' => variable_get('cp_support_getsatisfaction_widget', 0),
-      '#element_validate' => array('element_validate_integer_positive'),
+      '#element_validate' => array('element_validate_integer'),
     ),  
   );
   
