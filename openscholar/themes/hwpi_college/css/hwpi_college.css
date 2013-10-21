@@ -69,8 +69,8 @@ blockquote {
     width: 1214px;
     margin-top: 0;
 }
-.webkit #columns{
-	width:1035px;
+.webkit #content-column{
+	width:1035px!important;
 }
 
 #columns .links li a {
