@@ -301,6 +301,14 @@ function cp_menu_url_validate(&$form, &$state) {
     }
   }
 
+  //for internal urls, figure out if we're in the same vsite or an external vsite.
+  if (isset($vsite_domain) && $vsite_domain) {
+    $our_domain = 'http://' . (variable_get('vsite_domain_shared')) ? $vsite_domain . '/' . $vsite->og->purl : $vsite_domain;
+  } else {
+    $our_domain = variable_get('purl_base_domain') . '/' . $vsite->og->purl;
+  }
+  $external_vsite = (strpos($url, $our_domain) !== 0);
+  
   //absolute url
   if (url_is_external($url)) {
     $path = explode('/', $url);
@@ -325,8 +333,12 @@ function cp_menu_url_validate(&$form, &$state) {
       }
       return;
     } else {
-      //absolute path to internal url.
-      $path = ($original_path) ? $original_path : '<front>';
+      //absolute path to internal url coud be same vsite or external vsite
+      if ($external_vsite) {
+        $path = $url;
+      } else {
+        $path = ($original_path) ? $original_path : '<front>';
+      }
     }
   } else {
     //relative url
@@ -359,19 +371,10 @@ function cp_menu_url_validate(&$form, &$state) {
       cp_menu_cache_set($state['object_id'], $values);
 
       return;  //Node type will be handled by submit function, cp_menu_wizard_finish.
-    } else {
-      
-      //path does not exist.  offer to create it, if we're trying to add to our own site.
-      if (isset($vsite_domain) && $vsite_domain) {
-        $our_domain = 'http://' . (variable_get('vsite_domain_shared')) ? $vsite_domain . '/' . $vsite->og->purl : $vsite_domain;
-      } else {
-        $our_domain = $domain . '/' . $vsite->og->purl;
-      }
-      
-      if (strpos($url, $our_domain) === 0) {
+    } else {   
+      //this path does not exist.  offer to create it by presenting list of available content types.
+      if (!$external_vsite) {
         form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
-  
-        //this path does not exist.  offer to create it by presenting list of available content types.
         $fake_state = array('object'=> array('type' => 'page'));
         $cp_menu_title = cp_menu_title(array(), $fake_state);
         $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
