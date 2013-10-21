@@ -326,16 +326,12 @@ function cp_toolbar_fill_drawer() {
   $links = array();
 
   // Adding the link to the import news.
-  $importers = array(
-    'news' => 'os-importer/os_news',
-    'blog' => 'os-importer/os_blog_csv',
-    'event' => 'os-importer/os_ical',
-  );
+  $importers = os_importer_importable_content();
 
-  foreach ($importers as $type => $importer) {
-    $l = menu_get_item($importer);
+  foreach (array_keys($importers) as $importer) {
+    $l = menu_get_item('os-importer/' . $importer);
     if ($l['access']) {
-      $links[$type] = $l;
+      $links[$importer] = $l;
     }
   }
 

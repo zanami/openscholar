@@ -89,6 +89,34 @@ function os_importer_os_add_new_links_alter(&$links) {
 }
 
 /**
+ * Get all the content types which can be imported from external source.
+ */
+function os_importer_importable_content($type = '') {
+  $apps = os_app_info();
+  $vsite = vsite_get_vsite();
+  $types = array();
+
+  // Loop through the apps and check which app has an importer.
+  foreach ($apps as $app) {
+    if (empty($app['importers'])) {
+      continue;
+    }
+
+    // Check to which bundle the user can import content.
+    foreach ($app['importers'] as $bundle => $info) {
+      $string = "create {$bundle} content";
+      $access = $vsite ? og_user_access('node', $vsite->id, $string) : user_access($string);
+
+      if ($access) {
+        $types[$bundle] = $info;
+      }
+    }
+  }
+
+  return $type ? $types[$type] : $types;
+}
+
+/**
  * Implements hook_menu().
  */
 function os_importer_menu() {
@@ -125,13 +153,9 @@ function os_importer_menu() {
  *  The title of the menu item.
  */
 function os_importer_importer_title($type) {
-  $source = feeds_source($type);
-  $config = $source->importer->getConfig();
-  $bundle = $config['processor']['config']['content_type'];
+  $types = node_type_get_types($type);
 
-  $type = node_type_get_types();
-
-  return t('Import @type from CSV', array('@type' => strtolower($type[$bundle]->name)));
+  return t('Import @type', array('@type' => strtolower($types[$type]->name)));
 }
 
 /**
@@ -226,6 +250,8 @@ function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapp
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
+  $info = os_importer_importable_content($type);
+
   $form_state['type'] = $type;
   $importer = feeds_importer($type);
 
