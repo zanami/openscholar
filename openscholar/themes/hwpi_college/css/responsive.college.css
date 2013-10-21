@@ -2,6 +2,7 @@
 	.webkit #content-column,
 .ie #content-column{
 	width:84%!important;
+	padding:0!important;
 }
 	
 .page-node #content-column .content-inner {
