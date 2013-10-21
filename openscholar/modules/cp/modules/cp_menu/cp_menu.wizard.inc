@@ -360,18 +360,28 @@ function cp_menu_url_validate(&$form, &$state) {
 
       return;  //Node type will be handled by submit function, cp_menu_wizard_finish.
     } else {
-      form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
-
-      //this path does not exist.  offer to create it by presenting list of available content types.
-      $fake_state = array('object'=> array('type' => 'page'));
-      $cp_menu_title = cp_menu_title(array(), $fake_state);
-      $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
-      $form['new_node_type']['#theme'] = 'select';
-      $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
-      $form['new_node_type']['#value'] = $state['input']['new_node_type'];
-      $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
-      $form['new_node_type']['#suffix'] = '</div>';
-      array_unshift($form['new_node_type']['#options'], '-- Select Type --');
+      
+      //path does not exist.  offer to create it, if we're trying to add to our own site.
+      if (isset($vsite_domain) && $vsite_domain) {
+        $our_domain = 'http://' . (variable_get('vsite_domain_shared')) ? $vsite_domain . '/' . $vsite->og->purl : $vsite_domain;
+      } else {
+        $our_domain = $domain . '/' . $vsite->og->purl;
+      }
+      
+      if (strpos($url, $our_domain) === 0) {
+        form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
+  
+        //this path does not exist.  offer to create it by presenting list of available content types.
+        $fake_state = array('object'=> array('type' => 'page'));
+        $cp_menu_title = cp_menu_title(array(), $fake_state);
+        $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
+        $form['new_node_type']['#theme'] = 'select';
+        $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
+        $form['new_node_type']['#value'] = $state['input']['new_node_type'];
+        $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
+        $form['new_node_type']['#suffix'] = '</div>';
+        array_unshift($form['new_node_type']['#options'], '-- Select Type --');
+      }
     }
   } else {
     //path is valid.  use normal path instead of aliased path
