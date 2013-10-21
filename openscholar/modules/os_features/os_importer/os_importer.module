@@ -95,7 +95,8 @@ function os_importer_menu() {
   $items = array();
 
   $items['os-importer/%'] = array(
-    'title' => 'Importing from a CSV',
+    'title callback' => 'os_importer_importer_title',
+    'title arguments' => array(1),
     'access callback' => 'os_importer_import_access',
     'access arguments' => array(1),
     'page callback' => 'drupal_get_form',
@@ -103,6 +104,25 @@ function os_importer_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Generate callback for CSV importer page.
+ *
+ * @param $type
+ *  The CSV importer type.
+ *
+ * @return String
+ *  The title of the menu item.
+ */
+function os_importer_importer_title($type) {
+  $source = feeds_source($type);
+  $config = $source->importer->getConfig();
+  $bundle = $config['processor']['config']['content_type'];
+
+  $type = node_type_get_types();
+
+  return t('Import @type from CSV', array('@type' => strtolower($type[$bundle]->name)));
 }
 
 /**
