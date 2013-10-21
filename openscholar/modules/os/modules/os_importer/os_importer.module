@@ -253,29 +253,63 @@ function os_importer_import($form, &$form_state, $type) {
   $bundle = os_importer_importable_content($type);
   $form_state['type'] = $type;
 
+  $options = array();
+  foreach (array_keys($bundle) as $option) {
+    $options[$option] = ucfirst($option);
+  }
+
   $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
-  $form['import_type'] = array(
+  $form['format'] = array(
     '#type' => 'radios',
     '#multiple' => TRUE,
     '#title' => t('Format'),
-    '#options' => array_flip($bundle),
+    '#options' => $options,
+    '#default_value' => key($options),
   );
 
-  $form['file'] = array(
-    '#title' => t('File'),
-    '#type' => 'managed_file',
-    '#description' => t('Select a file form your computer to import.'),
-    '#upload_location' => 'public://',
-    '#upload_validators' => array(
-      'file_validate_extensions' => array('ics csv'),
+  $form['import_source'] = array(
+    // RSS need url.
+    'url' => array(
+      '#type' => 'textfield',
+      '#title' => t('URL'),
+
+      '#description' => t('The url of your data source.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+    ),
+
+    // iCal / CSV need upload file from user computer.
+    'file' => array(
+      '#title' => t('File'),
+      '#type' => 'managed_file',
+      '#description' => t('Select a file form your computer to import.'),
+      '#upload_location' => 'public://',
+      '#upload_validators' => array(
+        'file_validate_extensions' => array('ics csv'),
+      ),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+      '#weight' => -99,
     ),
   );
 
   // Only CSV parsers have a template.
+  // TODO: Hide when selecting rss or iCal.
   if ($feed_importer->parser instanceof FeedsCSVParser) {
     $form['template'] = array(
       '#type' => 'markup',
       '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="format"]' => array('value' => 'csv'),
+        ),
+      ),
     );
   }
 
