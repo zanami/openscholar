@@ -388,7 +388,7 @@ function cp_menu_url_validate(&$form, &$state) {
     }
   } else {
     //path is valid.  use normal path instead of aliased path
-    $values = cp_menu_cache_get($state['object_id']) + $state['input'];
+    $values = array_merge(cp_menu_cache_get($state['object_id']), $state['input']);
     $values['url'] = "{$normal_path}{$extra}";
     cp_menu_cache_set($state['object_id'], $values);
   }
