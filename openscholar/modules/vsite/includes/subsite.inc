@@ -13,7 +13,7 @@
  */
 function vsite_subsite_access($op = 'create', $vsite = false){
 
-  if(!$vsite){
+  if (!$vsite) {
     $vsite = spaces_get_space();
   }
 
@@ -36,16 +36,16 @@ function vsite_subsite_access($op = 'create', $vsite = false){
 function vsite_get_subsites($vsite = false, $reset = false){
   $subsite_map = drupal_static('vsite_get_subsites',array());
 
-  if($reset || (!$subsite_map && !($subsite_map = cache_get('vsite_subsite_map')))){
+  if ($reset || (!$subsite_map && !($subsite_map = cache_get('vsite_subsite_map')))) {
     $subsite_map = array();
 
-    if($info = field_info_field('field_group_parent')){
+    if ($info = field_info_field('field_group_parent')) {
       $result = db_select('field_data_field_group_parent', 'fgp')
-      ->fields('fgp',array('bundle','entity_id','field_group_parent_target_id'))
-      ->condition('deleted', 0)
-      ->execute();
+        ->fields('fgp',array('bundle','entity_id','field_group_parent_target_id'))
+        ->condition('deleted', 0)
+        ->execute();
 
-      while ($item = $result->fetch()){
+      while ($item = $result->fetch()) {
         $subsite_map[$item->field_group_parent_target_id][$item->entity_id] = $item->entity_id;
       }
     }
@@ -53,17 +53,17 @@ function vsite_get_subsites($vsite = false, $reset = false){
     cache_set('vsite_subsite_map',$subsite_map);
   }
 
-  if(is_object($subsite_map)){
+  if (is_object($subsite_map)) {
     $subsite_map = $subsite_map->data;
   }
 
-  if(!$vsite && !($vsite = spaces_get_space())){
+  if (!$vsite && !($vsite = spaces_get_space())) {
     return array();
   }
 
-  $sid = is_object($vsite)? $vsite->group->nid:$vsite;
+  $sid = is_object($vsite) ? $vsite->group->nid : $vsite;
 
-  return isset($subsite_map[$sid])? $subsite_map[$sid]:array();
+  return isset($subsite_map[$sid]) ? $subsite_map[$sid] : array();
 }
 
 /**
@@ -76,10 +76,10 @@ function vsite_get_subsites($vsite = false, $reset = false){
  * @return boolean
  *
  */
-function vsite_has_subsites($vsite = false){
+function vsite_has_subsites($vsite = false) {
 
   //If this site has subsites return True.
-  return count(vsite_get_subsites($vsite))? TRUE:FALSE;
+  return count(vsite_get_subsites($vsite)) ? TRUE : FALSE;
 }
 
 /**
@@ -97,14 +97,14 @@ function vsite_has_subsites($vsite = false){
 function vsite_subsite_node_url_options($node, &$options){
   $vsite = spaces_get_space();
 
-  if(!$vsite || !isset($node->{OG_AUDIENCE_FIELD})){
+  if (!$vsite || !isset($node->{OG_AUDIENCE_FIELD})) {
     //no group information
     return;
   }
 
   //Check and see if this node is part of a subsite "not this site"
   $groups = field_get_items('node', $node, OG_AUDIENCE_FIELD);
-  if(isset($groups[0]) && $vsite->id != $groups[0]['target_id']){
+  if (isset($groups[0]) && $vsite->id != $groups[0]['target_id']) {
     //Absolute will force the use of "viste_domain_name"
     $options['absolute'] = TRUE;
     //This will rewrite the URL based on this nodes group
