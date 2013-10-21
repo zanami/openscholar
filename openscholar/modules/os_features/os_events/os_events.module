@@ -24,6 +24,9 @@ function os_events_os_app_info() {
         'feed_2', // rss
       ),
     ),
+    'importers' => array(
+      'iCal' => 'os_ical',
+    ),
   );
 
   return $apps;
@@ -113,7 +116,7 @@ function os_events_process_node(&$variables) {
 
   $variables['link_title_text'] = '';
   if (isset($variables['date_id'])) {
-    list(,,$field,$delta) = explode('.', $variables['date_id'][0]);
+    list(,,$field,$delta) = explode('.', is_array($variables['date_id']) ? reset($variables['date_id']) : $variables['date_id']);
     $delta = intval($delta);
     $date = field_get_items('node', $variables['node'], $field);
     $date = $date[$delta]['value'];
@@ -626,4 +629,12 @@ function os_events_mollom_form_info($form_id) {
   mollom_form_info_add_fields($form_info, 'registration', 'event_signup_simple');
 
   return $form_info;
+}
+
+/**
+ * Implements hook_date_ical_feed_event_render_alter().
+ */
+function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) {
+  // Prevent placing a backslash before a colon, because it makes iCal crash.
+  $event['description'] = str_replace('\:', ':', $event['description']);
 }

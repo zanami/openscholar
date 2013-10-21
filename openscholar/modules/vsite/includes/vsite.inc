@@ -50,8 +50,31 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = FALSE){
 /**
  * Add the passed $node to the specified $vsite.
  */
-function vsite_add_node($node, $vsite) {
-  return vsite_add_entity($node, 'node', $vsite);
+function vsite_add_node($node, $gid = FALSE, $update_alias = TRUE) {
+  // Loads the vsite to add the node as group content.
+  // Only sets reset = TRUE when we need to update the alias; this is because
+  // the purl value will be cached as NULL on newly created vsites, but we'll
+  // need the purl value in order to update the alias properly.
+  // @see vsite_pathauto_alias_alter()
+  $vsite = vsite_get_vsite($gid, $update_alias);
+  $og_membership = vsite_add_entity($node, 'node', $vsite);
+  // Optionally update the pathauto alias to reflect the new vsite.
+  if ($update_alias) {
+    if (!isset($node->path)) {
+      $node->path = array();
+    }
+    // Tells pathauto to update this node's alias.
+    $node->path['pathauto'] = TRUE;
+    $node->vsite_pathauto_alias_alter = TRUE;
+    // @todo verify if we need this?
+    // Prevents a collision with an existing system path.
+    //_vsite_alter_node_path_settings($node);
+
+    // Saves the node to trigger
+    node_save($node);
+  }
+
+  return $og_membership;
 }
 
 /**

@@ -134,11 +134,11 @@ border-top: none;
 
 
 /* SLIDESHOW OVERRIDES */
-#layout_16_9_side .hero {
+#layout_16_9_side .slide {
     background: #373737 !important;
 }
 
-#layout_16_9_side .hero-copy h2 {
+#layout_16_9_side .slide-copy h2 {
     font: bold 25px arial,sans-serif;
 }
 
@@ -148,7 +148,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 }
 */
 
-#layout_16_9_side .hero-copy {
+#layout_16_9_side .slide-copy {
     padding-top: 25px;
 }
 

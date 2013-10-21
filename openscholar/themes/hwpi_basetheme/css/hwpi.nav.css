@@ -28,6 +28,7 @@
     padding-right: 15px;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url(../images/menu_down_arrowOn.gif) right center no-repeat #1E2540;
@@ -152,6 +153,17 @@ ul.nice-menu ul {
 .section-nav a.active {
 	color: #333;
 }
+
+/* BOOK NAV IN CONTENT AREA */
+#content-column .book-menu a.active {
+   font-style: normal;
+   color: #000;
+}
+
+#content-column .book-menu ul li a {
+    color: #215990;
+}
+
 
 
 /* Action Nav Header 3rd*/
