@@ -35,6 +35,78 @@ function _vsite_preset_section_task($entity, $task, &$context) {
 }
 
 /**
+ * A generic task which attempts to order existing menu items.
+ */
+function _vsite_preset_menu_order_task($entity, $task, &$context) {
+  // Loads the preset menu order from the preset's variable.
+  $preset = spaces_preset_load($entity->spaces_preset_og, 'og');
+  if (isset($preset->value['variable']['vsite_preset_menu_order'])) {
+    $order = $preset->value['variable']['vsite_preset_menu_order'];
+  }
+  else {
+    return;
+  }
+
+  $modified = _vsite_preset_menu_order($order, $entity->nid);
+  return $modified;
+}
+
+/**
+ * Attempts to order menu links to the front of the given menu.
+ *
+ * @param array $menus
+ * @param int $gid
+ * @param string $menu_name
+ *
+ * @return bool $modified
+ *   Whether or not the vsite's menu object was modified.
+ */
+function _vsite_preset_menu_order($menus, $gid) {
+  $vsite = vsite_get_vsite($gid);
+  if (!$vsite) {
+    return FALSE;
+  }
+
+  $any_modified = FALSE;
+  foreach ($menus as $menu_name => $weighted_titles) {
+    $menu = _vsite_menu_get_menu_links($menu_name, $vsite);
+    if (empty($menu) || empty($menus)) {
+      return FALSE;
+    }
+
+    // Assumes no modifications.
+    $this_modified = FALSE;
+    // By convention, presets should use negative weights for menu links.
+    // This is because default menu items will initially have $weight == 0
+    foreach ($weighted_titles as $title => $weight) {
+      // Loops through the existing menu items to search for this title.
+      foreach ($menu as $mlid => $item) {
+        // Skips (doesn't order) child menu items; only orders top-level links.
+        if (isset($item['depth']) && $item['depth'] > 1) {
+          continue;
+        }
+        // If the title matches...
+        if ($item['link_title'] == $title) {
+          // Modify the weight.
+          $menu[$mlid]['weight'] = $weight;
+          $this_modified = TRUE;
+          $any_modified = TRUE;
+          // We've already found the link we wanted to order;
+          // Goes on to next specified title; skips over remaining items.
+          break;
+        }
+      }
+    }
+
+    if ($this_modified) {
+      $vsite->controllers->menus->set($menu_name, $menu);
+    }
+  }
+
+  return $any_modified;
+}
+
+/**
  * Task callback to create a News & Events page section and menu.
  */
 function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
@@ -44,12 +116,4 @@ function _vsite_preset_section_newsevents_task($entity, $task, &$context) {
 
   // Adds the primary menu link for the section page node.
   $mlid = vsite_menu_add_node($node->nid, $entity, $node->title);
-}
-
-/**
- * Task callback to create an About page section and menu.
- */
-function _vsite_preset_section_home_task($entity, $task, &$context) {
-  // Adds the top-level section menu link to existing front page.
-  $mlid = vsite_menu_create_menu_link('HOME', 'home', $entity->nid);
 }

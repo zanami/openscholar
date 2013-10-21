@@ -214,14 +214,6 @@ function os_publications_settings() {
     '#description' => t('Each selected format will appear in its own export link.'),
   );
 
-  $form['right']['biblio_google_link'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Link to Google Scholar'),
-    '#return_value' => 1,
-    '#default_value' => variable_get('biblio_google_link', 1),
-    '#description' => t('This adds the necessary metadata to your web site to allow Google Scholar to properly index your publication.'),
-  );
-
   //citation distribute plugins
   /*
    $form['right']['citation_distribute_autoflags'] = array(
@@ -257,14 +249,6 @@ function os_publications_settings() {
     '#title' => t('Select default order of the sort category'),
     '#default_value' => variable_get('biblio_order', 'DESC'),
     '#options' => array('DESC' => t('Descending'), 'ASC' => t('Ascending')),
-  );
-
-  $form['left']['biblio_sort_tabs'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Allow additional sorting of your publications by'),
-    '#default_value' => variable_get('biblio_sort_tabs', array('author' => 'author', 'title' => 'title', 'type' => 'type', 'year' => 'year')),
-    '#options' => array('author' => t('Author'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
-    //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
   );
 
   $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -1 AND visible = 1');

@@ -425,14 +425,14 @@ function os_reader_field_default_fields() {
     ),
   );
 
-  // Exported field: 'os_feed_item-feed_item-field_news_reference'.
-  $fields['os_feed_item-feed_item-field_news_reference'] = array(
+  // Exported field: 'os_feed_item-feed_item-field_nodes_reference'.
+  $fields['os_feed_item-feed_item-field_nodes_reference'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_news_reference',
+      'field_name' => 'field_nodes_reference',
       'foreign keys' => array(
         'node' => array(
           'columns' => array(
@@ -484,7 +484,7 @@ function os_reader_field_default_fields() {
         ),
       ),
       'entity_type' => 'os_feed_item',
-      'field_name' => 'field_news_reference',
+      'field_name' => 'field_nodes_reference',
       'label' => 'News reference',
       'required' => 0,
       'settings' => array(

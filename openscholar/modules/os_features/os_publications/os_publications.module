@@ -242,12 +242,6 @@ function os_publications_theme_registry_alter(&$reg) {
   //Override publications by year box so biblio years display submitted/inpress/etc
   $reg['views_view_summary__publication_years__block'] = $reg['views_view_summary'];
   $reg['views_view_summary__publication_years__block']['preprocess functions'][] = 'theme_os_publications_biblio_year_row';
-
-  $reg['biblio_sort_tabs'] = array_merge($reg['biblio_sort_tabs'], array(
-    'file' => 'os_publications.theme.inc',
-    'theme path' => drupal_get_path('module', 'os_publications'),
-    'function' => 'theme_os_publications_sort_tabs',
-  ));
 }
 
 /**
@@ -334,7 +328,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
         '#type' => 'hidden',
         '#value' => isset($node->biblio_edition) ? $node->biblio_edition : '',
       );
-      break;
 
     default:
       // Shows the Extra Fields for any selected publication type.

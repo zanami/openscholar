@@ -14,6 +14,7 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
     }
 
     $current_vsite = vsite_get_vsite();
+    $feed = os_reader_feed_item_load($values->id);
 
     if (!empty($current_vsite)) {
       // Show button only for current VSite.
@@ -37,8 +38,8 @@ class os_reader_handler_copy_feed_to_news extends views_handler_field {
       }
 
       if ($news_node = os_reader_get_news_by_feed_item($values->id, $vsite->nid)) {
-        $generic_message = t('Imported to @vsite. !view', array('@vsite' => $vsite->title, '!view' => l(t('View'), 'node/' . $news_node->nid)));
-        $vsite_message = t('Imported. !view', array('!view' => l(t('View'), 'node/' . $news_node->nid)));
+        $generic_message = t('Imported to @vsite. !edit', array('@vsite' => $vsite->title, '!edit' => l(t('Edit'), 'node/' . $news_node->nid)));
+        $vsite_message = t('Imported. !edit', array('!edit' => l(t('Edit'), 'node/' . $news_node->nid)));
         $items[] = empty($current_vsite) ? $generic_message : $vsite_message;
       }
       else {

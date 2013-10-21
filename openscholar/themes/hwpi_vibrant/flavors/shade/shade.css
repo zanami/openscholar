@@ -36,9 +36,11 @@
     line-height: 28px;
     padding: 7px 15px 7px 0;
 }
+
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover,
  #menu-bar ul.nice-menu .menuparent a.active {
-    background: none repeat scroll 0 0 #731422;
+    background: #731422;
     color: #F4f4f4;
 }
 .front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
@@ -117,11 +119,9 @@ body.front #columns{
 	padding:0;
 }
 .navigation ul li, .navigation ul.menu li{
-	background-color:#fef7f5;
+	background-color:#FFF;
 }
-.rslides_tabs li{
-	background-color:#575f66!important;
-}
+
 .image-style-profile-thumbnail,
 .image-style-book-cover-thumb{
 	border:1px solid #f4f4f4;
@@ -131,7 +131,7 @@ body.front #columns{
 }
 #layout_16_9_below .slide-copy,
 #layout_16_9_below .rslides_tabs{
-	background-color:#8A97A1;
+	background-color:#687781;
 }
 .front article{
 	padding-bottom:25px;
@@ -151,11 +151,10 @@ sidebar .block-title {
    }
    span[style]{
    	font-family:open sans,arial, sans-serif!important;
-   
    }
    
 .event-start-month {
-    color: #666666;
+    color: #474747;
 }
 .event-start-day {
     color: #A61D31;
@@ -163,11 +162,13 @@ sidebar .block-title {
 .event-start .event-start {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #E3EAEF;
-    border-radius: 20px 20px 20px 20px;
+    -webkit-border-radius: 15px;
+-moz-border-radius: 15px;
+border-radius: 15px;
     width: 60px;
 }
 span.date-display-single {
-    color: #666666;
+    color: #474747;
     font-size:14px;
 }
 .front #content-panels .block, .sidebar .block {
@@ -269,11 +270,15 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu .menuparent ul li a.active {
   background: #1d1d1d !important;
 }
-#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
-    background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
+
+#search-block-form input.form-submit, 
+#search-block-form #edit-submit, 
+#search-form #edit-submit {
+    background-position: 2px -373px;
 }
+
 .sidebar .block-title {
-    background-color: #8A97A1;
+    background-color: #687781;
     border-bottom: medium none;
     color: #FFFFFF;
     font-weight: normal;
@@ -300,7 +305,7 @@ ul.links li.link-count-node-readmore {
 }
 /*sidebar*/
 .section-nav .menu-depth-1 > a {
-    background: none repeat scroll 0 0 #8996A0 !important;
+    background: none repeat scroll 0 0 #687781 !important;
 
 }
 .section-nav ul.menu li a {
@@ -335,7 +340,7 @@ h2.field-label {
     padding: 7px 15px 7px 15px;
 }
 .breadcrumb a, .breadcrumb {
-    color: #666666;
+    color: #474747;
 }
 #footer ul li a {
     font-weight: normal;
@@ -360,9 +365,6 @@ h2.field-label {
 #powerby-login a{
 	color:#fff;
 }
-#boxes-box-site_info h1{
-	max-width:65%
-}
 .block-no-title .view .date-nav-wrapper{
 	border-top:0;
 }
@@ -379,6 +381,17 @@ h2.field-label {
 .node{
 	margin-bottom:50px;
 }
+
+.navigation a:link, 
+.navigation a:visited {
+color: #215990;
+}
+
+
 #footer {
     background: none repeat scroll 0 0 #8F323E;
+}
+
+#footer .footer-login {
+color: #FFF;
 }

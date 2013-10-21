@@ -46,7 +46,7 @@ projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
-; needs patches to contrib
+;needs patches to contrib
 
 projects[ctools][subdir] = "contrib"
 projects[ctools][download][type] = git
@@ -124,6 +124,11 @@ projects[features][version] = 1.0
 projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
+projects[feeds_tamper‏][subdir] = "contrib"
+projects[feeds_tamper‏][type] = "module"
+projects[feeds_tamper‏][download][type] = "git"
+projects[feeds_tamper‏][download][url]="http://git.drupal.org/project/feeds_tamper.git"
+
 projects[feeds_xpathparser][subdir] = "contrib"
 projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
@@ -143,7 +148,7 @@ projects[file_entity][download][type] = git
 projects[file_entity][download][branch] = 7.x-2.x
 projects[file_entity][download][revision] = 68ab8ed52f9bb993e8f3c541b89420637e440609
 projects[file_entity][patch][] = "http://drupal.org/files/file_entity.1834902-3.dimension_overrides.patch"
-projects[file_entity][patch][] = "https://raw.github.com/openscholar/openscholar/772cc53bad99cd1e88a24fe3f77c6fd26305c0ce/patches/file_entity.private_files_view_filter.patch"
+projects[file_entity][patch][] = "https://drupal.org/files/filter-by-file-schema-type-1881356-12.patch"
 
 projects[filefield_paths][subdir] = "contrib"
 ;projects[filefield_paths][version] = 1.0-beta3+2-dev
@@ -174,6 +179,9 @@ projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-ma
 
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
+
+projects[jquery_update][subdir] = "contrib"
+projects[jquery_update][version] = 2.3
 
 projects[js][subdir] = "contrib"
 projects[js][version] = 1.0-beta2
@@ -249,18 +257,23 @@ projects[oembed][download][type] = git
 projects[oembed][download][branch] = 7.x-0.x
 projects[oembed][download][revision] = "852f97e"
 projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
+projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
 projects[og][patch][] = "http://drupal.org/files/1981620-er-prepopualte-existing-node-1.patch"
 projects[og][patch][] = "http://drupal.org/files/1982798-og-worker-2.patch"
 
+projects[og_moderation][subdir] = "contrib"
+projects[og_moderation][version] = 2.0
+projects[og_moderation][patch][] = "http://drupal.org/files/og_moderation-remove_node_grants-2091179-7.patch"
+
 projects[og_tasks][subdir] = "contrib"
 projects[og_tasks][version] = 1.0
 projects[og_tasks][download][type] = git
 projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
 projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
-projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-4.patch"
+projects[og_tasks][patch][] = "http://drupal.org/files/check_spaces_preset-2059881-6.patch"
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
@@ -283,9 +296,7 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-;projects[pinserver][tag] = 7.x-3.3
-projects[pinserver][branch] = 7.x-3.x
-; @todo Make tag when QA is finished 1234
+projects[pinserver][download][tag] = 7.x-3.4
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -357,7 +368,7 @@ projects[views_bulk_operations][version] = 3.0
 projects[views_og_cache][subdir] = "contrib"
 projects[views_og_cache][download][type] = git
 projects[views_og_cache][download][branch] = 7.x-1.x-dev
-projects[views_og_cache][download][revision] = 059a845
+projects[views_og_cache][download][revision] = dddbfa2
 
 projects[views_slideshow][subdir] = "contrib"
 projects[views_slideshow][version] = 3.0
@@ -415,6 +426,10 @@ libraries[responsiveslides][patch][] = "https://raw.github.com/openscholar/opens
 libraries[flexslider][type] = "libraries"
 libraries[flexslider][download][type] = "file"
 libraries[flexslider][download][url] = "https://github.com/woothemes/FlexSlider/archive/flexslider1.zip"
+
+libraries[select2][type] = "libraries"
+libraries[select2][download][type] = "file"
+libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.4.3.zip"
 
 libraries[twitter-api-php][type] = "libraries"
 libraries[twitter-api-php][download][type] = "file"

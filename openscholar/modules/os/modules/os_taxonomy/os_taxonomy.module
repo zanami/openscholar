@@ -253,9 +253,9 @@ function theme_os_taxonomy_term_item($variables) {
   $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
   $variables['link_options']['html'] = TRUE;
+  $variables['link_options']['attributes']['title'] = filter_xss($variables['description'], array());
   $name = !$number && !$variables['link_to_empty_terms'] ? $name : l($name . $number, $variables['url_path']['path'], $variables['link_options']);
   $title = $item_wrapper . $name;
-
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
     $title .= '<div class="description">' . filter_xss($variables['description']) . '</div>';
@@ -315,7 +315,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   if (!$terms = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE)) {
     return;
   }
-  uasort($terms, 'os_taxonomy_sort_by_weight');
+
+  if (os_taxonomy_terms_determine_sort($terms)) {
+    uasort($terms, 'os_taxonomy_sort_by_weight');
+  }
 
   // Arrange term in an array with information about inner tree.
   $path_prefix = '';
@@ -613,6 +616,7 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $form['#vocabulary'] = $wrapper->vocabulary->value();
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
+  $form['#attached']['js'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.js';
   // Giving a unique name for the form element will allow us coloring it when
   // there is a problem in the submission of the form.
   $form['terms_' . $form['#vocabulary']->vid] = array(
@@ -629,6 +633,9 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
+      '#attributes' => array(
+        'class' => array('os-taxonomy-select-submit'),
+      ),
       '#type' => 'submit',
       '#value' => t('Go'),
     ),
@@ -709,7 +716,9 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
 function os_taxonomy_build_child_item($items, $parent, $options) {
   $content = array();
 
-  uasort($items, 'os_taxonomy_sort_by_weight');
+  if (os_taxonomy_terms_determine_sort($items)) {
+    uasort($items, 'os_taxonomy_sort_by_weight');
+  }
 
   // Due to changes in the code, there are sites that their depth widget
   // settings is smaller then one(i.e the first level value will be 0 and not 1)
@@ -1163,4 +1172,28 @@ function _os_taxonomy_remove_term_heading_link($markup, $element) {
  */
 function os_taxonomy_sort_by_weight($a, $b) {
   return ($a->weight < $b->weight) ? -1 : 1;
+}
+
+/**
+ * When all of the terms don't have weight the sort callback will mess up the
+ * order of the terms and will not display the terms in the same order they
+ * appear in the taxonomy term management form.
+ *
+ * @param $terms
+ *  Array of terms object supplied by the taxonomy_get_tree() function.
+ *
+ * @return bool
+ *  TRUE/VALUES which will determine if the terms need to be sorted by their
+ *  weight.
+ */
+function os_taxonomy_terms_determine_sort($terms) {
+  foreach ($terms as $term) {
+    if ($term->weight) {
+      // We found at least a single term with weight, we can determine that the
+      // the terms need to be sorted by their weight.
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }

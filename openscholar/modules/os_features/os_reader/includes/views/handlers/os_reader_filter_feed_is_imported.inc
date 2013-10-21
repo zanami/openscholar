@@ -14,7 +14,6 @@ class os_reader_filter_feed_is_imported extends views_handler_filter {
       '#type' => 'select',
       '#title' => t('Status'),
       '#options' => array(
-        'all' => t('All'),
         'imported' => t('Imported'),
         'not_imported' => t('Not Imported'),
       ),

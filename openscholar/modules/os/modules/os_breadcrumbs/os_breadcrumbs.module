@@ -86,6 +86,7 @@ function _os_breadcrumbs_check_taxonomy($item) {
  *  Array of l() links.
  */
 function os_breadcrumbs_setup_breadcrumbs($links) {
+  $output = '';
 
   // Get the breadcrumb divider variable.
   $theme_divider = theme_get_setting('breadcrumb_divider');
@@ -103,12 +104,10 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
     drupal_set_breadcrumb($links);
     // Get custom breadcrumbs
     $breadcrumbs = drupal_get_breadcrumb();
-    $breadcrumbs_render = '<div class="breadcrumb">'. implode(' <span>'.$breadcrumb_divider.'</span> ', $breadcrumbs) .'</div>';
-  }else {
-    return;
+    $output .= '<div class="breadcrumb">'. implode(' <span>'.$breadcrumb_divider.'</span> ', $breadcrumbs) .'</div>';
   }
 
-  return $breadcrumbs_render;
+  return $output;
 }
 
 /**
@@ -631,29 +630,19 @@ function os_breadcrumbs_get_breadcrumbs($menu_active_trail = NULL, $node = NULL)
  * Implements hook_preprocess_page().
  */
 function os_breadcrumbs_preprocess_page(&$variables) {
-  $links = array();
-  // Only alter public facing pages for the breadcrumbs.
-  if(context_isset('context', 'os_public')) {
-    $vsite = vsite_get_vsite();
-    if(isset($vsite)) {
-      $breadcrumb_show = $vsite->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
-    }else {
-      $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
-    }
-    if(!isset($breadcrumb_show)) {
-      $breadcrumb_show = 1;
-    }
-    $links = os_breadcrumbs_build_breadcrumbs();
-    $breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
-    if(isset($breadcrumbs)) {
-      // Check for users wanting to show their breadcrumbs on their frontpage.
-      if(!drupal_is_front_page() && $breadcrumb_show == 0) {
-        $variables['breadcrumb'] = $breadcrumbs;
-      }else {
-        $variables['breadcrumb'] = '';
-      }
-    }
+  // Only alters public, non-front pages.
+  $page_is_applicable = (context_isset('context', 'os_public') && !drupal_is_front_page());
+  if (!$page_is_applicable) {
+    return;
   }
+
+  $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
+  if ($hide_breadcrumbs) {
+    return;
+  }
+
+  $breadcrumb = os_breadcrumbs_setup_breadcrumbs(os_breadcrumbs_build_breadcrumbs());
+  $variables['breadcrumb'] = $breadcrumb;
 }
 
 /**
@@ -661,13 +650,8 @@ function os_breadcrumbs_preprocess_page(&$variables) {
  */
 function os_breadcrumbs_cp_settings() {
   $form = array();
-  $vsite = vsite_get_vsite();
-  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',1);
-
-  if (!empty($vsite)) {
-    // Get the vsite_users_contact_form_anonymous varible
-    $breadcrumb_show = $vsite->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
-  }
+  $hide_breadcrumbs = variable_get('os_breadcrumbs_show_breadcrumbs', 1);
+  $default_value = isset($hide_breadcrumbs) ? $hide_breadcrumbs : 1;
   $form['os_breadcrumbs_show_breadcrumbs'] = array(
     'group' => array(
       '#id' => 'breadcrumbs',
@@ -675,13 +659,46 @@ function os_breadcrumbs_cp_settings() {
       '#weight' => 50,
     ),
     'form' => array(
-      '#type' => 'radios',
-   	  '#title' => t('Show breadcrumbs on your site?'),
-      '#options' => array(t('Yes'),t('No')),
-      '#default_value' => isset($breadcrumb_show) ? $breadcrumb_show : 1,
-      '#description' => t('This will allow breadcrumbs to be displayed on your site.'),
+      '#prefix' => '<p>'
+      . t('A breadcrumb trail is a navigation aid used for web interfaces. It allows visitors to keep track of their locations within sections your site, displaying links above the main content region that lead back to the home page and to the parent pages of the current page.')
+      . '</p>'
+      . '<p>'
+      . t('i.e. <strong><a name="breadcrumbs" href="#breadcrumbs">Home</a> / <a href="#breadcrumbs">About</a> / <a href="#breadcrumbs">Contact</a></strong>')
+      . '</p>',
+      '#type' => 'checkbox',
+      '#title' => t('Hide breadcrumbs from displaying on my site'),
+      '#default_value' => $default_value,
     ),
   );
 
   return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for cp_appearance_theme_picker_form.
+ */
+function os_breadcrumbs_form_cp_appearance_theme_picker_form_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'][] = 'os_breadcrumbs_theme_picker_form_submit';
+}
+
+/**
+ * Submit callback for cp_appearance_theme_picker_form.
+ */
+function os_breadcrumbs_theme_picker_form_submit($form, &$form_state) {
+  if (!isset($form_state['values']['theme_default'])) {
+    return;
+  }
+
+  // Determines if the new theme is HWPI.
+  $new_theme = $form_state['values']['theme_default'];
+  $value = (_is_hwpi_theme($new_theme)) ? 0 : 1;
+
+  // Sets the variable value.
+  $name = 'os_breadcrumbs_show_breadcrumbs';
+  if ($space = spaces_get_space()) {
+    $space->controllers->variable->set($name, $value);
+  }
+  else {
+    variable_set($name, $value);
+  }
 }

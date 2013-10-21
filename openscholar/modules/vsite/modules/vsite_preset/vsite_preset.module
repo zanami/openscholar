@@ -5,6 +5,8 @@
  * Code for OS Virtual Site: Presets
  */
 
+include_once 'vsite_preset.features.inc';
+
 /**
  * Implements hook_og_tasks_info().
  */
@@ -32,15 +34,15 @@ function vsite_preset_og_tasks_info($entity_type, $entity) {
     $tasks[$key] = _vsite_preset_new_section_task($title, $info);
   }
 
-  // Provides task for 'HOME'.
-  $task = array(
-    'title' => t('HOME Section'),
-    'description' => t('Sets up standard template for a HOME section.'),
+  // Provides a single generic menu ordering-task based off a preset variable.
+  $properties = array(
+    'title' => t('Initial Menu Order'),
+    'description' => t('Sets up standard primary menu link ordering.'),
     'required' => TRUE,
-    'callback' => '_vsite_preset_section_home_task',
+    'callback' => '_vsite_preset_menu_order_task',
     'file' => $path . '/includes/menu.inc',
   );
-  $tasks['vsite_preset_section_home'] = new vsite_task($task);
+  $tasks['vsite_preset_menu_order'] = new vsite_task($properties);
 
   return $tasks;
 }

@@ -108,8 +108,28 @@ function vsite_register_form($form, &$state) {
       unset($enabled_presets[$key]);
     }
   }
-  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
+  // Sorts presets with Minimal as default, and others alphabetical.
+  if (count($enabled_presets) > 1) {
+    $unsorted_presets = $enabled_presets;
+    $enabled_presets = array();
+    $minimal_title = ucfirst($selected_bundle) . ' Minimal';
+    foreach ($unsorted_presets as $key => $value) {
+      // Only makes any order changes if a "Bundle Minimal" preset exists.
+      if ($value == $minimal_title) {
+        // Adds the minimal value as the first option.
+        $enabled_presets[$key] = t('Minimal');
+        unset($unsorted_presets[$key]);
+        // Sorts and adds the remaining preset options.
+        asort($unsorted_presets);
+        foreach ($unsorted_presets as $key => $value) {
+          $enabled_presets[$key] = $value;
+        }
+        break;
+      }
+    }
+  }
 
+  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
   $form['preset'] = array(
     '#prefix' => '<div id="preset-wrapper">',
     '#suffix' => '</div>',

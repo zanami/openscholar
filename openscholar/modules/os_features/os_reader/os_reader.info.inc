@@ -23,6 +23,10 @@ class OsReaderMetadataController extends EntityDefaultMetadataController {
       'schema field' => 'description',
     );
 
+    // Notify Drupal that this field is not just an integer but a reference to a
+    // node, so we can use it as a relationship in Views.
+    $properties['importer_nid']['type'] = 'node';
+
     return $info;
   }
 }

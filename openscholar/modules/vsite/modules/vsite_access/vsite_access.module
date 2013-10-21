@@ -206,14 +206,19 @@ function vsite_access_cp_settings_node_submit($form, &$form_state) {
  *   An indexed array with constant values as keys, and string descriptions.
  */
 function vsite_access_privacy_available_values() {
+
   // Provides short human-friendly labels for the different options.
-  $options = array(
-    VSITE_ACCESS_PUBLIC => t('Public on the web'),
-    VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
-    VSITE_ACCESS_PRIVATE => t('Invite only'),
-    // @todo get private intranet working.
-    //VSITE_ACCESS_INTRANET_PRIVATE => t('Private intranet'),
-  );
+  if(variable_get('file_default_scheme', 'public') == 'private'){
+    $options = array(
+	    VSITE_ACCESS_INTRANET_PRIVATE => t('Private by Invite'),
+	  );
+  }else{
+	  $options = array(
+	    VSITE_ACCESS_PUBLIC => t('Public on the web'),
+	    VSITE_ACCESS_UNINDEXED => t('Anyone with the link'),
+	    VSITE_ACCESS_PRIVATE => t('Invite only during site creation'),
+	  );
+  }
 
   // Otherwise, formats a second row of descriptive text if verbose is TRUE.
   // Note: This text is to be displayed on the site register form.
@@ -225,9 +230,8 @@ function vsite_access_privacy_available_values() {
   $descriptions = array(
     VSITE_ACCESS_PUBLIC => t('Anyone on the Internet can find and access. No sign-in required.'),
     VSITE_ACCESS_UNINDEXED => t('Anyone who has the link can access. Not listed in Google. No sign-in required.'),
-    VSITE_ACCESS_PRIVATE => t('Only people explicitly granted permission can access. Sign-in required.'),
-    // @todo get private intranet working.
-    //VSITE_ACCESS_INTRANET_PRIVATE => t('If you select this then your site will be private forever.'),
+    VSITE_ACCESS_PRIVATE => t('Private during construction, only people explicitly granted permission can access. Sign-in required.'),
+    VSITE_ACCESS_INTRANET_PRIVATE => t('Perminantly private, only people explicitly granted permission can access. Sign-in required.'),
   );
 
   // Adds the description and markup to each of the option labels.
@@ -417,7 +421,7 @@ function vsite_access_node_delete($node) {
   if (!og_is_group_type('node', $node->type)) {
     return;
   }
-  
+
   // Loads the existing directives and assumes no changes will be made.
   $directives = variable_get('vsite_access_robotstxt_directives', array());
   $modified = FALSE;
@@ -430,7 +434,7 @@ function vsite_access_node_delete($node) {
       $modified = TRUE;
     }
   }
-  
+
   // Additional checks if there is a custom domain on this vsite.
   $vsite = vsite_get_vsite($node->nid);
   $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');

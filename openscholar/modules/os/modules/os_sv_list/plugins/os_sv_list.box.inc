@@ -154,81 +154,58 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
-    $form['query_details']['only_vocabs'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Only vocabularies'),
-      '#description' => t('Display item which tagged to all of the vocabulary terms and specific terms'),
-      '#default_value' => $this->options['only_vocabs'],
+    // Required JS and CSS for Select2.
+    drupal_add_js(libraries_get_path('select2') . '/select2.js');
+    drupal_add_css(libraries_get_path('select2') . '/select2.css');
+    drupal_add_css(drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css');
+
+    // Get all vocabularies.
+    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
+
+    // The 'vocabs' tree will contain select fields - one for each vocabulary.
+    $form['vocabs'] = array(
+      '#type' => 'item',
+      '#title' => t('filter by vocabulary'),
+      '#description' => t('Select for each vocabulary the terms to be used.'),
+      '#prefix' => '<div id="vocabs">',
+      '#suffix' => '</div>',
+      '#tree' => TRUE,
     );
 
-    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
-    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
-
+    // Create a select field for each vocabulary, with the vocabulary's terms as
+    // the field's options.
     foreach ($vocabs as $vid => $vocab) {
+      // Get the vocabulary's terms.
       $terms = array();
       $tree = taxonomy_get_tree($vid);
       foreach ($tree as $item) {
         $term = taxonomy_term_load($item->tid);
         $terms[$term->tid] = $term->name;
       }
-      $options[$vocab] = $terms;
-      $only_vocabs[$vid] = $vocab;
-    }
 
-    $form['query_details']['vocabs'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Term'),
-      '#description' => t('Select a term to filter content.'),
-      '#options' => $options,
-      '#default_value' => $vocabs_default_value,
-      '#access' => $vocabs,
-      '#size' => 10,
-
-      '#states' => array(
-        'visible' => array(
-          ':input[name="only_vocabs"]' => array('checked' => FALSE),
-        ),
-      ),
-    );
-
-    $form['query_details']['only_vocabs_values'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Vocabulary'),
-      '#description' => t('Select a vocabulary to filter content by tagged items.'),
-      '#options' => $only_vocabs,
-      '#default_value' => $this->options['only_vocabs_values'],
-      '#access' => $vocabs,
-      '#size' => 10,
-
-      '#states' => array(
-        'visible' => array(
-          ':input[name="only_vocabs"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
-
-    $terms = array();
-    $vocabs_default_value = is_array($vocabs_default_value) ? $vocabs_default_value : array($vocabs_default_value);
-    if ($vocabs_default_value) {
-      foreach ($vocabs_default_value as $vid) {
-        $tree = taxonomy_get_tree($vid);
-        foreach ($tree as $item) {
-          $term = taxonomy_term_load($item->tid);
-          $terms[$term->tid] = $term->name;
-        }
+      // Get the already selected terms in this vocabulary.
+      if (!empty($form_state['values']['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $form_state['values']['vocabs']['vocab_' . $vid];
       }
-    }
+      elseif (!empty($this->options['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $this->options['vocabs']['vocab_' . $vid];
+      }
+      else {
+        $vocab_default_value = array();
+      }
 
-    $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
-    $vocabs_statement = isset($form_state['values']['vocabs']) && $form_state['values']['vocabs'] == -1;
-
-    // Hide the form but keep the prefix and suffix for the AJAX callback.
-    if ($terms_statement || $vocabs_statement) {
-      $form['query_details']['terms'] = array(
-        '#prefix' => '<div id="terms-details">',
-        '#suffix' => '</div>',
+      // Create select field with the terms as options.
+      $form['vocabs']['vocab_' . $vid] = array(
+        '#type' => 'select',
+        '#options' => $terms,
+        '#title' => $vocab,
+        '#multiple' => TRUE,
+        '#default_value' => $vocab_default_value,
+        // The validate function takes the selected terms from all 'vocab'
+        // fields and groups them together as 'terms'.
+        // We are using #element_validate because we cannot reach the #validate
+        // property from here.
+        '#element_validate' => array('os_sv_list_terms_element_validate'),
       );
     }
 
@@ -593,7 +570,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // For all Queries but image, filter out based on vocab.
-    if ($options['content_type'] != 'image' && !empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
+    if ($options['content_type'] != 'image' && !empty($this->options['terms']) && ($this->options['terms'] != -1)) {
       $tagged_nodes = $this->tagged_nodes();
 
       // If a vocabulary was selected and there were no tagged nodes then
@@ -643,34 +620,8 @@ class os_sv_list_box extends os_boxes_default {
    * Return the nodes attached to terms of the selected vocabulary.
    */
   public function tagged_nodes() {
-    // Build a list of terms.
-    $tids = array();
-    $inside_vocab = FALSE;
-    if (in_array(0, $this->options['terms'])) {
-      // The user did not select a terms but a vocab - loading the terms from
-      // the vocab.
-      $tree = taxonomy_get_tree($this->options['vocabs']);
-      foreach ($tree as $terms) {
-        $tids[] = $terms->tid;
-      }
-    }
-    else {
-      if ($this->options['only_vocabs']) {
-        // The user selected specific vocabs - load all the terms of the
-        // vocabularies.
-        foreach ($this->options['only_vocabs_values'] as $vocab) {
-          $tree = taxonomy_get_tree($vocab);
-          foreach ($tree as $term) {
-            $tids[] = $term->tid;
-          }
-        }
-      }
-      else {
-        // The user selected specific terms.
-        $tids = $this->options['vocabs'];
-        $inside_vocab = TRUE;
-      }
-    }
+    // Get the  terms the user selected.
+    $tids = (is_array($this->options['terms'])) ? $this->options['terms'] : array($this->options['terms'] => $this->option['terms']);
 
     // No terms were found.
     if (empty($tids)) {
@@ -687,21 +638,16 @@ class os_sv_list_box extends os_boxes_default {
       ->condition('n.status', 1)
       ->fields('t');
 
-    if ($inside_vocab) {
-      $terms = taxonomy_term_load_multiple($tids);
+    $terms = taxonomy_term_load_multiple($tids);
 
-      foreach ($terms as $term) {
-        $vocabs[$term->vid][] = $term->tid;
-      }
-
-      foreach ($vocabs as $delta => $terms) {
-        $alias = 'term' . $delta;
-        $query->innerJoin('taxonomy_index', $alias, "$alias.nid = n.nid");
-        $query->condition("$alias.tid", $terms, 'IN');
-      }
+    foreach ($terms as $term) {
+      $vocabs[$term->vid][] = $term->tid;
     }
-    else {
-      $query->condition('t.tid', $tids, 'IN');
+
+    foreach ($vocabs as $delta => $terms) {
+      $alias = 'term' . $delta;
+      $query->innerJoin('taxonomy_index', $alias, "$alias.nid = n.nid");
+      $query->condition("$alias.tid", $terms, 'IN');
     }
 
     $result = $query->execute();

@@ -139,6 +139,11 @@ function os_reader_views_default_views() {
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['content'] = 'No results.';
   $handler->display->display_options['empty']['area']['format'] = 'plain_text';
+  /* Relationship: OS feed item: Importer_nid */
+  $handler->display->display_options['relationships']['importer_nid']['id'] = 'importer_nid';
+  $handler->display->display_options['relationships']['importer_nid']['table'] = 'os_feed_item';
+  $handler->display->display_options['relationships']['importer_nid']['field'] = 'importer_nid';
+  $handler->display->display_options['relationships']['importer_nid']['label'] = 'Importer';
   /* Field: OS feed item: Label */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'os_feed_item';
@@ -215,6 +220,11 @@ function os_reader_views_default_views() {
     7 => 0,
     8 => 0,
   );
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['id'] = 'current';
+  $handler->display->display_options['filters']['current']['table'] = 'spaces';
+  $handler->display->display_options['filters']['current']['field'] = 'current';
+  $handler->display->display_options['filters']['current']['relationship'] = 'importer_nid';
   $export['os_reader_feeds'] = $view;
 
   $view = new view();

@@ -110,7 +110,7 @@ function vsite_domain_cp_settings_domain_submit(&$form, &$form_state) {
 
   // Clears the specified cache if necessary (i.e. "purl_modifiers_en" cid).
   if ($actions['cache']) {
-    cache_clear_all($actions['cache'], 'cache', TRUE);
+    cache_clear_all($actions['cache']);
   }
 
   // Redirects this form to the correct new URL if necessary.
@@ -288,7 +288,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'owned to group':
       $actions['callback'] = 'purl_delete';
       $actions['value'] = $domain['new'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $purl = vsite_get_purl();
       $redirect = "$purl/$destination";
       $actions['redirect'] = $redirect;
@@ -308,7 +308,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'one owned to another owned':
       $actions['callback'] = 'purl_save';
       $actions['value'] = $domain['new'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $redirect = "$group_path/$destination";
       $actions['redirect'] = $redirect;
       break;
@@ -316,7 +316,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'one owned to another group':
       $actions['callback'] = 'purl_delete';
       $actions['value'] = $domain['original'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $redirect = "$group_path/$destination";
       $actions['redirect'] = $redirect;
       break;
@@ -327,7 +327,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
       break;
 
     case 'one group to another group':
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       break;
   }
 

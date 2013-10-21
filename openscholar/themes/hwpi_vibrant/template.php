@@ -20,10 +20,6 @@ function hwpi_vibrant_menu_link(array $vars) {
     }
   }
 
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
-  }
-
   // Add span tags to support the extra background images in the main menu
   $element['#title'] = '<span>' . $element['#title'] . '</span>';
   $element['#localized_options']['html'] = TRUE;
