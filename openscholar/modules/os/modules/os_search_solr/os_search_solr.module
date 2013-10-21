@@ -450,11 +450,23 @@ function os_search_solr_mark_entity_by_bundles($vsite_id, $bundles = array(), $l
 }
 
 /**
+ * Implements hook_og_permission().
+ */
+function os_search_solr_og_permission() {
+  return array(
+    'index solr' => array(
+      'title' => t('Index solr'),
+      'description' => t('Allow re-indexing Solr.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_cp_settings().
  */
 function os_search_solr_cp_settings() {
   if (module_exists('vsite') && ($vsite = vsite_get_vsite())) {
-    if (!og_user_access('node', $vsite->id, 'solr reindex')) {
+    if (!og_user_access('node', $vsite->id, 'index solr')) {
       // User doesn't have access in VSite.
       return;
     }
@@ -468,7 +480,7 @@ function os_search_solr_cp_settings() {
     ),
     'form' => array(
       '#type' => 'submit',
-      '#value' => t('Re-index Solr'),
+      '#value' => t('Index Solr'),
       '#description' => t('Index the site to be searchable.'),
       '#submit' => array('os_search_solr_reindex_site'),
     ),
