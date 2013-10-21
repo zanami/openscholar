@@ -103,6 +103,15 @@ function os_importer_menu() {
     'page arguments' => array('os_importer_import', 1),
   );
 
+  $items['os-importer/%/template'] = array(
+    'page callback' => 'feeds_importer_template',
+    'page arguments' => array(1),
+    'file' => 'feeds.pages.inc',
+    'file path' => drupal_get_path('module', 'feeds'),
+    'access callback' => 'os_importer_import_access',
+    'access arguments' => array(1),
+  );
+
   return $items;
 }
 
@@ -218,6 +227,7 @@ function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapp
  */
 function os_importer_import($form, &$form_state, $type) {
   $form_state['type'] = $type;
+  $importer = feeds_importer($type);
 
   $form['file'] = array(
     '#title' => t('File'),
@@ -228,6 +238,14 @@ function os_importer_import($form, &$form_state, $type) {
       'file_validate_extensions' => array('ics csv'),
     ),
   );
+
+  // Only CSV parsers have a template.
+  if ($importer->parser instanceof FeedsCSVParser) {
+    $form['template'] = array(
+      '#type' => 'markup',
+      '#markup' => l(t('Download a template'), 'os-importer/' . $type . '/template'),
+    );
+  }
 
   $form['actions'] = array(
     '#type' => 'actions',
