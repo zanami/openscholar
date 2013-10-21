@@ -250,10 +250,16 @@ function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapp
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
-  $info = os_importer_importable_content($type);
-
+  $bundle = os_importer_importable_content($type);
   $form_state['type'] = $type;
-  $importer = feeds_importer($type);
+
+  $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
+  $form['import_type'] = array(
+    '#type' => 'radios',
+    '#multiple' => TRUE,
+    '#title' => t('Format'),
+    '#options' => array_flip($bundle),
+  );
 
   $form['file'] = array(
     '#title' => t('File'),
@@ -266,10 +272,10 @@ function os_importer_import($form, &$form_state, $type) {
   );
 
   // Only CSV parsers have a template.
-  if ($importer->parser instanceof FeedsCSVParser) {
+  if ($feed_importer->parser instanceof FeedsCSVParser) {
     $form['template'] = array(
       '#type' => 'markup',
-      '#markup' => l(t('Download a template'), 'os-importer/' . $type . '/template'),
+      '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
     );
   }
 
