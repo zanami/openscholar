@@ -341,6 +341,6 @@ function os_update_7018() {
 /**
  * Enables module: os_tour.
  */
-function os_update_7018() {
+function os_update_7019() {
   module_enable(array('os_tour'));
 }
