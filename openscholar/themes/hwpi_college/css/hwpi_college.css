@@ -206,17 +206,26 @@ ul.nice-menu ul {
   font-family: Arial,sans-serif;
 }
 
+.boxes-box-content, .boxes-box-content p {
+    font-family: arial,sans-serif !important;
+    font-size: 0.95em;
+    line-height: 22px;
+}
+.front #columns .region-inner {
+    margin-bottom: 60px;
+}
 .content-left.content-right .region-content-first .region-inner, .content-left.content-bottom .region-content-first .region-inner, .content-right.content-bottom .region-content-second .region-inner, .content-left.content-right.content-bottom .region-content-second .region-inner {
     border-right: medium none;
+}
+.rslides img {
+    width: 100%;
 }
 .page-search .title a,
 .boxes-box-content h2 {
   font-weight: normal;
   font-size: 18px;
 }
-.front #columns .region-inner {
-    margin-bottom: 60px;
-}
+
 .page-search .title a {
  font-size: 15px;
  font-weight: bold;
