@@ -130,3 +130,28 @@ function vsite_get_parent($sid) {
 
   return FALSE;
 }
+
+/**
+ * Inherits site settings specified in the parent site.
+ *
+ * Called for subsites only when a new subsite is created.
+ *
+ * @see vsite_node_insert()
+ */
+function vsite_inherit($sid) {
+  $parent_sid = vsite_get_parent($sid);
+  $parent_vsite = vsite_get_vsite($parent_sid);
+
+  // Checks if the parent site has specified a theme to inherit.
+  $name = 'vsite_subsite_inherit_theme';
+  $inherit_theme = $parent_vsite->controllers->variable->get($name);
+  if (!$inherit_theme) {
+    return;
+  }
+
+  // Sets the new subsite's theme to match it's parent.
+  $name = 'theme_default';
+  $value = $parent_vsite->controllers->variable->get($name);
+  $vsite = vsite_get_vsite($sid);
+  $vsite->controllers->variable->set($name, $value);
+}

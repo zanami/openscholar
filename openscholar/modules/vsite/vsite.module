@@ -1629,6 +1629,7 @@ function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
+    vsite_inherit($node->nid);
   }
 
   if (og_is_group_type('node', $node->type)) {
