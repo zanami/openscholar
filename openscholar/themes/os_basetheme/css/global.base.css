@@ -195,10 +195,6 @@ p {
   padding: 0;
 }
 
-#columns p+p {
-  margin: 1.5em 0 0;
-}
-
 a, a:visited {
     text-decoration: none;
     color: #005C9C;
