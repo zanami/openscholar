@@ -111,3 +111,22 @@ function vsite_subsite_node_url_options($node, &$options){
     $options['purl'] = array('id' => $groups[0], 'provider' => 'spaces_og');
   }
 }
+
+/**
+ * Returns the parent site ID of the given vsite, or FALSE if none found.
+ */
+function vsite_get_parent($sid) {
+  $subsite_map = cache_get('vsite_subsite_map');
+  if (empty($subsite_map->data)) {
+    return FALSE;
+  }
+
+  foreach ($subsite_map->data as $parent => $child) {
+    if (!array_key_exists($sid, $child)) {
+      continue;
+    }
+    return $parent;
+  }
+
+  return FALSE;
+}
