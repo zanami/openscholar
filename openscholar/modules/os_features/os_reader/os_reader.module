@@ -120,13 +120,13 @@ function os_reader_import_news() {
   if ($vsite = vsite_get_vsite()) {
     if (og_user_access('node', $vsite->id, 'create feed_importer content')) {
       $options = array('attributes' => array('class' => array('add-new')));
-      $type = $item['map'][3] == 'news' ? 'feed-importer' : 'blog-import';
+      $type = $item['map'][2] == 'news' ? 'feed-importer' : 'blog-import';
       $add_new = l(t('+ Add new'), 'node/add/' . $type, $options);
     }
   }
 
   $variables = array(
-    'importers' => os_reader_get_importers_list($feed_importer_nid, $item['map'][3]),
+    'importers' => os_reader_get_importers_list($feed_importer_nid, $item['map'][1]),
     'view' => views_embed_view('os_reader_feeds', 'default', $feed_importer_nid),
     'add_new' => empty($add_new) ? '' : $add_new,
   );
@@ -143,7 +143,7 @@ function os_reader_views_query_alter(&$view, views_plugin_query_default &$query)
   }
 
   $menu = menu_get_item();
-  $type = $menu['original_map'][3];
+  $type = $menu['original_map'][1];
 
   $group_key = key($query->where);
   $query->add_where($group_key, 'os_feed_item.importer_type', $type);

@@ -53,7 +53,8 @@ function os_importer_node_insert($node) {
 function os_importer_admin_paths() {
   return array(
     'os-importer/*' => TRUE,
-    'cp/content/import/*'
+    'cp/content/import/*' => TRUE,
+    'os-importer/blog/manage' => TRUE,
   );
 }
 
@@ -123,7 +124,6 @@ function os_importer_importable_content($type = '') {
 function os_importer_menu() {
   $items = array();
 
-
   $app_info = os_app_info();
 
   foreach ($app_info as $type => $info) {
@@ -139,17 +139,18 @@ function os_importer_menu() {
         'access arguments' => array(1),
         'page callback' => 'drupal_get_form',
         'page arguments' => array('os_importer_import', 1),
-        'type' => MENU_LOCAL_TASK,
       );
 
       if (!empty($importer['rss'])) {
+        $items['os-importer/' . $node_type . '/import'] = $items['os-importer/' . $node_type] + array(
+          'type' => MENU_DEFAULT_LOCAL_TASK,
+        );
+
         $items['os-importer/' . $node_type . '/manage'] = array(
           'title' => 'Manage',
-          'access callback' => 'os_importer_import_access',
-          'access arguments' => array(1),
-          'page callback' => 'drupal_get_form',
-          'page arguments' => array('os_importer_import', 1),
-          'type' => MENU_DEFAULT_LOCAL_TASK,
+          'page callback' => 'os_reader_import_news',
+          'access callback' => 'os_reader_import_news_access_callback',
+          'type' => MENU_LOCAL_TASK,
         );
       }
     }
