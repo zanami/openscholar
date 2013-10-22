@@ -34,7 +34,7 @@ h2 {
     background-color: #FFFFFF;
     box-shadow: 1px 0 0 rgba(0, 0, 0, 0.05), -1px 0 0 rgba(0, 0, 0, 0.07);
     margin: 0 auto;
-    padding: 0 90px;
+
 }
 .no-sidebars #layout_3_1_overlay .slide-copy {
     margin: 5% 0 0 7.5%;
@@ -66,7 +66,7 @@ blockquote {
     margin-top: -4px !important;
 }
 #columns {
-    width: 1214px;
+
     margin-top: 0;
 }
 .webkit #content-column,
@@ -703,12 +703,10 @@ a.rslides_nav {
 }
 .no-sidebars #layout_3_1_overlay .slide {
     height: 400px !important;
-    left: -91px;
     padding-bottom: 0;
     padding-left: 0;
     padding-top: 0;
     position: relative;
-    width: 1216px;
 }
 .no-sidebars #layout_3_1_overlay .slide li {
     margin: 0!important;
