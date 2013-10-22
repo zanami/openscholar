@@ -30,9 +30,10 @@ function os_files_settings_form_submit($form, $form_state) {
   $types = file_entity_type_get_names();
   $lines = explode("\n", $form_state['values']['os_files_extension_mappings']);
   foreach ($lines as $l) {
+    $l = trim($l);
     $data = explode(': ', $l);
     if (isset($types[$data[1]])) {
-      $mappings[$data[0]] = $mappings[$data[1]];
+      $mappings[$data[0]] = $data[1];
     }
   }
 
