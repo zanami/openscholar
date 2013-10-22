@@ -45,6 +45,7 @@
         // Allows us to target just this tour in CSS rules.
         $('.hopscotch-bubble').addClass('os-tour-notifications');
       });
+      $.get('os/tour/notifications-read/' + parseInt(Drupal.cookie("DRUPAL_UID")));
     }
   };
 
