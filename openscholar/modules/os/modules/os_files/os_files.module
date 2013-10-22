@@ -123,7 +123,8 @@ function os_files_library_alter(&$libs, $module) {
  * Implements hook_file_presave().
  */
 function os_files_file_presave($file) {
-  if ($file->type == 'undefined') {
+  // both of these are generic, 'we dont know what what it is' identifiers
+  if ($file->type == 'undefined' || $file->filemime == 'application/octet-stream') {
     $file->type = os_files_get_type($file);
   }
 }
@@ -147,11 +148,11 @@ function os_files_file_insert($file) {
 function os_files_get_type($file) {
   $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
 
-  $mappings = variable_get('os_files_extension_map', array('cls' => 'document'));
+  $mappings = variable_get('os_files_extension_map', array());
   if (isset($mappings[$ext])) {
     return $mappings[$ext];
   }
-  return 'undefined';
+  return $file->type;
 }
 
 /**
@@ -241,14 +242,17 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $form['upload']['#upload_validators']['file_validate_size'] = array(min(parse_size(variable_get('os_files_max_inline_filesize', '128 MB')), $form['upload']['#upload_validators']));
     $extensions = array();
-    $include_pps = FALSE;
+    $extras = array();
+    $mappings = variable_get('os_files_extension_map', array());
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
-      $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
+      $extensions = array_merge($extensions, _os_files_extensions_from_type($type), array_keys($mappings, $type));
+      $extras = array_merge($extras, array_keys($mappings, $type));
       if ($type == 'document') {
-        $include_pps = TRUE;
+        $extras[] = 'pps';
       }
     }
-    $extensions[] = 'cls';
+    $extensions = array_unique($extensions);
+    $extras = array_unique($extras);
     if (empty($args[0]['override_extensions'])) {
       $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     }
@@ -262,7 +266,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     }
     if (!empty($mimetypes)) {
       $form['upload']['#attributes'] = array(
-        'accept' => implode(',', $mimetypes).($include_pps?',.pps':''),
+        'accept' => implode(',', $mimetypes).(count($extras)?',.'.implode(',.', $extras):''),
       );
       $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
     }
@@ -906,8 +910,7 @@ function os_files_media_browser_params_alter(&$media_params){
     }
   }
   else {
-    $media_params['types'][] = 'document';
-    $media_params['types'][] = 'undefined';
+    $media_params['types'] = array_merge($media_params['types'], array('document', 'undefined'));
   }
   
   // Are we in multi-tenant? get the file path.
