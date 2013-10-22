@@ -190,7 +190,7 @@ p {
   padding: 0;
 }
 
-#columns p {
+#columns p:only-child {
   margin: 0;
   padding: 0;
 }
