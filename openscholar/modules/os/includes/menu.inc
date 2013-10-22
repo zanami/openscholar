@@ -241,7 +241,7 @@ function os_menu_link_save(&$item) {
  * @param $mlid
  *  A valid menu link mlid
  */
-function os_menu_link_delete($menu, $mlid) {
+function os_menu_link_remove($menu, $mlid) {
 
   if (module_exists('vsite_menu')) {
     // Delete a menu item using the vsite controllers.
