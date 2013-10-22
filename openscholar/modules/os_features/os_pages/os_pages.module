@@ -442,30 +442,44 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
     $form['table']['#theme'] = 'os_pages_outline_table';
     $sections = os_pages_get_sections();
 
-    $options = array();
+    $options = array(
+      '0' => 'Select new section',
+    );
     foreach ($sections as $s) {
+      if ($form['#node']->nid == $s['bid']) continue;
+
       $options[$s['bid']] = $s['title'];
     }
 
-    foreach(element_children($form['table']) as $key) {
+    foreach (element_children($form['table']) as $key) {
       $form['table'][$key]['hidden'] = array(
         '#type' => 'checkbox',
         '#default_value' => $form['table'][$key]['#item']['hidden']
       );
-      $form['table'][$key]['move_to'] = array(
-        '#type' => 'select',
-        '#options' => $options,
-        '#default_value' => $form['#node']->book['bid'],
-      );
-      $form['table'][$key]['move_to_sub'] = array(
-        '#type' => 'button',
-        '#value' => t('Move'),
-        '#name' => $key.'-op',
-        '#ajax' => array(
-          'callback' => 'os_pages_move_page_callback',
-          'wrapper' => 'book-outline'
-        )
-      );
+      if (count($options) > 1) {
+        $form['table'][$key]['move_to'] = array(
+          '#type' => 'select',
+          '#options' => $options,
+        );
+        $form['table'][$key]['move_to_sub'] = array(
+          '#type' => 'button',
+          '#value' => t('Move'),
+          '#name' => $key.'-op',
+          '#ajax' => array(
+            'callback' => 'os_pages_move_page_callback',
+            'wrapper' => 'book-outline'
+          )
+        );
+      }
+      else {
+        $form['table'][$key]['move_to'] = array(
+          '#markup' => t('No other sections to move this page to.')
+        );
+        // dummy so theme doesn't complain
+        $form['table'][$key]['move_to_sub'] = array(
+          '#markup' => '',
+        );
+      }
     }
 
     $form['save']['#value'] = t('Save Section Outline');
@@ -512,7 +526,7 @@ function os_pages_move_page_callback($form, $form_state) {
   $link = $form_state['values']['table'][$selected_link];
   $node = node_load($link['nid']);
 
-  if ($node->book['bid'] != $link['move_to']) {
+  if ($link['move_to'] && $node->book['bid'] != $link['move_to']) {
     $node->book['bid'] = $link['move_to'];
     _book_update_outline($node);
 
