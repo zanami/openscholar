@@ -48,7 +48,7 @@ function os_search_solr_apachesolr_search_page_alter(&$build, $search_page) {
     // No return values, or no VSite enabled.
     return;
   }
-  
+
   if (!vsite_get_vsite()) {
     // Not inside a VSite context.
     return;
@@ -448,3 +448,44 @@ function os_search_solr_mark_entity_by_bundles($vsite_id, $bundles = array(), $l
   $values[$vsite_id]['last_nid'] = $nid;
   variable_set('os_search_solr_reindex_by_bundles', $values);
 }
+
+/**
+ * Implements hook_cp_settings().
+ */
+function os_search_solr_cp_settings() {
+  if (!module_exists('vsite') || !vsite_get_vsite()) {
+    // Not inside a VSite.
+    return;
+  }
+
+  if (!user_access('administer search')) {
+    // No permission to administer search.
+    return;
+  }
+
+  $settings = array();
+  $settings['os_search_solr'] = array(
+    'group' => array(
+      '#title' => t('Solr search'),
+      '#id' => 'os-search-solr',
+    ),
+    'form' => array(
+      '#type' => 'submit',
+      '#value' => t('Index Solr'),
+      '#description' => t('Index the site to be searchable.'),
+      '#submit' => array('os_search_solr_reindex_site'),
+    ),
+  );
+
+  return $settings;
+}
+
+/**
+ * Submit handler; Re-index a VSite.
+ */
+function os_search_solr_reindex_site() {
+  $vsite = vsite_get_vsite();
+  os_search_solr_add_vsite_to_reindex($vsite->id);
+  drupal_set_message(t('Site marked for indexing. It may take a few minutes until the site is fully indexed.'));
+}
+
