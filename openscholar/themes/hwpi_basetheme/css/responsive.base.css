@@ -66,16 +66,13 @@ iframe {
     width: 100%;
 }
 
-/* FLOATS NEWS TITLE AND TEASER INFO TO THE RIGHT IF A NEWS TEASER THUMBNAIL IS USED 
-.node-news .field-name-field-photo ~ .node-header { margin: -110px 0 10px 110px !important; }
-.node-news .field-name-field-photo ~ .node-content .field-name-field-news-date { margin-left: 110px !important; }*/
 
 
 /* FLOATS EVENT TITLE AND TEASER INFO TO THE RIGHT OF THE SHIELD/DATE ICON */
   .node-event .node-header { margin: -70px 0 10px 70px !important; }
   .node-event .node-content,
   .node-event .clearfix { margin-left: 70px !important; }
-
+  .node-event .field-name-field-event-location  { margin-left: 0 ! important; }
 }
 
 /*--------------------------------------------------------*/
