@@ -49,7 +49,7 @@
   };
 
   /**
-   * Renders a feed object into an HTML snippet.
+   * Converts a Google FeedAPI Integration feed item into a hopscotch step.
    *
    * @param {object} entry
    * @returns {string} output
