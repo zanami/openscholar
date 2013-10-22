@@ -7,7 +7,8 @@
  *  Return a list of menus avalible on the site.
  *
  * os_menu_create
- * Creates (inserts) a new menu to be used in the OS Menu system.
+ *   Creates (inserts) a new menu to be used in the OS Menu system.
+ *   Note: this does NOT implement hook_menu_insert().
  *
  * os_menu_delete
  *  Delete a menu from the OS Menu system.
@@ -18,11 +19,13 @@
  * os_menu_link_save
  *  Save a new or existing menu link.
  *
+ * os_menu_link_remove
+ *   Removes (deletes) an existing menu link.
+ *   Note: this does NOT implement hook_menu_delete().
+ *
  * os_menu_load_link_path
  *  Load return a menu link given a drupal path (ex node/123).
  *
- * os_menu_link_delete
- *  Deletes and existing menu link.
  *
  * os_menu_tree
  *  Return a fully themed menu tree for a menu.
@@ -241,7 +244,7 @@ function os_menu_link_save(&$item) {
  * @param $mlid
  *  A valid menu link mlid
  */
-function os_menu_link_delete($menu, $mlid) {
+function os_menu_link_remove($menu, $mlid) {
 
   if (module_exists('vsite_menu')) {
     // Delete a menu item using the vsite controllers.
