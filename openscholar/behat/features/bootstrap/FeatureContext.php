@@ -685,6 +685,15 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
+   */
+  public function iPopulateInWith($arg1, $arg2) {
+    if ($arg1 == "url") {
+      str_replace('LOCALHOST', $this->locatePath(''), $arg2);
+    }
+  }
+
+  /**
    * @Given /^I should be redirected in the following <cases>:$/
    */
   public function iShouldBeRedirectedInTheFollowingCases(TableNode $table) {
