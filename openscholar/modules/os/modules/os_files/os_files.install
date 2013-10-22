@@ -602,3 +602,7 @@ function os_files_update_7008(&$sb) {
     return $message;
   }
 }
+
+function os_files_update_7012($sb) {
+  return os_files_update_7007($sb);
+}
