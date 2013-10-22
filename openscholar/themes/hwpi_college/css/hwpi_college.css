@@ -254,9 +254,7 @@ a:link {
 .block-content li strong {
     font-family: arial,sans-serif;
 }
-.block-content li{
-	margin:0.75em 0 0.75em 0;
-}
+
 .no-sidebars .block-content li{
 	margin:0.75em 0 0.75em 2em;
 }
@@ -310,7 +308,7 @@ h1#page-title {
     font-size: 12px;
 }
 .region.region-sidebar-first.sidebar {
-    left: 90px;
+    left: 10px;
     position: relative;
     top: 30px;
 }
@@ -578,10 +576,6 @@ table td.mini {
 }
 #footer {
     background-color: #FFFFFF;
-    margin: 0 auto;
-    padding: 50px 0;
-    width: 1214px;
-    box-shadow:1px 0 0 rgba(0, 0, 0, 0.05), -1px 0 0 rgba(0, 0, 0, 0.07)
 }
 #columns {
     margin-bottom:0px;
@@ -771,4 +765,9 @@ a.rslides_nav {
  top:0;
 }
 
-
+.region-content-first .region-inner,
+.region-content-second .region-inner,
+.region-content-bottom .region-inner{
+	
+padding:0 20px;
+}
