@@ -21,6 +21,3 @@ Feature:
     | "Obama"                | "LOCALHOST/obama/blog"                              | "Me and michelle obama"         |
     | "More classes"         | "LOCALHOST/john/classes"                            | "More tests to the semester"    |
     | "Search for news"      | "https://www.google.com/#q=john+f+kennedy&tbm=nws"  | "google maps"                   |
-
-
-
