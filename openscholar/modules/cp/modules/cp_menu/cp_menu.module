@@ -134,7 +134,7 @@ function cp_menu_node_update($node) {
   if (!@$node->os_menu['enabled'] || @$node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-      os_menu_link_delete_link($link['menu_name'], $link['mlid']);
+      os_menu_link_delete($link['menu_name'], $link['mlid']);
     }
   }
 
@@ -159,7 +159,7 @@ function cp_menu_node_update($node) {
 function cp_menu_node_delete($node) {
   ctools_include('menu', 'os');
   if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
+    os_menu_link_delete($link['menu_name'], $link['mlid']);
   }
 }
 
@@ -442,7 +442,7 @@ function cp_menu_delete_link_form_submit($form, $form_state) {
   $link = $form['#link'];
 
   if ($form_state['values']['op'] == t('Delete')) {
-    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
+    os_menu_link_delete($link['menu_name'], $link['mlid']);
   }
 }
 

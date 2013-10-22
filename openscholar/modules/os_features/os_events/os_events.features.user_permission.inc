@@ -109,7 +109,6 @@ function os_events_user_default_permissions() {
   $permissions['create event_signup_simple registration other users'] = array(
     'name' => 'create event_signup_simple registration other users',
     'roles' => array(
-      0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
       3 => 'vsite admin',
@@ -177,7 +176,6 @@ function os_events_user_default_permissions() {
   $permissions['edit event_signup_simple registration state'] = array(
     'name' => 'edit event_signup_simple registration state',
     'roles' => array(
-      0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
       3 => 'vsite admin',
@@ -214,7 +212,6 @@ function os_events_user_default_permissions() {
   $permissions['update own event_signup_simple registration'] = array(
     'name' => 'update own event_signup_simple registration',
     'roles' => array(
-      0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
       3 => 'vsite admin',

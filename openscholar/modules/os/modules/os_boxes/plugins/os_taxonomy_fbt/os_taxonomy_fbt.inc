@@ -115,12 +115,13 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#type' => 'textfield',
       '#title' => t('Number of terms to display'),
       '#description' => t('Maximum number of terms to display.'),
+      '#element_validate' => array('element_validate_integer_positive'),
     );
 
     $form['offset'] = array(
       '#type' => 'textfield',
       '#title' => t('Offset'),
-      '#description' => t("The term location that the query start from."),
+      '#description' => t("The term location that the query start from."),      
     );
 
     $form['show_empty_terms'] = array(

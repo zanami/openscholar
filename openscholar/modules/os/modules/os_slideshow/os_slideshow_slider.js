@@ -19,8 +19,13 @@ Drupal.behaviors.os_slideshow = {
         }
         c++;
         $slider.responsiveSlides(Drupal.settings.os_slideshow[delta]);
-      }
-      
+      }   
+    });
+    
+   // Adds an exact height (from the ss image) to the .slide wrapper after the image is loaded and visible
+    $(window).load(function() { 
+      $img = $('.rslides img:first');
+      $img.closest('div.slide').css('height', $img.height());
     });
   }
 }

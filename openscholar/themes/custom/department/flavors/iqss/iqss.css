@@ -9,6 +9,12 @@
   padding-left: 42px;
    } 
    
+   
+.front .view-os-events ul li {
+    padding: 10px 0;
+}   
+   
+   
 
 #block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:1px;clear: both;}
 
@@ -23,3 +29,12 @@ h5 span {
 	color:#A51C30;
 	
 }
+
+
+
+.front .region-content-first .block .content,
+.front .region-content-second .block .content,
+.front .region-content-bottom .block .content {
+  background: url('/profiles/openscholar/themes/custom/department/images/blockBg.png') repeat-x center bottom;
+  }
+  

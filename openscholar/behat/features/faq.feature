@@ -3,7 +3,7 @@ Feature:
 
   @api
   Scenario: Testing the migration of FAQ
-    Given I am logged in as "john"
+    Given I am logging in as "john"
       And I visit "john/faq"
       And I should see "What does JFK stands for?"
      When I click "What does JFK stands for?"
@@ -11,7 +11,7 @@ Feature:
 
   @api
   Scenario: Testing the migration of FAQ
-    Given I am logged in as "john"
+    Given I am logging in as "john"
       And I visit "john/faq"
       And I click "Add FAQ"
       And I fill "edit-title" with random text

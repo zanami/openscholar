@@ -30,7 +30,7 @@ class FeatureContext extends DrupalContext {
   /**
    * Hold the user name and password for the selenium tests for log in.
    */
-  private $drupal_users;
+  private $users;
 
   /**
    * Hold the NID of the vsite.
@@ -47,28 +47,37 @@ class FeatureContext extends DrupalContext {
    */
   public function __construct(array $parameters) {
     if (isset($parameters['drupal_users'])) {
-      $this->drupal_users = $parameters['drupal_users'];
+      $this->users = $parameters['drupal_users'];
+    }
+    else {
+      throw new Exception('behat.yml should include "drupal_users" property.');
     }
 
     if (isset($parameters['vsite'])) {
       $this->nid = $parameters['vsite'];
+    }
+    else {
+      throw new Exception('behat.yml should include "vsite" property.');
     }
   }
 
   /**
    * Authenticates a user with password from configuration.
    *
-   * @Given /^I am logged in as "([^"]*)"$/
+   * @Given /^I am logging in as "([^"]*)"$/
    */
-  public function iAmLoggedInAs($username) {
+  public function iAmLoggingInAs($username) {
+
     try {
-      $password = $this->drupal_users[$username];
-    } catch (Exception $e) {
+      $password = $this->users[$username];
+    }
+    catch (Exception $e) {
       throw new Exception("Password not found for '$username'.");
     }
 
     if ($this->getDriver() instanceof Drupal\Driver\DrushDriver) {
       // We are using a cli, log in with meta step.
+
       return array(
         new Step\When('I visit "/user"'),
         new Step\When('I fill in "Username" with "' . $username . '"'),
@@ -338,7 +347,17 @@ class FeatureContext extends DrupalContext {
     foreach ($hash as $form_elements) {
       switch ($form_elements[2]) {
         case 'select list':
-          $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          $values = explode(",", $form_elements[1]);
+
+          if (count($values) > 1) {
+            foreach ($values as $value) {
+              // Select multiple values from the terms options.
+              $this->getSession()->getPage()->selectFieldOption($form_elements[0], trim($value), true);
+            }
+          }
+          else {
+            $metasteps[] = new Step\When('I select "' . $form_elements[1] . '" from "'. $form_elements[0] . '"');
+          }
           break;
         case 'checkbox':
           $metasteps[] = new Step\When('I '. $form_elements[1] . ' the box "' . $form_elements[0] . '"');
@@ -370,6 +389,21 @@ class FeatureContext extends DrupalContext {
    */
   public function iAssignTheNodeToTheTerm($node, $term) {
     $this->invoke_code('os_migrate_demo_assign_node_to_term', array("'$node'","'$term'"));
+  }
+
+  /**
+   * @Given /^I unassign the node "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeFromTheTerm($node, $term) {
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'"));
+  }
+
+  /**
+   * @Given /^I unassign the node "([^"]*)" with the type "([^"]*)" from the term "([^"]*)"$/
+   */
+  public function iUnassignTheNodeWithTheTypeFromTheTerm($node, $type, $term) {
+    $node = str_replace("'", "\'", $node);
+    $this->invoke_code('os_migrate_demo_unassign_node_from_term', array("'$node'","'$term'","'$type'"), TRUE);
   }
 
   /**
@@ -560,6 +594,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I execute vsite cron$/
+   */
+  public function iExecuteVsiteCron() {
+    $this->invoke_code('vsite_cron');
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
@@ -572,7 +613,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
-    $this->invoke_code($function, array($variable, $value));
+    $this->invoke_code($function, array($variable, "'$value'"));
   }
 
   /**
@@ -895,7 +936,7 @@ class FeatureContext extends DrupalContext {
   public function iDeleteRegistration($arg1) {
     return array(
       new Step\When('I am not logged in'),
-      new Step\When('I am logged in as "john"'),
+      new Step\When('I am logging in as "john"'),
       new Step\When('I visit "john/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
@@ -945,6 +986,29 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the node "([^"]*)"$/
+   */
+  public function iEditTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
+    }
+  }
+
+  /**
    * @Given /^I am adding the subtheme "([^"]*)" in "([^"]*)"$/
    */
   public function iAmAddingTheSubthemeIn($subtheme, $vsite) {
@@ -988,5 +1052,79 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-}
 
+  /**
+   * @Given /^I set feed item to import$/
+   */
+  public function iSetFeedItemToImport() {
+    return array(
+      new Step\When('I visit "admin"'),
+      new Step\When('I visit "admin/structure/feeds/os_reader/settings/OsFeedFetcher"'),
+      new Step\When('I check the box "Debug mode"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Given /^I import feed items for "([^"]*)"$/
+   */
+  public function iImportFeedItemsFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite) . "'", $nid));
+  }
+
+  /**
+   * @Given /^I import the feed item "([^"]*)"$/
+   */
+  public function iImportTheFeedItem($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Import')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the feed item "([^"]*)" was imported$/
+   */
+  public function iShouldSeeTheFeedItemWasImported($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s was not found or is already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the news photo "([^"]*)"$/
+   */
+  public function iShouldSeeTheNewsPhoto($image_name) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[contains(@class, 'field-name-field-photo')]//img[contains(@src, '{$image_name}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item's image %s was not imported into field_photo.", $image_name));
+    }
+  }
+
+  /**
+   * @Given /^I display watchdog$/
+   */
+  public function iDisplayWatchdog() {
+    $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
+  }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
+}

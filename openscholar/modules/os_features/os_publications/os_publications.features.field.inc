@@ -117,7 +117,7 @@ function os_publications_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => 'content',
-            'image_style' => 'book_cover_thumb',
+            'image_style' => 'os_square_50_50',
           ),
           'type' => 'image',
           'weight' => '0',

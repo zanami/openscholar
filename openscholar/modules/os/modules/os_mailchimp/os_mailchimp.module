@@ -44,12 +44,52 @@ function os_mailchimp_menu() {
 function os_mailchimp_user_insert(&$edit, $account, $category) {
   $api = variable_get('os_mailchimp_api', FALSE);
   $list = variable_get('os_mailchimp_list', FALSE);
-
-  $dc = end(explode('-', $api));
-  $url = 'http://' . $dc . '.api.mailchimp.com/1.3/';
-
-  $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $edit['name']);
+  $fn = $edit['field_first_name'][LANGUAGE_NONE][0]['value'];
+  $ln = $edit['field_last_name'][LANGUAGE_NONE][0]['value'];
+  $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $fn, $ln);
 }
+
+/**
+ * Implements hook_user_delete
+ * 
+ * Remove deleted user's email addresses from mailchimp.
+ */
+function os_mailchimp_user_delete($account) {
+  $api = variable_get('os_mailchimp_api');
+  $list_id = variable_get('os_mailchimp_list');
+  if (!$api || !$list_id) {
+    return;
+  }
+  
+  $MC = _os_mailchimp_mailchimp_connect($api);
+  $sub_info = $MC->listUnsubscribe($list_id, $account->mail);
+}
+
+/**
+ * Implements hook_node_update
+ *
+ * When vsite nodes are created, inform mailchimp about their ownership.
+ */
+function os_mailchimp_node_insert($node) {
+  $vsites = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (in_array($node->type, $vsites)) {
+    os_mailchimp_update_subscription($node->uid, $node);
+  }
+}
+
+/**
+ * Implements hook_node_update
+ * 
+ * When vsite nodes are updated, their ownership can change.  Send this update to mailchimp.
+ */
+function os_mailchimp_node_update($node) {
+  //only perform 1) on vsite nodes 2) when owner is changed.
+  $vsites = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (in_array($node->type, $vsites) || $node->uid != $node->original->uid) {
+    os_mailchimp_update_subscription($node->uid, $node);
+  }
+}
+
 
 
 /**
@@ -111,7 +151,18 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
 function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
   $MC = new MCAPI($api);
-  $merge_vars = array('FNAME'=>$fn, 'LNAME'=>$ln );
+  
+  //vsite isn't created yet so we can't get its purl.  but user isn't subbed yet, so when
+  //the vsite adds it doesn't know about the user and can't add its domain to the sub.
+  $form_values = &drupal_static('vsite_register_form_values');
+  
+  $merge_vars = array(
+    'FNAME' => $fn, 
+    'LNAME' => $ln,
+    'INSTANCES' => str_replace('http://', '', variable_get('purl_base_domain', '')),
+    'SITES' => ($form_values && isset($form_values['domain'])) ? $form_values['domain'] : '', 
+  );
+  
   if (variable_get('os_mailchimp_use_field', FALSE)) {
     $name = variable_get('os_mailchimp_use_field_name', FALSE);
     $value = variable_get('os_mailchimp_use_field_value', FALSE);
@@ -353,4 +404,102 @@ function _os_mailchimp_mailchimp_connect($api) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');  
   $MC = new MCAPI($api);
   return ($MC) ? $MC : FALSE;
+}
+
+/**
+ * @function os_mailchimp_update_subscription
+ * 
+ * Updates the stored variables on a user's mailchimp sub
+ */
+function os_mailchimp_update_subscription($uid = NULL, $node = NULL) {
+  if (!$uid) {
+    global $user;
+  } else {
+    if (($user = user_load($uid)) == FALSE) {
+      return FALSE;
+    }
+  }
+  
+  $api = variable_get('os_mailchimp_api');
+  $list_id = variable_get('os_mailchimp_list');
+  if (!($api && $list_id)) {
+    return;
+  }
+  
+  $MC = _os_mailchimp_mailchimp_connect($api);
+  $sub_info = $MC->listMemberInfo($list_id, $user->mail);
+  
+  //user has unsubscribed 
+  if ($sub_info['errors']) {
+    return;
+  }
+
+  $merge_vars = $sub_info['data'][0]['merges'];
+  $current_info = _os_mailchimp_user_get_info($user);
+  $merge_vars['FNAME'] = $current_info['FNAME'];
+  $merge_vars['LNAME'] = $current_info['LNAME'];
+    
+  //these vars are comma separated lists.  they can come from any of our installations.  append rather than overwriting.
+  foreach (array('instances', 'sites') as $var) {
+    $keyname = strtoupper($var);
+    if ($keyname && isset($merge_vars[$keyname])) {
+      $items = array_merge(explode(',', $merge_vars[$keyname]), $current_info[$var]);
+      if ($node) {
+        $items[] = $node->purl['value'];
+      }
+      $merge_vars[$keyname] = implode(',', array_unique(array_filter($items)));
+    }
+  }
+  
+  //perform update only if something has changed.
+  if ($merge_vars != $sub_info['data'][0]['merges']) {
+    $updated = $MC->listUpdateMember($list_id, $user->mail, $merge_vars);  
+  }
+  
+  return (isset($updated)) ? $updated : NULL;
+}
+
+/**
+ * @function _os_mailchimp_user_get_info
+ * 
+ * Collects info to send to mailchimp.  This includes:
+ *  - email address
+ *  - first and last name
+ *  - instance (this server)
+ *  - list of vsites user has membership in
+ */
+function _os_mailchimp_user_get_info($user) {
+  //upper case items are provided by mailchimp.  lowercase are custom ones we've added.
+  $ret = array(
+    'EMAIL' => $user->mail,
+    'FNAME' => $user->field_first_name[LANGUAGE_NONE][0]['value'],
+    'LNAME' => $user->field_last_name[LANGUAGE_NONE][0]['value'],
+    'instances' => array(str_replace('http://', '', variable_get('purl_base_domain', ''))),
+  );
+  
+  $vsites = $ret['sites'] = array();
+  if (isset($user->og_user_node[LANGUAGE_NONE])) { 
+    $vsites = array_map(function($a) {return $a['target_id']; }, $user->og_user_node[LANGUAGE_NONE]);
+
+    $query = db_select('purl', 'purl')
+      ->condition('purl.id', $vsites, 'IN')
+      ->condition('purl.provider', 'spaces_og')
+      ->fields('purl', array('value'));
+    $query->leftJoin('purl', 'domain', '(purl.id = domain.id AND domain.provider = :param1)', array(':param1' => 'vsite_domain'));
+    $query->fields('domain', array('value'));
+    $results = $query->execute();
+    
+
+    while ($row = $results->fetchObject()) {
+      $ret['sites'][] = ($row->domain_value) ? $row->domain_value : $row->value;
+    }
+  }
+  
+  //also include values from reg form which may not have saved yet.
+  $form_values = &drupal_static('vsite_register_form_values');
+  if ($form_values && isset($form_values['domain'])) {
+    $ret['sites'][] = $form_values['domain'];
+  }
+  
+  return $ret;
 }

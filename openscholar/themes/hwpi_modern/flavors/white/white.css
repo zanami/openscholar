@@ -26,14 +26,16 @@ body {
     background-position: 2px -373px;
 }
 
+.node-type-person #content-column .node-person h2.block-title, 
+.sidebar .block h2.block-title {
+    padding: 7px 10px;
+}
 
 h2.block-title {
-    background: #FFF;
-    color: #333;
-    border:1px solid #999;
- 	font-size: 12px;
- 	margin-bottom: 10px;
-    padding: 2px 8px;
+     color: #333333;
+     font-size: 16px;
+     margin-bottom: 10px;
+     text-transform: none;
 }
 
 #page-title, 
@@ -58,6 +60,7 @@ h2.block-title {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowBlack.gif") no-repeat scroll right center transparent;
 }
 
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url("../../../hwpi_basetheme/images/menu_down_arrowOn.gif") right center no-repeat #111;
