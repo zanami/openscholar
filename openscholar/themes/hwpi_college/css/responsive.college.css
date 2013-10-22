@@ -3,7 +3,10 @@
 @media (max-width: 1008px) {
 
 
+#columns .region-inner {
 
+    padding: 0 20px !important;
+}
 	.front #content-column {
     padding: 0!important;
 }
@@ -81,11 +84,15 @@
 
 
 }
+@media (max-width: 768px) {
 
 /*--------------------------------------------------------*/
-
-
-
-
-
+#columns .region-inner {
+    margin-bottom: 100px;
+    padding: 0 20px !important;
 }
+}
+
+
+
+
