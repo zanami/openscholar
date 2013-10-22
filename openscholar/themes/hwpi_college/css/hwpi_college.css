@@ -193,14 +193,14 @@ ul.nice-menu ul {
 .boxes-box-content, .boxes-box-content p {
     font-family: arial,sans-serif !important;
     font-size: 0.95em;
-    line-height: 22px;
+    line-height: 22px;}
 }
 .front #columns .region-inner
  {
-    margin-bottom: 100px;
+    margin-bottom: 100px;}
 }
 .webkit .front #columns .region-inner{
-	    margin-bottom: 150px;
+	    margin-bottom: 150px;}
 
 }
 .ie .front #columns .region-inner{
