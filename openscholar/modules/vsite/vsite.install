@@ -453,9 +453,20 @@ function vsite_update_7012() {
 }
 
 /**
- * Add "Support expire" field to allow support team to auto-subscribe to VSite.
+ * Adds subsite_domains field to vsite node types and Add "Support expire" field to allow support team to auto-subscribe to VSite.
  */
 function vsite_update_7013() {
+  //subsite domains field
+  features_revert(array('vsite' => array('field')));
+  
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  $group_types = array_intersect($group_types, variable_get('subsite_parents', array('department')));
+  
+  foreach ($group_types as $type) {
+    vsite_attach_fields_to_group($type);
+  }
+
+  //og support field
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
   $og_field['instance']['label'] = 'Support expire';
   $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';

@@ -9,6 +9,12 @@
   padding-left: 42px;
    } 
    
+   
+.front .view-os-events ul li {
+    padding: 10px 0;
+}   
+   
+   
 
 #block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:1px;clear: both;}
 

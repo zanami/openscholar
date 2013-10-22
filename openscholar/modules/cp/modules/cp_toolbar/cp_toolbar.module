@@ -307,9 +307,18 @@ function cp_toolbar_fill_drawer() {
   }
 
   // Adding the link to the import news.
-  $l = menu_get_item('cp/content/import');
+  $types = array('news', 'blog');
+  foreach ($types as $type) {
+    $l = menu_get_item('cp/content/import/' . $type);
+    if ($l['access']) {
+      $links['import_' . $type] = $l;
+    }
+  }
+
+  // Adding the importers.
+  $l = menu_get_item('cp/content/import/blog');
   if ($l['access']) {
-    $links['import'] = $l;
+    $links['import_blog'] = $l;
   }
 
   $drawer['content-drawer']['list'] = array(

@@ -282,7 +282,7 @@ function os_pages_context_custom($name) {
             'boxes-os_pages_section_nav' => array(
               'module' => 'boxes',
               'delta' => 'os_pages_section_nav',
-              'region' => 'sidebar_second',
+              'region' => 'sidebar_first',
               'weight' => '-10',
             ),
           )

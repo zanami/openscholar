@@ -362,19 +362,30 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
   unset($form['body']);
 
-  // vtabs 2, 3 and 8 always contain fields we either want outside of vtabs or don't want at all
-  // fields we don't want are taken out through biblio's field system
-  // so we just have to pull everything left outside of the vtabs
-  foreach (array(2, 3, 8) as $tab) {
+  // Take certain vtabs out of biblio vtabs and into the main form.
+  // The vtabs we are pulling may contain fields we either want outside of vtabs
+  // or don't want at all.
+  // The numbers (1, 2, 3, 8) represent the vtabs: Abstract, Publication,
+  // Publisher, Alternate Titles. @see biblio_node_form_vtab_info().
+  foreach (array(1, 2, 3, 8) as $tab) {
     if (!isset($form['biblio_tabs'][$tab]) || !is_array($form['biblio_tabs'][$tab])) {
+      // Vtab doesn't exist.
       continue;
     }
+
+    // Get all fields from inside the vtab.
     $children = element_children($form['biblio_tabs'][$tab]);
+
     foreach ($children as $elem) {
+      // Place the field in the main form.
       $form[$elem] = $form['biblio_tabs'][$tab][$elem];
+
+      // Remove the field from biblio vtabs.
       unset($form['biblio_tabs'][$tab][$elem]);
     }
+
     if (count(element_children($form['biblio_tabs'][$tab])) == 0) {
+      // There are no fields in this tab, so remove the tab.
       unset($form['biblio_tabs'][$tab]);
     }
   }
@@ -410,11 +421,11 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     '!link' => l('App settings.', 'cp/build'),
   ));
 
-  //Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
-  $form['biblio_tabs'][1]['biblio_abst_e']['#wysiwyg'] = false;
+  // Disable wysiwyg for biblio_notes and abstract so check_markup is not needed, html entered manually is acceptible.
   $form['biblio_tabs'][7]['biblio_notes']['#wysiwyg'] = false;
+  $form['biblio_abst_e']['#wysiwyg'] = FALSE;
 
-  // hide the rest of the vtabs behind a collapsible fieldset
+  // Hide the rest of the vtabs behind a collapsible fieldset.
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
     '#title' => 'Publication Extras',

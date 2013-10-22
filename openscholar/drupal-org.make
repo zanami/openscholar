@@ -124,6 +124,11 @@ projects[features][version] = 1.0
 projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
 
+projects[feeds_tamper‏][subdir] = "contrib"
+projects[feeds_tamper‏][type] = "module"
+projects[feeds_tamper‏][download][type] = "git"
+projects[feeds_tamper‏][download][url]="http://git.drupal.org/project/feeds_tamper.git"
+
 projects[feeds_xpathparser][subdir] = "contrib"
 projects[feeds_xpathparser][download][type] = git
 projects[feeds_xpathparser][download][branch] = 7.x-3.x
@@ -155,7 +160,7 @@ projects[flag][subdir] = "contrib"
 projects[flag][version] = 2.0
 
 projects[google_feedapi][subdir] = "contrib"
-projects[google_feedapi][version] = 1.0-beta2
+projects[google_feedapi][version] = 1.0
 
 projects[hierarchical_taxonomy][subdir] = "contrib"
 projects[hierarchical_taxonomy][download][type] = git
@@ -176,7 +181,9 @@ projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
 
 projects[jquery_update][subdir] = "contrib"
-projects[jquery_update][version] = 2.3
+projects[jquery_update][download][type] = git
+projects[jquery_update][download][branch] = 7.x-2.x
+projects[jquery_update][download][revision] = 65eecb0
 
 projects[js][subdir] = "contrib"
 projects[js][version] = 1.0-beta2
