@@ -4,6 +4,7 @@
 	width:84%!important;
 	padding:0!important;
 }
+
 	
 .page-node #content-column .content-inner {
     margin-top: 10px;
@@ -74,6 +75,15 @@
 }
 #block-os-primary-menu {
     padding: 0 8%;
+}
+ul.mobile-buttons {
+    width: 98.4%;
+}
+.front .region-content-first .region-inner,
+.front .region-content-second .region-inner,
+.front .region-content-bottom .region-inner{
+	
+padding:0 20px;
 }
 .one-sidebar.sidebar-first .region-sidebar-first {
     left: 8% !important;
