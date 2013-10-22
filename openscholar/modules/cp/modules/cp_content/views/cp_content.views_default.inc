@@ -790,12 +790,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
   $handler->display->display_options['filters']['current']['group'] = 1;
-  /* Filter criterion: File: Schema type */
-  $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
-  $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
-  $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
-  $handler->display->display_options['filters']['schema_type']['group'] = 1;
-  $handler->display->display_options['filters']['schema_type']['schema_type'] = 'public';
   /* Filter criterion: File: File name or title */
   $handler->display->display_options['filters']['file_name_title']['id'] = 'file_name_title';
   $handler->display->display_options['filters']['file_name_title']['table'] = 'file_managed';
@@ -866,7 +860,14 @@ function cp_content_views_default_views() {
     7 => 0,
     8 => 0,
   );
-  $handler->display->display_options['filters']['type']['expose']['reduce'] = TRUE;
+  /* Filter criterion: File: Schema type */
+  $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
+  $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['operator'] = 'not in';
+  $handler->display->display_options['filters']['schema_type']['value'] = array(
+    'private' => 'private',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

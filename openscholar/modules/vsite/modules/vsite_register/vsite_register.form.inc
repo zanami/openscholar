@@ -299,6 +299,7 @@ function _vsite_register_user_form() {
 function vsite_register_form_submit(&$form, &$state) {
   ctools_include('user', 'os');
   ctools_include('vsite', 'vsite');
+  $values = &drupal_static('vsite_register_form_values');
   $values = $state['values'];
 
   // The site has created on the behalf of a new user.

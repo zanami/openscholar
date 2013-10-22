@@ -444,6 +444,10 @@ function os_comments_form_comment_form_alter(&$form, &$form_state) {
 
   // Allows site member's to access the comment form.
   $node = $form['#node'];
+  if (og_is_group('node', $node)) {
+    // This is the group itself.
+    return;
+  }
   $wrapper = entity_metadata_wrapper('node', $node);
   $gid = $wrapper->{OG_AUDIENCE_FIELD}[0]->value(array('identifier' => TRUE));
   if (og_is_member('node', $gid)) {
