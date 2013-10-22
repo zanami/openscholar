@@ -122,7 +122,7 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
 
   // Sanity check to make sure once again that this id does not exist in
   // the table.
-  if ($result = db_query("SELECT count(uid) AS uidCount FROM {pinserver_users} WHERE uid = :uid", array(':uid' => $uid))->fetchField()) {
+  if ($result = db_query("SELECT count(hashID) AS uidCount FROM {pinserver_users} WHERE uid = :uid", array(':uid' => $uid))->fetchField()) {
     return;
   }
 
@@ -130,7 +130,7 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
   return db_merge('pinserver_users')
     ->key(array('uid' => $uid))
     ->fields(array(
-      'hashID'=>$hash_id,
+      'hashID' => $hash_id,
     ))
     ->execute();
 }
