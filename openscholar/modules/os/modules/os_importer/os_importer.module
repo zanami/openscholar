@@ -340,16 +340,36 @@ function os_importer_import($form, &$form_state, $type) {
 }
 
 /**
+ * Validate handler - if the user selected RRS importer then he must enter a
+ * RSS address and a title for the node importer..
+ */
+function os_importer_import_validate($form, $form_state) {
+  if ($form_state['values']['format'] == 'rss') {
+    if (empty($form_state['values']['title'])) {
+      form_set_error('title', t('The title field is required'));
+    }
+
+    if (empty($form_state['values']['url'])) {
+      form_set_error('url', t('The title field is required'));
+    }
+  }
+  else {
+    if (empty($form_state['values']['file'])) {
+      form_set_error('file', t('The file field is required'));
+    }
+  }
+}
+
+/**
  * Form submit.
  */
 function os_importer_import_submit($form, &$form_state) {
   $values = $form_state['values'];
+  $bundle = os_importer_importable_content($form_state['type']);
 
   if ($values['format'] == 'csv') {
     $fid = $values['file'];
     $file = file_load($fid);
-
-    $bundle = os_importer_importable_content($form_state['type']);
 
     $source = feeds_source($bundle['csv']);
     $fetcher_config = $source->getConfigFor($source->importer->fetcher);
@@ -361,5 +381,6 @@ function os_importer_import_submit($form, &$form_state) {
     $source->startImport();
   }
   else {
+    $node_type = $form_state['type'] == 'blog' ? 'blog_importer' : 'feed_importer';
   }
 }
