@@ -47,6 +47,14 @@ function os_files_menu(){
     'type' => MENU_CALLBACK
   );
 
+  $items['admin/config/openscholar/os-files'] = array(
+    'title' => t('File Settings'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_files_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'os_files.admin.inc',
+  );
+
   return $items;
 }
 
