@@ -383,10 +383,7 @@ function os_files_save_file_usage($form, &$form_state) {
   // schema - this is a generic way to the defined module name in the schema.
   $key = reset(array_keys($usage));
 
-  if ($key == 'file') {
-    $usage_nids = array_keys($usage['file']['node']);
-  }
-  else {
+  if ($key == 'imagefield_crop') {
     // The imagefield crop save the usage of the file in a different way in the
     // schema of the usage file. We need to get the file object which the field
     // crop is referencing to and pass the file object to the bath API.
@@ -394,6 +391,9 @@ function os_files_save_file_usage($form, &$form_state) {
     $form_state['file'] = $file;
     $usage = file_usage_list($file);
     $usage_nids = array_keys($usage['file']['node']);
+  }
+  else {
+    $usage_nids = array_keys($usage[$key]['node']);
   }
 
   $form_state['file_usage'] = $usage_nids;
