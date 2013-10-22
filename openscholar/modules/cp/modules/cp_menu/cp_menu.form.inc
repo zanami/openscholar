@@ -434,7 +434,7 @@ function cp_menu_remove_confirm_submit($form, $form_state) {
       drupal_set_message(t('The @menu menu has been reset to defaults.', array('@menu' => $menu)));
     }
     else {
-      os_menu_delete($menu);
+      os_menu_remove($menu);
       drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => $menu)));
     }
 

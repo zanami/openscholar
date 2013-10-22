@@ -93,7 +93,7 @@ function os_menu_create($title, $menu_name = false, $description = '') {
  *
  * @param $menu_name
  */
-function os_menu_delete($menu_name) {
+function os_menu_remove($menu_name) {
 
   $current_menus = os_get_menus();
   //Is this a valid menu to remove?
