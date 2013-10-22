@@ -140,6 +140,9 @@ function vsite_get_parent($sid) {
  */
 function vsite_inherit($sid) {
   $parent_sid = vsite_get_parent($sid);
+  if (!$parent_sid) {
+    return;
+  }
   $parent_vsite = vsite_get_vsite($parent_sid);
 
   // Checks if the parent site has specified a theme to inherit.
