@@ -1471,7 +1471,10 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.presentation',
     'application/x-wtml',
     'application/x-wtt',
-    'application/x-wwtfig'
+    'application/x-wwtfig',
+    // *.cls, *.sty
+    'text/x-tex',
+    'application/x-latex',
   ));
 
   $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
