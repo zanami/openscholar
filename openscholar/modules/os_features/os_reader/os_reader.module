@@ -208,24 +208,6 @@ function os_reader_get_importers_list($feed_importer_nid = NULL, $type) {
 }
 
 /**
- * Implements hook_os_add_new_links_alter().
- */
-function os_reader_os_add_new_links_alter(&$links) {
-  $menu = menu_get_item();
-
-  $types = array('news', 'blog');
-  $node_is_news_type = isset($menu['map']['1']) && in_array($menu['map']['1']->type, $types);
-
-  if ((in_array($menu['path'], $types) || $node_is_news_type) && os_reader_import_news_access_callback()) {
-    $type = $node_is_news_type ? $menu['map']['1']->type : $menu['path'];
-    $links['news-import'] = array(
-      'title' => t('Import @type', array('@type' => ucfirst($type))),
-      'href' => 'cp/content/import/' . $type,
-    );
-  }
-}
-
-/**
  * Access callback; Feed item copy.
  *
  * @param $feed_id
@@ -560,11 +542,12 @@ function os_reader_node_insert($node) {
   }
 
   $source = feeds_source($importer_id, $node->nid);
-  // Start import if requested.
 
+  // Start import if requested.
   if (feeds_importer($importer_id)->config['import_on_create']) {
     $source->startImport();
   }
+
   // Schedule source and importer.
   $source->schedule();
   feeds_importer($importer_id)->schedule();

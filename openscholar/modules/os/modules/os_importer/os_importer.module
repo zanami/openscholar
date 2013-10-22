@@ -76,14 +76,15 @@ function os_importer_os_add_new_links_alter(&$links) {
     return;
   }
 
-  foreach ($current_app['importers'] as $type => $importer) {
-    if (!os_importer_import_access($importer)) {
+  foreach ($current_app['importers'] as $type => $importers) {
+
+    if (!(os_importer_import_access($type) || os_importer_import_access($type, FALSE))) {
       continue;
     }
 
     $links['os-importer-' . $type] = array(
-      'title' => t('Import from @type', array('@type' => $type)),
-      'href' => 'os-importer/' . $importer,
+      'title' => t('Import @type', array('@type' => $type)),
+      'href' => 'os-importer/' . $type,
     );
   }
 }
@@ -162,17 +163,24 @@ function os_importer_importer_title($type) {
  * Access callback - determine if the user can import content from csv.
  *
  * @param $type
- *  The type of the feeds importer.
+ *  The type of the feeds importer or the node type.
+ * @param $feed
+ *  Determine if the access callback is for feed or rss. Set TRUE if the access
+ *  is made against a feed importer.
  *
  * @return bool
  *  Return TRUE/FALSE.
  */
-function os_importer_import_access($type) {
-  $source = feeds_source($type);
-  $config = $source->importer->getConfig();
+function os_importer_import_access($type, $feed = TRUE) {
+  $bundle = $type;
 
-  if (!$bundle = $config['processor']['config']['content_type']) {
-    return FALSE;
+  if ($feed) {
+    $source = feeds_source($type);
+    $config = $source->importer->getConfig();
+
+    if (!$bundle = $config['processor']['config']['content_type']) {
+      return FALSE;
+    }
   }
 
   $string = "create {$bundle} content";
@@ -314,7 +322,7 @@ function os_importer_import($form, &$form_state, $type) {
   );
 
   // Only CSV parsers have a template.
-  if ($feed_importer->parser instanceof FeedsCSVParser) {
+  if ($feed_importer && $feed_importer->parser instanceof FeedsCSVParser) {
     $form['container'] = array(
       '#type' => 'container',
       '#states' => array(
@@ -364,6 +372,7 @@ function os_importer_import_validate($form, $form_state) {
  * Form submit.
  */
 function os_importer_import_submit($form, &$form_state) {
+  global $language, $user;
   $values = $form_state['values'];
   $bundle = os_importer_importable_content($form_state['type']);
 
@@ -381,6 +390,15 @@ function os_importer_import_submit($form, &$form_state) {
     $source->startImport();
   }
   else {
-    $node_type = $form_state['type'] == 'blog' ? 'blog_importer' : 'feed_importer';
+    $node_type = $form_state['type'] == 'blog' ? 'blog_import' : 'feed_importer';
+    $node = entity_create('node', array(
+      'title' => $values['title'],
+      'type' => $node_type,
+      'language' => $language->language,
+      'uid' => $user->uid,
+    ));
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $wrapper->field_rss_url->set($values['url']);
+    $wrapper->save();
   }
 }
