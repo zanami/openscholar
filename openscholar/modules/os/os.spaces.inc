@@ -214,7 +214,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'ballard',
+      'theme_default' => 'hwpi_classic',
     ),
   );
 
@@ -262,7 +262,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'cleanblue',
+      'theme_default' => 'hwpi_modern',
     ),
   );
 
@@ -309,7 +309,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'cleanblue',
+      'theme_default' => 'hwpi_vibrant',
     ),
   );
 
