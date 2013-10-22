@@ -306,7 +306,7 @@ function os_importer_import($form, &$form_state, $type) {
       '#type' => 'textfield',
       '#title' => t('Title'),
 
-      '#description' => t('the title of the url.'),
+      '#description' => t('Required field - The title of the feed source. E.g. "New York Times Sport". '),
       '#states' => array(
         'visible' => array(
           ':input[name="format"]' => array('value' => 'rss'),
@@ -319,7 +319,7 @@ function os_importer_import($form, &$form_state, $type) {
       '#type' => 'textfield',
       '#title' => t('URL'),
 
-      '#description' => t('The url of your data source.'),
+      '#description' => t('The url of your feed. E.g. http://rss.cnn.com/rss/cnn_tech.rss'),
       '#states' => array(
         'visible' => array(
           ':input[name="format"]' => array('value' => 'rss'),
