@@ -52,9 +52,9 @@ function os_importer_node_insert($node) {
  */
 function os_importer_admin_paths() {
   return array(
-    'os-importer/*' => TRUE,
+    'cp/os-importer/*' => TRUE,
     'cp/content/import/*' => TRUE,
-    'os-importer/blog/manage' => TRUE,
+    'cp/os-importer/blog/manage' => TRUE,
   );
 }
 
@@ -83,9 +83,9 @@ function os_importer_os_add_new_links_alter(&$links) {
       continue;
     }
 
-    $links['os-importer-' . $type] = array(
+    $links['cp/os-importer-' . $type] = array(
       'title' => t('Import @type', array('@type' => $type)),
-      'href' => 'os-importer/' . $type,
+      'href' => 'cp/os-importer/' . $type,
     );
   }
 }
@@ -132,21 +132,21 @@ function os_importer_menu() {
     }
 
     foreach ($info['importers'] as $node_type => $importer) {
-      $items['os-importer/' . $node_type] = array(
+      $items['cp/os-importer/' . $node_type] = array(
         'title callback' => 'os_importer_importer_title',
-        'title arguments' => array(1),
+        'title arguments' => array(2),
         'access callback' => 'os_importer_import_access',
-        'access arguments' => array(1),
+        'access arguments' => array(2),
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('os_importer_import', 1),
+        'page arguments' => array('os_importer_import', 2),
       );
 
       if (!empty($importer['rss'])) {
-        $items['os-importer/' . $node_type . '/import'] = $items['os-importer/' . $node_type] + array(
+        $items['cp/os-importer/' . $node_type . '/import'] = $items['cp/os-importer/' . $node_type] + array(
           'type' => MENU_DEFAULT_LOCAL_TASK,
         );
 
-        $items['os-importer/' . $node_type . '/manage'] = array(
+        $items['cp/os-importer/' . $node_type . '/manage'] = array(
           'title' => 'Manage',
           'page callback' => 'os_reader_import_news',
           'access callback' => 'os_reader_import_news_access_callback',
@@ -156,13 +156,13 @@ function os_importer_menu() {
     }
   }
 
-  $items['os-importer/%/template'] = array(
+  $items['cp/os-importer/%/template'] = array(
     'page callback' => 'feeds_importer_template',
-    'page arguments' => array(1),
+    'page arguments' => array(2),
     'file' => 'feeds.pages.inc',
     'file path' => drupal_get_path('module', 'feeds'),
     'access callback' => 'os_importer_import_access',
-    'access arguments' => array(1),
+    'access arguments' => array(2),
   );
 
   return $items;
