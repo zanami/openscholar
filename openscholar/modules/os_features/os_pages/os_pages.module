@@ -456,19 +456,30 @@ function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
         '#type' => 'checkbox',
         '#default_value' => $form['table'][$key]['#item']['hidden']
       );
-      $form['table'][$key]['move_to'] = array(
-        '#type' => 'select',
-        '#options' => $options,
-      );
-      $form['table'][$key]['move_to_sub'] = array(
-        '#type' => 'button',
-        '#value' => t('Move'),
-        '#name' => $key.'-op',
-        '#ajax' => array(
-          'callback' => 'os_pages_move_page_callback',
-          'wrapper' => 'book-outline'
-        )
-      );
+      if (count($options) > 1) {
+        $form['table'][$key]['move_to'] = array(
+          '#type' => 'select',
+          '#options' => $options,
+        );
+        $form['table'][$key]['move_to_sub'] = array(
+          '#type' => 'button',
+          '#value' => t('Move'),
+          '#name' => $key.'-op',
+          '#ajax' => array(
+            'callback' => 'os_pages_move_page_callback',
+            'wrapper' => 'book-outline'
+          )
+        );
+      }
+      else {
+        $form['table'][$key]['move_to'] = array(
+          '#markup' => t('No other sections to move this page to.')
+        );
+        // dummy so theme doesn't complain
+        $form['table'][$key]['move_to_sub'] = array(
+          '#markup' => '',
+        );
+      }
     }
 
     $form['save']['#value'] = t('Save Section Outline');
