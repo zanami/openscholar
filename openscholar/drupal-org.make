@@ -212,6 +212,7 @@ projects[media][version] = 2.x-dev
 projects[media][revision] = "c49692b"
 ; projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
+projects[media][patch][] = "https://drupal.org/files/media_fatal_wysiwyg_remove_1937864_11.patch"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 2.x-dev
