@@ -268,7 +268,21 @@ function os_importer_import($form, &$form_state, $type) {
   );
 
   $form['import_source'] = array(
-    // RSS need url.
+
+    // RSS title.
+    'title' => array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+
+      '#description' => t('the title of the url.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+    ),
+
+    // RSS url.
     'url' => array(
       '#type' => 'textfield',
       '#title' => t('URL'),
@@ -300,15 +314,16 @@ function os_importer_import($form, &$form_state, $type) {
   );
 
   // Only CSV parsers have a template.
-  // TODO: Hide when selecting rss or iCal.
   if ($feed_importer->parser instanceof FeedsCSVParser) {
-    $form['template'] = array(
-      '#type' => 'markup',
-      '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
+    $form['container'] = array(
+      '#type' => 'container',
       '#states' => array(
         'visible' => array(
           ':input[name="format"]' => array('value' => 'csv'),
         ),
+      ),
+      'template' => array(
+        '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
       ),
     );
   }
