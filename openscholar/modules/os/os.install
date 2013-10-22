@@ -349,4 +349,7 @@ function os_update_7019() {
  */
 function os_update_7020() {
   module_enable(array('password_policy', 'secure_pages'));
+  variable_set('securepages_enable', '1');
+  variable_set('securepages_pages', 'user
+user/login');
 }
