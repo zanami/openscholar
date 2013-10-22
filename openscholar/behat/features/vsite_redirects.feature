@@ -2,12 +2,12 @@ Feature:
   In order to have content at a single URL as a visitor i want to be redirected
   to a canonical URL.
 
-  @api
+  @api @me
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I should be redirected in the following <cases>:
    #  | Request                                 | Code  | Final URL                     |
       | john                                    | 200   | john                          |
-      | node/1                                  | 302   | john                          |
+      | node/1                                  | 302   | edison                        |
       | book/all-about-nodes                    | 302   | john/book/all-about-nodes     |
       | als/book/all-about-nodes                | 302   | john/book/all-about-nodes     |
       | john/blog/me-against-labor              | 302   | lincoln/blog/me-against-labor |
