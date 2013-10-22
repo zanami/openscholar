@@ -337,3 +337,10 @@ function os_update_7017() {
 function os_update_7018() {
   module_enable(array('jquery_update'));
 }
+
+/**
+ * Enables module: os_tour.
+ */
+function os_update_7019() {
+  module_enable(array('os_tour'));
+}
