@@ -2,7 +2,7 @@ Feature:
   In order to have content at a single URL as a visitor i want to be redirected
   to a canonical URL.
 
-  @api @me
+  @api
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I should be redirected in the following <cases>:
    #  | Request                                 | Code  | Final URL                     |
