@@ -7,7 +7,7 @@
 
       // Setup.
       var menuLinkSel = '#os-tour-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#');
+      $(menuLinkSel).attr('href', '#').text('');
       var settings = Drupal.settings.os_notifications;
       if (typeof google == 'undefined') {
         return;
@@ -34,8 +34,8 @@
           // If there are items to display in a hopscotch tour...
           if (items.length) {
             // Sets up the DOM elements.
-            $(menuLinkSel).parent('li').append($("<div id='os-tour-notifications-tour'/>"));
-            $('#os-tour-notifications-tour').append($("<div id='os-tour-notifications-count'/>"));
+            $(menuLinkSel).append($("<i class='os-tour-notifications-icon'/>"));
+            $(menuLinkSel).append($("<span id='os-tour-notifications-count'/>"));
             os_tour_notifications_count(items.length);
 
             // Sets up the tour object with the loaded feed item steps.

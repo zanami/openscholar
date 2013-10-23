@@ -5,3 +5,34 @@ div.hopscotch-bubble.os-notifications .hopscotch-bubble-content {
 div.hopscotch-bubble.os-notifications .hopscotch-bubble-number {
     display: none;
 }
+
+#toolbar #os-tour-notifications-count {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #666666;
+    border-radius: 10px;
+    font-weight: bolder;
+    font-size: 11px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#toolbar .os-tour-notifications-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-top: -1px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("white_bell_16x16.png");
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+}

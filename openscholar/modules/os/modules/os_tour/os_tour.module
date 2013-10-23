@@ -124,7 +124,6 @@ function os_tour_preprocess_toolbar(&$vars) {
         'href' => '',
         'html' => TRUE,
         'attributes' => array(
-          'class' => array('os-tour-notifications-icon'),
           'id' => 'os-tour-notifications-menu-link',
           'data-tooltip' => t('Learn about updates that affect your site')
         ),
