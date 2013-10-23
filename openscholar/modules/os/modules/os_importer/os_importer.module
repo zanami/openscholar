@@ -40,11 +40,24 @@ function os_importer_feeds_plugins() {
  * Import feed item when the user add the feed importer for the first time.
  */
 function os_importer_node_insert($node) {
-  if (!$node->is_new || $node->type != 'blog_import') {
+  // Source attached to node.
+  if (isset($node->feeds) || !$importer_id = feeds_get_importer_id($node->type)) {
     return;
   }
 
-  feeds_source('os_blog_import_rss', $node->nid)->startImport();
+  $type = $node->type == 'blog_import' ? 'blog' : 'news';
+  $_GET['destination'] = 'john/cp/os-importer/' . $type . '/manage';
+
+  $source = feeds_source($importer_id, $node->nid);
+
+  // Start import if requested.
+  if (feeds_importer($importer_id)->config['import_on_create']) {
+    $source->startImport();
+  }
+
+  // Schedule source and importer.
+  $source->schedule();
+  feeds_importer($importer_id)->schedule();
 }
 
 /**
@@ -53,7 +66,6 @@ function os_importer_node_insert($node) {
 function os_importer_admin_paths() {
   return array(
     'cp/os-importer/*' => TRUE,
-    'cp/content/import/*' => TRUE,
     'cp/os-importer/blog/manage' => TRUE,
   );
 }
@@ -180,7 +192,7 @@ function os_importer_menu() {
 function os_importer_importer_title($type) {
   $types = node_type_get_types($type);
 
-  return t('Import @type', array('@type' => strtolower($types[$type]->name)));
+  return t('@type', array('@type' => $types[$type]->name));
 }
 
 /**
