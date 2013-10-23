@@ -311,9 +311,27 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
+  $params = array('!new-York-times' => l(t('New York times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
+  $text = 'Importing content from RSS feeds supports only news and blog content. ';
+  $text .= 'For example: you can import a feed item from the !new-York-times rss news feeds.<br />';
+  $text .= "When submitting the form, the import process will begin. After that, you can choose which news items you want to import into your site.";
+  $text = t($text, $params);
+
+  $form['rss_container'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="format"]' => array('value' => 'csv'),
+      ),
+    ),
+    'explain' => array(
+      '#markup' => $text,
+    ),
+  );
+
   // Only CSV parsers have a template.
   if ($feed_importer && $feed_importer->parser instanceof FeedsCSVParser) {
-    $form['container'] = array(
+    $form['csv_container'] = array(
       '#type' => 'container',
       '#states' => array(
         'visible' => array(
@@ -321,7 +339,7 @@ function os_importer_import($form, &$form_state, $type) {
         ),
       ),
       'template' => array(
-        '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
+        '#markup' => l(t('Download a template'), 'cp/os-importer/' . $bundle['csv'] . '/template'),
       ),
     );
   }
@@ -395,6 +413,41 @@ function os_importer_import_validate($form, $form_state) {
 
     if (empty($form_state['values']['url'])) {
       form_set_error('url', t('The title field is required'));
+    }
+    else {
+      // Validate the url address.
+      $url = $form_state['values']['url'];
+      $result = drupal_http_request($url);
+      if ($result->code != 200) {
+        form_set_error('url', t("The address @url is not a valid address.", array('@url' => check_plain($url))));
+      }
+
+      // Verify the user didn't enter that address.
+      if ($vsite = vsite_get_vsite()) {
+        $importer_type = $form_state['type'] == 'blog' ? 'blog_import' : 'feed_importer';
+
+        // Check for existing nodes in the same VSite.
+        $query = new EntityFieldQuery();
+        $result = $query
+          ->entityCondition('entity_type', 'node')
+          ->entityCondition('bundle', $importer_type)
+          ->propertyCondition('status', NODE_PUBLISHED)
+          ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $vsite->id)
+          ->fieldCondition('field_rss_url', 'value', $url)
+          ->execute();
+
+        if (!empty($result['node'])) {
+          $row = reset($result['node']);
+          $node = node_load($row->nid);
+
+          $params = array(
+            '@url' => url('cp/os-importer/' . $form_state['type'] . '/manage/' . $node->nid),
+            '@title' => $node->title,
+          );
+
+          form_set_error('url', t('RSS url already exists in <a href="@url">@title</a>.', $params));
+        }
+      }
     }
   }
   else {
