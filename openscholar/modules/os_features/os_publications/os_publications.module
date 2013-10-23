@@ -357,7 +357,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     return;
   }
   unset($form['biblio_tabs']['biblio_authors']);
-  unset($form['biblio_tabs'][1]['biblio_authors']);
 
   $form['body'][LANGUAGE_NONE][0]['summary']['#access'] = false;
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
@@ -378,8 +377,9 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     $children = element_children($form['biblio_tabs'][$tab]);
 
     foreach ($children as $elem) {
-      // Place the field in the main form.
-      $form[$elem] = $form['biblio_tabs'][$tab][$elem];
+      // Place the field in the main form, but prevent overriding fields that
+      // already exist in the main form.
+      $form[$elem] = empty($form[$elem]) ? $form['biblio_tabs'][$tab][$elem] : $form[$elem];
 
       // Remove the field from biblio vtabs.
       unset($form['biblio_tabs'][$tab][$elem]);
