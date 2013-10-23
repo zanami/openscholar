@@ -708,6 +708,10 @@ class os_sv_list_box extends os_boxes_default {
   }
 
   function display_body($nodes) {
+    foreach ($nodes as &$node) {
+      // Indicate that the nodes are displayed in the widget.
+      $node->os_sv_list_box = TRUE;
+    }
     return $this->display_view_mode($nodes, 'full');
   }
 
