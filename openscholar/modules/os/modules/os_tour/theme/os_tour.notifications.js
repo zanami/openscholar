@@ -7,12 +7,12 @@
 
       // Setup.
       var menuLinkSel = '#os-tour-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#').parent('li').append($("<div id='os-tour-notifications-list'/>"));
+      $(menuLinkSel).attr('href', '#');
       var settings = Drupal.settings.os_notifications;
-      var container = $('#os-tour-notifications-list');
       if (typeof google == 'undefined') {
         return;
       }
+
       // @TODO: Add support for multiple feeds.
       var feed = new google.feeds.Feed(settings.url);
       var items = [];
@@ -20,32 +20,44 @@
       feed.load(function (result) {
         if (!result.error) {
           for (var i = 0; i < result.feed.entries.length; i++) {
+            // var num_remaining = (result.feed.entries.length - i) - 1;
             var entry = result.feed.entries[i];
             var item = os_tour_notifications_item(entry);
             items.push(item);
-            console.log(item);
+          }
+
+          // Only continues if we have the hopscotch library defined.
+          if (typeof hopscotch == 'undefined') {
+            return;
+          }
+
+          // If there are items to display in a hopscotch tour...
+          if (items.length) {
+            // Sets up the DOM elements.
+            $(menuLinkSel).parent('li').append($("<div id='os-tour-notifications-tour'/>"));
+            $('#os-tour-notifications-tour').append($("<div id='os-tour-notifications-count'/>"));
+            os_tour_notifications_count(items.length);
+
+            // Sets up the tour object with the loaded feed item steps.
+            var tour = {
+              showPrevButton: true,
+              scrollTopMargin: 100,
+              id: "os-tour-notifications",
+              steps: items,
+              onEnd: os_tour_notifications_read_update
+            };
+
+            // Adds our tour overlay behavior with desired effects.
+            $('#os-tour-notifications-menu-link').click(function() {
+              hopscotch.startTour(tour);
+              // Removes animation for each step.
+              $('.hopscotch-bubble').removeClass('animated');
+              // Allows us to target just this tour in CSS rules.
+              $('.hopscotch-bubble').addClass('os-tour-notifications');
+            });
           }
         }
       });
-
-      if (typeof hopscotch == 'undefined') {
-        return;
-      }
-      var tour = {
-        showPrevButton: true,
-        scrollTopMargin: 100,
-        id: "os-tour-notifications",
-        steps: items
-      };
-
-      $('#os-tour-notifications-menu-link').click(function() {
-        hopscotch.startTour(tour);
-        // Removes animation for each step.
-        $('.hopscotch-bubble').removeClass('animated');
-        // Allows us to target just this tour in CSS rules.
-        $('.hopscotch-bubble').addClass('os-tour-notifications');
-      });
-      $.get('os/tour/user/' + settings.uid + '/notifications_read');
     }
   };
 
@@ -84,7 +96,7 @@
     var item = {
       title: entry.title,
       content:output,
-      target: document.querySelector("#os-notifications-list"),
+      target: document.querySelector("#os-tour-notifications-menu-link"),
       placement: "bottom",
       yOffset: 20
     };
