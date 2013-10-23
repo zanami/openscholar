@@ -793,8 +793,10 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
-  $handler->display->display_options['filters']['schema_type']['group'] = 1;
-  $handler->display->display_options['filters']['schema_type']['schema_type'] = 'public';
+  $handler->display->display_options['filters']['schema_type']['operator'] = 'not in';
+  $handler->display->display_options['filters']['schema_type']['value'] = array(
+    'private' => 'private',
+  );
   /* Filter criterion: File: File name or title */
   $handler->display->display_options['filters']['file_name_title']['id'] = 'file_name_title';
   $handler->display->display_options['filters']['file_name_title']['table'] = 'file_managed';
