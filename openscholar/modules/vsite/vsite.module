@@ -993,6 +993,86 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
+  
+  // Ensures that "field_subsite_domains" field is created.
+  if (!field_info_field('field_subsite_domains')) {
+    $field = array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_subsite_domains',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+        'type' => 'text',
+    );
+    $field = field_create_field($field);
+  }
+  
+  if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
+    $instance = array(
+      'bundle' => $bundle,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Domain(s) entered here will be available to your subsites.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '6',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_subsite_domains',
+      'label' => 'Subsite Domains',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => '60',
+      ),
+      'type' => 'text_textfield',
+      'weight' => '34',
+      ),
+    );
+    field_create_instance($instance);
+  }  
 }
 
 function vsite_attach_fields_to_subsite($bundle){
@@ -1549,6 +1629,7 @@ function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
+    vsite_inherit($node->nid);
   }
 
   if (og_is_group_type('node', $node->type)) {
@@ -2168,4 +2249,39 @@ function vsite_pathauto_alias_alter(&$alias, $context) {
   // Prefixes the alias with the purl.
   // Note: This occurs BEFORE pathauto_alias_uniquify().
   $alias = "$purl/$alias";
+}
+
+/**
+ * Implements hook_cp_settings().
+ */
+function vsite_cp_settings() {
+  $vsite = vsite_get_vsite();
+  if (!$vsite || !isset($vsite->group->type)) {
+    return;
+  }
+  $default = array('department');
+  $subsite_parents = variable_get('subsite_parents', $default);
+  if (!in_array($vsite->group->type, $subsite_parents)) {
+    return;
+  }
+
+  $settings = array();
+
+  $default = 0;
+  $inherit_theme = variable_get('vsite_subsite_inherit_theme', $default);
+  $settings['vsite_subsite_inherit_theme'] = array(
+    'form' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Inherit parent site theme'),
+      '#default_value' => $inherit_theme,
+      '#description' => t('Check to have newly created subsites start with this site\'s currently enabled theme by default.'),
+    ),
+    'group' => array(
+      '#id' => 'vsite_subsite',
+      '#title' => t('Subsites'),
+      '#weight' => -100,
+    ),
+  );
+
+  return $settings;
 }

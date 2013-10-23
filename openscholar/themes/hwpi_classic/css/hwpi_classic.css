@@ -37,14 +37,19 @@ margin-top: 15px;
 .node-title, 
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.not-front #content-column ul li,
+.not-front #content-column ol li,
 .more-link,
+.page-search #content-column p,
+.not-front #content-column p,
 .links a,
 #footer ul.menu a,
 .boxes-box-content h2,
 .section-nav a,
 #content-column h2,
 #content-column h3,
-#content-column h4 {
+#content-column h4,
+#content-column .field-name-body {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
@@ -127,6 +132,11 @@ h2.block-title {
 
 .page-search h1#page-title {
   margin-top:10px;
+}
+
+ 
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+margin-left: 5.7em;
 }
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,

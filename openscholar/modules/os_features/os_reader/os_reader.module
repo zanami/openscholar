@@ -282,10 +282,12 @@ function os_reader_os_app_info() {
     'path' => 'reader',
   	'nodetypes' => array(
   	  'feed',
+      'feed_importer',
     ),
     'views tabs' => array(
       'reader' => array('page'),
     ),
+    'searchable' => FALSE,
   );
 
   return $apps;
@@ -598,6 +600,9 @@ function os_reader_form_alter(&$form, $form_state, $form_id) {
   if (!in_array($form_id, array('feed_importer_node_form', 'blog_import_node_form'))) {
     return;
   }
+
+  // Remove field 'Feeds'.
+  $form['feeds']['#access'] = FALSE;
 
   // Place URL field before title field.
   $form['field_rss_url']['#weight'] = -6;

@@ -160,7 +160,7 @@ projects[flag][subdir] = "contrib"
 projects[flag][version] = 2.0
 
 projects[google_feedapi][subdir] = "contrib"
-projects[google_feedapi][version] = 1.0-beta2
+projects[google_feedapi][version] = 1.0
 
 projects[hierarchical_taxonomy][subdir] = "contrib"
 projects[hierarchical_taxonomy][download][type] = git
@@ -181,7 +181,9 @@ projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
 
 projects[jquery_update][subdir] = "contrib"
-projects[jquery_update][version] = 2.3
+projects[jquery_update][download][type] = git
+projects[jquery_update][download][branch] = 7.x-2.x
+projects[jquery_update][download][revision] = 65eecb0
 
 projects[js][subdir] = "contrib"
 projects[js][version] = 1.0-beta2
@@ -442,3 +444,7 @@ libraries[autopager][download][url] = "https://github.com/sagotsky/jquery-autopa
 libraries[html5shiv[type] = "libraries"
 libraries[html5shiv][download][type] = "file"
 libraries[html5shiv][download][url] = "http://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv.js"
+
+libraries[hopscotch][type] = "libraries"
+libraries[hopscotch][download][type] = "file"
+libraries[hopscotch][download][url] = "https://github.com/linkedin/hopscotch/archive/b41ab659507175264ab6347d0032f03e42b961d1.zip"

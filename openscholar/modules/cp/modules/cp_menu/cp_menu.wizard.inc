@@ -202,21 +202,21 @@ function cp_menu_title($form, &$form_state) {
       // Load the bundles.
       $content_types = os_get_bundles();
       $content_types_list = array();
-      if(module_exists('os_biocv')) {
+      if (module_exists('os_biocv')) {
         // Check for an already created bio.
         $bio_check = _os_biocv_bio_exists();
         // Check for an already created cv.
         $cv_check = _os_biocv_cv_exists();
         // Remove bio || cv if they're already created.
-        if($bio_check && array_key_exists('bio', $content_types)) {
+        if ($bio_check && array_key_exists('bio', $content_types)) {
           unset($content_types['bio']);
         }
-        if($cv_check && array_key_exists('cv', $content_types)) {
+        if ($cv_check && array_key_exists('cv', $content_types)) {
           unset($content_types['cv']);
         }
       }
       // Remove the "link" content type from the bundles array.
-      if(array_key_exists('link', $content_types)) {
+      if (array_key_exists('link', $content_types)) {
         unset($content_types['link']);
       }
       // Sort content types alphabetically.
@@ -301,6 +301,14 @@ function cp_menu_url_validate(&$form, &$state) {
     }
   }
 
+  //for internal urls, figure out if we're in the same vsite or an external vsite.
+  if (isset($vsite_domain) && $vsite_domain) {
+    $our_domain = 'http://' . (variable_get('vsite_domain_shared')) ? $vsite_domain . '/' . $vsite->og->purl : $vsite_domain;
+  } else {
+    $our_domain = variable_get('purl_base_domain') . '/' . $vsite->og->purl;
+  }
+  $external_vsite = (strpos($url, $our_domain) !== 0);
+  
   //absolute url
   if (url_is_external($url)) {
     $path = explode('/', $url);
@@ -325,8 +333,12 @@ function cp_menu_url_validate(&$form, &$state) {
       }
       return;
     } else {
-      //absolute path to internal url.
-      $path = ($original_path) ? $original_path : '<front>';
+      //absolute path to internal url coud be same vsite or external vsite
+      if ($external_vsite) {
+        $path = $url;
+      } else {
+        $path = ($original_path) ? $original_path : '<front>';
+      }
     }
   } else {
     //relative url
@@ -359,23 +371,24 @@ function cp_menu_url_validate(&$form, &$state) {
       cp_menu_cache_set($state['object_id'], $values);
 
       return;  //Node type will be handled by submit function, cp_menu_wizard_finish.
-    } else {
-      form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
-
+    } else {   
       //this path does not exist.  offer to create it by presenting list of available content types.
-      $fake_state = array('object'=> array('type' => 'page'));
-      $cp_menu_title = cp_menu_title(array(), $fake_state);
-      $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
-      $form['new_node_type']['#theme'] = 'select';
-      $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
-      $form['new_node_type']['#value'] = $state['input']['new_node_type'];
-      $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
-      $form['new_node_type']['#suffix'] = '</div>';
-      array_unshift($form['new_node_type']['#options'], '-- Select Type --');
+      if (!$external_vsite) {
+        form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
+        $fake_state = array('object'=> array('type' => 'page'));
+        $cp_menu_title = cp_menu_title(array(), $fake_state);
+        $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
+        $form['new_node_type']['#theme'] = 'select';
+        $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
+        $form['new_node_type']['#value'] = $state['input']['new_node_type'];
+        $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
+        $form['new_node_type']['#suffix'] = '</div>';
+        array_unshift($form['new_node_type']['#options'], '-- Select Type --');
+      }
     }
   } else {
     //path is valid.  use normal path instead of aliased path
-    $values = cp_menu_cache_get($state['object_id']) + $state['input'];
+    $values = array_merge(cp_menu_cache_get($state['object_id']), $state['input']);
     $values['url'] = "{$normal_path}{$extra}";
     cp_menu_cache_set($state['object_id'], $values);
   }
@@ -570,7 +583,7 @@ function cp_menu_wizard_finish(&$form_state) {
       $fragment = parse_url($values['url'], PHP_URL_FRAGMENT);
       $url = $values['url'];
 
-      if(strlen($query)){
+      if (strlen($query)) {
         $options['query'] = array();
         // Parse the string to an array.
         parse_str($query,$options['query']);
@@ -578,7 +591,7 @@ function cp_menu_wizard_finish(&$form_state) {
         list($url,) = explode('?', $url,2);
       }
 
-      if(strlen($fragment)){
+      if (strlen($fragment)) {
         $options['fragment'] = $fragment;
         // Removes fragment from URL;
         list($url,) = explode('#', $url, 2);
@@ -619,7 +632,7 @@ function cp_menu_wizard_finish(&$form_state) {
   ctools_include('menu', 'os');
 
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'], 'options' => $options);
-  if($values['type'] == 'heading'){
+  if ($values['type'] == 'heading') {
     //If we don't have a path set, tell drupal that this link is external
     //so that it does not try and run access functions
     $item['external'] = true;

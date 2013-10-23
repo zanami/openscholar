@@ -602,3 +602,10 @@ function os_files_update_7008(&$sb) {
     return $message;
   }
 }
+
+/**
+ * Revert file types and file displays to defaults.
+ */
+function os_files_update_7012($sb) {
+  return os_files_update_7007($sb);
+}
