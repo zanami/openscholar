@@ -104,6 +104,14 @@ function os_tour_preprocess_toolbar(&$vars) {
 
   // Prepares settings array to pass as javascript.
   global $user;
+  if (isset($user->data['os_tour']['notifications_read'])) {
+    $last_read = $user->data['os_tour']['notifications_read'];
+  }
+  else {
+    // Default to 1 month before user's registration time.
+    $month_in_seconds = 60 * 60 * 24 * 30;
+    $last_read = $user->created - $month_in_seconds;
+  }
   $default = OS_TOUR_NOTIFICATIONS_MAX_DEFAULT;
   $max = variable_get('os_tour_notifications_max', $default);
   // @TODO explode feeds value by comma and validate URLs.
@@ -112,6 +120,7 @@ function os_tour_preprocess_toolbar(&$vars) {
     'url' => $url,
     'max' => $max,
     'uid' => $user->uid,
+    'last_read' => $last_read,
   );
 
   // Adds the Notifications link to the Admin toolbar.
