@@ -25,6 +25,10 @@ function os_ctools_plugin_api() {
     return array("version" => "1");
   }
   list($module, $api) = func_get_args();
+  if ($module == "password_policy" && $api == "default_password_policy") {
+    return array("version" => "1");
+  }
+  list($module, $api) = func_get_args();
   if ($module == "spaces" && $api == "spaces") {
     return array("version" => "3");
   }
