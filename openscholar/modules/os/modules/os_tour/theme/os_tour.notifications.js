@@ -20,9 +20,9 @@
       feed.load(function (result) {
         if (!result.error) {
           for (var i = 0; i < result.feed.entries.length; i++) {
-            // var num_remaining = (result.feed.entries.length - i) - 1;
+            var num_remaining = (result.feed.entries.length - i);
             var entry = result.feed.entries[i];
-            var item = os_tour_notifications_item(entry);
+            var item = os_tour_notifications_item(entry, num_remaining);
             items.push(item);
           }
 
@@ -44,7 +44,10 @@
               scrollTopMargin: 100,
               id: "os-tour-notifications",
               steps: items,
-              onEnd: os_tour_notifications_read_update
+              onEnd: function() {
+                os_tour_notifications_count(-1);
+                os_tour_notifications_read_update();
+              }
             };
 
             // Adds our tour overlay behavior with desired effects.
@@ -67,7 +70,7 @@
    * @param {object} entry
    * @returns {string} output
    */
-  function os_tour_notifications_item(entry) {
+  function os_tour_notifications_item(entry, num_remaining) {
     // Prepare the output to display inside the tour's content region.
     var output = "<div class='feed_item'>";
 
@@ -98,7 +101,10 @@
       content:output,
       target: document.querySelector("#os-tour-notifications-menu-link"),
       placement: "bottom",
-      yOffset: 20
+      yOffset: 20,
+      onShow: function() {
+        os_tour_notifications_count(num_remaining)
+      }
     };
     return item;
   }
@@ -134,17 +140,22 @@
    */
   function os_tour_notifications_count(num_remaining) {
     var count = '#os-tour-notifications-count';
+    var value = parseInt($(count).text());
     if (arguments.length === 0) {
-      var value = $(count).text();
-      return parseInt(value);
+      return value;
     }
-    if (parseInt(num_remaining) === 0) {
-      $(count).hide();
+    if (parseInt(num_remaining) === -1) {
+      $(count).slideUp('slow');
       return;
     }
-    if (parseInt(num_remaining) > 0) {
-      $(count).show();
+    if (parseInt(num_remaining) > -1) {
       $(count).text(num_remaining);
+      if (!isNaN(parseFloat(value)) && isFinite(value)) {
+        $(count).show();
+        if (num_remaining > value) {
+          $(count).text(value);
+        }
+      }
     }
   }
 
@@ -155,7 +166,10 @@
    */
   function os_tour_notifications_read_update() {
     var settings = Drupal.settings.os_notifications;
-    $.get('os/tour/user/' + settings.uid + '/notifications_read');
+    var url = '/os/tour/user/' + settings.uid + '/notifications_read';
+    $.get(url, function(data) {
+      console.log(data);
+    });
   }
 
 })(jQuery);
