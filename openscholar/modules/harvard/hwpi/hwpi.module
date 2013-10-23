@@ -1,21 +1,15 @@
 <?php
 
 /**
- * @file
- * Module to provide functionality specific to Harvard Web Publishing Initiative
- * sites.
- */
-
-/**
- * Implements hook_init().
- *
- * If "Secure pages" is enabled, and we are not on a harvard domain turn it off.
+ * Implements hook_init
  */
 function hwpi_init() {
   global $conf;
 
-  if (variable_get('securepages_enable', 0) && strpos($_SERVER['HTTP_HOST'], '.harvard.edu')) {
-    // Turn SSL off for pages that don't match the wildcard certificate.
+  // Is securepages enabled?
+  // If we are not on a harvard domain turn it off.
+  if (variable_get('securepages_enable', 0) && substr($_SERVER['HTTP_HOST'], -12) != ".harvard.edu") {
+    //Turn SSL off for pages that don't match the wildcard certificate
     $conf['securepages_enable'] = 0;
   }
 }
