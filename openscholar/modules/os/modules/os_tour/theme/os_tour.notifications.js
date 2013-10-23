@@ -131,4 +131,15 @@
       $(count).text(num_remaining);
     }
   }
+
+  /**
+   * Sets the current user's "notifications_read" to the current time.
+   *
+   * Invoked when a user clicks "Done" on the final tour step.
+   */
+  function os_tour_notifications_read_update() {
+    var settings = Drupal.settings.os_notifications;
+    $.get('os/tour/user/' + settings.uid + '/notifications_read');
+  }
+
 })(jQuery);
