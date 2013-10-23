@@ -103,11 +103,13 @@ function os_tour_preprocess_toolbar(&$vars) {
   }
 
   // Prepares settings array to pass as javascript.
+  global $user;
   $default = OS_TOUR_NOTIFICATIONS_MAX_DEFAULT;
   $max = variable_get('os_tour_notifications_max', $default);
   $settings = array(
     'feeds' => $feeds,
     'max' => $max,
+    'uid' => $user->uid,
   );
 
   // Adds the Notifications link to the Admin toolbar.
