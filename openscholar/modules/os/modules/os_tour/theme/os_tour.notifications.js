@@ -112,4 +112,23 @@
       day_diff < 7 && day_diff + " days ago" ||
       day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago";
   }
+
+  /**
+   * Updates the notifications count of remaining notifications.
+   */
+  function os_tour_notifications_count(num_remaining) {
+    var count = '#os-tour-notifications-count';
+    if (arguments.length === 0) {
+      var value = $(count).text();
+      return parseInt(value);
+    }
+    if (parseInt(num_remaining) === 0) {
+      $(count).hide();
+      return;
+    }
+    if (parseInt(num_remaining) > 0) {
+      $(count).show();
+      $(count).text(num_remaining);
+    }
+  }
 })(jQuery);
