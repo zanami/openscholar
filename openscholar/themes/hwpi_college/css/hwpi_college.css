@@ -8,14 +8,12 @@ body {
 }
 body {
     color: #1F1F1F;
-    font-family: Georgia,serif;
     font-size: 16px;
     line-height: 24px;
 }
 #page-wrapper {
     background: none repeat scroll 0 0 #F3F3F1;
 }
-
 
 /* Elements */
 h2 {
