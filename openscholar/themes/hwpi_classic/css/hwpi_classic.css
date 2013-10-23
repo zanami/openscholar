@@ -23,9 +23,9 @@ body {
 #menu-bar {
 	background: #f3f3f1;
 }
-
+#content-panels .block-inner,
 .sidebar .block-inner {
-margin-top: 15px;
+margin-top: 12px;
 }
 
 #content-panels .block-boxes-os_slideshow_box .block-inner {
@@ -124,6 +124,7 @@ h2.block-title {
 	letter-spacing:0.1em;
 	font-weight:bold;
 	font-family:arial !important;
+	margin-bottom:8px;
 }
 
 
@@ -162,7 +163,7 @@ margin-left: 5.7em;
 .node-person .block-inner,
 .comment-wrapper {
 	border-top: 3px solid #4384C4;
-	margin-top:15px;
+	margin-top:12px;
 }
 
 .block-boxes block-boxes-os_sv_list_box,

@@ -40,9 +40,19 @@ function os_profiles_process_node(&$vars) {
   // If node is of type person with no image, load a default image
   if ($vars['node']->type == 'person' && empty($vars['field_person_photo'])) {
     $variables = array(
-      'path' => variable_get('os_person_default_image', drupal_get_path('module', 'os_profiles') . '/person-default-image.png'),
+      'path' => variable_get('os_person_default_image', drupal_get_path('module', 'hwpi') . '/person-default-image.png'),
     );
     $image = '<div class="field-name-field-person-photo">' . theme('image', $variables) . '</div>';
+    $vars['content']['field_person_photo'][0] = array('#markup' => $image);
+  }
+
+  // If node is of type person with no image, and person is displayed in "List of
+  // posts" widget or in full display mode, load a bigger default image.
+  if ($vars['node']->type == 'person' && empty($vars['field_person_photo']) && ($vars['os_sv_list_box'] || $vars['view_mode'] == 'full')) {
+    $variables = array(
+      'path' => variable_get('os_person_default_image_big', drupal_get_path('module', 'hwpi') . '/person-default-image-big.png'),
+    );
+    $image = theme('image', $variables);
     $vars['content']['field_person_photo'][0] = array('#markup' => $image);
   }
 
@@ -189,3 +199,4 @@ function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
     }
   }
 }
+

@@ -291,6 +291,10 @@ projects[olark][version] = 1.0-beta1
 projects[olark][patch][] = "http://drupal.org/files/olark-suppress_roles-1984210-1.patch"
 projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-1785322-5.patch"
 
+projects[password_policy][subdir] = "contrib"
+projects[password_policy][version] = 2.0-alpha1
+projects[password_policy][patch][] = "https://drupal.org/files/password-policy-anonymous-users.patch"
+
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
 
@@ -324,6 +328,9 @@ projects[restws][patch][] = "http://drupal.org/files/1806142-restws-property-exc
 
 projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
+
+projects[securepages][subdir] = "contrib"
+projects[securepages][version] = 1.0-beta1
 
 projects[services][subdir] = "contrib"
 ;projects[services][version] = 3.3+42-dev
