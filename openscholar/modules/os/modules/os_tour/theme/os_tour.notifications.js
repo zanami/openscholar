@@ -22,8 +22,10 @@
           for (var i = 0; i < result.feed.entries.length; i++) {
             var num_remaining = (result.feed.entries.length - i);
             var entry = result.feed.entries[i];
-            var item = os_tour_notifications_item(entry, num_remaining);
-            items.push(item);
+            if (os_tour_notifications_is_new(entry)) {
+              var item = os_tour_notifications_item(entry, num_remaining);
+              items.push(item);
+            }
           }
 
           // Only continues if we have the hopscotch library defined.
@@ -65,6 +67,23 @@
   };
 
   /**
+   * Determines if the feed item is new enough to display to this user.
+   *
+   * @param {object} entry
+   * @returns {bool}
+   */
+  function os_tour_notifications_is_new(entry) {
+    var pub_date = new Date(entry.publishedDate);
+    var pub_date_unix = pub_date.getTime() / 1000;
+    var last_read = Drupal.settings.os_notifications.last_read;
+    if (pub_date_unix > last_read) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Converts a Google FeedAPI Integration feed item into a hopscotch step.
    *
    * @param {object} entry
@@ -93,7 +112,7 @@
       content = entry.contentSnippet;
     }
     output += content;
-    output += "<br/><a class='title' target='_blank' href='" + entry.link + "'>Read more &raquo;</a></div>";
+    output += '<div class="os-tour-notifications-readmore"><a target="_blank" href="' + entry.link + '">Read more &raquo;</a></div></div>';
 
     // Returns the item to be added to the tour's (array) `items` property .
     var item = {
@@ -101,7 +120,8 @@
       content:output,
       target: document.querySelector("#os-tour-notifications-menu-link"),
       placement: "bottom",
-      yOffset: 20,
+      yOffset: -3,
+      xOffset: -10,
       onShow: function() {
         os_tour_notifications_count(num_remaining)
       }
@@ -145,7 +165,7 @@
       return value;
     }
     if (parseInt(num_remaining) === -1) {
-      $(count).slideUp('slow');
+      $("#os-tour-notifications-menu-link").slideUp('slow');
       return;
     }
     if (parseInt(num_remaining) > -1) {
