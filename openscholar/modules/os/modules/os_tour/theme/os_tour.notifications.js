@@ -56,7 +56,10 @@
    * @returns {string} output
    */
   function os_tour_notifications_item(entry) {
+    // Prepare the output to display inside the tour's content region.
     var output = "<div class='feed_item'>";
+
+    // Adds a date like "5 days ago", or blank if no valid date found.
     var date = "";
     if (typeof entry.publishedDate != 'undefined' && entry.publishedDate != '') {
       date = os_tour_notifications_fuzzy_date(entry.publishedDate);
@@ -67,9 +70,9 @@
       }
     }
     output += date;
-    output += "<span class='description'>" + content + "<span/>";
 
-    //
+    // Builds the remainder of the content, with a "Read more" link.
+    output += "<span class='description'>" + content + "<span/>";
     var content = entry.content;
     if (typeof entry.contentSnippet != 'undefined') {
       content = entry.contentSnippet;
@@ -77,6 +80,7 @@
     output += content;
     output += "<br/><a class='title' target='_blank' href='" + entry.link + "'>Read more &raquo;</a></div>";
 
+    // Returns the item to be added to the tour's (array) `items` property .
     var item = {
       title: entry.title,
       content:output,
