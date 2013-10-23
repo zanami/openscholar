@@ -1,7 +1,7 @@
 Feature:
   Testing ability to add links to the primary menu.
 
-  @api @me
+  @api
   Scenario Outline: Test adding a link.
     Given I am logging in as "john"
      When I visit "john/cp/menu/nojs/new/primary-menu"
@@ -16,8 +16,8 @@ Feature:
      Then I should see <output>
 
   Examples:
-    | title                  | url                                                 | output                          |
-    | "Google"               | "http://maps.google.com"                            | "google maps"                   |
-    | "Obama"                | "LOCALHOST/obama/blog"                              | "Me and michelle obama"         |
-    | "More classes"         | "LOCALHOST/john/classes"                            | "More tests to the semester"    |
-    | "Search for news"      | "https://www.google.com/#q=john+f+kennedy&tbm=nws"  | "google maps"                   |
+    | title                  | url                                                 | output                   |
+    | "Google"               | "http://maps.google.com"                            | "google maps"            |
+    | "Obama"                | "LOCALHOST/obama/blog"                              | "Me and michelle obama"  |
+    | "More publications"    | "LOCALHOST/john/publications"                       | "The Little Prince"      |
+    | "Stocks"               | "http://finance.yahoo.com/q?s=AAPL&reco=1"          | "Apple"                  |

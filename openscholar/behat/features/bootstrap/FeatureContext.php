@@ -687,10 +687,12 @@ class FeatureContext extends DrupalContext {
   /**
    * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
    */
-  public function iPopulateInWith($arg1, $arg2) {
-    if ($arg1 == "url") {
-      str_replace('LOCALHOST', $this->locatePath(''), $arg2);
-    }
+  public function iPopulateInWith($field, $url) {
+    $url = str_replace('LOCALHOST', $this->locatePath(''), $url);
+
+    return array(
+      new Step\When('I fill in "' . $field . '" with "' . $url . '"'),
+    );
   }
 
   /**
