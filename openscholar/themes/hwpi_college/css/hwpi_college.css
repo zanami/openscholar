@@ -542,12 +542,16 @@ table td.mini {
     float: none;
     margin-left: 0;
 }
+.not-front #content-column .content-inner {
+    padding: 0 0 0 20px;
+}
+.not-front .region-sidebar-second .region-inner.clearfix {
+    padding-right: 20px;
+}
 #footer {
     background-color: #FFFFFF;
 }
-#columns {
-    margin-bottom:0px;
-} 
+
 .section-nav .menu-depth-1 > a {
     background-color: #fff !important;
     color: #1F1F1F !important;
