@@ -30,6 +30,7 @@ features[ctools][] = feeds:feeds_importer_default:1
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
+features[feeds_importer][] = os_events_csv
 features[feeds_importer][] = os_ical
 features[field][] = node-event-body
 features[field][] = node-event-field_date
