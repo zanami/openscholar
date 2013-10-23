@@ -320,8 +320,8 @@ function os_importer_import($form, &$form_state, $type) {
   $form['rss_container'] = array(
     '#type' => 'container',
     '#states' => array(
-      'invisible' => array(
-        ':input[name="format"]' => array('value' => 'csv'),
+      'visible' => array(
+        ':input[name="format"]' => array('value' => 'rss'),
       ),
     ),
     'explain' => array(
