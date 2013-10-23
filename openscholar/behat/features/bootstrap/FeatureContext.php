@@ -1074,7 +1074,7 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I import the feed item "([^"]*)"$/ 
+   * @Given /^I import the feed item "([^"]*)"$/
    */
   public function iImportTheFeedItem($feed_item) {
     $page = $this->getSession()->getPage();
