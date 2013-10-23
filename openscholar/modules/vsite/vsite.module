@@ -1629,6 +1629,7 @@ function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
+    vsite_inherit($node->nid);
   }
 
   if (og_is_group_type('node', $node->type)) {
@@ -2248,4 +2249,39 @@ function vsite_pathauto_alias_alter(&$alias, $context) {
   // Prefixes the alias with the purl.
   // Note: This occurs BEFORE pathauto_alias_uniquify().
   $alias = "$purl/$alias";
+}
+
+/**
+ * Implements hook_cp_settings().
+ */
+function vsite_cp_settings() {
+  $vsite = vsite_get_vsite();
+  if (!$vsite || !isset($vsite->group->type)) {
+    return;
+  }
+  $default = array('department');
+  $subsite_parents = variable_get('subsite_parents', $default);
+  if (!in_array($vsite->group->type, $subsite_parents)) {
+    return;
+  }
+
+  $settings = array();
+
+  $default = 0;
+  $inherit_theme = variable_get('vsite_subsite_inherit_theme', $default);
+  $settings['vsite_subsite_inherit_theme'] = array(
+    'form' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Inherit parent site theme'),
+      '#default_value' => $inherit_theme,
+      '#description' => t('Check to have newly created subsites start with this site\'s currently enabled theme by default.'),
+    ),
+    'group' => array(
+      '#id' => 'vsite_subsite',
+      '#title' => t('Subsites'),
+      '#weight' => -100,
+    ),
+  );
+
+  return $settings;
 }

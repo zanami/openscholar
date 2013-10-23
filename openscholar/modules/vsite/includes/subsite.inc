@@ -111,3 +111,33 @@ function vsite_subsite_node_url_options($node, &$options){
     $options['purl'] = array('id' => $groups[0], 'provider' => 'spaces_og');
   }
 }
+
+/**
+ * Inherits site settings specified in the parent site.
+ *
+ * @param object $node
+ *   The subsite node object, to be passed to entity_metadata_wrapper().
+ *
+ * @see vsite_node_insert()
+ */
+function vsite_inherit($node) {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $parent_sid = $wrapper->field_group_parent->value(array('identifier' => TRUE));
+  if (empty($parent_sid) || !$parent_sid) {
+    return;
+  }
+  $parent_vsite = vsite_get_vsite($parent_sid);
+
+  // Checks if the parent site has specified a theme to inherit.
+  $name = 'vsite_subsite_inherit_theme';
+  $inherit_theme = $parent_vsite->controllers->variable->get($name);
+  if (!$inherit_theme) {
+    return;
+  }
+
+  // Sets the new subsite's theme to match it's parent.
+  $name = 'theme_default';
+  $value = $parent_vsite->controllers->variable->get($name);
+  $vsite = vsite_get_vsite($sid);
+  $vsite->controllers->variable->set($name, $value);
+}
