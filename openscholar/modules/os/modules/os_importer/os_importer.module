@@ -423,7 +423,7 @@ function os_importer_import_validate($form, $form_state) {
       }
 
       // Verify the user didn't enter that address.
-      if ($vsite = vsite_get_vsite()) {
+      if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
         $importer_type = $form_state['type'] == 'blog' ? 'blog_import' : 'feed_importer';
 
         // Check for existing nodes in the same VSite.
