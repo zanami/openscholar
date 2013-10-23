@@ -311,6 +311,21 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
+  // Only CSV parsers have a template.
+  if ($feed_importer && $feed_importer->parser instanceof FeedsCSVParser) {
+    $form['container'] = array(
+      '#type' => 'container',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="format"]' => array('value' => 'csv'),
+        ),
+      ),
+      'template' => array(
+        '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
+      ),
+    );
+  }
+
   $form['import_source'] = array(
 
     // RSS title.
@@ -356,21 +371,6 @@ function os_importer_import($form, &$form_state, $type) {
       '#weight' => -99,
     ),
   );
-
-  // Only CSV parsers have a template.
-  if ($feed_importer && $feed_importer->parser instanceof FeedsCSVParser) {
-    $form['container'] = array(
-      '#type' => 'container',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="format"]' => array('value' => 'csv'),
-        ),
-      ),
-      'template' => array(
-        '#markup' => l(t('Download a template'), 'os-importer/' . $bundle['csv'] . '/template'),
-      ),
-    );
-  }
 
   $form['actions'] = array(
     '#type' => 'actions',
