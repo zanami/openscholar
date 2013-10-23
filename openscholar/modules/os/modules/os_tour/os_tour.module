@@ -16,25 +16,19 @@ define('OS_TOUR_NOTIFICATIONS_MAX_DEFAULT', 3);
 function os_tour_menu() {
   $items = array();
 
-  $items['os/tour/notifications-read/%user'] = array(
+  $path = drupal_get_path('module', 'os_tour') . '/includes';
+  $items['os/tour/user/%user/%'] = array(
     'title' => 'AJAX update notifications last read timestamp',
-    'page callback' => 'os_tour_notifications_read_ajax',
-    'page_arguments' => array(3),
+    'page callback' => 'os_tour_user_edit_ajax',
+    'page arguments' => array(3, 4),
     'access callback' => 'user_edit_access',
     'access arguments' => array(3),
     'type' => MENU_CALLBACK,
+    'file' => 'os_tour.pages.inc',
+    'file path' => $path,
   );
 
   return $items;
-}
-
-/**
- * Menu callback; updates the timestamp of a user's last notifications read.
- */
-function os_tour_notifications_read_ajax($user) {
-  drupal_set_message("Called the AJAX callback with $user");
-  dpm($user);
-  return "Done.";
 }
 
 /**
