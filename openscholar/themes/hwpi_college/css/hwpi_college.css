@@ -109,10 +109,12 @@ ul.nice-menu ul {
   padding:10px 15px;
 }
 
-
+#menu-bar ul.nice-menu ul {
+    background: none repeat scroll 0 0 #7B272B;
+}
 #menu-bar ul.nice-menu a.active,
 #menu-bar ul.nice-menu a:hover {
-  background: #7B272B;
+  background: #7B272B!important;
   color: #FFF;
 }
 .slide-copy h2 {
