@@ -283,12 +283,13 @@ h1#page-title {
     color: #727272;
     font-family: arial,sans-serif;
     font-size: 12px;
-   }
+   
 }
 .region.region-sidebar-first.sidebar {
     left: 10px;
     position: relative;
     top: 30px;
+   
 }
 .block-boxes-os_boxes_sectionnav ul {
     border-top: 4px solid #A51C30;
