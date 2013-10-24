@@ -28,7 +28,9 @@ function vsite_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Featured Sites';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['type'] = 'og_context';
+  $handler->display->display_options['access']['perm'] = 'administer group';
+  $handler->display->display_options['access']['group_id_arg'] = '';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
@@ -116,7 +118,7 @@ function vsite_views_default_views() {
     'personal' => 'personal',
     'project' => 'project',
   );
-  /* Filter criterion: Content: Group visibility (group_access) */
+  /* Filter criterion: Content: Site visibility (group_access) */
   $handler->display->display_options['filters']['group_access_value']['id'] = 'group_access_value';
   $handler->display->display_options['filters']['group_access_value']['table'] = 'field_data_group_access';
   $handler->display->display_options['filters']['group_access_value']['field'] = 'group_access_value';

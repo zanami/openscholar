@@ -113,8 +113,8 @@ function os_basetheme_preprocess_status_messages(&$vars) {
 }
 
 function os_basetheme_preprocess_overlay(&$vars) {
-  // we never want these. They look awful
- $vars['tabs'] = false;
+  // we never want these. They look awful.
+ $vars['tabs'] = strpos($_GET['q'], 'os-importer/') ? FALSE : menu_primary_local_tasks();
 }
 
 /**

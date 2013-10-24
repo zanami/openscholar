@@ -685,6 +685,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
+   */
+  public function iPopulateInWith($field, $url) {
+    $url = str_replace('LOCALHOST', $this->locatePath(''), $url);
+
+    return array(
+      new Step\When('I fill in "' . $field . '" with "' . $url . '"'),
+    );
+  }
+
+  /**
    * @Given /^I should be redirected in the following <cases>:$/
    */
   public function iShouldBeRedirectedInTheFollowingCases(TableNode $table) {
@@ -1152,5 +1163,13 @@ class FeatureContext extends DrupalContext {
       new Step\When($action),
       new Step\When('I press "edit-submit"'),
     );
+  }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
   }
 }

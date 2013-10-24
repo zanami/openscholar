@@ -24,6 +24,13 @@ function os_blog_os_app_info() {
     ),
     // Index author in Solr.
     'index author' => TRUE,
+
+    'importers' => array(
+      'blog' => array(
+        'csv' => 'os_blog_csv',
+        'rss' => 'blog_import',
+      ),
+    ),
   );
 
   return $apps;

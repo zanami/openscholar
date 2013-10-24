@@ -186,17 +186,14 @@ a img {
 }
 
 p {
-  margin: 0 0 1.5em;
-  padding: 0;
+     margin: 0px 0px 1.5em;
+     padding: 0px;
 }
 
-#columns p {
-  margin: 0;
-  padding: 0;
-}
 
-#columns p+p {
-  margin: 1.5em 0 0;
+#columns p:only-child,
+#columns p:nth-last-of-type(1) {
+     margin: 0 0px .4em;
 }
 
 a, a:visited {

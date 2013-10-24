@@ -69,7 +69,7 @@
       });
 
       // Select2.
-      $("#vocabs").find('.form-select').select2({
+      $("#vocabs", context).addClass('select2-processed').find('.form-select:not(.select2-processed)').select2({
           placeholder: Drupal.t("Click here to select terms")
       });
     }

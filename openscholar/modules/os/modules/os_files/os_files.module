@@ -47,6 +47,14 @@ function os_files_menu(){
     'type' => MENU_CALLBACK
   );
 
+  $items['admin/config/openscholar/os-files'] = array(
+    'title' => t('File Settings'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_files_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'os_files.admin.inc',
+  );
+
   return $items;
 }
 
@@ -112,9 +120,19 @@ function os_files_library_alter(&$libs, $module) {
 }
 
 /**
+ * Implements hook_file_presave().
+ */
+function os_files_file_presave($file) {
+  // both of these are generic, 'we dont know what what it is' identifiers
+  if ($file->type == 'undefined' || $file->filemime == 'application/octet-stream') {
+    $file->type = os_files_get_type($file);
+  }
+}
+
+/**
  * Implements hook_file_insert().
  */
-function os_files_file_insert($file){
+function os_files_file_insert($file) {
   if ($context = og_context()) {
     $file->skip_og_membership = TRUE;
     og_group('node', $context['gid'], array(
@@ -122,6 +140,19 @@ function os_files_file_insert($file){
       'entity' => $file
     ));
   }
+}
+
+/**
+ * Gets the type of the file from its extensions
+ */
+function os_files_get_type($file) {
+  $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
+
+  $mappings = variable_get('os_files_extension_map', array());
+  if (isset($mappings[$ext])) {
+    return $mappings[$ext];
+  }
+  return $file->type;
 }
 
 /**
@@ -211,13 +242,17 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $form['upload']['#upload_validators']['file_validate_size'] = array(min(parse_size(variable_get('os_files_max_inline_filesize', '128 MB')), $form['upload']['#upload_validators']));
     $extensions = array();
-    $include_pps = FALSE;
+    $extras = array();
+    $mappings = variable_get('os_files_extension_map', array());
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
-      $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
+      $extensions = array_merge($extensions, _os_files_extensions_from_type($type), array_keys($mappings, $type));
+      $extras = array_merge($extras, array_keys($mappings, $type));
       if ($type == 'document') {
-        $include_pps = TRUE;
+        $extras[] = 'pps';
       }
     }
+    $extensions = array_unique($extensions);
+    $extras = array_unique($extras);
     if (empty($args[0]['override_extensions'])) {
       $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     }
@@ -231,7 +266,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     }
     if (!empty($mimetypes)) {
       $form['upload']['#attributes'] = array(
-        'accept' => implode(',', $mimetypes).($include_pps?',.pps':''),
+        'accept' => implode(',', $mimetypes).(count($extras)?',.'.implode(',.', $extras):''),
       );
       $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
     }
@@ -383,10 +418,7 @@ function os_files_save_file_usage($form, &$form_state) {
   // schema - this is a generic way to the defined module name in the schema.
   $key = reset(array_keys($usage));
 
-  if ($key == 'file') {
-    $usage_nids = array_keys($usage['file']['node']);
-  }
-  else {
+  if ($key == 'imagefield_crop') {
     // The imagefield crop save the usage of the file in a different way in the
     // schema of the usage file. We need to get the file object which the field
     // crop is referencing to and pass the file object to the bath API.
@@ -394,6 +426,9 @@ function os_files_save_file_usage($form, &$form_state) {
     $form_state['file'] = $file;
     $usage = file_usage_list($file);
     $usage_nids = array_keys($usage['file']['node']);
+  }
+  else {
+    $usage_nids = array_keys($usage[$key]['node']);
   }
 
   $form_state['file_usage'] = $usage_nids;
@@ -875,8 +910,7 @@ function os_files_media_browser_params_alter(&$media_params){
     }
   }
   else {
-    $media_params['types'][] = 'document';
-    $media_params['types'][] = 'undefined';
+    $media_params['types'] = array_merge($media_params['types'], array('document', 'undefined'));
   }
   
   // Are we in multi-tenant? get the file path.
@@ -1437,7 +1471,10 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.presentation',
     'application/x-wtml',
     'application/x-wtt',
-    'application/x-wwtfig'
+    'application/x-wwtfig',
+    // *.cls, *.sty
+    'text/x-tex',
+    'application/x-latex',
   ));
 
   $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
