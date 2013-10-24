@@ -2,13 +2,11 @@
 
 
 /**
- * @function harvard_acquia_backups_page
+ * @function hwpi_acquia_backups_page
  *
  * Makes our backups available to certain users
  */
-function harvard_acquia_backups_page($filename = NULL) {
-  $_SERVER['AH_SITE_NAME'] = 'foo';
-  $_SERVER['AH_SITE_ENVIRONMENT'] = 'bar';
+function hwpi_acquia_backups_page($filename = NULL) {
   if (!isset($_SERVER['AH_SITE_NAME'], $_SERVER['AH_SITE_ENVIRONMENT'])) {
     return t('Not an acquia site');
   }
@@ -37,18 +35,18 @@ function harvard_acquia_backups_page($filename = NULL) {
       drupal_set_message(t('Could not find file: @filename', array('@filename' => $filename)), 'error');
     }
 
-    $list_items = array_map('_harvard_acquia_backups_page_theme_file', $files);
+    $list_items = array_map('_hwpi_acquia_backups_page_theme_file', $files);
     return theme('item_list', array('items' => $list_items, 'type' => 'ul'));
   }
 }
 
 
 /**
- * @function _harvard_acquia_backups_page_theme_file
+ * @function _hwpi_acquia_backups_page_theme_file
  *
  * Returns formatted version of filename
  */
-function _harvard_acquia_backups_page_theme_file($path) {
+function _hwpi_acquia_backups_page_theme_file($path) {
   $info = pathinfo($path);
   $size = ' (' . format_size(filesize($path)) . ')';
   return l($info["basename"], "acquia_backups/".$info["basename"]) . $size;

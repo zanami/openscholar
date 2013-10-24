@@ -1,6 +1,38 @@
 <?php
 
 /**
+ * Implements hook_menu
+ */
+function hwpi_menu() {
+  $items['acquia_backups'] = array(
+    'title' => 'Backups',
+    'page callback' => 'hwpi_acquia_backups_page',
+    'file' => 'hwpi.pages.inc',
+    'file path' => drupal_get_path('module', 'hwpi'),
+    'access callback' => 'hwpi_acquia_backups_page_access',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['acquia_backups/%'] = $items['acquia_backups'];
+  $items['acquia_backups/%']['page arguments'] = array(1);
+
+  return $items;
+}
+
+
+/**
+ * @function hwpi_acquia_backups_page_access
+ *
+ * Access check for acquia backup page
+ */
+function hwpi_acquia_backups_page_access() {
+  global $user;
+  $users = variable_get('hwpi_acquia_backups_whitelist', ''); //comma separated list of user names
+  return (isset($user->name) && in_array($user->name, explode(',', $users)));
+}
+
+
+/**
  * Implements hook_preprocess_HOOK() for page.
  */
 function hwpi_preprocess_page(&$vars) {
