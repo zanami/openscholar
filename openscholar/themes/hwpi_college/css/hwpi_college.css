@@ -1,5 +1,3 @@
-
-
 /* Main wrappers */
 html,
 body {
@@ -58,9 +56,11 @@ blockquote {
 .block-boxes-os_boxes_tabs.contextual-links-region {
     margin-top: -4px !important;
 }
-#columns {
 
-    margin-top: 0;
+#columns {
+    margin-bottom: -50px;
+     margin-top: 0;
+     background:#FFF;
 }
 
 #columns .links li a {
@@ -240,11 +240,13 @@ h1#page-title {
    margin: 0 0 20px;
 }
 .page-node h1#page-title{
-	
-	    background: none repeat scroll 0 0 #E6E5E3;
+	 -moz-box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
+  -webkit-box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
+  box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
+  background-color: #e6e5e3;
     color: #1E1E1E;
     font-family: georgia,serif;
-    font-size: 2.3em;
+    font-size: 2em;
     font-weight: normal;
     padding: 0.35em;
 }
@@ -270,7 +272,7 @@ h1#page-title {
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-   background-position: 2px -340px;
+   background-position: 2px -373px;
 }
 
 .not-front #content-column p{
@@ -339,11 +341,10 @@ h2.block-title {
 }
 
 .region-sidebar-second {
-    margin-left: -240px;
     margin-top: 130px;
 }
 
-}
+
 .block-content {
   margin-top: 20px;
 }
@@ -551,7 +552,13 @@ table td.mini {
     padding-right: 20px;
 }
 #footer {
-    background-color: #FFFFFF;
+    padding:0;
+}
+
+#footer .at-panel {
+    padding:50px 10px 10px 10px;
+    background:#FFF;
+     width: 960px;
 }
 
 .section-nav .menu-depth-1 > a {
@@ -627,6 +634,13 @@ background-color: none !important;
    padding: 10px 0 30px;
 }
 
+#powerby-login {
+height:30px;
+background:#fff;
+padding:20px 0;
+margin-top: 0;
+}
+.footer-login {margin-right:20px;}
 
 /** SLIDESHOW **/
 	
