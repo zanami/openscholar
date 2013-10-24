@@ -98,7 +98,7 @@ blockquote {
 #menu-bar ul.nice-menu a {
     color: #FFFFFF;
     font-family: arial,sans-serif;
-    padding: 16px 25px;
+    padding: 16px 25px!important;
 }
 
 #menu-bar ul.nice-menu ul a {
@@ -126,7 +126,7 @@ blockquote {
 }
 
 #menu-bar ul.nice-menu .menuparent.over > a{
-	background-color:#7B272B;
+	background-color:#7B272B!important;
 }
 }
 #menu-bar ul.nice-menu .menuparent a:hover,
