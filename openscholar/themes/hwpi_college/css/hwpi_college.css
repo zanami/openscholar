@@ -95,10 +95,6 @@ blockquote {
     margin-right: 0;
 }
 
-ul.nice-menu ul {
-    top: 3.9em !important;
-}
-
 #menu-bar ul.nice-menu a {
     color: #FFFFFF;
     font-family: arial,sans-serif;
