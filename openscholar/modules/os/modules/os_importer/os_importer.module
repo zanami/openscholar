@@ -125,13 +125,14 @@ function os_importer_importable_content($type = '') {
   $types = array();
 
   // Loop through the apps and check which app has an importer.
-  foreach ($apps as $app) {
+  foreach ($apps as $feature => $app) {
     // Check to which bundle the user can import content.
+    if (!spaces_access_feature($op = 'view', $feature)) {
+      continue;
+    }
+
     foreach ($app['importers'] as $bundle => $info) {
-      $menu = menu_get_item('node/add/' . $bundle);
-      if ($menu['access']) {
-        $types[$bundle] = $info;
-      }
+      $types[$bundle] = $info;
     }
   }
 
