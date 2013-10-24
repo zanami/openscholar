@@ -594,6 +594,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I execute vsite cron$/
+   */
+  public function iExecuteVsiteCron() {
+    $this->invoke_code('vsite_cron');
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
@@ -606,7 +613,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
-    $this->invoke_code($function, array($variable, $value));
+    $this->invoke_code($function, array($variable, "'$value'"));
   }
 
   /**
@@ -675,6 +682,17 @@ class FeatureContext extends DrupalContext {
   public function iInvalidateCache() {
     $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
+   */
+  public function iPopulateInWith($field, $url) {
+    $url = str_replace('LOCALHOST', $this->locatePath(''), $url);
+
+    return array(
+      new Step\When('I fill in "' . $field . '" with "' . $url . '"'),
+    );
   }
 
   /**
@@ -979,6 +997,29 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the node "([^"]*)"$/
+   */
+  public function iEditTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
+    }
+  }
+
+  /**
    * @Given /^I am adding the subtheme "([^"]*)" in "([^"]*)"$/
    */
   public function iAmAddingTheSubthemeIn($subtheme, $vsite) {
@@ -1088,5 +1129,13 @@ class FeatureContext extends DrupalContext {
    */
   public function iDisplayWatchdog() {
     $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
+  }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
   }
 }

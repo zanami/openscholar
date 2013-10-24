@@ -159,7 +159,7 @@ function os_wysiwyg_filter_default_formats() {
             0 => 'os-*',
           ),
           'rule_valid_ids' => array(
-            0 => 'mce*',
+            0 => 'os-*',
           ),
           'rule_style_urls' => array(),
         ),

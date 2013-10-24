@@ -199,7 +199,6 @@ function os_update_7012() {
   }
 }
 
-
 /**
  * @function _os_update_event_registration_mollom
  *
@@ -322,4 +321,35 @@ function os_update_7015() {
 function os_update_7016() {
   module_enable(array('og_moderation', 'field_redirection'));
   os_grant_unpublished_viewing_permission();
+}
+
+/**
+ * Enable the OS importer module.
+ */
+function os_update_7017() {
+  module_enable(array('os_importer'));
+}
+
+/**
+ * Enable jQuery update module.
+ */
+function os_update_7018() {
+  module_enable(array('jquery_update'));
+}
+
+/**
+ * Enables module: os_tour.
+ */
+function os_update_7019() {
+  module_enable(array('os_tour'));
+}
+
+/**
+ * Enable secure pages and password policy
+ */
+function os_update_7020() {
+  module_enable(array('password_policy', 'secure_pages'));
+  variable_set('securepages_enable', '1');
+  variable_set('securepages_pages', 'user
+user/login');
 }

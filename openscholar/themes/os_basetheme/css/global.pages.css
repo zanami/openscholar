@@ -179,15 +179,15 @@ div.messages {
 .header-left.header-main.header-right .region-header-first,
 .header-left.header-main .region-header-first {margin-left:-100%;}
 
-.header-main.header-right .region-header-first {
+.header-left.header-right .region-header-first {
     margin-left: 0;
 }
 
-.header-main.header-right .region-header-third {
+.header-left.header-right .region-header-third {
 	float:right !important;
 }
 
-.header-main .region-header-first {
+.header-left .region-header-first {
     margin-left: 0;
 }
   
@@ -790,7 +790,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 
 
 .field-name-og-vocabulary a.toggle {
-	background:url('../images/scholarbase-sprite.png') -12px -197px no-repeat;
+	background:url('../images/scholarbase-sprite.png') -12px -194px no-repeat;
 	padding: 1px 0 3px 14px
 }
 

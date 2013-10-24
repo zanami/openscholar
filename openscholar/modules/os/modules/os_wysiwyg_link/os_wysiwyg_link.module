@@ -105,11 +105,18 @@ function os_wysiwyg_link_filter($text) {
         break;
 
       case 'url':
-        if (url_is_external($m[3])) {
-          $url = url($m[3], array('external' => TRUE));
+        $comps = parse_url($m[3]);
+        $page = str_replace(array('?'.$comps['query'], '#'.$comps['fragment']), '', $m[3]);
+        parse_str($comps['query'], $query);
+        $options = array(
+          'query' => $query,
+          'fragment' => $comps['fragment']
+        );
+        if (url_is_external($page)) {
+          $url = url($page, $options + array('external' => TRUE));
         }
         else {
-          $url = url($m[3], array('absolute' => TRUE));
+          $url = url($page, $options + array('absolute' => TRUE));
         }
         $link = str_replace('href="'.$m[1], 'href="'.$url, $m[0]);
         $text = str_replace($m[0], $link, $text);
