@@ -273,32 +273,6 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 }
 
 /**
- * Callback function for importing OG vocab terms.
- *
- * @see os_importer_map_files().
- */
-function os_importer_map_og_vocab_terms($source, $entity, $target, $value, $mapping) {
-  if (!$value) {
-    return;
-  }
-
-  $terms = explode("|", $value);
-  $vocabs = og_vocab_get_accessible_vocabs('node', $entity->type, OG_VOCAB_FIELD);
-
-  $query = new entityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'taxonomy_term')
-    ->propertyCondition('vid', $vocabs, 'IN')
-    ->propertyCondition('name', $terms, 'IN')
-    ->execute();
-
-  $terms = array_keys($result['taxonomy_term']);
-
-  $wrapper = entity_metadata_wrapper('node', $entity);
-  $wrapper->{OG_VOCAB_FIELD}->set($terms);
-}
-
-/**
  * Form callback - Adding an importer.
  */
 function os_importer_import($form, &$form_state, $type) {
@@ -570,7 +544,20 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
 function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_type, $bundle) {
   $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
 
-  if (!$vocabulary = taxonomy_vocabulary_machine_name_load($machine_name)) {
+  $query = db_select('og_vocab_relation', 'ogr');
+  $query->join('taxonomy_vocabulary', 'v', 'v.vid = ogr.vid');
+
+  $result = $query
+    ->fields('v')
+    ->condition('group_type', $group_type)
+    ->condition('gid', $gid)
+    ->condition('v.machine_name', $machine_name)
+    ->execute()
+    ->fetchAllAssoc('vid');
+
+  $vocabulary = reset($result);
+
+  if (!$vocabulary) {
     // Creating the new vocabulary.
     $vocabulary = new stdClass();
     $vocabulary->name = $name;
