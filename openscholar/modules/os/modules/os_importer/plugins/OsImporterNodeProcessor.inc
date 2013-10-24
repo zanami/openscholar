@@ -66,12 +66,6 @@ class OsImporterNodeProcessor extends FeedsNodeProcessor {
       'callback' => 'os_importer_map_files',
     );
 
-    $targets['og_vocab'] = array(
-      'name' => t('Terms'),
-      'description' => t('Import terms by names. Saturated by |'),
-      'callback' => 'os_importer_map_og_vocab_terms',
-    );
-
     // Let other modules expose mapping targets.
     drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 
