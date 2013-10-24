@@ -57,7 +57,7 @@ function os_importer_node_insert($node) {
     }
   }
 
-  $_GET['destination'] = 'john/cp/os-importer/' . $type . '/manage';
+  $_GET['destination'] = 'cp/os-importer/' . $type . '/manage';
 
   $source = feeds_source($importer_id, $node->nid);
 
