@@ -102,7 +102,7 @@ blockquote {
 }
 
 #menu-bar ul.nice-menu ul a {
-  padding:10px 15px;
+  padding:10px 15px!important;
 }
 
 #menu-bar ul.nice-menu ul {
@@ -114,8 +114,9 @@ blockquote {
   color: #FFF;
 }
 #menu-bar ul.nice-menu .menuparent a {
-    background: url("../images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
+    url("/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
 }
+
 .slide-copy h2 {
     color: #FFFFFF;
 
@@ -124,7 +125,10 @@ blockquote {
     background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat;
 }
 
-
+#menu-bar ul.nice-menu .menuparent.over > a{
+	background-color:#7B272B;
+}
+}
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat #7B272B;
