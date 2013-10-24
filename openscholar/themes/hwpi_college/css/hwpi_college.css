@@ -127,7 +127,7 @@ blockquote {
 #menu-bar ul.nice-menu .menuparent.over > a{
 	background-color:#7B272B!important;
 }
-}
+
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
     background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat #7B272B;
@@ -538,7 +538,6 @@ table td.mini {
     background-color: #FFFFFF;
 }
 
-
 .ui-tabs .ui-tabs-nav li a {
     padding: 10px 15px;
 
@@ -553,9 +552,7 @@ table td.mini {
 .not-front .region-sidebar-second .region-inner.clearfix {
     padding-right: 20px;
 }
-#footer {
-    padding:0;
-}
+
 
 #footer .at-panel {
     background: none repeat scroll 0 0 #FFFFFF;

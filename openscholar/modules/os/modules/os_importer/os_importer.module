@@ -122,19 +122,17 @@ function os_importer_os_add_new_links_alter(&$links) {
  */
 function os_importer_importable_content($type = '') {
   $apps = os_app_info();
-  $vsite = vsite_get_vsite();
   $types = array();
 
   // Loop through the apps and check which app has an importer.
-  foreach ($apps as $app) {
+  foreach ($apps as $feature => $app) {
     // Check to which bundle the user can import content.
-    foreach ($app['importers'] as $bundle => $info) {
-      $string = "create {$bundle} content";
-      $access = $vsite ? og_user_access('node', $vsite->id, $string) : user_access($string);
+    if (!spaces_access_feature($op = 'view', $feature)) {
+      continue;
+    }
 
-      if ($access) {
-        $types[$bundle] = $info;
-      }
+    foreach ($app['importers'] as $bundle => $info) {
+      $types[$bundle] = $info;
     }
   }
 
