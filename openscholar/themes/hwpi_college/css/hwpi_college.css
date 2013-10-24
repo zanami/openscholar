@@ -120,9 +120,7 @@ blockquote {
     color: #FFFFFF;
 
 }
-#menu-bar ul.nice-menu .menuparent a {
-    background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat;
-}
+
 
 #menu-bar ul.nice-menu .menuparent.over > a{
 	background-color:#7B272B!important;
@@ -285,11 +283,13 @@ h1#page-title {
     color: #727272;
     font-family: arial,sans-serif;
     font-size: 12px;
+   
 }
 .region.region-sidebar-first.sidebar {
     left: 10px;
     position: relative;
     top: 30px;
+   
 }
 .block-boxes-os_boxes_sectionnav ul {
     border-top: 4px solid #A51C30;
@@ -547,17 +547,18 @@ table td.mini {
     margin-left: 0;
 }
 .not-front #content-column .content-inner {
-    padding: 0 0 0 20px;
+    padding: 0 20px;
 }
 .not-front .region-sidebar-second .region-inner.clearfix {
     padding-right: 20px;
 }
 
-
+.block-content .field-item.even li {
+    font-family: georgia-serif;
+}
 #footer .at-panel {
     background: none repeat scroll 0 0 #FFFFFF;
     box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
-    padding: 50px 10px 10px;
     width: 960px;
 }
 
