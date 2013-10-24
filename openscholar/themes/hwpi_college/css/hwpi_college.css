@@ -25,9 +25,8 @@ h2 {
 #content-column {
     -moz-box-sizing: border-box;
     background-color: #FFFFFF;
-    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.05), -1px 0 0 rgba(0, 0, 0, 0.07);
+    box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
     margin: 0 auto;
-
 }
 
 .no-sidebars #layout_3_1_overlay .rslides_tabs {
@@ -114,7 +113,7 @@ blockquote {
   color: #FFF;
 }
 #menu-bar ul.nice-menu .menuparent a {
-    url("/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
+    background:url("/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
 }
 
 .slide-copy h2 {
@@ -559,9 +558,10 @@ table td.mini {
 }
 
 #footer .at-panel {
-    padding:50px 10px 10px 10px;
-    background:#FFF;
-     width: 960px;
+    background: none repeat scroll 0 0 #FFFFFF;
+    box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
+    padding: 50px 10px 10px;
+    width: 960px;
 }
 
 .section-nav .menu-depth-1 > a {
@@ -638,10 +638,11 @@ background-color: none !important;
 }
 
 #powerby-login {
-height:30px;
-background:#fff;
-padding:20px 0;
-margin-top: 0;
+    background: none repeat scroll 0 0 #FFFFFF;
+    box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
+    height: 30px;
+    margin-top: 0;
+    padding: 20px 0;
 }
 .footer-login {margin-right:20px;}
 
