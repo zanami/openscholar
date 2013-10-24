@@ -272,7 +272,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
  /* OVERRIDES WITH TABS IN MODAL - EXPERIMENTAL */
 #overlay-tabs {
      border-bottom: 1px solid #CCCCCC;
-     margin: 20px 0px 40px 45px;
+     margin: 20px 0px 40px 75px;
      position: relative;
 }
 
