@@ -2138,7 +2138,7 @@ function vsite_entity_property_info_alter(&$info) {
     $properties['purl'] = array(
       'label' => t("vsite PURL"),
       'description' => t("The purl for a vsite."),
-      'type' => NULL,
+      'type' => 'text',
       'getter callback' => 'entity_metadata_node_get_properties',
       'setter callback' => 'entity_property_verbatim_set',
     );
