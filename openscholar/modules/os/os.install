@@ -349,5 +349,5 @@ function os_update_7019() {
  * Add image styles os_square_50_50 and os_square_100_100.
  */
 function os_update_7020() {
-  features_revert(array('os_image_gallery' => array('image')));
+  features_revert(array('os' => array('image')));
 }
