@@ -117,6 +117,9 @@ ul.nice-menu ul {
   background: #7B272B!important;
   color: #FFF;
 }
+#menu-bar ul.nice-menu .menuparent a {
+    background: url("../images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
+}
 .slide-copy h2 {
     color: #FFFFFF;
 
