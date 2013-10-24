@@ -480,17 +480,9 @@ function os_importer_import_submit($form, &$form_state) {
  * Supporting creation of vocabularies on the fly from the CSV file.
  */
 function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
-  // Verify we're in a queue.
-  if ($_GET['q'] != 'batch') {
+  if (!$id = _os_importer_determine_context()) {
     return;
   }
-
-  $batch = batch_load($_GET['id']);
-  if (empty($batch['form_state']['complete form']['#space']['#value'])) {
-    return;
-  }
-
-  list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
 
   $config = $source->importer->getConfig();
 
@@ -518,6 +510,36 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
 
   $wrapper = entity_metadata_wrapper('node', $entity);
   $wrapper->{OG_VOCAB_FIELD}->set($tids);
+}
+
+/**
+ * Helper function for determine the vsite ID.
+ *
+ * @return $id
+ *  The ID of the group.
+ */
+function _os_importer_determine_context() {
+  // Verify we're in a queue.
+  if ($_GET['q'] != 'batch' && !(module_exists('vsite') && $vsite = vsite_get_vsite())) {
+    return;
+  }
+
+  // Decide how we should get the vsite ID.
+  $determine_method = $_GET['q'] == 'batch' ? 'batch' : 'vsite';
+  if ($determine_method == 'batch') {
+    $batch = batch_load($_GET['id']);
+
+    if (empty($batch['form_state']['complete form']['#space']['#value'])) {
+      return;
+    }
+
+    list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
+  }
+  else {
+    $id = $vsite->id;
+  }
+
+  return $id;
 }
 
 /**
