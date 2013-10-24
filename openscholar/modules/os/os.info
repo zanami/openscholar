@@ -156,3 +156,4 @@ features[variable][] = user_register
 features[views_view][] = os_feed
 features[views_view][] = os_site_members
 features[views_view][] = vsite_autocomplete
+features[views_view][] = os_users
