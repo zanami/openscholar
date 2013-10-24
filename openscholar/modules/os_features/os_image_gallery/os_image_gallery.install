@@ -44,13 +44,6 @@ function os_image_gallery_update_7003() {
 }
 
 /**
- * Remove image style os_square_50_50.
- */
-function os_image_gallery_update_7004() {
-  features_revert(array('os_image_gallery' => array('image')));
-}
-
-/**
  * @function _os_image_gallery_hide_media_description_label()
  */
 function _os_image_gallery_hide_media_description_label() {
