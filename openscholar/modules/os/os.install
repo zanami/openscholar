@@ -353,3 +353,30 @@ function os_update_7020() {
   variable_set('securepages_pages', 'user
 user/login');
 }
+
+/**
+ * Revert feature variables
+ */
+function os_update_7021() {
+  $comps = array('variable');
+  $features = array(
+    'os_biocv' => $comps,
+    'os_blog' => $comps,
+    'os_class' => $comps,
+    'os_news' => $comps,
+    'os_presentation' => $comps,
+    'os_reader' => $comps,
+    'os_software' => $comps
+  );
+
+  features_revert($features);
+}
+
+/**
+ * Remove promoted status that nodes shouldn't have
+ */
+function os_update_7022() {
+  db_update('node')
+    ->fields(array('promote' => 0))
+    ->execute();
+}
