@@ -506,11 +506,17 @@ function os_importer_import_submit($form, &$form_state) {
  * Supporting creation of vocabularies on the fly from the CSV file.
  */
 function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
-  // TODO: Fix. When running the batch, the vsite_get_vsite/og_context are not
-  // aware of the user vsite.
-  if (!module_exists('og_context') && !$og_context = og_context()) {
+  // Verify we're in a queue.
+  if ($_GET['q'] != 'batch') {
     return;
   }
+
+  $batch = batch_load($_GET['id']);
+  if (empty($batch['form_state']['complete form']['#space']['#value'])) {
+    return;
+  }
+
+  list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
 
   $config = $source->importer->getConfig();
 
@@ -526,7 +532,7 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
   $tids = array();
   foreach ($new_vocabs as $vocab) {
     // Create the terms and the vocabulary.
-    $info = _os_importer_create_vocab($vocab, $item[$vocab], 'node', $og_context['gid'], 'node', $entity->type);
+    $info = _os_importer_create_vocab($vocab, $item[$vocab], 'node', $id, 'node', $entity->type);
 
     // Build the taxonomy terms for the new node.
     $tids = array_merge($info['tids'], $tids);
