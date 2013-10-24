@@ -213,7 +213,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
     if (isset($form['#node']->nid)) {
       $url = l('Build > Layout', 'cp/build/layout', array());
-      $form['os_menu']['link']['parent']['#description'] = t('<strong>Tip</strong>: Not seeing your menu? You might need to place the menu widget in <strong>!url</strong>.', array('!url' => $url));
+      $form['os_menu']['link']['parent']['#description'] = t('<strong>Note</strong>: You might need to place the menu widget in <strong>!url</strong> for it to display on pages.', array('!url' => $url));
     }
     else {
       unset($form['os_menu']['link']['parent']['#description']);

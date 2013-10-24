@@ -491,6 +491,9 @@ form.node-form .vertical-tabs-panes #edit-os-menu--2 {
     margin-left: 15px;
     margin-bottom: 25px;
 }
+form.node-form .vertical-tabs-panes .form-item-os-menu-parent {
+    clear: both;
+}
 form.node-form .vertical-tabs-panes .description strong {
     color: #777;
 }
