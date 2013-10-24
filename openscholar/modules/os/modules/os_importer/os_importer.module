@@ -45,17 +45,8 @@ function os_importer_node_insert($node) {
     return;
   }
 
-  // Get the importer destination node type name.
-  $apps = os_importer_importable_content();
-  foreach ($apps as $type => $app) {
-    if (empty($app['rss'])) {
-      continue;
-    }
-
-    if ($app['rss'] == $importer_id) {
-      break;
-    }
-  }
+  // TODO: Add the node importer into the os app info.
+  $type = $importer_id == 'os_blog_import_rss' ? 'blog' : 'news';
 
   $_GET['destination'] = 'cp/os-importer/' . $type . '/manage';
 
