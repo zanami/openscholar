@@ -344,10 +344,3 @@ function os_update_7018() {
 function os_update_7019() {
   module_enable(array('os_tour'));
 }
-
-/**
- * Add image styles os_square_50_50 and os_square_100_100.
- */
-function os_update_7020() {
-  features_revert(array('os' => array('image')));
-}
