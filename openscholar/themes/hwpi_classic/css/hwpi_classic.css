@@ -133,6 +133,10 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 margin-left: 5.7em;
 }
 
+.sidebar article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+margin-left:6em;
+}
+
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
   text-decoration:underline;
