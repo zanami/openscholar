@@ -67,7 +67,7 @@ class os_sv_list_box extends os_boxes_default {
       ),
       '#ajax' => array(
         'callback' => 'os_sv_list_vocabs_content_type',
-        'wrapper' => 'query-details',
+        'wrapper' => 'vocabs',
       ),
     );
 
@@ -154,23 +154,36 @@ class os_sv_list_box extends os_boxes_default {
       '#parents' => array('query_details'),
     );
 
-    // Required JS and CSS for Select2.
-    drupal_add_js(libraries_get_path('select2') . '/select2.js');
-    drupal_add_css(libraries_get_path('select2') . '/select2.css');
-    drupal_add_css(drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css');
+    $form['#attached'] = array(
+      'js' => array(libraries_get_path('select2') . '/select2.js'),
+      'css' => array(
+        libraries_get_path('select2') . '/select2.css',
+        drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css',
+      ),
+    );
 
     // Get all vocabularies.
-    $vocabs = os_sv_list_get_content_type_vocabs($content_types_value);
+    $default = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
+    $vocabs = os_sv_list_get_content_type_vocabs($default);
 
     // The 'vocabs' tree will contain select fields - one for each vocabulary.
-    $form['vocabs'] = array(
-      '#type' => 'item',
-      '#title' => t('filter by vocabulary'),
-      '#description' => t('Select for each vocabulary the terms to be used.'),
-      '#prefix' => '<div id="vocabs">',
-      '#suffix' => '</div>',
-      '#tree' => TRUE,
-    );
+    if (empty($vocabs)) {
+      $form['vocabs'] = array(
+        '#type' => 'item',
+        '#prefix' => '<div id="vocabs">',
+        '#suffix' => '</div>',
+      );
+    }
+    else {
+      $form['vocabs'] = array(
+        '#type' => 'item',
+        '#title' => t('filter by vocabulary'),
+        '#description' => t('Select for each vocabulary the terms to be used.'),
+        '#prefix' => '<div id="vocabs">',
+        '#suffix' => '</div>',
+        '#tree' => TRUE,
+      );
+    }
 
     // Create a select field for each vocabulary, with the vocabulary's terms as
     // the field's options.
@@ -695,6 +708,10 @@ class os_sv_list_box extends os_boxes_default {
   }
 
   function display_body($nodes) {
+    foreach ($nodes as &$node) {
+      // Indicate that the nodes are displayed in the widget.
+      $node->os_sv_list_box = TRUE;
+    }
     return $this->display_view_mode($nodes, 'full');
   }
 
@@ -785,5 +802,5 @@ class os_sv_list_box extends os_boxes_default {
  * AJAX callback for reload the vocabulary for the selected content type.
  */
 function os_sv_list_vocabs_content_type($form, $form_state) {
-  return $form['options']['query_details'];
+  return $form['options']['vocabs'];
 }

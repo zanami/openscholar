@@ -23,7 +23,10 @@ function os_news_os_app_info() {
       'os_news' => array('page'),
     ),
     'importers' => array(
-      'csv' => 'os_news',
+      'news' => array(
+        'csv' => 'os_news',
+        'rss' => 'feed_importer',
+      ),
     ),
   );
 

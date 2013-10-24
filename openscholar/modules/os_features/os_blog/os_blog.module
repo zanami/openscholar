@@ -26,7 +26,10 @@ function os_blog_os_app_info() {
     'index author' => TRUE,
 
     'importers' => array(
-      'csv' => 'os_blog_csv',
+      'blog' => array(
+        'csv' => 'os_blog_csv',
+        'rss' => 'blog_import',
+      ),
     ),
   );
 

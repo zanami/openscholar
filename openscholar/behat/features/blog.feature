@@ -18,11 +18,11 @@ Feature:
      Then I should see "Archive: January 2013"
       And I should not see "First blog"
 
-  @api
+  @api @wip
   Scenario: Testing the import of blog from RSS.
     Given I am logging in as "admin"
       And I import the blog for "john"
-     When I visit "john/cp/content/import/blog"
+     When I visit "john/os-importer/blog/manage"
       And I should see "John blog importer"
       And I import the feed item "NASA"
      Then I should see the feed item "NASA" was imported
