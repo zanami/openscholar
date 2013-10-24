@@ -33,7 +33,6 @@ function os_wysiwyg_wysiwyg_default_profiles() {
           'numlist' => 1,
           'outdent' => 1,
           'indent' => 1,
-          'link' => 1,
           'unlink' => 1,
           'anchor' => 1,
           'formatselect' => 1,
