@@ -32,7 +32,7 @@ Feature:
       | "john"          | 301  | ""        |
       | "john/news"     | 301  | "news"    |
 
-  @api
+  @api @wip
   Scenario: Verifying redirect of sites with a share domain.
     Given I visit "http://lincoln.local/lincoln/blog/first-blog"
      Then I should be on "john/blog/first-blog"
