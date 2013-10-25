@@ -155,7 +155,6 @@ function os_reader_strongarm() {
   $strongarm->name = 'node_options_feed_importer';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_feed_importer'] = $strongarm;
 
