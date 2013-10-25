@@ -338,6 +338,11 @@ table.spaces td.option, table.spaces td.storage {
 
 #cp-appearance-theme-picker-form select {max-width:90px;overflow:hidden;}
 
+#cp-appearance-theme-picker-form #theme-header-featured h2,
+#cp-appearance-theme-picker-form #theme-header-other h2 {font-weight:normal;}
+
+#cp-appearance-theme-picker-form #theme-header-featured p {color:#777;font-size:15px;margin:-8px 0 28px 0;}
+
 
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout #content {width:854px;}
