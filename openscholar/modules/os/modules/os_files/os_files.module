@@ -120,6 +120,15 @@ function os_files_library_alter(&$libs, $module) {
 }
 
 /**
+ * Implements hook_fields_extra_fields_alter().
+ */
+function os_files_field_extra_fields_alter(&$info) {
+  foreach ($info['file'] as $type => $data) {
+    $info['file'][$type]['form']['preview']['weight'] = -11;
+  }
+}
+
+/*
  * Implements hook_file_presave().
  */
 function os_files_file_presave($file) {
@@ -311,27 +320,20 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Title');
   $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  $form['media_title']['#access'] = FALSE;
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
-  
-  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
-  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
-  
-  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
-    $form['preview']['#access'] = FALSE;
-  }
+  $form['media_description']['#access'] = FALSE;
+
+  //$form['preview']['#weight'] = -1000;
+  $form['replace_upload']['#weight'] = -10.5;
   
   $form['user']['#access'] = FALSE;
 
-  // only display the field if the file is older than 5 minutes
-  if (isset($form['#entity'])) {
-    $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
+  $previewable = array('image', 'video');
+  if (!in_array($form['preview']['#file']->type, $previewable)) {
+    $form['preview']['#theme'] = 'file_link';
   }
-  else {
-    $form['replace_upload']['#access'] = FALSE;
-  }
-  
+
   // modify the form when we're getting it through ajax
   // this means we'll be getting it through the media browser
   if (strpos($_GET['q'], 'ajax') !== FALSE) {
@@ -1712,4 +1714,97 @@ function os_files_escape_media_tags($tag) {
 function os_files_filter_media_process($text) {
   $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
   return media_filter($text);
+}
+
+function os_files_field_attach_create_bundle($entity_type, $type) {
+  os_files_add_fields($type);
+}
+
+/**
+ * Adds fields to a file entity bundle
+ */
+function os_files_add_fields($type) {
+  if (!field_info_field('os_file_description')) {
+    // os_file_description.
+    $field = array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'os_file_description',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format'
+          ),
+          'table' => 'filter_format'
+        )
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format'
+        )
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255'
+      ),
+      'translatable' => '0',
+      'type' => 'text_long'
+    );
+    $field = field_create_field($field);
+  }
+
+  if (!field_info_instance('file', 'os_file_description', $type)) {
+    $instance = array(
+      'bundle' => $type,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(
+            'trim_length' => 600,
+          ),
+          'type' => 'text_summary_or_trimmed',
+          'weight' => 0,
+        ),
+        'preview' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'type' => 'hidden',
+          'weight' => 0,
+        )
+      ),
+      'entity_type' => 'file',
+      'field_name' => 'os_file_description',
+      'label' => 'Description',
+      'required' => FALSE,
+      'settings' => array(
+        'display_summary' => 0,
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'rows' => 10,
+          'summary_rows' => 5,
+        ),
+        'type' => 'text_textarea_with_summary',
+        'weight' => '-2',
+      ),
+    );
+    field_create_instance($instance);
+  }
+
 }
