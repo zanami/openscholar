@@ -39,3 +39,10 @@ function os_news_update_7001(&$sandbox) {
 
   return t('Update %count news nodes', array('%count'=>$count));
 }
+
+/**
+ * Set news image style os_square_100_100.
+ */
+function os_news_update_7002() {
+  features_revert(array('os_news' => array('field')));
+}
