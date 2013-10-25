@@ -205,55 +205,20 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
     $form['os_menu']['link']['weight']['#type'] = 'value';
     $form['os_menu']['link']['#states']['invisible'] = array('input[name="os_menu[enabled]"]' => array('checked' => FALSE));
-    $form['os_menu']['link']['parent'] = array(
-        '#title' => t('Existing menu'),
-        '#options' => os_get_menus(),
-        '#default_value' => (isset($link['menu_name'])) ? $link['menu_name'] : 'primary-menu',
-    ) + $form['os_menu']['link']['parent'];
-
-    if (isset($form['#node']->nid)) {
-      $url = l('Build > Layout', 'cp/build/layout', array());
-      $form['os_menu']['link']['parent']['#description'] = t('<strong>Note</strong>: You might need to place the menu widget in <strong>!url</strong> for it to display on pages.', array('!url' => $url));
-    }
-    else {
-      unset($form['os_menu']['link']['parent']['#description']);
-    }
+    $form['os_menu']['link']['parent'] = array('#title' => t('Which Menu'),
+                                               '#options' => os_get_menus(),
+                                               '#default_value' => (isset($link['menu_name'])) ? $link['menu_name'] : 'primary-menu',
+                                               ) + $form['os_menu']['link']['parent'];
 
     $parents = array_diff($form['os_menu']['link']['#parents'], array('menu'));
     $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
     $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
 
-    // Adds a prefix for a title to the "enabled" checkbox.
-    $text = '<label>' . t('Add this post to a menu?') . '</label>';
-    $form['os_menu']['enabled_prefix'] = array(
-      '#type' => 'markup',
-      '#markup' => $text,
-      '#weight' => -10,
-    );
-
     //update the defaults to include $links
     $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
-
-    $form['os_menu']['enabled']['#weight'] = -9;
-    $form['os_menu']['enabled']['#title'] = t('Yes, create a menu link');
-
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
-    $form['os_menu']['link']['#weight'] = -8;
     $form['os_menu']['link']['description']['#default_value'] =
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
-    $form['os_menu']['link']['description']['#resizable'] = FALSE;
-    $form['os_menu']['link']['description']['#type'] = 'textfield';
-    $form['os_menu']['link']['description']['#title'] = t('Link hover text');
-    unset($form['os_menu']['link']['description']['#description']);
-
-    $url = l(t('Build > Menu'), 'cp/build/menu', array('attributes' => array('target'=>'_blank')));
-    $replacements = array('!url' => $url);
-    $text = '<div class="os-helpbox"><p>' . t('You can change this setting, and manage all menus and menu links at:<ul class="os-helpbox-linklist"><li><strong>!url</strong> (opens in a new tab)</li></ul>', $replacements) . '</p></div>';
-    $form['os_menu']['link_suffix'] = array(
-      '#type' => 'markup',
-      '#markup' => $text,
-      '#weight' => -7,
-    );
 
     $form['os_menu']['link']['new_window'] = array(
         '#type' => 'checkbox',
@@ -273,7 +238,8 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
 
-
+    $url = l('Page Layout', 'cp/build/layout', array());
+    $form['os_menu']['link']['parent']['#description'] = t('Select the menu where you would like this link to appear. Some menus may not show on your page if they are not included in your !url.', array('!url' => $url));
   }
 
   //menu wizard - insert settings from wizard
