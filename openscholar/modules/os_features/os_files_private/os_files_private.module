@@ -212,3 +212,16 @@ function os_files_private_menu_local_tasks_alter(&$tasks, $router, $root) {
     $tasks['tabs'][0]['output'] = array();
   }
 }
+
+/**
+ * Implements hook_stream_wrappers_alter().
+ *
+ * Used to extend the private stream wrapper.
+ *
+ * @param array $wrappers
+ */
+function os_files_private_stream_wrappers_alter(&$wrappers){
+  if (isset($wrappers['private'])) {
+    $wrappers['private']['class'] = 'OSFilesPrivateStreamWrapper';
+  }
+}
