@@ -702,26 +702,3 @@ function os_breadcrumbs_theme_picker_form_submit($form, &$form_state) {
     variable_set($name, $value);
   }
 }
-
-/**
- * Implements hook_node_insert().
- */
-function os_breadcrumbs_node_insert($node) {
-  // Only continues to modify variable value if this is a group node.
-  if (!og_is_group_type('node', $node->type)) {
-    return;
-  }
-
-  $vsite = vsite_get_vsite($node->nid);
-  $value = $vsite->controllers->variable->get('theme_default');
-  // Only continues to additionally turn on breadcrumbs if HWPI theme.
-  if (!_is_hwpi_theme($value)) {
-    return;
-  }
-
-  // Sets breadcrumbs to display for sites with an HWPI theme.
-  // @FIXME: the variable name looks like "show" but value "1" hides.
-  $name = 'os_breadcrumbs_show_breadcrumbs';
-  $value = 0;
-  $vsite->controllers->variable->set($name, $value);
-}
