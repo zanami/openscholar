@@ -30,13 +30,8 @@ projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
 projects[colorbox][version] = 2.4
 
-projects[comment_sources][download][type] = git
-projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
-projects[comment_sources][download][branch] = 7.x-2.x
-projects[comment_sources][download][revision] = b81e12b2d5340d7de77499441bf4d6c22582a2ec
 projects[comment_sources][subdir] = "contrib"
-projects[comment_sources][type] = module
-; patches needed
+projects[comment_sources][version] = 2.0
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
@@ -71,7 +66,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/b81e12b2d5340d7de77499441bf4d6c22582a2ec/patches/disqus.patch"
+projects[disqus][patch][] = "http://drupal.org/files/comment_sources-disqus-2120703-1.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -124,7 +119,7 @@ projects[fb_social][subdir] = "contrib"
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
-projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/b81e12b2d5340d7de77499441bf4d6c22582a2ec/patches/fb_social.patch"
+projects[fb_social][patch][] = "http://drupal.org/files/comment_sources-fb_social-2120709-1.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
