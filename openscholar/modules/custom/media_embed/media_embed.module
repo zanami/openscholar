@@ -334,3 +334,53 @@ function media_embed_field_attach_form($entity_type, $entity, &$form, &$form_sta
     // do nothing
   }
 }
+
+function media_embed_theme() {
+  $items = array();
+
+  $items['media_embed_link'] = array(
+    'variables' => array('file' => NULL, 'icon_directory' => NULL),
+  );
+
+  return $items;
+}
+
+function media_embed_preprocess_file_link(&$vars) {
+  if (file_uri_scheme($vars['file']->uri) == 'embed') {
+    $vars['theme_hook_suggestions'][] = 'media_embed_link';
+  }
+}
+
+function theme_media_embed_link($vars) {
+  $file = $vars['file'];
+  $html = $file->field_html_code[LANGUAGE_NONE][0]['value'];
+  preg_match('/height="([0-9]*)"/', $html, $fetchheight);
+  preg_match('/width="([0-9]*)"/', $html, $fetchwidth);
+  if ($fetchheight && $fetchwidth) {
+    $height = $fetchheight[1];
+    $width = $fetchwidth[1];
+  }
+  $id = 'media-embed-link-'.$file->fid;
+  $options = array(
+    'external' => true,
+    'query' => array(
+      'width' => $width+25,
+      'height' => $height+25,
+      'inline' => 'true'
+    ),
+    'fragment' => $id,
+    'attributes' => array(
+      'class' => array(
+        'colorbox-inline'
+      )
+    )
+  );
+  $link = l($file->filename, '', $options);
+  $code = '<div hidden>
+    <div id="'.$id.'">
+      '.$html.'
+    </div>
+  </div>';
+
+  return ' '.$link.$code;
+}
