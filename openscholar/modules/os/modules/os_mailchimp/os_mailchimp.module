@@ -61,7 +61,25 @@ function os_mailchimp_user_delete($account) {
     return;
   }
   
+  //update the list of instances in which this user is active
   $MC = _os_mailchimp_mailchimp_connect($api);
+  $sub_info = $MC->listMemberInfo($list_id, $account->mail);
+  $merge_vars = $sub_info['data'][0]['merges'];
+  
+  if (isset($merge_vars['INSTANCES']) && $merge_vars['INSTANCES']) {
+    $instances = explode(',', $merge_vars['INSTANCES']);
+    $purl = str_replace('http://', '', variable_get('purl_base_domain', ''));
+    $instances = array_filter($instances, function($s) use ($purl) { return ($s != $purl); });
+    
+    if ($instances) {
+      //just remove this instance from the subscription
+      $merge_vars['INSTANCES'] = implode(',', $instances);
+      $updated = $MC->listUpdateMember($list_id, $user->mail, $merge_vars);
+      return;
+    }
+  }
+
+  //this was the last instance or instances aren't tracked, so delete the user entirely.
   $sub_info = $MC->listUnsubscribe($list_id, $account->mail);
 }
 
