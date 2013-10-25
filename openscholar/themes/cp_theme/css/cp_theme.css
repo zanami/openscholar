@@ -389,16 +389,17 @@ body.page-cp.page-cp-account #messages {
 .os_publications-customize-form .column-left,
 .os_publications-customize-form #comment_settings {
 	float:left;
-	width:48%;
 	clear:left;
+}
+.os_publications-customize-form .column-left {
+    width: 48%;
+}
+.os_publications-customize-form #comment_settings {
+    width: 100%;
 }
 
 .os_publications-customize-form .form-actions {
 	clear:both;
-}
-
-.os_publications-customize-form #comment_settings {
-width:30%;
 }
 
 .os_publications-customize-form .column-right {
