@@ -58,11 +58,6 @@ function os_blog_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
-          3 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
-            'unique' => FALSE,
-          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',

@@ -68,11 +68,6 @@ function os_news_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
-          5 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
-            'unique' => FALSE,
-          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
