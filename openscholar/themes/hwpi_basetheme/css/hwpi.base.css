@@ -539,11 +539,20 @@ ol.search-results li.search-result:last-child {
   margin-top: -17px;
 }
 
- .node-type-person #content-column .node-person .pic-bio {
+.node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
   margin-bottom: 60px;
+}
+
+.node-type-person #content-column .node-person .content-full .field-name-field-professional-title {
+  padding-bottom: 40px;
+}
+
+.node-type-person #content-column .node-person .content-full .pic-bio {
+  padding-top: 0px;
+  margin-top: 0px;
 }
 
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
