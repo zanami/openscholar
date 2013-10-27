@@ -118,7 +118,7 @@ function os_importer_importable_content($type = '') {
   // Loop through the apps and check which app has an importer.
   foreach ($apps as $feature => $app) {
     // Check to which bundle the user can import content.
-    if (!spaces_access_feature($op = 'view', $feature)) {
+    if (!spaces_access_feature('create', $feature)) {
       continue;
     }
 
