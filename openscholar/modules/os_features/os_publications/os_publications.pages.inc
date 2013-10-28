@@ -262,7 +262,7 @@ function os_publications_settings() {
     '#title' => t('Show only publications of type'),
     '#default_value' => variable_get('os_publications_filter_publication_types', array_keys($results)),
     '#options' => $results,
-    '#description' => t('The main list of publications on your publications page will list the types slected here.'),
+    '#description' => t('The main list of publications on your publications page will list the types selected here.'),
     '#attributes' => array('class' => array('form-checkboxes-scrolling')),
   );
 
