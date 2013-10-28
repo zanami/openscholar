@@ -66,6 +66,7 @@ Feature:
      When I click "John news importer"
      Then I should see "JFK was murdered"
 
+
   @api
   Scenario: Verify the imported news date is the original feed item date.
     Given I am logging in as "admin"
