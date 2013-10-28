@@ -8,6 +8,28 @@ Feature:
      Then I should see "Engadget rss"
 
   @api
+    Scenario: Testing the UX fo importing an RSS feed.
+      Given I am logging in as "john"
+        And I visit "john/cp/os-importer/blog"
+        And I select the radio button "Rss" with the id "edit-format-rss"
+        And I populate in "Title" with "Import once"
+        And I populate in "URL" with "LOCALHOST/os-reader/john_blog"
+       When I press "Submit"
+        And I visit "john/cp/os-importer/blog/manage"
+       Then I should see "Import once"
+
+  @api
+    Scenario: Verify the user can't import the same RSS address twice.
+      Given I am logging in as "john"
+        And I visit "john/cp/os-importer/blog"
+        And I select the radio button "Rss" with the id "edit-format-rss"
+        And I populate in "Title" with "Import 2nd"
+        And I populate in "URL" with "LOCALHOST/os-reader/john_blog"
+       When I press "Submit"
+        And I visit "john/cp/os-importer/blog/manage"
+       Then I should not see "Import 2nd"
+
+  @api
   Scenario: Test the OS reader feed importer.
     Given I am logging in as "admin"
       And I import feed items for "john"
@@ -68,10 +90,6 @@ Feature:
 
   @api
   Scenario: Verify the imported news date is the original feed item date.
-    Given I am logging in as "admin"
-      And I import feed items for "john"
-      And I visit "john/cp/os-importer/news/manage"
-      And I import the feed item "Lee Harvey Oswald"
-     When I visit "john/news"
+    Given I visit "john/news"
       And I click "Lee Harvey Oswald"
      Then I should see "November 22, 1963"
