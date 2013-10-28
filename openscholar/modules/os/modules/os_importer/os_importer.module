@@ -118,7 +118,7 @@ function os_importer_importable_content($type = '') {
   // Loop through the apps and check which app has an importer.
   foreach ($apps as $feature => $app) {
     // Check to which bundle the user can import content.
-    if (!spaces_access_feature($op = 'view', $feature)) {
+    if (!spaces_access_feature('create', $feature)) {
       continue;
     }
 
@@ -449,11 +449,11 @@ function os_importer_import_submit($form, &$form_state) {
   $values = $form_state['values'];
   $bundle = os_importer_importable_content($form_state['type']);
 
-  if ($values['format'] == 'csv') {
+  if (in_array($values['format'], array('csv', 'ical'))) {
     $fid = $values['file'];
     $file = file_load($fid);
 
-    $source = feeds_source($bundle['csv']);
+    $source = feeds_source($bundle[$values['format']]);
     $fetcher_config = $source->getConfigFor($source->importer->fetcher);
     $fetcher_config['source'] = $file->uri;
     $fetcher_config['file'] = $file;
