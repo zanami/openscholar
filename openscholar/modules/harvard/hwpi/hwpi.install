@@ -89,3 +89,18 @@ function _hwpi_reverse_menu($site, $key) {
 
   $controller->set($key, $menu);
 }
+
+/**
+ * Sets the featured themes configurable text to describe HWPI themes.
+ */
+function hwpi_update_7005() {
+  // Sets the description that appears under "Featured Themes" heading.
+  $name = 'cp_appearance_featured_description';
+  $value = t('Mobile-friendly themes using Harvard color palettes.');
+  variable_set($name, $value);
+
+  // Sets the themes to use as featured themes.
+  $name = 'cp_appearance_featured_themes';
+  $value = drupal_map_assoc(array('hwpi_classic', 'hwpi_modern', 'hwpi_vibrant'));
+  variable_set($name, $value);
+}
