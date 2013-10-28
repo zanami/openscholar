@@ -211,6 +211,11 @@ class OsMigrateDepartmentNode extends OsMigrate {
    * Group the users with the create group.
    */
   function complete($entity, $row) {
+    if ($row->domain) {
+      $nid = entity_id($this->entityType, $entity);
+      os_migrate_demo_spaces_overrides('og', $nid, $row->domain);
+    }
+
     if (is_array($entity->users_to_group)) {
       foreach ($entity->users_to_group as $uid) {
         og_group('node', $entity->nid, array(
