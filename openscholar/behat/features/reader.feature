@@ -41,8 +41,8 @@ Feature:
     Given I am logging in as "admin"
       And I import feed items for "john"
       And I visit "john/cp/os-importer/news/manage"
-     When I import the feed item "JFK was murdered"
-      And I should see the feed item "JFK was murdered" was imported
+     When I import the feed item "Lee Harvey Oswald"
+      And I should see the feed item "Lee Harvey Oswald" was imported
      Then I should see the news photo "druplicon.small__"
 
   @api
