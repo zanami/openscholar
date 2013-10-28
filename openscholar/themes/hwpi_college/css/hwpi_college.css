@@ -205,11 +205,11 @@ blockquote {
 margin-top:0!important;
 
 }
-.slide-copy{
+#layout_16_9_below .slide-copy{
 	background-color:#333!important;
 	
 }
-.rslides_tabs {
+#layout_16_9_below .rslides_tabs {
     background: none repeat scroll 0 0 #333333!important;
    }
 .rslides_tabs li {
