@@ -105,6 +105,7 @@ function os_mailchimp_node_update($node) {
   $vsites = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   if (in_array($node->type, $vsites) || $node->uid != $node->original->uid) {
     os_mailchimp_update_subscription($node->uid, $node);
+    os_mailchimp_update_subscription($node->original->uid, $node, TRUE);
   }
 }
 
@@ -427,9 +428,16 @@ function _os_mailchimp_mailchimp_connect($api) {
 /**
  * @function os_mailchimp_update_subscription
  * 
- * Updates the stored variables on a user's mailchimp sub
+ * Updates the stored variables on a user's mailchimp sub.  
+ * 
+ * @param $uid
+ *   ID of user to update
+ * @param $node
+ *   Node whose ownership is being changed
+ * @param $remove_node
+ *   Flag indicates that node is being transfered away from user, so it should be removed from user's list of sites
  */
-function os_mailchimp_update_subscription($uid = NULL, $node = NULL) {
+function os_mailchimp_update_subscription($uid = NULL, $node = NULL, $remove_node = FALSE) {
   if (!$uid) {
     global $user;
   } else {
@@ -462,9 +470,16 @@ function os_mailchimp_update_subscription($uid = NULL, $node = NULL) {
     $keyname = strtoupper($var);
     if ($keyname && isset($merge_vars[$keyname])) {
       $items = array_merge(explode(',', $merge_vars[$keyname]), $current_info[$var]);
-      if ($node && $var == 'instances') {
-        $items[] = $node->purl['value'];
+      
+      if ($node && $var == 'sites') {
+        if ($remove_node) {
+          $rem = array($node->purl['value']);
+          $items = array_diff($items, $rem);
+        } else {
+          $items[] = $node->purl['value'];
+        }
       }
+
       $merge_vars[$keyname] = implode(',', array_unique(array_filter($items)));
     }
   }
