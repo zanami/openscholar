@@ -68,6 +68,11 @@ function os_image_gallery_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          5 => array(
+            'source' => 'Author',
+            'target' => 'author',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',

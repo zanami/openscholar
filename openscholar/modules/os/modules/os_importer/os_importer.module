@@ -228,8 +228,8 @@ function os_importer_import_access($type, $feed = TRUE) {
  * @param $value
  *   The value to populate the target with.
  * @param $mapping
- *  Associative array of the mapping settings from the per mapping
- *  configuration form.
+ *  Associative array of the mapping settings from the per mapping configuration
+ *  form.
  */
 function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   if (!$value) {
@@ -249,6 +249,19 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   }
 
   $entity->{$field_name}[$entity->language] = $files;
+}
+
+/**
+ * Callback function for creating a node on behalf of another user.
+ *
+ * @see os_importer_map_files().
+ */
+function os_importer_map_author($source, $entity, $target, $value, $mapping) {
+  global $user;
+
+  $account = !$value ? user_load($user->uid) : user_load_by_name($value);
+
+  $entity->uid = $account->uid;
 }
 
 /**
