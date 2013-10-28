@@ -63,16 +63,6 @@ function os_importer_node_insert($node) {
 }
 
 /**
- * Implements hook_admin_paths().
- */
-function os_importer_admin_paths() {
-  return array(
-    'cp/os-importer/*' => TRUE,
-    'cp/os-importer/blog/manage' => TRUE,
-  );
-}
-
-/**
  * Implements hook_os_add_new_links_alter().
  */
 function os_importer_os_add_new_links_alter(&$links) {
