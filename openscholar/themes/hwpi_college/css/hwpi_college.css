@@ -3,6 +3,8 @@ html,
 body {
   background: #ffffff;
   color: #1e1e1e;
+  overflow-x: hidden;
+  
 }
 body {
     color: #1F1F1F;
@@ -709,6 +711,21 @@ a.rslides_nav {
     margin-bottom: 0;
     margin-top: auto;
 }
+
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+  background: #E6E5E3;
+  bottom: auto;
+  content: "";
+  display: block;
+  height: 100%;
+  left: -1000px;
+  position: absolute;
+  right: auto;
+  top: 0;
+  width: 3000px;
+  z-index: 0;
+}
+
 /*
 .slide-copy h2 {
     margin-bottom: 0;
