@@ -212,7 +212,7 @@ margin-top:0!important;
 	
 }
 .not-logged-in .contextual-controls-wrapper{
-top:0!important;
+display:none;
 }
 #layout_16_9_below .rslides_tabs {
     background: none repeat scroll 0 0 #333333!important;
