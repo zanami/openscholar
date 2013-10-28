@@ -220,8 +220,8 @@ function os_files_private_menu_local_tasks_alter(&$tasks, $router, $root) {
  *
  * @param array $wrappers
  */
-function os_files_private_stream_wrappers_alter(&$wrappers){
-  if (isset($wrappers['private'])) {
+function os_files_private_stream_wrappers_alter(&$wrappers){  
+  if (isset($wrappers['private']) && $wrappers['private']['class'] != 'OSPinserverPrivateStreamWrapper') {
     $wrappers['private']['class'] = 'OSFilesPrivateStreamWrapper';
   }
 }
