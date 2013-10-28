@@ -58,7 +58,7 @@ function os_pages_update_7003(&$sb) {
 
   foreach ($sections as $s) {
     $exists = db_select('spaces_overrides', 'so')
-      ->condition('object_id', 'os_pages-section-'.$s['bid'])
+      ->condition('object_id', 'os_pages-section-'.$s['bid'].':reaction:block')
       ->countQuery()
       ->execute()
       ->fetchField();
@@ -68,7 +68,7 @@ function os_pages_update_7003(&$sb) {
       $override->reactions['block']['blocks']['boxes-os_pages_section_nav']['region'] = 'sidebar_second';
 
       $groups = og_get_entity_groups('node', $s['bid']);
-      $group = reset($groups);
+      $group = reset($groups['node']);
 
       $data = (object)array(
         'type' => 'og',
