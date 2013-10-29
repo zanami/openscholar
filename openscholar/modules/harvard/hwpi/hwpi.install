@@ -46,14 +46,16 @@ function hwpi_update_7003(&$sb) {
  * Sets the default image for for person content type.
  */
 function hwpi_update_7004() {
-  variable_set('os_person_default_image', drupal_get_path('module', 'hwpi') . '/person-default-image.png');
+  variable_set('os_person_default_image', drupal_get_path('module', 'hwpi') . '/images/person-default-image.png');
+  variable_set('os_person_default_image_big', drupal_get_path('module', 'hwpi') . '/images/person-default-image-big.png');
 }
 
 /**
  * Implements hook_install().
  */
 function hwpi_install() {
-  variable_set('os_person_default_image', drupal_get_path('module', 'hwpi') . '/person-default-image.png');
+  variable_set('os_person_default_image', drupal_get_path('module', 'hwpi') . '/images/person-default-image.png');
+  variable_set('os_person_default_image_big', drupal_get_path('module', 'hwpi') . '/images/person-default-image-big.png');
 }
 
 function _hwpi_is_header_third_menu($item) {
