@@ -600,13 +600,12 @@ function _os_importer_determine_context() {
  *
  * @return array
  *  Array with the vocabulary ID and the his term IDs.
- *
- * TODO: Export into OG vocab module.
  */
 function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_type, $bundle) {
   $query = db_select('og_vocab_relation', 'ogr');
   $query->join('taxonomy_vocabulary', 'v', 'v.vid = ogr.vid');
 
+  // We need to check if a vocabulary with that name exists in the group.
   $result = $query
     ->fields('v')
     ->condition('group_type', $group_type)
@@ -616,11 +615,11 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
     ->fetchAllAssoc('vid');
 
   if ($result) {
-    // Use the existing vocabulary.
+    // The vocabulary is already exists, we can use him.
     $vocabulary = reset($result);
   }
   else {
-    // we didn't found any vocabulary - create a new one.
+    // We didn't found any vocabulary - create a new one.
     $i = 0;
     $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
     while (taxonomy_vocabulary_machine_name_load($machine_name)) {
