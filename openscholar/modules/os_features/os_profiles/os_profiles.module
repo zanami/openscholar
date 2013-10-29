@@ -42,7 +42,7 @@ function os_profiles_process_node(&$vars) {
 
   // If node is of type person with no image, and person is displayed in "List
   // of posts" widget or in full display mode, load a bigger default image.
-  if ($no_photo && ($vars['os_sv_list_box'] || $vars['view_mode'] == 'full')) {
+  if ($no_photo && ((!empty($vars['os_sv_list_box']) && $vars['os_sv_list_box']) || $vars['view_mode'] == 'full')) {
     $path = variable_get('os_person_default_image_big', drupal_get_path('module', 'os_profiles') . '/images/person-default-image-big.png');
   }
   elseif ($no_photo) {
