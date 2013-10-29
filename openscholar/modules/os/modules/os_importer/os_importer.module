@@ -259,7 +259,22 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 function os_importer_map_author($source, $entity, $target, $value, $mapping) {
   global $user;
 
-  $account = !$value ? user_load($user->uid) : user_load_by_name($value);
+  if ($value && $account = user_load_by_name($value)) {
+    // Verify that the user from the CSV can create nodes from this type on the
+    // current space.
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $account = og_user_access('node', $vsite->id, 'create ' . $entity->type . ' content', $account) ? $account : user_load($user->uid);
+    }
+    else {
+      // We are not in a vsite check if the user can create node of this type
+      // side wide.
+      $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
+    }
+  }
+  else {
+    // Loading the current user.
+    $account = user_load($user->uid);
+  }
 
   $entity->uid = $account->uid;
 }
@@ -273,7 +288,7 @@ function os_importer_import($form, &$form_state, $type) {
 
   $options = array();
   foreach (array_keys($bundle) as $option) {
-    $options[$option] = ucfirst($option);
+    $options[$option] = $option == 'ical' ? t('iCal') : strtoupper($option);
   }
 
   $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
@@ -285,9 +300,9 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
-  $params = array('!new-York-times' => l(t('New York times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
+  $params = array('!new-york-times' => l(t('New York Times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
   $text = 'Importing content from RSS feeds supports only news and blog content. ';
-  $text .= 'For example: you can import a feed item from the !new-York-times rss news feeds.<br />';
+  $text .= 'For example: you can import a feed item from the !new-york-times rss news feeds.<br />';
   $text .= "When submitting the form, the import process will begin. After that, you can choose which news items you want to import into your site.";
   $text = t($text, $params);
 
@@ -560,25 +575,24 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
  *  The ID of the group.
  */
 function _os_importer_determine_context() {
+  // Vsite context exists - use him.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    return $vsite->id;
+  }
+
   // Verify we're in a queue.
-  if ($_GET['q'] != 'batch' && !(module_exists('vsite') && $vsite = vsite_get_vsite())) {
+  if ($_GET['q'] != 'batch') {
     return;
   }
 
   // Decide how we should get the vsite ID.
-  $determine_method = $_GET['q'] == 'batch' ? 'batch' : 'vsite';
-  if ($determine_method == 'batch') {
-    $batch = batch_load($_GET['id']);
+  $batch = batch_load($_GET['id']);
 
-    if (empty($batch['form_state']['complete form']['#space']['#value'])) {
-      return;
-    }
+  if (empty($batch['form_state']['complete form']['#space']['#value'])) {
+    return;
+  }
 
-    list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
-  }
-  else {
-    $id = $vsite->id;
-  }
+  list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
 
   return $id;
 }
@@ -601,26 +615,33 @@ function _os_importer_determine_context() {
  *
  * @return array
  *  Array with the vocabulary ID and the his term IDs.
- *
- * TODO: Export into OG vocab module.
  */
 function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_type, $bundle) {
-  $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
-
   $query = db_select('og_vocab_relation', 'ogr');
   $query->join('taxonomy_vocabulary', 'v', 'v.vid = ogr.vid');
 
+  // We need to check if a vocabulary with that name exists in the group.
   $result = $query
     ->fields('v')
     ->condition('group_type', $group_type)
     ->condition('gid', $gid)
-    ->condition('v.machine_name', $machine_name)
+    ->condition('v.name', $name)
     ->execute()
     ->fetchAllAssoc('vid');
 
-  $vocabulary = reset($result);
+  if ($result) {
+    // The vocabulary is already exists, we can use him.
+    $vocabulary = reset($result);
+  }
+  else {
+    // We didn't found any vocabulary - create a new one.
+    $i = 0;
+    $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
+    while (taxonomy_vocabulary_machine_name_load($machine_name)) {
+      $machine_name = substr($machine_name, 0, 32 - strlen($i)) . $i;
+      $i++;
+    }
 
-  if (!$vocabulary) {
     // Creating the new vocabulary.
     $vocabulary = new stdClass();
     $vocabulary->name = $name;
@@ -634,7 +655,7 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
   $taxonomy_terms = explode("|", $terms);
 
   foreach ($taxonomy_terms as $taxonomy_term) {
-    $term = taxonomy_get_term_by_name($taxonomy_term, $machine_name);
+    $term = taxonomy_get_term_by_name($taxonomy_term, $vocabulary->machine_name);
 
     if (!$term) {
       $term = new stdClass();
