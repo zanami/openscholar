@@ -273,7 +273,7 @@ function os_importer_import($form, &$form_state, $type) {
 
   $options = array();
   foreach (array_keys($bundle) as $option) {
-    $options[$option] = ucfirst($option);
+    $options[$option] = $option == 'ical' ? t('iCal') : strtoupper($option);
   }
 
   $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
@@ -285,9 +285,9 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
-  $params = array('!new-York-times' => l(t('New York times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
+  $params = array('!new-york-times' => l(t('New York Times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
   $text = 'Importing content from RSS feeds supports only news and blog content. ';
-  $text .= 'For example: you can import a feed item from the !new-York-times rss news feeds.<br />';
+  $text .= 'For example: you can import a feed item from the !new-york-times rss news feeds.<br />';
   $text .= "When submitting the form, the import process will begin. After that, you can choose which news items you want to import into your site.";
   $text = t($text, $params);
 
