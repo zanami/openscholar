@@ -560,25 +560,24 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
  *  The ID of the group.
  */
 function _os_importer_determine_context() {
+  // Vsite context exists - use him.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    return $vsite->id;
+  }
+
   // Verify we're in a queue.
-  if ($_GET['q'] != 'batch' && !(module_exists('vsite') && $vsite = vsite_get_vsite())) {
+  if ($_GET['q'] != 'batch') {
     return;
   }
 
   // Decide how we should get the vsite ID.
-  $determine_method = $_GET['q'] == 'batch' ? 'batch' : 'vsite';
-  if ($determine_method == 'batch') {
-    $batch = batch_load($_GET['id']);
+  $batch = batch_load($_GET['id']);
 
-    if (empty($batch['form_state']['complete form']['#space']['#value'])) {
-      return;
-    }
+  if (empty($batch['form_state']['complete form']['#space']['#value'])) {
+    return;
+  }
 
-    list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
-  }
-  else {
-    $id = $vsite->id;
-  }
+  list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
 
   return $id;
 }
@@ -605,8 +604,6 @@ function _os_importer_determine_context() {
  * TODO: Export into OG vocab module.
  */
 function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_type, $bundle) {
-  $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
-
   $query = db_select('og_vocab_relation', 'ogr');
   $query->join('taxonomy_vocabulary', 'v', 'v.vid = ogr.vid');
 
@@ -614,13 +611,23 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
     ->fields('v')
     ->condition('group_type', $group_type)
     ->condition('gid', $gid)
-    ->condition('v.machine_name', $machine_name)
+    ->condition('v.name', $name)
     ->execute()
     ->fetchAllAssoc('vid');
 
-  $vocabulary = reset($result);
+  if ($result) {
+    // Use the existing vocabulary.
+    $vocabulary = reset($result);
+  }
+  else {
+    // we didn't found any vocabulary - create a new one.
+    $i = 0;
+    $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
+    while (taxonomy_vocabulary_machine_name_load($machine_name)) {
+      $machine_name = substr($machine_name, 0, 32 - strlen($i)) . $i;
+      $i++;
+    }
 
-  if (!$vocabulary) {
     // Creating the new vocabulary.
     $vocabulary = new stdClass();
     $vocabulary->name = $name;
@@ -634,7 +641,7 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
   $taxonomy_terms = explode("|", $terms);
 
   foreach ($taxonomy_terms as $taxonomy_term) {
-    $term = taxonomy_get_term_by_name($taxonomy_term, $machine_name);
+    $term = taxonomy_get_term_by_name($taxonomy_term, $vocabulary->machine_name);
 
     if (!$term) {
       $term = new stdClass();
