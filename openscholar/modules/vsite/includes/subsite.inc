@@ -141,6 +141,13 @@ function vsite_inherit($node) {
   $vsite = vsite_get_vsite($node->nid);
   $vsite->controllers->variable->set($name, $value);
 
+  // Sets the new subsite's theme flavor to match it's parent.
+  $name = 'os_appearance_' . $value . '_flavor';
+  $value = $parent_vsite->controllers->variable->get($name);
+  if (!empty($value)) {
+    $vsite->controllers->variable->set($name, $value);
+  }
+
   // Only continues to additionally turn on breadcrumbs if HWPI theme.
   if (!_is_hwpi_theme($value)) {
     return;
