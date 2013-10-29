@@ -1666,12 +1666,21 @@ function os_field_default_fields_alter(&$fields) {
 
       $field_name = $config['field_config']['field_name'];
       if ($field = field_info_field($field_name)) {
+        // Run through all instances of this field and make sure that its
+        // "allowed schemes" include private instead of "public".
         foreach ($field['bundles'] as $entity_type => $bundles) {
           foreach ($bundles as $bundle) {
             $instance = field_info_instance($entity_type, $field_name, $bundle);
             if (!$instance) {
+              // No field instance.
               continue;
             }
+
+            if (!empty($instance['widget']['settings']['allowed_schemes']['private'])) {
+              // Already changed from public to private.
+              continue;
+            }
+
             unset($instance['widget']['settings']['allowed_schemes']['public']);
             $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
             field_update_instance($instance);
