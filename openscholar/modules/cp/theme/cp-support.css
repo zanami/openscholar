@@ -9,8 +9,14 @@
 	display: none;
 }
 
+/* always show the last item, which is either the throbber or the iframe */
 .getsat-widget > *:last-child {
 	display: block;
+}
+
+/* always show the description */
+.getsat-widget > *:first-child {
+  display: block;
 }
 
 .getsat-widget {
