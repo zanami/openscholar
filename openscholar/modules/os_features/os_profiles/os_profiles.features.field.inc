@@ -881,6 +881,8 @@ function os_profiles_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
@@ -936,7 +938,7 @@ function os_profiles_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '19',
+          'weight' => '11',
         ),
         'full' => array(
           'label' => 'above',

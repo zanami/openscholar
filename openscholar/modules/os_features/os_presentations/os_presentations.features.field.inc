@@ -273,6 +273,8 @@ function os_presentations_field_default_fields() {
             'html' => 0,
             'image' => 'image',
             'video' => 0,
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'library' => 0,

@@ -117,7 +117,7 @@ function os_publications_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => 'content',
-            'image_style' => 'book_cover_thumb',
+            'image_style' => 'os_square_50_50',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -244,6 +244,8 @@ function os_publications_field_default_fields() {
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
+            'document' => 'document',
+            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',

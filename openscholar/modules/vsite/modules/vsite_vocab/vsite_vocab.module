@@ -38,6 +38,15 @@ function vsite_vocab_menu() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function vsite_vocab_admin_paths() {
+  return array(
+    'cp/build/taxonomy/*/add' => TRUE,
+  );
+}
+
+/**
  * Implements hook_menu_alter().
  *
  * Adding custom paths to the vocabulary actions.
@@ -63,7 +72,6 @@ function vsite_vocab_term_page_access($term) {
   if (!user_access('access content')) {
     return;
   }
-
 
   if (!$relation = og_vocab_relation_get($term->vid)) {
     // Term doesn't belong to OG-vocab
@@ -211,6 +219,7 @@ function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
     return;
   }
   $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
+  $form['#attached']['js'][] = drupal_get_path('module', 'vsite_vocab') . '/js/vsite_vocab.js';
 }
 
 /**
@@ -340,6 +349,10 @@ function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
  * Implements hook_form_FORM_ID_alter().
  */
 function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
+  if (empty($form['#vocabulary'])) {
+    return;
+  }
+
   $path = 'cp/build/taxonomy/' . $form['#vocabulary']->machine_name . '/add';
   $form['#empty_text'] = t('No terms available. <a href="@link">Add term</a>.', array('@link' => url($path)));
   $form['#submit'][] = 'vsite_vocab_invalidate_entitycache';
@@ -350,5 +363,9 @@ function vsite_vocab_form_taxonomy_overview_terms_alter(&$form, $form_state) {
  * the entity cache for the taxonomy terms.
  */
 function vsite_vocab_invalidate_entitycache($form, $form_state) {
+  if (!db_table_exists('cache_entity_taxonomy_term')) {
+    // Entity cache module is disabled.
+    return;
+  }
   cache_clear_all('*', 'cache_entity_taxonomy_term', TRUE);
 }

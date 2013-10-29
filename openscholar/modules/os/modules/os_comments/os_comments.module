@@ -27,38 +27,73 @@ function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form
     $node_types[$key] = 'comment_sources_' . $type;
   }
 
-  $form['comment_settings'] = array(
-    '#type' => 'fieldset',
-    '#id' => "comment_settings",
-    '#title' => t('Comment Settings'),
-    '#weight' => 0,
-  );
-
   // Includes the admin form inc file.
   module_load_include('admin.inc', 'comment_sources');
-  $form["comment_settings"] += drupal_retrieve_form('comment_sources_admin_settings_form', $form_state);
-
   // Initializes the actions button container.
   if (!isset($form['actions'])) {
     $form['actions'] = array();
   }
 
-  // Moves the system setting form buttons
-  $form['actions'] = array_merge($form["comment_settings"]['actions'], $form['actions']);
-  unset($form["comment_settings"]['actions']);
-
-  // Loops through the available node types' comment source settings forms...
-  foreach (element_children($form["comment_settings"]) as $child) {
-    // Hides non-applicable node types from this app's setting page.
-    if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
-      $form["comment_settings"][$child]['#access'] = FALSE;
-    }
-    else {
-      // Renames end user value to match sentence case.
-      if (isset($form["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'])) {
-        $form["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'] = t('Facebook comments');
+  switch ($type) {
+    // Adds the comment settings into a specific position on the biblio form.
+    case 'biblio':
+      if (!isset($form['left'])) {
+        $form['left'] = array();
       }
-    }
+      $form['left']['comment_settings'] = array(
+        '#type' => 'fieldset',
+        '#id' => "comment_settings",
+        '#title' => t('Comment Settings'),
+        '#weight' => 10,
+      );
+      $form['left']["comment_settings"] += drupal_retrieve_form('comment_sources_admin_settings_form', $form_state);
+      // Moves the system setting form buttons
+      $form['actions'] = array_merge($form['left']["comment_settings"]['actions'], $form['actions']);
+      unset($form['left']["comment_settings"]['actions']);
+
+      // Loops through the available node types' comment source settings forms...
+      foreach (element_children($form['left']["comment_settings"]) as $child) {
+        // Hides non-applicable node types from this app's setting page.
+        if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
+          $form['left']["comment_settings"][$child]['#access'] = FALSE;
+        }
+        else {
+          // Renames end user value to match sentence case.
+          if (isset($form['left']["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'])) {
+            $form['left']["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'] = t('Facebook comments');
+          }
+        }
+      }
+      break;
+
+    // Otherwise, adds the settings directly onto the form for other types.
+    default:
+      $form['comment_settings'] = array(
+        '#type' => 'fieldset',
+        '#id' => "comment_settings",
+        '#title' => t('Comment Settings'),
+        '#weight' => 0,
+      );
+      $form["comment_settings"] += drupal_retrieve_form('comment_sources_admin_settings_form', $form_state);
+      // Moves the system setting form buttons
+      $form['actions'] = array_merge($form["comment_settings"]['actions'], $form['actions']);
+      unset($form["comment_settings"]['actions']);
+
+      // Loops through the available node types' comment source settings forms...
+      foreach (element_children($form["comment_settings"]) as $child) {
+        // Hides non-applicable node types from this app's setting page.
+        if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
+          $form["comment_settings"][$child]['#access'] = FALSE;
+        }
+        else {
+          // Renames end user value to match sentence case.
+          if (isset($form["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'])) {
+            $form["comment_settings"][$child]["#options"]['fb_social:Facebook Comments'] = t('Facebook comments');
+          }
+        }
+      }
+
+      break;
   }
 
   // Uses a secondary validator.
@@ -391,7 +426,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
   // Try to find this app's info...
   $app_info = os_app_info();
   foreach ($app_info as $app => $info) {
-    if (in_array($node->type, $info['nodetypes'])) {
+    if (!empty($info['nodetypes']) && in_array($node->type, $info['nodetypes'])) {
       // We found the app! Break now and $app is the module's machine name.
       break;
     }
@@ -421,6 +456,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
     '#weight' => 10,
   );
 
+  $form['comment_settings']['no_comment']['#options'] = empty($form['comment_settings']['no_comment']['#options']) ? array() : $form['comment_settings']['no_comment']['#options'];
   if ($source == 'comment' && isset($form['comment_settings']['comment_status']['#title'])) {
     $form['comment_settings']['comment_status']['#title'] = t('Private comments');
   }
@@ -435,7 +471,7 @@ function os_comments_form_node_form_alter(&$form, $form_state, $form_id) {
  * This form would only ever appear to authorized roles.
  * But we still want to restrict comments to just the current vsite's users.
  */
-function os_comments_form_comment_form_alter(&$form, &$form_state, $form_id) {
+function os_comments_form_comment_form_alter(&$form, &$form_state) {
   // Only looks for users of other groups if vsite module is enabled.
   if (!module_exists('vsite')) {
     return;
@@ -443,6 +479,10 @@ function os_comments_form_comment_form_alter(&$form, &$form_state, $form_id) {
 
   // Allows site member's to access the comment form.
   $node = $form['#node'];
+  if (og_is_group('node', $node)) {
+    // This is the group itself.
+    return;
+  }
   $wrapper = entity_metadata_wrapper('node', $node);
   $gid = $wrapper->{OG_AUDIENCE_FIELD}[0]->value(array('identifier' => TRUE));
   if (og_is_member('node', $gid)) {

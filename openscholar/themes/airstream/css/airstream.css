@@ -148,7 +148,8 @@ body.navbar #header-container p {
 #menu-bar ul.nice-menu ul ul li {
 	margin-bottom:0;
 }
-	
+
+#menu-bar ul.nice-menu ul,	
 #menu-bar ul.nice-menu ul li {
 	margin-top:0;
 	background:#CCC;
@@ -162,7 +163,7 @@ body.navbar #header-container p {
 
 #menu-bar ul.nice-menu ul li a:hover {
 	color:#5088BA;
-	background:#F1F3F4;
+	background:#CCC;
 }
   
   

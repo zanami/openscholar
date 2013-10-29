@@ -172,7 +172,7 @@ class os_boxes_tabs extends os_boxes_default {
             $block_obj = &$block_arr[$block_tab->module . '_' . $block_tab->delta];
             $block_obj->region = $this->delta;
 
-            $render['links']['#links'][] = array(
+            $render['links']['#links'][$tab['weight']] = array(
               'title' => $tab['title'],
               'href' => '',
               'fragment' => $k,
@@ -190,6 +190,7 @@ class os_boxes_tabs extends os_boxes_default {
         }
       }
     }
+    ksort($render['links']['#links']);
     $block['content'] = drupal_render($render);
 
     return $block;

@@ -30,7 +30,7 @@ font-family: helvetica,arial,sans-serif;
 .region-header-third {text-align: right;}
 
 #footer {
-    text-align: center;
+
     background:#2B2B2B;
     min-height:35px;
     padding: 15px 20px;
@@ -57,10 +57,6 @@ font-family: helvetica,arial,sans-serif;
 	
 }
 
-
-#powered-by a {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
-}
 
 
 /* TYPOGRAPHY*/ 
@@ -182,9 +178,13 @@ margin: 8px 0 0 0px;
 .submitted {font-weight:bold;}
 
 
-.region-footer,
-.region-footer a {
+#footer,
+#footer a {
 	color:#FFF;
+}
+
+#footer a {
+	text-decoration:underline;
 }
 
 /****SIDEBAR BOX STYLES ****/
@@ -239,27 +239,6 @@ color: #F3F3F1;
     left: 12.4em;
 }
 
-/**** MAIN NAV IN SIDEBAR ****/
-#columns .sidebar .block ul.nice-menu ul.nice-menu-,
-#columns .sidebar .block ul.nice-menu {
-margin: 8px 0 0 0;
-  }
-
-#columns .sidebar .block ul.nice-menu li {
- list-style-image:NONE;
-
-  }
-
-.sidebar #block-os-secondary-menu ul.menu li a {
-  color: #444;
-  
-  font-weight:bold;
-  padding: 4px 9px 2px;
- 
-  text-decoration:none;
-
-}
-
 
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
@@ -289,48 +268,60 @@ margin: 8px 0 0 0;
 	border: none;
 }
 
-/* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
-.region-header-third .menu  {
+/*  LIST/NAV WHEN IN A HEADER RIGHT  */ 
+#header-container ul.nice-menu  {
   margin: -10px 5px 0;
 }
 
-.region-header-third .menu ul {
+#header-container ul.nice-menu {
 float:right;
  }
  
-.region-header-third .menu li {
+#header-container ul.nice-menu li {
  list-style-image: none;
 
  }
  
-.region-header-third .menu li a {
+#header-container ul.nice-menu li a {
   text-decoration: underline;
   color: #F3F3F1;
   font-size:.9em;
   border-right:1px solid #F3F3F1;
   padding: 0 8px;
+  font-weight:bold;
  } 
 
-.region-header-third .menu li.last a {
+#header-container ul.nice-menu li.last a {
   border-right:none;
   padding: 0 0 0 8px;
  }
 
 /* SECONDARY NAV WHEN IN A SIDEBAR  */ 
 
+
+.sidebar .os-custom-menu ul,
+.sidebar #block-os-primary-menu ul,
 .sidebar #block-os-secondary-menu ul {
 	margin: 8px 0 0 0px;
 	}
 
+.sidebar .os-custom-menu ul li,
+.sidebar #block-os-primary-menu ul li,
+.sidebar #block-os-secondary-menu ul li {
+	list-style-image: none !important;
+	list-style-type: none !important;
+	padding: 0.4em 0.5em 0 0;
+	}
 
+
+.sidebar .os-custom-menu ul li a,
+.sidebar #block-os-primary-menu ul li a,
 .sidebar #block-os-secondary-menu ul li a {
   font-weight:bold;
-  font-size:1em;
+  text-decoration:none;
+  line-height:12px;
 }
 
-.sidebar #block-os-secondary-menu ul li a {
-  font-weight:normal;
-}
 
 
 /* BOOKLET NAV  */ 
@@ -447,6 +438,11 @@ position: relative;
  color: #444;
  
 }
+
+#powered-by a {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
+}
+
 
 
 

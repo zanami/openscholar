@@ -19,6 +19,7 @@ function os_basetheme_preprocess_html(&$vars) {
     $vars['classes_array'][] = 'navbar-off';
   }
 
+  $vars['use_responsive_behaviors'] = (bool) variable_get('enable_responsive', FALSE);
 }
 
 /**
@@ -29,8 +30,8 @@ function os_basetheme_preprocess_page(&$vars) {
 
   //Adds OpenScholar header region awareness to body classes
   $header = array(
-    'header-left' => $vars['page']['header_second'],
-    'header-main' => $vars['page']['header_first'],
+    'header-left' => $vars['page']['header_first'],
+    'header-main' => $vars['page']['header_second'],
     'header-right' => $vars['page']['header_third'],
   );
   $content = array(
@@ -112,8 +113,8 @@ function os_basetheme_preprocess_status_messages(&$vars) {
 }
 
 function os_basetheme_preprocess_overlay(&$vars) {
-  // we never want these. They look awful
- $vars['tabs'] = false;
+  // we never want these. They look awful.
+ $vars['tabs'] = strpos($_GET['q'], 'os-importer/') ? FALSE : menu_primary_local_tasks();
 }
 
 /**
@@ -143,19 +144,14 @@ function os_basetheme_menu_link(array $vars) {
     }
   }
 
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
-  }
-
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
 }
 
 /**
- * Preprocess variables for comment.tpl.php
+ * Preprocess variables for node.tpl.php
  */
 function os_basetheme_preprocess_node(&$vars) {
-
   // Event nodes, inject variables for date month and day shield
   if ($vars['node']->type == 'event' && !$vars['page']) {
     $vars['event_start'] = array();
@@ -164,10 +160,15 @@ function os_basetheme_preprocess_node(&$vars) {
       list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
     }
     if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
- //     date_default_timezone_set($vars['field_date'][$delta]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][$delta]['value']);
-      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
-      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
+      // Define the time zone in the DB as a UTC.
+      $date = new DateTime($vars['field_date'][$delta]['value'], new DateTimeZone('utc'));
+
+      // Get the timezone of the site and apply it on the date object.
+      $time_zone = date_default_timezone();
+      $date->setTimezone(new DateTimeZone($time_zone));
+
+      $vars['event_start']['month'] = check_plain($date->format('M'));
+      $vars['event_start']['day'] = check_plain($date->format('d'));
       $vars['classes_array'][] = 'event-start';
     }
   }
@@ -193,8 +194,28 @@ function os_basetheme_link(array $variables) {
  *  </ul>
  *
  * We need to implement our own hook_menu_tree to prevent a double ul tag
- * wrapping.
+ * wrapping.  But when we're not using nice menus, use the original adaptive theme.
  */
 function os_basetheme_menu_tree(&$variables) {
-  return $variables['tree'];
+  if (isset($variables['os_nice_menus']) && $variables['os_nice_menus']) {
+    return $variables['tree'];
+  }
+  
+  return adaptivetheme_menu_tree($variables);
+}
+
+/**
+ * Implements template_preprocess_HOOK() for theme_menu_tree().
+ * 
+ * template_preprocess_menu_tree has been removed.  This replaces it and sets a flag
+ * when we're using nice_menus.
+ */
+function os_basetheme_preprocess_menu_tree(&$variables) {
+  if (isset($variables['tree']['#theme'])) {
+    $variables['os_nice_menus'] = ($variables['tree']['#theme'] == 'os_nice_menus');
+  }
+  else {
+    $variables['os_nice_menus'] = false;
+  }
+  $variables['tree'] = $variables['tree']['#children'];
 }

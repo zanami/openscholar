@@ -10,6 +10,15 @@
 function os_profiles_user_default_permissions() {
   $permissions = array();
 
+  // Exported permission: bypass redirection.
+  $permissions['bypass redirection'] = array(
+    'name' => 'bypass redirection',
+    'roles' => array(
+      0 => 'vsite admin',
+    ),
+    'module' => 'field_redirection',
+  );
+
   // Exported permission: create person content.
   $permissions['create person content'] = array(
     'name' => 'create person content',

@@ -205,7 +205,6 @@ function os_classes_strongarm() {
   $strongarm->name = 'node_options_class';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_class'] = $strongarm;
 
@@ -218,7 +217,6 @@ function os_classes_strongarm() {
   $strongarm->name = 'node_options_class_material';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_class_material'] = $strongarm;
 

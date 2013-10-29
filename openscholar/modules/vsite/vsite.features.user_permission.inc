@@ -24,6 +24,7 @@ function vsite_user_default_permissions() {
     'name' => 'create department content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -82,6 +83,7 @@ function vsite_user_default_permissions() {
     'name' => 'create personal content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -128,6 +130,7 @@ function vsite_user_default_permissions() {
     'name' => 'create project content',
     'roles' => array(
       0 => 'authenticated user',
+      1 => 'web services',
     ),
     'module' => 'node',
   );
@@ -180,6 +183,15 @@ function vsite_user_default_permissions() {
       2 => 'vsite admin',
     ),
     'module' => 'spaces_og',
+  );
+
+  // Exported permission: subscribe as support team.
+  $permissions['subscribe as support team'] = array(
+    'name' => 'subscribe as support team',
+    'roles' => array(
+      0 => 'support team',
+    ),
+    'module' => 'vsite',
   );
 
   // Exported permission: view users outside groups.

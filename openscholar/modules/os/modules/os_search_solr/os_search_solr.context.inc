@@ -102,7 +102,7 @@ function os_search_solr_context_default_contexts() {
           'module' => 'facetapi',
           'delta' => $delta_og_vocab,
           'region' => 'sidebar_second',
-          'weight' => '-10',
+          'weight' => '-4',
         ),
       ),
     ),

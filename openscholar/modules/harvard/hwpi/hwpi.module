@@ -1,6 +1,20 @@
 <?php
 
 /**
+ * Implements hook_init
+ */
+function hwpi_init() {
+  global $conf;
+
+  // Is securepages enabled?
+  // If we are not on a harvard domain turn it off.
+  if (variable_get('securepages_enable', 0) && substr($_SERVER['HTTP_HOST'], -12) != ".harvard.edu") {
+    //Turn SSL off for pages that don't match the wildcard certificate
+    $conf['securepages_enable'] = 0;
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page.
  */
 function hwpi_preprocess_page(&$vars) {
@@ -15,10 +29,13 @@ function hwpi_preprocess_page(&$vars) {
  *
  * @return bool
  */
-function _is_hwpi_theme() {
+function _is_hwpi_theme($theme_name = NULL) {
+  if (is_null($theme_name)) {
+    $theme_name = $GLOBALS['theme'];
+  }
   $themes = list_themes();
-  if (isset($themes[$GLOBALS['theme']])) {
-    $t = $themes[$GLOBALS['theme']];
+  if (isset($themes[$theme_name])) {
+    $t = $themes[$theme_name];
     if (isset($t->base_themes) && isset($t->base_themes['hwpi_basetheme'])) {
       return TRUE;
     }

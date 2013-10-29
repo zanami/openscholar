@@ -48,13 +48,24 @@ function os_pinserver_auth_private_file_download(){
 
   //Use Pinserver Tokens to load user
   pinserver_authenticate_user();
+  if(pinserver_get_errors()){
+    $errors = "Error trying to authenticate for private files. ".implode(',', pinserver_get_errors());
+    watchdog('pinserver', "".$errors);
+  }
 
   $headers = os_pinserver_auth_file_download($uri);
   if (count($headers)) {
     file_transfer($uri, $headers);
   }
 
-  return JS_MENU_ACCESS_DENIED;
+  // If we get to here, the user has not been sent to pin and the file has not been served.
+  // Return a quick 404 so that bootstrap is not attempted.
+  drupal_add_http_header('Status', '404 Not Found');
+  $fast_404_html = variable_get('404_fast_html', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>');
+
+  // Replace @path in the variable with the page path.
+  print strtr($fast_404_html, array('@path' => check_plain(request_uri())));
+  exit;
 }
 
 /**
@@ -85,8 +96,8 @@ function _os_pinserver_auth_file_download($uri) {
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-    if (pinserver_check_status(variable_get('os_files_pinserver_timeout',420 * 60))) {
-      $file = file_uri_to_object($uri, FALSE);
+    $file = file_uri_to_object($uri);
+    if (pinserver_get_user() || file_entity_access('update', $file, $GLOBALS['user'])) {
       return file_get_content_headers($file);
     }
     // Otherwise, sends the user to Pinserver to log in.
@@ -188,22 +199,26 @@ function os_pinserver_auth_vsite_private_file_settings_submit(&$form, &$form_sta
   }
 
   $domain_pin_apps = variable_get('os_fastpath_domain_pinapps',array());
+  $vsite_domain = false;
+  if (variable_get('vsite_domain_name', false)){
+    $vsite_domain = "http://".variable_get('vsite_domain_name', false);
+  }
 
   // Set or Unset a custom pinserver app.
-  if($form_state['values']['pinserver_app_name']){
+  if($form_state['values']['pinserver_app_name'] && $form_state['values']['pinserver_app_name'] != $vsite->controllers->variable->get('pinserver_app_name','original')){
     // The pinserver domain should match the site's custom domain.
-    $vsite->controllers->variable->set('os_pinserver_custom_domain',variable_get('vsite_domain_name', false));
+    $vsite->controllers->variable->set('os_pinserver_custom_domain', $vsite_domain);
     //Store pin settings for this domain for use on the os_fast callback outside a space.
-    $domain_pin_apps[variable_get('vsite_domain_name', false)] = array(
+    $domain_pin_apps[$vsite_domain] = array(
       'pinserver_app_name' => $form_state['values']['pinserver_app_name'],
       'os_files_private_pinserver' => variable_get('os_files_private_pinserver', 0),
-      'os_pinserver_custom_domain' => variable_get('vsite_domain_name', false),
+      'os_pinserver_custom_domain' => $vsite_domain,
     );
   }else{
     // Remove the custom pinserver domain if they do not have their own app.
     $vsite->controllers->variable->del('os_pinserver_custom_domain');
-    if(isset($domain_pin_apps[variable_get('vsite_domain_name', false)])){
-      unset($domain_pin_apps[variable_get('vsite_domain_name', false)]);
+    if(isset($domain_pin_apps[$vsite_domain])){
+      unset($domain_pin_apps[$vsite_domain]);
     }
   }
 

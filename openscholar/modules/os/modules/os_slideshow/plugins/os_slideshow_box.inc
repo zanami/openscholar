@@ -22,7 +22,8 @@ class os_slideshow_box extends os_boxes_default {
 
     $layouts = _os_slideshow_layouts();
     if (!$this->new) {
-      //layouts can be changed, but the ratio is locked, limiting available layouts
+      // Layouts can be changed, but the ratio is locked, limiting available
+      // layouts.
       $ratio = current(array_keys($layouts[ $this->options['layout'] ]['ratio']));
     }
 
@@ -84,8 +85,9 @@ class os_slideshow_box extends os_boxes_default {
         '#markup' => '<div class="messages warning">You haven\'t added any slides yet.  Put this widget in your layout and visit that page to add slides.</div>',
         '#weight' => 5,
       );
-    } else {
-      // build a normal form
+    }
+    else {
+      // Build a normal form.
       $form['nodes'] = array(
         '#type' => 'markup',
         '#tree' => TRUE,
@@ -93,7 +95,8 @@ class os_slideshow_box extends os_boxes_default {
         '#weight' => 5,
       );
 
-      $nids = $this->_get_nids(); //filter out dead nids
+      // Filter out dead nids.
+      $nids = $this->_get_nids();
 
       $form['nodes']['#process'][] = 'os_slideshow_process_form_nodes';
       $form['nodes_list'] = array(
@@ -101,7 +104,7 @@ class os_slideshow_box extends os_boxes_default {
         '#value' => $nids,
       );
 
-      //load slideshow_slide nodes
+      // Load slideshow_slide nodes.
       uasort($this->options['nodes'], 'element_sort');
       $nodes = node_load_multiple($nids);
 
@@ -114,7 +117,8 @@ class os_slideshow_box extends os_boxes_default {
         $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $uri, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
         $title = ($nodes[$nid]->status) ? '<strong>' . $nodes[$nid]->title . '</strong>' : '<em>' . $nodes[$nid]->title . ' (unpublished)</em>';
 
-        //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
+        // Edit link loads node edit with destination of this page. This page's
+        // destination needs to be preserved. Nested destinations.
         $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
         $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest, 'widget' => $this->delta)));
         $remove_link =  '<a href="#" class="remove" title="Remove Slide">Remove</a>';
@@ -134,7 +138,7 @@ class os_slideshow_box extends os_boxes_default {
             '#default_value' => $data['weight'],
             '#size' => 3,
             '#attributes' => array('class' => array('field-weight')),
-          )
+          ),
         );
       }
     }
@@ -143,11 +147,14 @@ class os_slideshow_box extends os_boxes_default {
   }
 
   public function render() {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
+      return;
+    }
     $block = parent::render();
     $options = $this->options + $this->options_defaults();
     $block['title'] = $block['subject'] = check_plain($this->title);
 
-    //show Add Slide link to admins
+    // Show Add Slide link to admins.
     if (spaces_access_admin()) {
       $block['content'] = l('Add Slide', 'node/add/slideshow-slide', array(
         'attributes' => array('class' => array('add_new')),
@@ -160,7 +167,6 @@ class os_slideshow_box extends os_boxes_default {
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;
   }
-
 
   /**
    * @function _transition_speed_opts()
@@ -180,7 +186,7 @@ class os_slideshow_box extends os_boxes_default {
     return $return;
   }
 
-  //filters out dead nids
+  // Filters out dead nids.
   private function _get_nids() {
     $nids = array_keys($this->options['nodes']);
 
@@ -197,9 +203,11 @@ class os_slideshow_box extends os_boxes_default {
   }
 }
 
-
+/**
+ * Helper function for building a render-able array of a draggable table.
+ */
 function os_slideshow_draggable_table($element) {
-  // render the form as a table
+  // Render the form as a table
   $rows = array();
   uasort($element, 'element_sort');
   foreach (element_children($element) as $c) {
@@ -208,7 +216,7 @@ function os_slideshow_draggable_table($element) {
         drupal_render($element[$c]['nid']) . drupal_render($element[$c]['text']),
         drupal_render($element[$c]['weight']),
       ),
-      'class' => ((string)$c!='blank') ? array('draggable') : array(),
+      'class' => ((string)$c != 'blank') ? array('draggable') : array(),
     );
   }
   $element['#headers'] = array();
@@ -216,7 +224,7 @@ function os_slideshow_draggable_table($element) {
   $element['#rows'] = $rows;
   $element['#sticky'] = false;
   $element['#empty'] = true;
-  //$element['#value'] = theme('table', array(), $rows, );
+  //$element['#value'] = theme('table', array(), $rows);
   $element['#theme'] = 'table';
   drupal_add_tabledrag('slideshow-slides-list', 'order', 'sibling', 'field-weight');
   return $element;

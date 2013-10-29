@@ -39,13 +39,17 @@ function _os_pinserver_auth_private_site_access($node, $op, $account){
 function _os_pinserver_auth_vsite_access_denied($vsite){
 
   //Get Privacy Setting
-  $wrapper = entity_metadata_wrapper('node', $vsite);
+  $wrapper = entity_metadata_wrapper('node', $vsite->group);
   if (! empty($wrapper->{VSITE_ACCESS_FIELD})) {
     switch ($wrapper->{VSITE_ACCESS_FIELD}->value()) {
       case OS_PINSERVER_INTRANET_ACCESS :
       case OS_PINSERVER_ACCESS :
         // Private group.
-        if (! user_access('administer group') && ! og_is_member('node', $vsite->nid, 'user', $account)) {
+        global $user;
+        if (! user_access('administer group') && ! og_is_member('node', $vsite->group->nid, 'user', $user) && !pinserver_check_system_settings()) {
+          //Load custom pinserver variables
+          $vsite->controllers->variable->init_overrides();
+
           // They are not a member, validate through pin.
           pinserver_redirect(array(
             'redirect' => url($_GET['q'], array(
@@ -63,7 +67,10 @@ function _os_pinserver_auth_vsite_access_denied($vsite){
  * Add Pinserver Site Privacy options.
  */
 function _os_pinserver_auth_vsite_access_privacy_values_alter(&$privacy_options){
-  $privacy_options[OS_PINSERVER_ACCESS] = t('Harvard Community') . "<br><span class='radio-description'>" . t("Only the Harvard community will be able to access your site. Sign-in via Harvard required.") . "</span>";
-  // @todo Add Intranet private by PIN
-  // $privacy_options[OS_PINSERVER_INTRANET_ACCESS] = t('Intranet Private Harvard Community');
+  // Provides short human-friendly labels for the different options.
+  if(variable_get('file_default_scheme', 'public') == 'private'){
+    $privacy_options[OS_PINSERVER_INTRANET_ACCESS] = t('Harvard Community') . "<br><span class='radio-description'>" . t("Only the Harvard community will be able to access your site. Sign-in via Harvard required.") . "</span>";
+  }else{
+    $privacy_options[OS_PINSERVER_ACCESS] = t('Harvard Community') . "<br><span class='radio-description'>" . t("Only the Harvard community will be able to access your site. Sign-in via Harvard required.") . "</span>";
+  }
 }
