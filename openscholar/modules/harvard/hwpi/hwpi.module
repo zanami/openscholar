@@ -8,9 +8,19 @@ function hwpi_init() {
 
   // Is securepages enabled?
   // If we are not on a harvard domain turn it off.
-  if (variable_get('securepages_enable', 0) && substr($_SERVER['HTTP_HOST'], -12) != ".harvard.edu") {
+  if (variable_get('securepages_enable', 0)) {
+
     //Turn SSL off for pages that don't match the wildcard certificate
     $conf['securepages_enable'] = 0;
+
+    foreach (variable_get('hwpi_ssl_domains',array()) as $domain) {
+      $offset = (strlen($domain) * -1);
+      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",$offset)){
+        //We found a Match
+        $conf['securepages_enable'] = 1;
+        break;
+      }
+    }
   }
 }
 
