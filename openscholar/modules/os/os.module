@@ -1,11 +1,6 @@
 <?php
 
 /**
- * The current Open Scholar version.
- */
-define('OS_VERSION', '7.x-3.8');
-
-/**
  * @file
  * Openscholar module file.
  */
