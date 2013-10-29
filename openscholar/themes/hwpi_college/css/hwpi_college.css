@@ -111,7 +111,7 @@ blockquote {
 }
 #menu-bar ul.nice-menu a.active,
 #menu-bar ul.nice-menu a:hover {
-  background: #7B272B!important;
+  background: #7B272B;
   color: #FFF;
 }
 #menu-bar ul.nice-menu .menuparent a {
@@ -124,13 +124,10 @@ blockquote {
 }
 
 
-#menu-bar ul.nice-menu .menuparent.over > a{
-	background-color:#7B272B!important;
-}
-
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu .menuparent a:hover,
 #menu-bar ul.nice-menu .menuparent a.active {
-    background: url(../../hwpi_basetheme/images/menu_down_arrowOn.gif) right center no-repeat #7B272B;
+    background: url('../../hwpi_basetheme/images/menu_down_arrowOn.gif') right center no-repeat #7B272B;
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a,
