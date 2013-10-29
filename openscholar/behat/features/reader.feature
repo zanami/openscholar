@@ -7,7 +7,7 @@ Feature:
      When I click "Reader"
      Then I should see "Engadget rss"
 
-  @api @current
+  @api
   Scenario: Test the OS reader feed importer.
     Given I am logging in as "admin"
       And I import feed items for "john"
