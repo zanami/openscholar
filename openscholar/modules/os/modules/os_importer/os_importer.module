@@ -270,7 +270,7 @@ function os_importer_import($form, &$form_state, $type) {
 
   $options = array();
   foreach (array_keys($bundle) as $option) {
-    $options[$option] = $option == 'ical' ? t('iCal') : strtoupper(t($option));
+    $options[$option] = $option == 'ical' ? t('iCal') : strtoupper($option);
   }
 
   $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
