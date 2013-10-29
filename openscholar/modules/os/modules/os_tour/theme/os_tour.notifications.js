@@ -7,7 +7,10 @@
 
       // Setup.
       var menuLinkSel = '#os-tour-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#').text('');
+      if ($(menuLinkSel + '.os-notifications-processed').length) {
+        return;
+      }
+      $(menuLinkSel).attr('href', '#').text('').addClass('os-notifications-processed');
       var settings = Drupal.settings.os_notifications;
       if (typeof google == 'undefined') {
         return;

@@ -107,6 +107,9 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
     }
     $form_state['redirect'] = array('file/' . $file->fid . '/edit', array('query' => $destination));
   }
+  elseif (overlay_get_mode() == 'child') {
+    overlay_close_dialog();
+  }
   else {
     $form_state['redirect'] = 'admin/content/file';
   }
