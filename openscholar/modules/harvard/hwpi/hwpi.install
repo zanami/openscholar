@@ -91,9 +91,12 @@ function _hwpi_reverse_menu($site, $key) {
 }
 
 /**
- * Sets the featured themes configurable text to describe HWPI themes.
+ * Enables new `College` theme and set new featured themes variable to highlight
+ * and describe HWPI themes.
  */
 function hwpi_update_7005() {
+  // Enables the new `hwpi_college` theme.
+  theme_enable(array('hwpi_college'));
   // Sets the description that appears under "Featured Themes" heading.
   $name = 'cp_appearance_featured_description';
   $value = t('Mobile-friendly themes using Harvard color palettes.');
