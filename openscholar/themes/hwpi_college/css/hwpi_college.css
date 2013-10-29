@@ -25,8 +25,8 @@ h2 {
     padding-bottom: 0.75em;
 }
 #content-column {
-    -moz-box-sizing: border-box;
-    box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
+   /* -moz-box-sizing: border-box;
+    box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);*/
     margin: 0 auto;
 }
 
@@ -61,6 +61,8 @@ blockquote {
     margin-bottom: -70px;
      margin-top: 0;
      background:#FFF;
+     border-left:1px solid #CCC;
+     border-right:1px solid #CCC;
 }
 
 #columns .links li a {
@@ -272,12 +274,11 @@ h1#page-title {
    margin: 0 0 20px;
 }
 .page-node h1#page-title{
-  background-color: #e6e5e3;
     color: #1E1E1E;
     font-family: georgia,serif;
     font-size: 1.6em;
     font-weight: normal;
-    padding: 0.35em;
+    padding: 0.35em 0;
 }
 
 
