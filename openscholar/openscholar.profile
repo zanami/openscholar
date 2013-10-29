@@ -139,6 +139,7 @@ function openscholar_flavor_form_submit($form, &$form_state) {
   // Define dummy content migration.
   if (!empty($form_state['input']['intranet_site'])) {
     variable_set('file_default_scheme', 'private');
+    variable_set('file_private_path', 'sites/default/files/private');
   }
 }
 
