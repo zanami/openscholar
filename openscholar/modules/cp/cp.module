@@ -410,7 +410,7 @@ function cp_site_sitewide_contact() {
 <p>Every question you ask adds to the power of our OpenScholar Community. Type 
   your question below and click the Continue button. You will need to login or 
   create an account to finish posting.</p>
-<p>If you need to send us a question without posting, click Send Privately.</p>     
+<p>If you don't want to post publicly to the community, click Send Privately</p>     
 EOF;
     return array(
       'div' => array(
