@@ -306,7 +306,7 @@ h1#page-title {
    background-position: 2px -373px;
 }
 
-.not-front #content-column p{
+.not-front #content-column p {
 	font-family:georgia,serif;
 }
 
@@ -591,7 +591,7 @@ table td.mini {
 #footer .at-panel {
     background: none repeat scroll 0 0 #FFFFFF;
     box-shadow: 2px 0 0 rgba(0, 0, 0, 0.05), -2px 0 0 rgba(0, 0, 0, 0.07);
-
+    padding-top: 40px;
 }
 
 .section-nav .menu-depth-1 > a {

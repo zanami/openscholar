@@ -42,6 +42,7 @@ ul.mobile-buttons {
 
 }
 
+.not-front .block-boxes-os_slideshow_box {margin-bottom:30px;}
 
 .slidecontrol.rslides_tabs {
 	background:#444 !important;
@@ -50,7 +51,7 @@ ul.mobile-buttons {
 /*Dropdown menu*/
 #menu-bar {
     background: none!important;
-    border-bottom: none;
+    border-bottom: none !important;
 }
 #block-os-primary-menu{
     background: none repeat scroll 0 0 #A23338;
@@ -90,6 +91,7 @@ ul.mobile-buttons {
     margin-left:0!important;
 }
 
+#footer {padding:0 !important;}
 
 }
 @media (max-width: 768px) {
