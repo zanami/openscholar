@@ -9,6 +9,11 @@ ul.mobile-buttons {
 
     padding: 0 20px !important;
 }
+
+#columns .sidebar .region-inner {
+    padding: 0 20px 20px 0 !important;
+}
+
 	.front #content-column {
     padding: 0!important;
 }
@@ -44,9 +49,9 @@ ul.mobile-buttons {
 
 .not-front .block-boxes-os_slideshow_box {margin-bottom:30px;}
 
-.slidecontrol.rslides_tabs {
-	background:#444 !important;
-	}
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+  background: none !important;
+}
 
 /*Dropdown menu*/
 #menu-bar {
@@ -92,6 +97,9 @@ ul.mobile-buttons {
 }
 
 #footer {padding:0 !important;}
+#footer .region-inner {
+    padding: 0 20px 20px !important;
+}
 
 }
 @media (max-width: 768px) {
