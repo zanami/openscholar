@@ -90,6 +90,7 @@ blockquote {
 #menu-bar {
     background: none repeat scroll 0 0 #A51C30;
     padding: 0;
+    border-bottom: 8px solid #000000;
 }
 
 #menu-bar ul.nice-menu li {
@@ -109,13 +110,20 @@ blockquote {
 #menu-bar ul.nice-menu ul {
     background: none repeat scroll 0 0 #7B272B;
 }
-#menu-bar ul.nice-menu a.active,
+
 #menu-bar ul.nice-menu a:hover {
-  background: #7B272B;
+  background: #86111E;
   color: #FFF;
 }
+
+#menu-bar ul.nice-menu a.active {
+  background: #6a1319;
+  color: #FFF;
+}
+
+
 #menu-bar ul.nice-menu .menuparent a {
-    background:url("/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif") no-repeat scroll right center rgba(0, 0, 0, 0);
+    background:url('/profiles/openscholar/themes/hwpi_basetheme/images/menu_down_arrowOn.gif') no-repeat scroll right center rgba(0, 0, 0, 0);
 }
 
 .slide-copy h2 {
@@ -123,12 +131,16 @@ blockquote {
 
 }
 
-
 #menu-bar ul.nice-menu .menuparent.over > a,
-#menu-bar ul.nice-menu .menuparent a:hover,
-#menu-bar ul.nice-menu .menuparent a.active {
-    background: url('../../hwpi_basetheme/images/menu_down_arrowOn.gif') right center no-repeat #7B272B;
+#menu-bar ul.nice-menu .menuparent a:hover {
+    background: url('../../hwpi_basetheme/images/menu_down_arrowOn.gif') right center no-repeat #86111E;
 }
+
+#menu-bar ul.nice-menu .menuparent a.active,
+#menu-bar ul.nice-menu .menuparent a.active:hover {
+    background: url('../../hwpi_basetheme/images/menu_down_arrowOn.gif') right center no-repeat #6a1319;
+}
+
 
 #menu-bar ul.nice-menu .menuparent ul li a,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
@@ -148,8 +160,15 @@ blockquote {
 
 
 #menu-bar ul.nice-menu ul {
-    background:#7B272B;
+    background:#86111E;
 }
+
+#menu-bar ul.nice-menu .active-trail ul {
+    background:#6A1319;
+}
+
+
+
 #box-os_news_latest-page ul li{
 	margin:0;
 }
@@ -157,6 +176,8 @@ blockquote {
 #branding_footer a, #branding_header a {
     color: #BAC5C6;
     font-family: arial,serif;
+    font-size: 13px;
+    font-weight: normal;
 }
 
 .region-header-third ul.nice-menu a {
@@ -256,7 +277,7 @@ h1#page-title {
   background-color: #e6e5e3;
     color: #1E1E1E;
     font-family: georgia,serif;
-    font-size: 2em;
+    font-size: 1.6em;
     font-weight: normal;
     padding: 0.35em;
 }
@@ -358,7 +379,7 @@ h2.block-title {
 }
 
 .region-sidebar-second {
-    margin-top: 130px;
+    margin-top: 31px;
 }
 
 
@@ -383,10 +404,6 @@ a, a:visited {
     padding: 0;
     margin-top:15px;
 }
-
-.view-os-events{
-	  border-top: 4px solid #8996A1;
-} 
 
 #content-column .block.block-boxes-os_boxes_manual_list h2.block-title {
     border-bottom: medium none;
@@ -472,9 +489,7 @@ a, a:visited {
 .ui-tabs .block.no-title .view .date-nav-wrapper {
   border-top: 0;
 }
-.block-boxes-os_slideshow_box {
-    margin-bottom: 35px !important;
-}
+
 .block .view .date-nav-wrapper .date-nav {
   margin-bottom: 7px;
 }
@@ -649,7 +664,7 @@ background-color: none !important;
 
 
 .page-news .view .node-teaser {
-   padding: 10px 0 30px;
+   padding: 5px 0 20px;
 }
 
 #powerby-login {

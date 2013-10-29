@@ -41,9 +41,16 @@ ul.mobile-buttons {
        background-color: #1E1E1E;
 
 }
+
+
+.slidecontrol.rslides_tabs {
+	background:#444 !important;
+	}
+
 /*Dropdown menu*/
 #menu-bar {
     background: none!important;
+    border-bottom: none;
 }
 #block-os-primary-menu{
     background: none repeat scroll 0 0 #A23338;
