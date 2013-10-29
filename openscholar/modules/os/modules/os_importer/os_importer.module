@@ -259,7 +259,22 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 function os_importer_map_author($source, $entity, $target, $value, $mapping) {
   global $user;
 
-  $account = !$value ? user_load($user->uid) : user_load_by_name($value);
+  if ($account = user_load_by_name($value)) {
+    // Verify that the user from the CSV can create nodes from this type on the
+    // current space.
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $account = og_user_access('node', $vsite->id, 'create ' . $entity->type . ' content', $account) ? $account : user_load($user->uid);
+    }
+    else {
+      // We not in a vsite check if the user cna create node of this type side
+      // wide.
+      $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
+    }
+  }
+  else {
+    // Loading the current user.
+    $account = user_load($user->uid);
+  }
 
   $entity->uid = $account->uid;
 }
