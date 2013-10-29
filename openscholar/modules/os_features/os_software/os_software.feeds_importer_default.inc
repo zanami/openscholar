@@ -57,6 +57,11 @@ function os_software_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          3 => array(
+            'source' => 'Author',
+            'target' => 'author',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',

@@ -63,16 +63,6 @@ function os_importer_node_insert($node) {
 }
 
 /**
- * Implements hook_admin_paths().
- */
-function os_importer_admin_paths() {
-  return array(
-    'cp/os-importer/*' => TRUE,
-    'cp/os-importer/blog/manage' => TRUE,
-  );
-}
-
-/**
  * Implements hook_os_add_new_links_alter().
  */
 function os_importer_os_add_new_links_alter(&$links) {
@@ -118,7 +108,7 @@ function os_importer_importable_content($type = '') {
   // Loop through the apps and check which app has an importer.
   foreach ($apps as $feature => $app) {
     // Check to which bundle the user can import content.
-    if (!spaces_access_feature($op = 'view', $feature)) {
+    if (!spaces_access_feature('create', $feature)) {
       continue;
     }
 
@@ -238,8 +228,8 @@ function os_importer_import_access($type, $feed = TRUE) {
  * @param $value
  *   The value to populate the target with.
  * @param $mapping
- *  Associative array of the mapping settings from the per mapping
- *  configuration form.
+ *  Associative array of the mapping settings from the per mapping configuration
+ *  form.
  */
 function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   if (!$value) {
@@ -259,6 +249,19 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   }
 
   $entity->{$field_name}[$entity->language] = $files;
+}
+
+/**
+ * Callback function for creating a node on behalf of another user.
+ *
+ * @see os_importer_map_files().
+ */
+function os_importer_map_author($source, $entity, $target, $value, $mapping) {
+  global $user;
+
+  $account = !$value ? user_load($user->uid) : user_load_by_name($value);
+
+  $entity->uid = $account->uid;
 }
 
 /**
@@ -361,6 +364,8 @@ function os_importer_import($form, &$form_state, $type) {
     ),
   );
 
+  $form['#validate'][] = 'os_importer_verify_uploaded_file';
+
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
@@ -429,6 +434,53 @@ function os_importer_import_validate($form, $form_state) {
 }
 
 /**
+ * Validate handler - verify that the uploaded CSV file has a validate columns
+ * structure.
+ */
+function os_importer_verify_uploaded_file($form, $form_state) {
+  $bundle = os_importer_importable_content($form_state['type']);
+
+  $source = feeds_source($bundle[$form_state['values']['format']]);
+  $config = $source->importer->getConfig();
+
+  // Get the mappings of the current importer.
+  $mappings = array();
+  foreach ($config['processor']['config']['mappings'] as $mapping) {
+    $mappings[] = strtolower($mapping['source']);
+  }
+
+  // Load the uploaded file and parse his headers.
+  $file = file_load($form_state['values']['file']);
+  feeds_include_library('ParserCSV.inc', 'ParserCSV');
+  $parser = new ParserCSV();
+  $parser->setDelimiter(',');
+  $iterator = new ParserCSVIterator($file->uri);
+  $header = _os_importer_parse_header($parser, $iterator);
+
+  // Check what missing in the uploaded CSV file and display message if needed.
+  if ($missing = array_diff($mappings, $header)) {
+    $params = array('!missing' => theme('item_list', array('items' => $missing)));
+    form_set_error('file', t('The next columns are missing in you CSV: !missing', $params));
+  }
+}
+
+/**
+ * Parsing the header.
+ */
+function _os_importer_parse_header(ParserCSV $parser, ParserCSVIterator $iterator) {
+  $parser->setLineLimit(1);
+  $rows = $parser->parse($iterator);
+  if (!count($rows)) {
+    return array();
+  }
+  $header = array_shift($rows);
+  foreach ($header as $i => $title) {
+    $header[$i] = trim(drupal_strtolower($title));
+  }
+  return $header;
+}
+
+/**
  * Form submit.
  */
 function os_importer_import_submit($form, &$form_state) {
@@ -436,11 +488,11 @@ function os_importer_import_submit($form, &$form_state) {
   $values = $form_state['values'];
   $bundle = os_importer_importable_content($form_state['type']);
 
-  if ($values['format'] == 'csv') {
+  if (in_array($values['format'], array('csv', 'ical'))) {
     $fid = $values['file'];
     $file = file_load($fid);
 
-    $source = feeds_source($bundle['csv']);
+    $source = feeds_source($bundle[$values['format']]);
     $fetcher_config = $source->getConfigFor($source->importer->fetcher);
     $fetcher_config['source'] = $file->uri;
     $fetcher_config['file'] = $file;
@@ -582,14 +634,18 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
   $taxonomy_terms = explode("|", $terms);
 
   foreach ($taxonomy_terms as $taxonomy_term) {
-    if (!$term = taxonomy_get_term_by_name($taxonomy_term, $machine_name)) {
+    $term = taxonomy_get_term_by_name($taxonomy_term, $machine_name);
+
+    if (!$term) {
       $term = new stdClass();
       $term->name = $taxonomy_term;
       $term->vid = $vocabulary->vid;
       taxonomy_term_save($term);
+      $tids[] = $term->tid;
     }
-
-    $tids[] = $term->tid;
+    else {
+      $tids[] = reset($term)->tid;
+    }
   }
 
   // Create the OG vocabulary and the relation to the group.

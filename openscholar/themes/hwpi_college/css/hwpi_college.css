@@ -3,6 +3,8 @@ html,
 body {
   background: #ffffff;
   color: #1e1e1e;
+  overflow-x: hidden;
+  
 }
 body {
     color: #1F1F1F;
@@ -138,6 +140,7 @@ blockquote {
  font-size:13px;
  font-weight:bold;
  padding-right:8px;
+ padding-left:25px!important;
 }
 
 
@@ -196,13 +199,26 @@ blockquote {
     line-height: 22px;
 }
 
-.webkit .front #columns .region-inner{
-	    margin-bottom: 150px;}
-
-}
 .ie .front #columns .region-inner{
 	    margin-bottom: 0;
 
+}
+.not-front #content-column #content-panels .block-inner{
+margin-top:0!important;
+
+}
+#layout_16_9_below .slide-copy{
+	background-color:#333!important;
+	
+}
+.not-logged-in .contextual-controls-wrapper{
+display:none;
+}
+#layout_16_9_below .rslides_tabs {
+    background: none repeat scroll 0 0 #333333!important;
+   }
+.rslides_tabs li {
+    background: none repeat scroll 0 0 #444444 !important;
 }
 .content-left.content-right .region-content-first .region-inner, .content-left.content-bottom .region-content-first .region-inner, .content-right.content-bottom .region-content-second .region-inner, .content-left.content-right.content-bottom .region-content-second .region-inner {
     border-right: medium none;
@@ -240,9 +256,6 @@ h1#page-title {
    margin: 0 0 20px;
 }
 .page-node h1#page-title{
-	 -moz-box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
-  -webkit-box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
-  box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.15) inset;
   background-color: #e6e5e3;
     color: #1E1E1E;
     font-family: georgia,serif;
@@ -327,6 +340,11 @@ h1#page-title {
     padding-bottom: 1em;
     padding-top: 1em;
     text-transform: uppercase;
+}
+.region-footer .os-custom-menu{
+	border-top: 4px solid #8996A1;
+	margin-right:20px;
+	padding-top:10px;
 }
 h2.block-title {
     background: none repeat scroll 0 0 transparent;
@@ -457,7 +475,9 @@ a, a:visited {
 .ui-tabs .block.no-title .view .date-nav-wrapper {
   border-top: 0;
 }
-
+.block-boxes-os_slideshow_box {
+    margin-bottom: 35px !important;
+}
 .block .view .date-nav-wrapper .date-nav {
   margin-bottom: 7px;
 }
@@ -691,6 +711,21 @@ a.rslides_nav {
     margin-bottom: 0;
     margin-top: auto;
 }
+
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
+  background: #E6E5E3;
+  bottom: auto;
+  content: "";
+  display: block;
+  height: 100%;
+  left: -1000px;
+  position: absolute;
+  right: auto;
+  top: 0;
+  width: 3000px;
+  z-index: 0;
+}
+
 /*
 .slide-copy h2 {
     margin-bottom: 0;
