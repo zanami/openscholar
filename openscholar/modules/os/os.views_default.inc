@@ -883,10 +883,11 @@ function os_views_default_views() {
   );
   $handler->display->display_options['path'] = 'admin/people/os';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Users';
+  $handler->display->display_options['menu']['title'] = 'Find';
+  $handler->display->display_options['menu']['description'] = 'Search and filter user accounts.';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
-  $handler->display->display_options['menu']['context'] = 1;
+  $handler->display->display_options['menu']['context'] = 0;
   $export['os_users'] = $view;
 
   return $export;
