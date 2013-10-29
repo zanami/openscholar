@@ -94,8 +94,8 @@ function os_profiles_feeds_importer_default() {
             'unique' => FALSE,
           ),
           11 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),

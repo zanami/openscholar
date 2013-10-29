@@ -18,8 +18,8 @@ class OSPinserverPrivateStreamWrapper extends DrupalPrivateStreamWrapper {
       return parent::getExternalUrl();
     }
 
-    $options = array('absolute' => TRUE);
-    if(variable_get('os_pinserver_custom_domain', FALSE)){
+    $options = array('absolute' => TRUE, 'purl' => array('disabled' => TRUE));
+    if (variable_get('os_pinserver_custom_domain', FALSE)){
       $options['base_url'] = variable_get('os_pinserver_custom_domain', FALSE);
     }
 

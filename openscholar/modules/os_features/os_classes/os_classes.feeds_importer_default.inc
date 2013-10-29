@@ -83,8 +83,8 @@ function os_classes_feeds_importer_default() {
             'unique' => FALSE,
           ),
           8 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),

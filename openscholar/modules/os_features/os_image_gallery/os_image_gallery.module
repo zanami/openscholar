@@ -243,3 +243,14 @@ function theme_os_image_gallery_file_field_inline($variables) {
   return theme('image', array('path'=>$clear, 'attributes' => $attributes)) . $indicator;
 }
 
+/**
+ * Implements hook_preprocess_media_gallery_meta.
+ *
+ * Replaces media_title with the filename
+ */
+function os_image_gallery_preprocess_media_gallery_meta(&$vars) {
+  $frags = explode('/', $vars['link_path']);
+  if ($file = file_load($frags[3])) {
+    $vars['title'] = $file->filename;
+  }
+}

@@ -66,10 +66,10 @@ class OsImporterNodeProcessor extends FeedsNodeProcessor {
       'callback' => 'os_importer_map_files',
     );
 
-    $targets['og_vocab'] = array(
-      'name' => t('Terms'),
-      'description' => t('Import terms by names. Saturated by |'),
-      'callback' => 'os_importer_map_og_vocab_terms',
+    $targets['author'] = array(
+      'name' => t('Author'),
+      'description' => t('The author name of the node. If not entered the current user will be the author.'),
+      'callback' => 'os_importer_map_author',
     );
 
     // Let other modules expose mapping targets.

@@ -70,6 +70,11 @@ function os_events_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
+          6 => array(
+            'source' => 'Author',
+            'target' => 'author',
+            'unique' => FALSE,
+          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -133,11 +138,6 @@ function os_events_feeds_importer_default() {
           4 => array(
             'source' => 'Files',
             'target' => 'file',
-            'unique' => FALSE,
-          ),
-          5 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
             'unique' => FALSE,
           ),
         ),

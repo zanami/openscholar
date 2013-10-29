@@ -53,8 +53,8 @@ function os_reader_feeds_importer_default() {
             'unique' => FALSE,
           ),
           2 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),

@@ -59,8 +59,8 @@ function os_blog_feeds_importer_default() {
             'unique' => FALSE,
           ),
           3 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),
@@ -112,6 +112,11 @@ function os_blog_feeds_importer_default() {
           2 => array(
             'source' => 'description',
             'target' => 'description',
+            'unique' => FALSE,
+          ),
+          3 => array(
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),

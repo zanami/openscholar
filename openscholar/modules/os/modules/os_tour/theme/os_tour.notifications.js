@@ -7,12 +7,15 @@
 
       // Setup.
       var menuLinkSel = '#os-tour-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#').parent('li').append($("<div id='os-tour-notifications-list'/>"));
+      if ($(menuLinkSel + '.os-notifications-processed').length) {
+        return;
+      }
+      $(menuLinkSel).attr('href', '#').text('').addClass('os-notifications-processed');
       var settings = Drupal.settings.os_notifications;
-      var container = $('#os-tour-notifications-list');
       if (typeof google == 'undefined') {
         return;
       }
+
       // @TODO: Add support for multiple feeds.
       var feed = new google.feeds.Feed(settings.url);
       var items = [];
@@ -20,33 +23,68 @@
       feed.load(function (result) {
         if (!result.error) {
           for (var i = 0; i < result.feed.entries.length; i++) {
+            var num_remaining = (result.feed.entries.length - i);
             var entry = result.feed.entries[i];
-            var item = os_tour_notifications_item(entry);
-            items.push(item);
-            console.log(item);
+            if (os_tour_notifications_is_new(entry)) {
+              var item = os_tour_notifications_item(entry, num_remaining);
+              items.push(item);
+            }
+          }
+
+          // Only continues if we have the hopscotch library defined.
+          if (typeof hopscotch == 'undefined') {
+            return;
+          }
+
+          // If there are items to display in a hopscotch tour...
+          if (items.length) {
+            // Sets up the DOM elements.
+            $(menuLinkSel).append($("<i class='os-tour-notifications-icon'/>"));
+            $(menuLinkSel).append($("<span id='os-tour-notifications-count'/>"));
+            os_tour_notifications_count(items.length);
+
+            // Sets up the tour object with the loaded feed item steps.
+            var tour = {
+              showPrevButton: true,
+              scrollTopMargin: 100,
+              id: "os-tour-notifications",
+              steps: items,
+              onEnd: function() {
+                os_tour_notifications_count(-1);
+                os_tour_notifications_read_update();
+              }
+            };
+
+            // Adds our tour overlay behavior with desired effects.
+            $('#os-tour-notifications-menu-link').click(function() {
+              hopscotch.startTour(tour);
+              // Removes animation for each step.
+              $('.hopscotch-bubble').removeClass('animated');
+              // Allows us to target just this tour in CSS rules.
+              $('.hopscotch-bubble').addClass('os-tour-notifications');
+            });
           }
         }
       });
-
-      if (typeof hopscotch == 'undefined') {
-        return;
-      }
-      var tour = {
-        showPrevButton: true,
-        scrollTopMargin: 100,
-        id: "os-tour-notifications",
-        steps: items
-      };
-
-      $('#os-tour-notifications-menu-link').click(function() {
-        hopscotch.startTour(tour);
-        // Removes animation for each step.
-        $('.hopscotch-bubble').removeClass('animated');
-        // Allows us to target just this tour in CSS rules.
-        $('.hopscotch-bubble').addClass('os-tour-notifications');
-      });
     }
   };
+
+  /**
+   * Determines if the feed item is new enough to display to this user.
+   *
+   * @param {object} entry
+   * @returns {bool}
+   */
+  function os_tour_notifications_is_new(entry) {
+    var pub_date = new Date(entry.publishedDate);
+    var pub_date_unix = pub_date.getTime() / 1000;
+    var last_read = Drupal.settings.os_notifications.last_read;
+    if (pub_date_unix > last_read) {
+      return true;
+    }
+
+    return false;
+  }
 
   /**
    * Converts a Google FeedAPI Integration feed item into a hopscotch step.
@@ -54,8 +92,11 @@
    * @param {object} entry
    * @returns {string} output
    */
-  function os_tour_notifications_item(entry) {
+  function os_tour_notifications_item(entry, num_remaining) {
+    // Prepare the output to display inside the tour's content region.
     var output = "<div class='feed_item'>";
+
+    // Adds a date like "5 days ago", or blank if no valid date found.
     var date = "";
     if (typeof entry.publishedDate != 'undefined' && entry.publishedDate != '') {
       date = os_tour_notifications_fuzzy_date(entry.publishedDate);
@@ -66,22 +107,27 @@
       }
     }
     output += date;
-    output += "<span class='description'>" + content + "<span/>";
 
-    //
+    // Builds the remainder of the content, with a "Read more" link.
+    output += "<span class='description'>" + content + "<span/>";
     var content = entry.content;
     if (typeof entry.contentSnippet != 'undefined') {
       content = entry.contentSnippet;
     }
     output += content;
-    output += "<br/><a class='title' target='_blank' href='" + entry.link + "'>Read more &raquo;</a></div>";
+    output += '<div class="os-tour-notifications-readmore"><a target="_blank" href="' + entry.link + '">Read more &raquo;</a></div></div>';
 
+    // Returns the item to be added to the tour's (array) `items` property .
     var item = {
       title: entry.title,
       content:output,
-      target: document.querySelector("#os-notifications-list"),
+      target: document.querySelector("#os-tour-notifications-menu-link"),
       placement: "bottom",
-      yOffset: 20
+      yOffset: -3,
+      xOffset: -10,
+      onShow: function() {
+        os_tour_notifications_count(num_remaining)
+      }
     };
     return item;
   }
@@ -111,4 +157,42 @@
       day_diff < 7 && day_diff + " days ago" ||
       day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago";
   }
+
+  /**
+   * Updates the notifications count of remaining notifications.
+   */
+  function os_tour_notifications_count(num_remaining) {
+    var count = '#os-tour-notifications-count';
+    var value = parseInt($(count).text());
+    if (arguments.length === 0) {
+      return value;
+    }
+    if (parseInt(num_remaining) === -1) {
+      $("#os-tour-notifications-menu-link").slideUp('slow');
+      return;
+    }
+    if (parseInt(num_remaining) > -1) {
+      $(count).text(num_remaining);
+      if (!isNaN(parseFloat(value)) && isFinite(value)) {
+        $(count).show();
+        if (num_remaining > value) {
+          $(count).text(value);
+        }
+      }
+    }
+  }
+
+  /**
+   * Sets the current user's "notifications_read" to the current time.
+   *
+   * Invoked when a user clicks "Done" on the final tour step.
+   */
+  function os_tour_notifications_read_update() {
+    var settings = Drupal.settings.os_notifications;
+    var url = '/os/tour/user/' + settings.uid + '/notifications_read';
+    $.get(url, function(data) {
+      console.log(data);
+    });
+  }
+
 })(jQuery);

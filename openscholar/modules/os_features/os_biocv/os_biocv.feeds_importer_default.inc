@@ -58,8 +58,8 @@ function os_biocv_feeds_importer_default() {
             'unique' => FALSE,
           ),
           3 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),
@@ -127,8 +127,8 @@ function os_biocv_feeds_importer_default() {
             'unique' => FALSE,
           ),
           3 => array(
-            'source' => 'Terms',
-            'target' => 'og_vocab',
+            'source' => 'Author',
+            'target' => 'author',
             'unique' => FALSE,
           ),
         ),

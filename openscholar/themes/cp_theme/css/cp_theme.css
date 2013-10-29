@@ -272,7 +272,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
  /* OVERRIDES WITH TABS IN MODAL - EXPERIMENTAL */
 #overlay-tabs {
      border-bottom: 1px solid #CCCCCC;
-     margin: 20px 0px 40px 45px;
+     margin: 20px 0px 40px 75px;
      position: relative;
 }
 
@@ -338,6 +338,11 @@ table.spaces td.option, table.spaces td.storage {
 
 #cp-appearance-theme-picker-form select {max-width:90px;overflow:hidden;}
 
+#cp-appearance-theme-picker-form #theme-header-featured h2,
+#cp-appearance-theme-picker-form #theme-header-other h2 {font-weight:normal;}
+
+#cp-appearance-theme-picker-form #theme-header-featured p {color:#777;font-size:15px;margin:-8px 0 28px 0;}
+
 
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout #content {width:854px;}
@@ -389,23 +394,23 @@ body.page-cp.page-cp-account #messages {
 .os_publications-customize-form .column-left,
 .os_publications-customize-form #comment_settings {
 	float:left;
-	width:48%;
 	clear:left;
+}
+.os_publications-customize-form .column-left {
+    width: 48%;
+}
+.os_publications-customize-form #comment_settings {
+    width: 100%;
 }
 
 .os_publications-customize-form .form-actions {
 	clear:both;
 }
 
-.os_publications-customize-form #comment_settings {
-width:30%;
-}
-
 .os_publications-customize-form .column-right {
 	float:right;
 	width:48%;
 	clear:right;
-	margin-top: -778px;
 	margin-bottom:20px;
 }
  

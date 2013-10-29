@@ -177,7 +177,7 @@ function os_reader_get_importers_list($feed_importer_nid = NULL, $type) {
   // Create item list of feed importers.
   $items = array(
     array(
-      'data' => l(t('All feeds'), 'cp/os-importer/' . $type),
+      'data' => l(t('All feeds'), 'cp/os-importer/' . $type . '/manage'),
       'class' => empty($feed_importer_nid) ? array('active') : array(),
     ),
   );
