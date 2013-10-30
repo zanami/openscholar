@@ -66,12 +66,6 @@ class OsImporterNodeProcessor extends FeedsNodeProcessor {
       'callback' => 'os_importer_map_files',
     );
 
-    $targets['author'] = array(
-      'name' => t('Author'),
-      'description' => t('The author name of the node. If not entered the current user will be the author.'),
-      'callback' => 'os_importer_map_author',
-    );
-
     // Let other modules expose mapping targets.
     drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 

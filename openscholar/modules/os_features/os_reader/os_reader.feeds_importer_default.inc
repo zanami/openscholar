@@ -52,11 +52,6 @@ function os_reader_feeds_importer_default() {
             'target' => 'field_url:url',
             'unique' => FALSE,
           ),
-          2 => array(
-            'source' => 'Author',
-            'target' => 'author',
-            'unique' => FALSE,
-          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
