@@ -60,7 +60,6 @@ class OsImporterNodeProcessor extends FeedsNodeProcessor {
   public function getMappingTargets() {
     $targets = parent::getMappingTargets();
 
-
     $targets['file'] = array(
       'name' => t('Files'),
       'description' => t('Import files from url into the field. Saturated by |'),
