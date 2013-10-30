@@ -197,7 +197,6 @@ blockquote {
 
 
 /* Titles & Type */
-#page-title,
 .node-title,
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
@@ -209,6 +208,11 @@ blockquote {
 .boxes-box-content h2,
 .view-os-events .views-field-colorbox {
   font-family: Arial,sans-serif;
+}
+
+#page-title {
+    font-family: georgia,sans-serif;
+    font-weight: normal;
 }
 
 .boxes-box-content, .boxes-box-content p {
@@ -586,9 +590,7 @@ table td.mini {
     padding-right: 20px;
 }
 
-.block-content .field-item.even li {
-    font-family: georgia-serif;
-}
+
 #footer .at-panel {
     background: none repeat scroll 0 0 #FFFFFF;
     border-left: 1px solid #CCCCCC;
