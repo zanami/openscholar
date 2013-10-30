@@ -75,7 +75,7 @@ function os_news_feeds_importer_default() {
           ),
         ),
         'update_existing' => '0',
-        'input_format' => 'plain_text',
+        'input_format' => 'filtered_html',
         'skip_hash_check' => 0,
         'content_type' => 'news',
       ),
