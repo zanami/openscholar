@@ -91,9 +91,8 @@ function hwpi_basetheme_preprocess_node(&$vars) {
     $vars['classes_array'][] = 'with-person-photo';
   }
   else {
-    // If node is of type person with no image in teaser view mode, load a default image.
-    // If node is of type person with no image, and person is displayed in "List
-    // of posts" widget or in full display mode, load a bigger default image.
+    // If node is in teaser view mode, load a default image. If node is displayed
+    // in "List of posts" widget or in full display mode, load a bigger default image.
     if ($vars['view_mode'] == 'teaser') {
       $path = variable_get('os_person_default_image', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image.png');
       $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
