@@ -260,16 +260,8 @@ function os_importer_map_author($source, $entity, $target, $value, $mapping) {
   global $user;
 
   if ($value && $account = user_load_by_name($value)) {
-    // Verify that the user from the CSV can create nodes from this type on the
-    // current space.
-    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
-      $account = og_user_access('node', $vsite->id, 'create ' . $entity->type . ' content', $account) ? $account : user_load($user->uid);
-    }
-    else {
-      // We are not in a vsite check if the user can create node of this type
-      // side wide.
-      $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
-    }
+    // Check that the user can create node of this type.
+    $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
   }
   else {
     // Loading the current user.
