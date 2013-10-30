@@ -73,7 +73,7 @@ function os_publications_image_default_styles() {
         'name' => 'image_scale',
         'data' => array(
           'width' => '50',
-          'height' => '',
+          'height' => '65',
           'upscale' => 0,
         ),
         'weight' => '1',
