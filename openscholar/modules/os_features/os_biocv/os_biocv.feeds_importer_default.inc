@@ -57,11 +57,6 @@ function os_biocv_feeds_importer_default() {
             'target' => 'file',
             'unique' => FALSE,
           ),
-          3 => array(
-            'source' => 'Author',
-            'target' => 'author',
-            'unique' => FALSE,
-          ),
         ),
         'update_existing' => '0',
         'input_format' => 'plain_text',
@@ -124,11 +119,6 @@ function os_biocv_feeds_importer_default() {
           2 => array(
             'source' => 'Files',
             'target' => 'file',
-            'unique' => FALSE,
-          ),
-          3 => array(
-            'source' => 'Author',
-            'target' => 'author',
             'unique' => FALSE,
           ),
         ),
