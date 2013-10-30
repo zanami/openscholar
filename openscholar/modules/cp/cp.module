@@ -264,16 +264,17 @@ function cp_custom_theme() {
 }
 
 /**
+ * @function cp_use_cp_theme()
+ * 
  * Returns TRUE/FALSE, whether or not to use cp theme.
  */
 function cp_use_cp_theme() {
-  if ((arg(0) == 'cp') ||
-    (arg(0) == 'os') ||
-    (arg(0) == 'media') ||
-    ((arg(0) == 'node' || arg(0) == 'file') && (arg(1) == 'add' || arg(2) == 'edit' || arg(2) == 'delete'))
-  ) {
+  if (in_array(arg(0), array('cp', 'os', 'media'))) {
     return TRUE;
+  } elseif (arg(0) == 'file') {
+    return (arg(1) == 'add' || in_array(arg(2), array('edit', 'usage', 'delete')));
   }
+
   return FALSE;
 }
 
