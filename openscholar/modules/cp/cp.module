@@ -271,7 +271,7 @@ function cp_custom_theme() {
 function cp_use_cp_theme() {
   if (in_array(arg(0), array('cp', 'os', 'media'))) {
     return TRUE;
-  } elseif (arg(0) == 'file') {
+  } elseif (in_array(arg(0), array('file', 'node'))) {
     return (arg(1) == 'add' || in_array(arg(2), array('edit', 'usage', 'delete')));
   }
 
