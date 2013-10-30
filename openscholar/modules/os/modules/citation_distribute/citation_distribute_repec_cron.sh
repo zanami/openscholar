@@ -19,5 +19,10 @@ TMP=$(mktemp -d)
 wget -m "$1" -P "$TMP"
 
 find $TMP -name index.html -delete
-mv $TMP/*/repec/* "$2/"
+DIR=$(find $TMP -name repec);
+for file in $(ls $DIR) ; do
+  if [[ -d "$DIR/$file" ]] ; then
+    mv -f "$DIR/$file/"* "$2/$file/"
+  fi
+done
 rm -rf $TMP
