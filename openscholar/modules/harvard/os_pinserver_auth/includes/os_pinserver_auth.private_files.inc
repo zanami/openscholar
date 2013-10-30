@@ -96,7 +96,12 @@ function _os_pinserver_auth_file_download($uri) {
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-    $file = file_uri_to_object($uri);
+
+    //Check for ctools to assure we are not in js.php
+    if (function_exists('ctools_include')){
+      $file = file_uri_to_object($uri);
+    }
+
     if (pinserver_get_user() || (function_exists('ctools_include') && file_entity_access('update', $file))) {
       return file_get_content_headers($file);
     }
