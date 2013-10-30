@@ -526,6 +526,13 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
 function _os_importer_import_behalf_of_user(FeedsSource $source, $entity, $item, $id) {
   global $user;
 
+  // When importing an iCal don't search for the author, just use the current
+  // user UID.
+  if ($source->importer->id == 'os_ical') {
+    $entity->uid = $user->uid;
+    return;
+  }
+
   if (empty($item['author'])) {
     $account = user_load($user->uid);
   }
