@@ -96,11 +96,13 @@ function hwpi_basetheme_preprocess_node(&$vars) {
     if ($vars['view_mode'] == 'teaser') {
       $path = variable_get('os_person_default_image', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image.png');
       $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Default image.
       $vars['content']['field_person_photo'][0] = array('#markup' => $image);
     }
     elseif ((!empty($vars['os_sv_list_box']) && $vars['os_sv_list_box']) || $vars['view_mode'] == 'full') {
       $path = variable_get('os_person_default_image_big', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image-big.png');
       $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Big image.
       $vars['content']['pic_bio']['field_person_photo'][0] = array('#markup' => $image);
     }
   }
