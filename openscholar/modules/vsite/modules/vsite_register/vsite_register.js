@@ -44,22 +44,17 @@ attach: function(context, settings) {
     $(this).focus();
   });
 
-  // Initializes the new user & existing user display state.
-  if ($('#new_user_div').css('display') == $('#edit-existing-username').parent().css('display')) {
-    Drupal.behaviors.vsite_register.toggle_user_forms();
-  }
-
   // Attaches click event to new user link.
   // only do this once, even if this behavior happens again.
-  var link = $('#new-user-link');
-  if (link.length) {
-    var link_data = link.data();
-    if ((typeof link_data['events'] == 'undefined') || link_data['events'].click.length < 1) {
-      link.click( function() {
-        $('input[name=create_new_user]').attr('value', 1); //store this so form appears right after refresh
+  if ($('#new-user-link').length) {
+    $('#new-user-link', context).once('toggleUserForms', function() {
+      // Initializes the new user & existing user display state.
+      Drupal.behaviors.vsite_register.toggle_user_forms();
+      // Toggles display whenever the "Create new user" link is clicked.
+      $('#new-user-link').click(function() {
         Drupal.behaviors.vsite_register.toggle_user_forms();
       });
-    }
+    });
   }
 
   // Hides the ajax error that comes up when an ajax call is left dangling.
