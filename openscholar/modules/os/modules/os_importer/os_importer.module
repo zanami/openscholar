@@ -445,6 +445,10 @@ function os_importer_import_validate($form, $form_state) {
  * structure.
  */
 function os_importer_verify_uploaded_file($form, $form_state) {
+  if ($form_state['values']['format'] == 'ical') {
+    // Don't validate iCal files.
+    return;
+  }
   $bundle = os_importer_importable_content($form_state['type']);
 
   $source = feeds_source($bundle[$form_state['values']['format']]);
