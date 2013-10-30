@@ -41,12 +41,6 @@ function os_publications_field_default_fields() {
           'type' => 'dyntextfield_default',
           'weight' => 4,
         ),
-        'sidebar_teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -115,12 +109,6 @@ function os_publications_field_default_fields() {
           ),
           'type' => 'image',
           'weight' => '1',
-        ),
-        'sidebar_teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -202,12 +190,6 @@ function os_publications_field_default_fields() {
           'settings' => array(),
           'type' => 'os_files_image_list',
           'weight' => '3',
-        ),
-        'sidebar_teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'hidden',
