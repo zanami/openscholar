@@ -366,7 +366,7 @@ table td.mini {
   font-size: 14px;
 }
 
-.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a {
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-active a {
   background: #a41b2f !important;
   border: 4px solid #fff;
   border-bottom-width: 1px;

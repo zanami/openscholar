@@ -700,7 +700,7 @@ table td.mini .mini-day-on a {
 
 /* Tabs (widget) */
 .ui-tabs .ui-tabs-panel,
-.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-active {
   border: 0;
 }
 
@@ -732,12 +732,12 @@ table td.mini .mini-day-on a {
   font-size: 14px;
 }
 
-.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-active {
   border-bottom: 1px solid #2A68AC;
   border-top: 1px solid #5090C8;
 }
 
-.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a {
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-active a {
   background: #5090C8;
   background: linear-gradient(to bottom, #5090C8 0%, #2A68AC 100%) repeat scroll 0 0 transparent;
   color: #fff;
