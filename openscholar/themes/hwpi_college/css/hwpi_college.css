@@ -305,9 +305,6 @@ h1#page-title {
    background-position: 2px -373px;
 }
 
-.not-front #content-column p {
-	font-family:georgia,serif;
-}
 
 #search-block-form .form-item label {
     color: #727272;
@@ -378,7 +375,7 @@ h2.block-title {
 }
 
 .region-sidebar-second {
-    margin-top: 31px;
+    margin-top: 30px;
 }
 
 
@@ -558,12 +555,16 @@ table td.mini {
 /* Section nav */
 #boxes-box-os_pages_section_nav,
 .section-nav ul.menu li a {
-    border-color: -moz-use-text-color -moz-use-text-color #CACACA;
+    border-color: -moz-use-text-color -moz-use-text-color #CCC;
     border-style: none none solid;
     border-width: 0 0 1px;
     color: #6C6C6C;
     font-family: arial,sans-serif;
     font-weight: bold;
+}
+
+#boxes-box-os_pages_section_nav {
+     border-color: -moz-use-text-color -moz-use-text-color #FFF; 
 }
 
 .ui-tabs .ui-tabs-panel {
