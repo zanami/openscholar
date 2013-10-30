@@ -260,7 +260,7 @@ display:none;
     line-height: 28px;
 }
 a:link {
-    color: #3B7ABD;
+    color: #346ba6;
     text-decoration: none !important;
 }
 .block-content li strong {
@@ -388,7 +388,7 @@ h2.block-title {
 }
 
 a, a:visited {
-    color: #3B7ABD;
+    color: #346ba6;
 }
 /* Spotlight */
 #content-column .block.block-boxes-os_boxes_manual_list {
@@ -463,7 +463,7 @@ a, a:visited {
   background-color: #fff;
 }
 .ui-tabs .ui-widget-content a {
-    color: #3B7ABD;
+    color: #346ba6;
 }
 
 /* Calander */
