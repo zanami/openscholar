@@ -16,9 +16,6 @@ Drupal.behaviors.vsite_register = {
   *
   * This is determined by new user's display state. So when both elements are
   * showing, toggling will hide one and show the other.
-  *
-  * Attaches a click event to call toggle_user_forms.  Tries to do this only once by inspecting $elem.data.  Ajax calls
-  * will trigger attach again, causing multiple instances of the same click event to be registered if this isn't done.
   */
 toggle_user_forms: function() {
   var new_user = $('#new_user_div');
@@ -33,7 +30,6 @@ toggle_user_forms: function() {
   }
 },
 
-
 /**
  * Attaches a click event to call toggle_user_forms.  Tries to do this only once by inspecting $elem.data.  Ajax calls
  * will trigger attach again, causing multiple instances of the same click event to be registered if this isn't done.
@@ -47,6 +43,9 @@ attach: function(context, settings) {
   // Attaches click event to new user link.
   // only do this once, even if this behavior happens again.
   if ($('#new-user-link').length) {
+    // Uses context and jQuery.once() to prevent extra attach events.
+    // @see https://drupal.org/node/756722
+    // @see Drupal.attachBehaviors()
     $('#new-user-link', context).once('toggleUserForms', function() {
       // Initializes the new user & existing user display state.
       Drupal.behaviors.vsite_register.toggle_user_forms();
