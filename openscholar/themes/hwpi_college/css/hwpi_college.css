@@ -168,6 +168,9 @@ blockquote {
     background:#6A1319;
 }
 
+#menu-bar ul.nice-menu .menuparent {
+padding-right: 0;
+}
 
 
 #box-os_news_latest-page ul li{
