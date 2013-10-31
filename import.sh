@@ -7,7 +7,15 @@ cd www
 drush sql-drop -y
 echo "Importing SQL file."
 `drush sql-connect` < $1
+
+# Skip update functions using a prefix
+sed -i 's/os_files_update/_os_files_update/g' ../openscholar/modules/os/modules/os_files/*.install
+sed -i 's/vsite_register_update/_vsite_register_update/g' ../openscholar/modules/vsite/modules/vsite_register/*.install
 drush updb -y
+# Return functions to original state
+sed -i 's/_os_files_update/os_files_update/g' ../openscholar/modules/os/modules/os_files/*.install
+sed -i 's/_vsite_register_update/vsite_register_update/g' ../openscholar/modules/vsite/modules/vsite_register/*.install
+
 drush fra -y
 drush cc all
 drush vrd -y --uri=$2
