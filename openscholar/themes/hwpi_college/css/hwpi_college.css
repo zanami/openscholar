@@ -390,6 +390,10 @@ h2.block-title {
   margin-top: 20px;
 }
 
+.sidebar .block .block-inner h2.block-title ~ .block-content {
+margin-top: 0;
+}
+
 .block.no-title .block-content {
   margin-top: 0;
 }
@@ -587,7 +591,7 @@ table td.mini {
     margin-left: 0;
 }
 .not-front #content-column .content-inner {
-    padding: 0 20px;
+    padding: 22px 20px;
 }
 .not-front .region-sidebar-second .region-inner.clearfix {
     padding-right: 20px;
