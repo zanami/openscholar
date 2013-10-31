@@ -118,6 +118,9 @@ function os_wysiwyg_link_filter($text) {
             'fragment' => $comps['fragment']
           );
         }
+        else {
+          $page = $m[3];
+        }
         if (url_is_external($page)) {
           $url = url($page, $options + array('external' => TRUE));
         }
