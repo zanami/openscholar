@@ -58,7 +58,14 @@ function os_pinserver_auth_private_file_download(){
     file_transfer($uri, $headers);
   }
 
-  return JS_MENU_ACCESS_DENIED;
+  // If we get to here, the user has not been sent to pin and the file has not been served.
+  // Return a quick 404 so that bootstrap is not attempted.
+  drupal_add_http_header('Status', '404 Not Found');
+  $fast_404_html = variable_get('404_fast_html', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>');
+
+  // Replace @path in the variable with the page path.
+  print strtr($fast_404_html, array('@path' => check_plain(request_uri())));
+  exit;
 }
 
 /**
@@ -89,8 +96,13 @@ function _os_pinserver_auth_file_download($uri) {
   if (file_uri_scheme($uri) == 'private' && file_exists($uri)) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
-    if (pinserver_get_user()) {
-      $file = file_uri_to_object($uri, FALSE);
+
+    //Check for ctools to assure we are not in js.php
+    if (function_exists('ctools_include')){
+      $file = file_uri_to_object($uri);
+    }
+
+    if (pinserver_get_user() || (function_exists('ctools_include') && file_entity_access('update', $file))) {
       return file_get_content_headers($file);
     }
     // Otherwise, sends the user to Pinserver to log in.

@@ -40,7 +40,6 @@ function hwpi_update_7003(&$sb) {
       }
     }
   }
-
 }
 
 function _hwpi_is_header_third_menu($item) {
@@ -75,4 +74,22 @@ function _hwpi_reverse_menu($site, $key) {
   }
 
   $controller->set($key, $menu);
+}
+
+/**
+ * Enables new `College` theme and set new featured themes variable to highlight
+ * and describe HWPI themes.
+ */
+function hwpi_update_7005() {
+  // Enables the new `hwpi_college` theme.
+  theme_enable(array('hwpi_college'));
+  // Sets the description that appears under "Featured Themes" heading.
+  $name = 'cp_appearance_featured_description';
+  $value = t('Mobile-friendly themes using Harvard color palettes.');
+  variable_set($name, $value);
+
+  // Sets the themes to use as featured themes.
+  $name = 'cp_appearance_featured_themes';
+  $value = drupal_map_assoc(array('hwpi_classic', 'hwpi_modern', 'hwpi_vibrant', 'hwpi_college'));
+  variable_set($name, $value);
 }

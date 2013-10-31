@@ -74,8 +74,11 @@
   .mobile #footer .gpanel,
   .mobile .region-footer,
   .mobile .message-inner,
-  .mobile #powerby-login,
-  .ipad .branding-container,
+  .mobile #powerby-login {
+    width:100%;
+  }
+  
+   .ipad .branding-container,
   .ipad #header-container,
   .ipad #columns,
   .ipad #menu-bar #block-os-primary-menu,
@@ -83,8 +86,9 @@
   .ipad .region-footer,
   .ipad .message-inner,
   .ipad #powerby-login {
-    width:100%;
+    width:980px;
   }
+   
   
 
   /* Branding */
@@ -214,6 +218,10 @@
     width:100%;
   }
 
+/* WHEN THERE ARE WIDGETS IN HEADER LEFT AND RIGHT ONLY */
+.header-main.header-right .region-header-first {
+    margin-left: -200px;
+}
 
   /* Content Panels - allows for any combination of content panel regions */
   #content-panels .region-content-first,

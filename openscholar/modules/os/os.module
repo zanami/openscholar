@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -7,6 +6,10 @@
  */
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
+
+// Load the correct jQuery version. This is done before the call to os_init().
+global $conf;
+$conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
 
 /**
  * Implements hook_menu().
@@ -96,6 +99,14 @@ function os_menu_alter(&$items) {
   if (isset($items['node'])) {
     unset($items['node']);
   }
+  // By default, "user/autocomplete" requires "view user profiles" permission.
+  // Since we want authenticated users to have access to the autocomplete
+  // callback, but we don't want authenticated users to have access to other
+  // users' profiles, we provide our own permission and override the default
+  // behavior of the menu item to use our custom permission instead.
+  $items['user/autocomplete']['access arguments'] = array(
+    'access user autocomplete',
+  );
 }
 
 /**
@@ -523,16 +534,17 @@ function os_preprocess_page(&$vars) {
   ));
 
 
-  //hide useless tabs
+  // Hide useless tabs.
   if (is_array($vars['tabs']['#primary'])) {
     foreach ($vars['tabs']['#primary'] as $delta => $tab) {
-      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/log' ))) {
+      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/log', 'node/%/revisions'))) {
         unset($vars['tabs']['#primary'][$delta]);
       }
     }
   }
 
-  $types = os_get_bundles();
+  // Display contextual links for private apps as well.
+  $types = os_get_bundles(array(OS_PUBLIC_APP, OS_PRIVATE_APP));
 
   $links = array();
   $active = context_active_contexts();
@@ -732,6 +744,15 @@ function os_form_alter(&$form, &$form_state, $form_id) {
     $paths = os_get_app_path();
     $_GET['destination'] = $paths[$form['#node']->type];
   }
+
+  // Add a cancel link to node forms.
+  if (strpos($form_id, '_node_form')) {
+    $destination = !empty($_GET['destination']) ? $_GET['destination'] : '';
+    $form['actions']['cancel'] = array(
+      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel' ))),
+      '#weight' => 99,
+    );
+  }
 }
 
 /**
@@ -779,10 +800,10 @@ function os_settings_form($form_state) {
 
   $form['os_general'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General'),
+    '#title' => t('Dropdown menus'),
     '#weight' => 0,
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
   );
   $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
@@ -1131,6 +1152,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   $loop_back_pages = array(
     'user',
+    'user/pin',
     'user/logout',
   );
 
@@ -1163,6 +1185,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
     'absolute' => FALSE,
     'alias' => FALSE,
     'prefix' => '',
+    'external' => '',
   );
   // Allow other modules to alter the outbound URL and options.
   drupal_alter('url_outbound', $dest_path, $current_options, $dest_path);
@@ -1242,6 +1265,41 @@ function os_node_view_alter(&$build) {
 }
 
 /**
+ * Implements hook_contextual_links_view_alter().
+ *
+ * Add "Revisions" to the contextual links in the node view. Checks number of
+ * revisions of a node and hides the link for a single revision.
+ */
+function os_contextual_links_view_alter(&$element, $items) {
+  if (empty($element['#element']['#entity_type']) || $element['#element']['#entity_type'] != 'node') {
+    // Not a node element.
+    return;
+  }
+
+  if (!user_access('view revisions')) {
+    // User can't view revisions.
+    return;
+  }
+
+  $node = $element['#element']['#node'];
+
+  if (count(node_revision_list($node)) == 1) {
+    // Do not display the revisions tab if the node doesn't have any revisions.
+    return FALSE;
+  }
+
+  if (!og_moderation_node_revision_access($node)) {
+    // User has no access to the revisions.
+    return;
+  }
+
+  $element['#links']['node-revisions'] = array(
+    'title' => t('Revisions'),
+    'href' => 'node/' . $node->nid . '/revisions',
+  );
+}
+
+/**
  * Implements hook_permission().
  *
  * Defines permissions for all the regions of the default theme
@@ -1255,6 +1313,10 @@ function os_permission() {
     'edit locked regions' => array(
       'title' => t('Edit Locked Regions'),
       'description' => t('Allows users to edit locked regions')
+    ),
+    'access user autocomplete' => array(
+      'title' => t('Access user autocomplete callback'),
+      'description' => t('Used for Author fields on biblio node forms and Authoring information on all node forms')
     ),
   );
 
@@ -1421,7 +1483,11 @@ function os_app_info($app_name = NULL) {
         foreach ($apps as $key => $app) {
           // Adds default values.
           $app += array(
-          	'path' => '',
+            'path' => '',
+            'searchable' => TRUE,
+            // Determine if author should be indexed in Solr.
+            'index author' => FALSE,
+            'importers' => array(),
           );
 
           // Adds the module information.
@@ -1497,4 +1563,130 @@ function os_restws_resource_info_alter(&$info){
 //     }
 //   }
 
+}
+
+/**
+ * Helper function for permission to view unpublish group content.
+ */
+function os_grant_unpublished_viewing_permission() {
+  $group_content = og_get_all_group_content_bundle();
+
+  foreach (array_keys($group_content['node']) as $bundle) {
+    $group_types = array('department', 'personal', 'project');
+
+    foreach ($group_types as $group_type) {
+      $roles = og_roles('node', $group_type);
+      foreach ($roles as $rid => $role) {
+        if (!in_array($role, array('vsite admin', 'content editor'))) {
+          continue;
+        }
+        og_role_grant_permissions($rid, array('view any unpublished ' . $bundle . ' content'));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ *
+ * Exclude certain node types from views that display nodes.
+ */
+function os_views_query_alter(&$view, &$query) {
+  if ($view->base_table != 'node') {
+    // Not node view.
+    return;
+  }
+
+  // Run through the view's filters to get content types that are explicitly
+  // mentioned for this view to display.
+  $allowed_types = array();
+  foreach ($query->where as $where) {
+    foreach ($where['conditions'] as $condition) {
+      if (empty($condition['field']) || empty($condition['operator'])) {
+        // Not a real condition.
+        return;
+      }
+
+      // Check if the condition allows specific node types.
+      if ($condition['field'] == 'node.type' && in_array($condition['operator'], array('=', 'in'))) {
+        // Add the node types to the list of allowed types, so they will not be
+        // excluded from the view.
+        $types = !is_array($condition['value']) ? array($condition['value']) : $condition['value'];
+        $allowed_types = array_merge($allowed_types, $types);
+      }
+    }
+  }
+
+  // Get excluded content types.
+  $exclude = array();
+  foreach (os_app_info() as $info) {
+    if (!empty($info['searchable'])) {
+      // Option 'searchable' defaults to TRUE.
+      continue;
+    }
+
+    // Make sure the potentially excluded content types are not in the list of
+    // allowed node types.
+    foreach ($info['nodetypes'] as $key => $node_type) {
+      if (in_array($node_type, $allowed_types)) {
+        // Remove the allowed node type from the exclude list.
+        unset($info['nodetypes'][$key]);
+      }
+    }
+
+    // Add the unsearchable node types to the excluded list.
+    $exclude = array_merge($exclude, $info['nodetypes']);
+  }
+
+  $query->add_where(key($query->where), 'node.type', $exclude, 'not in');
+}
+
+/**
+ * Implements field_default_fields_alter() for altering field settings.
+ *
+ * If the default scheme is private change the file field exports to be
+ * private.
+ */
+function os_field_default_fields_alter(&$fields) {
+  if (!is_array($fields) || variable_get('file_default_scheme', 'public') != 'private'){
+    return;
+  }
+
+  foreach ($fields as $id => $config) {
+    if (!isset($config['field_config']) || !in_array($config['field_config']['type'], array('file','imagefield_crop','image'))) {
+      continue;
+    }
+    // Change the field to use private files instead of public.
+    $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
+
+    // Change the media widget to use private files instead of public.
+    if ($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])) {
+      unset($fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['public']);
+      $fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
+
+      $field_name = $config['field_config']['field_name'];
+      if ($field = field_info_field($field_name)) {
+        // Run through all instances of this field and make sure that its
+        // "allowed schemes" include private instead of "public".
+        foreach ($field['bundles'] as $entity_type => $bundles) {
+          foreach ($bundles as $bundle) {
+            $instance = field_info_instance($entity_type, $field_name, $bundle);
+            if (!$instance) {
+              // No field instance.
+              continue;
+            }
+
+            if (!empty($instance['widget']['settings']['allowed_schemes']['private'])) {
+              // Already changed from public to private.
+              continue;
+            }
+
+            unset($instance['widget']['settings']['allowed_schemes']['public']);
+            $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
+            field_update_instance($instance);
+          }
+        }
+      }
+    }
+  }
 }

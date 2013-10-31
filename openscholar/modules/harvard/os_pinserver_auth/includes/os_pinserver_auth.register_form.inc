@@ -34,7 +34,7 @@ function os_pinserver_auth_vsite_register_form_page() {
     }
 
     // Redirects pinserver-logged-in user if they don't own a vsite.
-    if ($uid = os_pinserver_auth_get_uid_from_huid()) {
+    if ($uid = pinserver_authenticate_get_uid_from_huid()) {
       // Logs the user in based on the HUID->UID association.
       $user = user_load(array('uid' => $uid));
       $user->login = time();
@@ -166,7 +166,7 @@ function os_pinserver_auth_register_submit($form, &$form_state) {
   }
 
   // Create UID->HUID association in database if UID and HUID are present.
-  if (!empty($uid) && !empty($huid) && !os_pinserver_auth_add_row($uid, $huid)) {
+  if (!empty($uid) && !empty($huid) && !pinserver_authenticate_set_user_huid($uid, $huid)) {
     error_log('WARNING: The os_pinserver_auth_register_submit function could not add the UID->HUID association to the database');
   }
 
@@ -187,7 +187,7 @@ function os_pinserver_auth_register_validate_elements(&$form_state) {
   }
 
   // Check if user can create vsites.
-  if ($user->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('openscholar_vsites_per_user')) {
+  if ($GLOBALS['user']->uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($user->uid)) >= variable_get('os_vsites_per_user')) {
     $errors['form'] = t('You do not have permission to create more websites.');
   }
 
@@ -229,7 +229,7 @@ function os_pinserver_auth_register_validate_huid($huid) {
   }
 
   // Verifies HUID does not already exist in database.
-  else if (os_pinserver_auth_get_uid_from_huid($huid)) {
+  else if (pinserver_authenticate_get_uid_from_huid($huid)) {
     $errors[] = t('The @harvard_id you have entered already exists in the database.', array('@harvard_id' => 'Harvard ID'));
   }
 
