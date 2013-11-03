@@ -369,3 +369,126 @@ function vsite_vocab_invalidate_entitycache($form, $form_state) {
   }
   cache_clear_all('*', 'cache_entity_taxonomy_term', TRUE);
 }
+
+/**
+ * Implement hook_field_formatter_info().
+ */
+function vsite_vocab_field_formatter_info() {
+  return array(
+    'og_vocab' => array(
+      'label' => t('OG vocabulary'),
+      'field types' => array('entityreference'),
+      'settings' => array(
+        'concatenate' => FALSE,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function vsite_vocab_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  return og_vocab_field_formatter_settings_form($field, $instance, $view_mode, $form, $form_state);
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function vsite_vocab_field_formatter_settings_summary($field, $instance, $view_mode) {
+  return og_vocab_field_formatter_settings_summary($field, $instance, $view_mode);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * Implements our own OG vocab field formatter: when a node is tagged to terms
+ * and the user remove the relationship between the vocabulary to the node type
+ * then we don't need to show the terms of the vocab.
+ *
+ * This will prevent from us to deal with removing the terms when the
+ * relationship is deleted.
+ */
+function vsite_vocab_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+  if (!og_vocab_is_og_vocab_field($entity_type, $field['field_name'], $bundle)) {
+    return array('#markup' => t('OG Vocabulary formatter should be used only on "Entity reference" fields with "OG complex" widgets.'));
+  }
+
+  if (!$items) {
+    return;
+  }
+
+  // When remove a relation between bundle and OG vocab we need to hide the
+  // terms from the vocab.
+  $hide_terms = array();
+  $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  foreach ($wrapper->{OG_VOCAB_FIELD} as $term) {
+    if (!og_vocab_load_og_vocab($term->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
+      $hide_terms[] = $term->getIdentifier();
+    }
+  }
+
+  $tids = array();
+  foreach ($items as $item) {
+    if (in_array($item['target_id'], $hide_terms)) {
+      continue;
+    }
+    $tids[] = $item['target_id'];
+  }
+
+  $terms = taxonomy_term_load_multiple($tids);
+  $ordered_terms = array();
+
+  foreach ($terms as $term) {
+    $vocabulary = taxonomy_vocabulary_load($term->vid);
+    $ordered_terms[] = array(
+      'term' => $term,
+      'weight' => $vocabulary->weight,
+      'vid' => $vocabulary->vid,
+    );
+  }
+
+  uasort($ordered_terms, 'og_vocab_sort_weight');
+
+  // Re-build the terms array, as it is now ordered.
+  $terms = array();
+  foreach ($ordered_terms as $info) {
+    $terms[] = $info['term'];
+  }
+
+  $settings = $display['settings'];
+
+  if ($settings['concatenate']) {
+    $values = array();
+    foreach ($terms as $term) {
+      $url = entity_uri('taxonomy_term', $term);
+      $values[] = l($term->name, $url['path']);
+    }
+
+    $element[0] = array('#markup' => implode(', ', $values));
+    return $element;
+  }
+
+  // Iterate over each term and group by vocabulary.
+  $data = array();
+  foreach ($terms as $term) {
+    if (empty($data['vocabulary'][$term->vid])) {
+      $vocab = taxonomy_vocabulary_load($term->vid);
+      $data['vocabulary'][$term->vid] = check_plain($vocab->name);
+    }
+    $url = entity_uri('taxonomy_term', $term);
+    $data['term'][$term->vid][] = l($term->name, $url['path']);
+  }
+
+  if (!$data) {
+    return;
+  }
+
+  $element = array();
+  foreach ($data['term'] as $vid => $values) {
+    $element[0][$vid] = array('#theme' => 'item_list', '#items' => $values, '#title' => $data['vocabulary'][$vid]);
+  }
+
+  return $element;
+}
