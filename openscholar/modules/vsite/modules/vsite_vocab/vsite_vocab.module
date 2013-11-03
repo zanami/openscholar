@@ -371,18 +371,10 @@ function vsite_vocab_invalidate_entitycache($form, $form_state) {
 }
 
 /**
- * Implement hook_field_formatter_info().
+ * Implements hook_field_field_formatter_info_alter().
  */
-function vsite_vocab_field_formatter_info() {
-  return array(
-    'og_vocab' => array(
-      'label' => t('OG vocabulary'),
-      'field types' => array('entityreference'),
-      'settings' => array(
-        'concatenate' => FALSE,
-      ),
-    ),
-  );
+function vsite_vocab_field_formatter_info_alter(&$info) {
+  $info['og_vocab']['module'] = 'vsite_vocab';
 }
 
 /**
@@ -402,12 +394,14 @@ function vsite_vocab_field_formatter_settings_summary($field, $instance, $view_m
 /**
  * Implements hook_field_formatter_view().
  *
- * Implements our own OG vocab field formatter: when a node is tagged to terms
+ * Implements our own OG vocab field formatter; When a node is tagged to terms
  * and the user remove the relationship between the vocabulary to the node type
  * then we don't need to show the terms of the vocab.
  *
- * This will prevent from us to deal with removing the terms when the
+ * This will also prevent from us to deal with removing the terms when the
  * relationship is deleted.
+ *
+ * @see og_vocab_field_formatter_view().
  */
 function vsite_vocab_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   list(,, $bundle) = entity_extract_ids($entity_type, $entity);
