@@ -36,7 +36,6 @@ Feature:
      Then I should see the feed item "Four more years is the most re-tweeted tweet" was imported
       And I should see "Four more years is the most re-tweeted tweet"
 
-    
   @api
   Scenario: Verify images in feed item description are imported as images.
     Given I am logging in as "admin"
