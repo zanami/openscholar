@@ -799,7 +799,7 @@ ul.nice-menu-down li li.menuparent:hover {
 #content-column .book-menu ul li ul li li a,
 .navigation ul.menu li ul.menu li li a,
 .navigation ul li ul li li a {
-  padding: 0.5em 0 0.5em 25px;
+  padding: 0.5em .5em 0.5em 25px;
 }
 
 #content-column .book-menu a,

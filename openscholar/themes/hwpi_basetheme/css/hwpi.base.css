@@ -543,7 +543,7 @@ ol.search-results li.search-result:last-child {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
