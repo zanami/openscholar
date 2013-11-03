@@ -981,6 +981,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 
 .block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
 .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person.article.modified-in-os_profiles_process_node .pic-bio,
 .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
  	float:left;
      margin-right: 10px;
@@ -988,8 +989,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 
 
 
-.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
-.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
 	display:block;
 	margin-left: 85px;
 }

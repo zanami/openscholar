@@ -110,6 +110,15 @@ function hwpi_basetheme_preprocess_node(&$vars) {
         $vars['content']['pic_bio']['#access'] = TRUE;
       }
     }
+    elseif ($vars['view_mode'] == 'sidebar_teaser') {
+      $path = variable_get('os_person_default_image', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image.png');
+      $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Default image.
+      $vars['content']['pic_bio']['field_person_photo'][0] = array('#markup' => $image);
+
+      // Make sure image will be displayed.
+      $vars['content']['pic_bio']['#access'] = TRUE;
+    }
   }
 }
 
