@@ -77,9 +77,6 @@ class os_boxes_media extends os_boxes_default {
   }
 
   public function render() {
-    if (module_exists('vsite') && !vsite_get_vsite()) {
-      return;
-    }
     $block = parent::render();
 
     if ($file = file_load($this->options['fid'])) {
@@ -90,9 +87,11 @@ class os_boxes_media extends os_boxes_default {
           $file->image_dimensions['width'] = $this->options['maxwidth'];
         }
         else {
-          $file->override['maxwidth'] = $this->options['maxwidth'];
+          $file->override['width'] = $this->options['maxwidth'];
+          $file->override['height'] = 0;
         }
       }
+
       $render = file_view($file, 'full');
       $block['content'] = drupal_render($render);
     }
