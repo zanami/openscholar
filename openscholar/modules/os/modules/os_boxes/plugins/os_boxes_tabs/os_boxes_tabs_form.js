@@ -55,12 +55,15 @@ Drupal.behaviors.tabs = {
   	
   	// add a new tab when the new_tab is clicked on
   	$('#tabs .links a[href="#tab-new"]').click(function () {
-  		var id = 'tab-'+($('#tabs .links li').length-1);
-  		$('#tabs').tabs('add', '#'+id, 'New Tab', $('#tabs .links li').length-1);
+  		var id = 'tab-'+($('#tabs .links li').length-1),
+          panel = $('#tab-new').html().replace(/tab-new/g, id);
+
+      $('#tabs .ui-tabs-nav').append('<li><a href="#'+id+'">New Tab</a></li>');
+      $('#tabs').append('<fieldset id="#'+id+'" class="form-wrapper">'+panel+'</fieldset>');
+  		$('#tabs').tabs('refresh');
   
   		// get the full html, including tags of the panel 
   		// and replace the automatically generated panel with it
-  		$('#'+id).html($('#tab-new').html().replace(/tab-new/g, id));
   		$('#tabs').tabs("select", id);
   		var count = $('#edit-count');
   		count.val(parseInt(count.val())+1);
