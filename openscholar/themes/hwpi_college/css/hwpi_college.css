@@ -19,7 +19,7 @@ body {
 h2 {
     color: #1F1F1F;
     font-family: Georgia,serif;
-    font-size: 1.75em;
+    font-size: 1.45em;
     font-weight: normal;
     line-height: 36px;
     padding-bottom: 0.75em;
@@ -80,6 +80,17 @@ blockquote {
 #boxes-box-site_info,
 #boxes-box-site_info a {
   color: #000;
+}
+
+#boxes-box-site_info h1 {
+  line-height: 32px;
+}
+
+#boxes-box-site_info h2,
+#boxes-box-site_info h1 + h2 {
+    font-size: 22px;
+     margin-bottom: 0;
+     padding-bottom: 0;
 }
 
 /* Menu bar */
@@ -586,17 +597,17 @@ table td.mini {
     padding: 10px 15px;
 
 }
-.ctools-dropdown.section_links {
-    float: none;
-    margin-left: 0;
-}
-.not-front #content-column .content-inner {
+
+#content-column .content-inner {
     padding: 22px 20px;
 }
-.not-front .region-sidebar-second .region-inner.clearfix {
+.region-sidebar-second .region-inner.clearfix {
     padding-right: 20px;
 }
 
+.front.no-sidebars.os_slideshow-processed #content-column .content-inner {
+    padding: 0;
+}
 
 #footer .at-panel {
     background: none repeat scroll 0 0 #FFFFFF;
@@ -769,7 +780,6 @@ a.rslides_nav {
 }
 
 .contextual-controls-wrapper {
- position:relative!important;
  top:0;
 }
 
