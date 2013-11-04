@@ -748,9 +748,12 @@ function os_form_alter(&$form, &$form_state, $form_id) {
   // Add a cancel link to node forms.
   if (strpos($form_id, '_node_form')) {
     if (!empty($_GET['destination'])) {
+      // If available in the query, set destination of the button.
       $destination = $_GET['destination'];
     }
     else {
+      // Otherwise redirect the user to the app path (i.e. if the user edits a
+      // node people object, he will be redirected to people).
       $paths = os_get_app_path();
       if (isset($paths[$form['#node']->type]) && $paths[$form['#node']->type] != 'page') {
         $destination = $paths[$form['#node']->type];
