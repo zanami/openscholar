@@ -15,7 +15,7 @@ function hwpi_init() {
 
     foreach (variable_get('hwpi_ssl_domains',array()) as $domain) {
       $offset = (strlen($domain) * -1);
-      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",$offset)){
+      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",($offset-1))){
         //We found a Match
         $conf['securepages_enable'] = 1;
         break;
