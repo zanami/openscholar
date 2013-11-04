@@ -747,7 +747,18 @@ function os_form_alter(&$form, &$form_state, $form_id) {
 
   // Add a cancel link to node forms.
   if (strpos($form_id, '_node_form')) {
-    $destination = !empty($_GET['destination']) ? $_GET['destination'] : '';
+    if (!empty($_GET['destination'])) {
+      $destination = $_GET['destination'];
+    }
+    else {
+      $paths = os_get_app_path();
+      if (isset($paths[$form['#node']->type]) && $paths[$form['#node']->type] != 'page') {
+        $destination = $paths[$form['#node']->type];
+      }
+      else {
+        $destination = '';
+      }
+    }
     $form['actions']['cancel'] = array(
       '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel' ))),
       '#weight' => 99,
