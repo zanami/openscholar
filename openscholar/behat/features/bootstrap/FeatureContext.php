@@ -1008,6 +1008,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the node of type "([^"]*)" named "([^"]*)" using contextual link$/
+   */
+  public function iEditTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
    * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
    */
   public function iVerifyTheValueIs($label, $value) {
