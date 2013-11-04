@@ -283,11 +283,7 @@ projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
-projects[og_vocab][version] = 1.x-dev
-projects[og_vocab][download][type] = git
-projects[og_vocab][download][branch] = 7.x-1.x-dev
-projects[og_vocab][download][revision] = 61a6b9f
-projects[og_vocab][patch][] = "https://drupal.org/files/og-vocab-prevent-old-term-refernce-error.patch"
+projects[og_vocab][version] = 1.2
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -297,6 +293,7 @@ projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-178532
 projects[password_policy][subdir] = "contrib"
 projects[password_policy][version] = 2.0-alpha1
 projects[password_policy][patch][] = "https://drupal.org/files/password-policy-anonymous-users.patch"
+projects[password_policy][patch][] = "https://drupal.org/files/password_policy-remove_focus-1998862-7455062.patch"
 
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2

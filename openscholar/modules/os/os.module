@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -748,8 +747,9 @@ function os_form_alter(&$form, &$form_state, $form_id) {
 
   // Add a cancel link to node forms.
   if (strpos($form_id, '_node_form')) {
+    $destination = !empty($_GET['destination']) ? $_GET['destination'] : '';
     $form['actions']['cancel'] = array(
-      '#markup'   => l(t('Cancel'), '', array('attributes' => array('class' => 'form-cancel' ))),
+      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel' ))),
       '#weight' => 99,
     );
   }
@@ -1661,8 +1661,32 @@ function os_field_default_fields_alter(&$fields) {
 
     // Change the media widget to use private files instead of public.
     if ($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])) {
-      unset($config['field_instance']['widget']['settings']['allowed_schemes']['public']);
+      unset($fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['public']);
       $fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
-   }
+
+      $field_name = $config['field_config']['field_name'];
+      if ($field = field_info_field($field_name)) {
+        // Run through all instances of this field and make sure that its
+        // "allowed schemes" include private instead of "public".
+        foreach ($field['bundles'] as $entity_type => $bundles) {
+          foreach ($bundles as $bundle) {
+            $instance = field_info_instance($entity_type, $field_name, $bundle);
+            if (!$instance) {
+              // No field instance.
+              continue;
+            }
+
+            if (!empty($instance['widget']['settings']['allowed_schemes']['private'])) {
+              // Already changed from public to private.
+              continue;
+            }
+
+            unset($instance['widget']['settings']['allowed_schemes']['public']);
+            $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
+            field_update_instance($instance);
+          }
+        }
+      }
+    }
   }
 }

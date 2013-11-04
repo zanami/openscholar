@@ -74,8 +74,11 @@
   .mobile #footer .gpanel,
   .mobile .region-footer,
   .mobile .message-inner,
-  .mobile #powerby-login,
-  .ipad .branding-container,
+  .mobile #powerby-login {
+    width:100%;
+  }
+  
+   .ipad .branding-container,
   .ipad #header-container,
   .ipad #columns,
   .ipad #menu-bar #block-os-primary-menu,
@@ -83,8 +86,9 @@
   .ipad .region-footer,
   .ipad .message-inner,
   .ipad #powerby-login {
-    width:100%;
+    width:980px;
   }
+   
   
 
   /* Branding */
