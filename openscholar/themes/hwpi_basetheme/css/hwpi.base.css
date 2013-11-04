@@ -629,12 +629,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
 .sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
-
      margin-right: 0;
-}
-
-.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
-	 margin-left: 95px;
 }
 
 .sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
