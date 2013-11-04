@@ -1183,4 +1183,11 @@ class FeatureContext extends DrupalContext {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
     $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
   }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
 }
