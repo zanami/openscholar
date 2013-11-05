@@ -1707,11 +1707,11 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
     '#cardinality' => $context['field']['cardinality'],
     '#attached' => array(
       'css' => array(
-        drupal_get_path('module', 'os') . '/css/select2.css',
+        libraries_get_path('select2') . '/select2.css',
         drupal_get_path('module', 'os') . '/css/select2-widget.css',
       ),
       'js' => array(
-        drupal_get_path('module', 'os') . '/js/select2.min.js',
+        libraries_get_path('select2') . '/select2.min.js',
         drupal_get_path('module', 'os') . '/js/select2-widget.js',
       ),
     ),
