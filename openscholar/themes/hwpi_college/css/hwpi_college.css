@@ -592,6 +592,7 @@ table td.mini {
 
 }
 
+.page-node #content-column .content-inner,
 #content-column .content-inner {
     padding: 22px 20px;
 }
