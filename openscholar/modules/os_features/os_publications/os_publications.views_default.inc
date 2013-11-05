@@ -36,6 +36,11 @@ function os_publications_views_default_views() {
   $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
+  /* Relationship: OG membership: OG membership from Publication */
+  $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
+  $handler->display->display_options['relationships']['og_membership_rel']['table'] = 'biblio';
+  $handler->display->display_options['relationships']['og_membership_rel']['field'] = 'og_membership_rel';
+  $handler->display->display_options['relationships']['og_membership_rel']['label'] = 'OG';
   /* Field: Publication: Render bilbio (Get text) */
   $handler->display->display_options['fields']['biblio_render']['id'] = 'biblio_render';
   $handler->display->display_options['fields']['biblio_render']['table'] = 'biblio';
@@ -47,6 +52,16 @@ function os_publications_views_default_views() {
   $handler->display->display_options['sorts']['biblio_year_value']['table'] = 'field_data_biblio_year';
   $handler->display->display_options['sorts']['biblio_year_value']['field'] = 'biblio_year_value';
   $handler->display->display_options['sorts']['biblio_year_value']['order'] = 'DESC';
+  /* Contextual filter: Field: Groups audience (og_group_ref) */
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['id'] = 'og_group_ref_target_id';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['table'] = 'og_membership';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['field'] = 'og_group_ref_target_id';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['relationship'] = 'og_membership_rel';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['default_argument_type'] = 'og_context';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['og_group_ref_target_id']['summary_options']['items_per_page'] = '25';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

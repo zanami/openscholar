@@ -1,11 +1,4 @@
 <?php
-// $Id$
-
-function os_publications_schema() {
-  $schema['cache_biblio_lists'] = drupal_get_schema_unprocessed('system', 'cache');
-  $schema['cache_biblio_lists']['description'] = 'Cache table for biblio lists module.';
-  return $schema;
-}
 
 /**
  * Implements hook_install().
@@ -37,30 +30,6 @@ function os_publications_install() {
       'action_on_edit' => TRUE
     );
     og_create_field(OG_AUDIENCE_FIELD, 'biblio', $type, $og_field);
-  }
-
-  // Will be un use until the biblio citeproc will be back.
-  return;
-  if (module_exists('biblio_citeproc')) {
-    //Remove Line indentation from citeproc styles
-    foreach (biblio_get_styles() as $name => $desc){
-      $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
-      if (isset($csl->csl)) {
-        $csl_file_contents = $csl->csl;
-        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
-          biblio_citeproc_install_style($name, $csl_file_contents);
-        }
-      }
-    }
-
-    // Remove second biblio_secondary_title field mapping.
-    $field_map = biblio_get_map('field_map','csl');
-    if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
-      if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
-	    $field_map['collection-title'] = '';
-	    biblio_set_map('field_map', 'csl', $field_map);
-	  }
-    }
   }
 }
 
