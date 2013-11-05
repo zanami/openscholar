@@ -298,7 +298,6 @@ projects[password_policy][subdir] = "contrib"
 projects[password_policy][version] = 2.0-alpha1
 projects[password_policy][patch][] = "https://drupal.org/files/password-policy-anonymous-users.patch"
 projects[password_policy][patch][] = "https://drupal.org/files/password_policy-remove_focus-1998862-7455062.patch"
-projects[password_policy][patch][] = "https://drupal.org/files/issues/password_policy-consecutive_regex-2127421-1.patch"
 
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2
