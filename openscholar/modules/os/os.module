@@ -1690,3 +1690,45 @@ function os_field_default_fields_alter(&$fields) {
     }
   }
 }
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function os_field_widget_options_select_form_alter(&$element, &$form_state, $context) {
+  // Make all select fields use Select2.
+
+  if ($context['field']['cardinality'] == 1) {
+    // If limited to a single value, do not use Select2.
+    return $element;
+  }
+
+  $element += array(
+    '#after_build' => array('os_select2_widget_after_build'),
+    '#cardinality' => $context['field']['cardinality'],
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'os') . '/css/select2.css',
+        drupal_get_path('module', 'os') . '/css/select2-widget.css',
+      ),
+      'js' => array(
+        drupal_get_path('module', 'os') . '/js/select2.js',
+        drupal_get_path('module', 'os') . '/js/select2-widget.js',
+      ),
+    ),
+  );
+
+  return $element;
+}
+
+function os_select2_widget_after_build($element, &$form_state) {
+  $setting = drupal_static('__FUNCTION__', array());
+
+  $setting[] = array(
+    'selector' => '#' . $element['#id'],
+    'cardinality' => $element['#cardinality'],
+  );
+
+  drupal_add_js(array('select2_widget' => $setting), 'setting');
+
+  return $element;
+}
