@@ -1711,7 +1711,7 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
         drupal_get_path('module', 'os') . '/css/select2-widget.css',
       ),
       'js' => array(
-        drupal_get_path('module', 'os') . '/js/select2.js',
+        drupal_get_path('module', 'os') . '/js/select2.min.js',
         drupal_get_path('module', 'os') . '/js/select2-widget.js',
       ),
     ),
