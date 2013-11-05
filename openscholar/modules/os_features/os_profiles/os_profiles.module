@@ -52,6 +52,7 @@ function os_profiles_process_node(&$vars) {
     if (isset($vars['content']['pic_bio'])) {
       $vars['title_prefix'] = $vars['content']['pic_bio'];
       unset($vars['content']['pic_bio']);
+      $vars['classes'] .= ' with-person-photo';
     }
 
     //move the title inside
