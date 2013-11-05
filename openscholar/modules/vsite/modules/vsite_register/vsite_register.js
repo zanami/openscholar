@@ -52,6 +52,7 @@
           // Toggles display whenever the "Create new user" link is clicked.
           $('#new-user-link').click(function() {
             Drupal.behaviors.vsite_register.toggle_user_forms();
+            $('input[name=create_new_user]').attr('value', 1); //store this so form appears right after refresh
           });
         });
       }

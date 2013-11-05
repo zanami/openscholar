@@ -283,11 +283,6 @@ function _vsite_register_user_form() {
     '#type' => 'password_confirm',
     '#size' => 35,
   );
-//  $form['notify'] = array(
-//    '#type' => 'checkbox',
-//    '#title' => t('Send email notification of this account.'),
-//  );
-
   return $form;
 }
 
@@ -581,6 +576,17 @@ function _vsite_register_validate($element, &$values) {
         }
         else {
           $msg[] = t('The password field is required.');
+        }
+        
+        if (module_exists('password_policy')) {
+          //borrowed from `password_policy_user_profile_form_validate()`
+          $account = user_load(0);
+          $policies = PasswordPolicy::matched_policies($account);
+          $errors = array();
+          foreach ($policies as $policy) {
+            $errors = $errors + $policy->check($pass1, $account);
+          }
+          $msg = array_merge($msg, $errors);
         }
       }
 
