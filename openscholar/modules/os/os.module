@@ -1697,11 +1697,6 @@ function os_field_default_fields_alter(&$fields) {
  * Make all select fields use Select2.
  */
 function os_field_widget_options_select_form_alter(&$element, &$form_state, $context) {
-  if ($context['field']['cardinality'] == 1) {
-    // If limited to a single value, do not use Select2.
-    return $element;
-  }
-
   $element += array(
     '#after_build' => array('os_select2_widget_after_build'),
     '#cardinality' => $context['field']['cardinality'],
@@ -1724,7 +1719,7 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
  * After build callback; Add required JS settings to Select2 fields.
  */
 function os_select2_widget_after_build($element, &$form_state) {
-  $setting = drupal_static('__FUNCTION__', array());
+  $setting = drupal_static(__FUNCTION__, array());
 
   $setting[] = array(
     'selector' => '#' . $element['#id'],
