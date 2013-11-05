@@ -1,20 +1,20 @@
+(function ($) {
 
 Drupal.behaviors.tabs = {
   attach: function () {
-    var $ = jQuery;
+
   	// initialize the tabs and the sortable
-    console.log($('#tabs .links li').length-1);
   	$('#tabs').tabs({
 			// keep the new_tab link from being a tab
 			disabled: [$('#tabs .links li').length-1],
 			// use fieldset instead of div
 			panelTemplate: '<fieldset class="panel"></fieldset>',
 			activate: function (e, ui) {
-				$('.panel .tab-title').change();
-			}
-		  })
-		  .find('.ui-tabs-nav')
-		  .sortable({
+        $('.panel .tab-title').change();
+      }
+    })
+    .find('.ui-tabs-nav')
+    .sortable({
 			axis: 'x',
 			// don't let them sort the new_tab
 			items: 'li:not(.new_tab)',
@@ -76,3 +76,4 @@ Drupal.behaviors.tabs = {
   	});
   }
 };
+})(jQuery);
