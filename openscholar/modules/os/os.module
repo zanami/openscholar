@@ -752,8 +752,8 @@ function os_form_alter(&$form, &$form_state, $form_id) {
       $destination = $_GET['destination'];
     }
     else {
-      // Otherwise redirect the user to the app path (i.e. if the user edits a
-      // node people object, he will be redirected to people).
+      // Otherwise redirect the users to the app path (e.g. if users edit a
+      // node people object, they will be redirected to people).
       $paths = os_get_app_path();
       if (isset($paths[$form['#node']->type])) {
         $destination = $paths[$form['#node']->type];
