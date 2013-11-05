@@ -220,7 +220,9 @@ padding-right: 0;
   font-family: Arial,sans-serif;
 }
 
-#page-title {
+#page-title,
+#content-column h3,
+#content-column h4 {
     font-family: georgia,sans-serif;
     font-weight: normal;
 }
@@ -464,15 +466,7 @@ a, a:visited {
 .ui-tabs .block.no-title .view .date-nav-wrapper {
   border-top: 0;
 }
-.ui-tabs-panel p,
-.ui-panels-tab .boxes-box-content{
-	font-family:Georgia,serif!important;
-	font-size:16px;
-	line-height:24px;
-}
-.ui-tabs-panel li {
-    font-family: georgia,serif !important;
-}
+
 .block .view .date-nav-wrapper .date-nav {
   margin-bottom: 7px;
 }
