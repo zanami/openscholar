@@ -22,6 +22,11 @@ projects[boxes][subdir] = "contrib"
 projects[boxes][version] = 1.0-beta7
 projects[boxes][patch][] = "http://raw.github.com/openscholar/openscholar/b38919350643c8b26a3f639e935c1c6e802c6dd7/patches/boxes.load_from_spaces_and_fix_fatals.patch"
 
+projects[biblio][subdir] = "contrib"
+projects[biblio][download][type] = git
+projects[biblio][download][url] = "https://github.com/amitaibu/biblio"
+projects[biblio][download][branch] = "7.x-3.x"
+
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.4
 projects[calendar][patch][] = "http://raw.github.com/openscholar/openscholar/72d63ee3537c31505b7481975886ec13789feeb5/patches/calendar-fix-week-view-overflow.patch"
@@ -177,6 +182,10 @@ projects[imagefield_crop][download][revision] = 4a5302
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-hook_imagefield_crop_instance_alter-1915510-2.patch"
 projects[imagefield_crop][patch][] = "http://drupal.org/files/imagefield_crop-max_filesize-1923934-1.patch"
 
+projects[inline_entity_form][subdir] = "contrib"
+projects[inline_entity_form][version] = 1.3
+projects[inline_entity_form][patch][] = "https://drupal.org/files/2046953-ief-unique-id-3.patch"
+
 projects[jcarousel][subdir] = "contrib"
 projects[jcarousel][version] = 2.6
 
@@ -238,9 +247,8 @@ projects[memcache][version] = 1.0
 projects[migrate][subdir] = "contrib"
 projects[migrate][version] = 2.5
 
-projects[migrate_extras][patch][] = "http://drupal.org/files/migrate_extras-duplicate_MigrateDestinationOgMembership-1788440-5.patch"
 projects[migrate_extras][subdir] = "contrib"
-projects[migrate_extras][version] = 2.4
+projects[migrate_extras][version] = 2.5
 
 projects[mollom][subdir] = "contrib"
 projects[mollom][version] = 2.2
@@ -408,6 +416,10 @@ libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/ma
 libraries[colorbox][type] = "libraries"
 libraries[colorbox][download][type] = "file"
 libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.4.14.zip"
+
+libraries[citeproc-php][type] = "libraries"
+libraries[citeproc-php][download][type] = "git"
+libraries[citeproc-php][download][url] = "https://github.com/gbv/citeproc-php.git"
 
 libraries[jquery.cycle][type] = "libraries"
 libraries[jquery.cycle][download][type] = "file"

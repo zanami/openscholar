@@ -7,40 +7,41 @@ function os_publications_schema() {
   return $schema;
 }
 
-// Implements hook_install().
+/**
+ * Implements hook_install().
+ */
 function os_publications_install() {
-   db_add_field('biblio', 'biblio_url_title', array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => FALSE,
-      'description' => 'A title to go with the Relevant URL',
-    ));
-
-  // Insert the biblio_url_title into the biblio_fields table.
-  // Biblio_fields table is not auto increment, grab the last fid and increment it for our insert.
-  $field_id = db_query('SELECT fid FROM {biblio_fields} ORDER BY fid DESC LIMIT 1')->fetchField();
-  if(isset($field_id)) {
-    $field_id = $field_id+1;
+  foreach (array_keys(biblio_types()) as $type) {
+    biblio_create_field('biblio_url_title', 'biblio', $type);
   }
-  db_insert('biblio_fields')
-  ->fields(array(
-    'fid' => $field_id,
-    'name' => 'biblio_url_title',
-    'type' => 'textfield',
-    'size' => 60,
-    'maxsize' => 255,
-  ))
-  ->execute();
 
-  if ($field = field_info_instance('node', 'body', 'biblio')) {
-    $field['display']['teaser'] = array(
-      'label' => 'hidden',
-      'type' => 'hidden',
+  // Attaching OG audience fields to the biblio bundles.
+  $types = biblio_get_types_info();
+  foreach (array_keys($types) as $type) {
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['instance']['display'] = array(
+      'default' => array(
+        'type' => 'hidden'
+      ),
+      'teaser' => array(
+        'type' => 'hidden'
+      )
     );
-    field_update_instance($field);
+    // Enable Entity reference prepopulate.
+    $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+      'status' => TRUE,
+      'action' => 'hide',
+      'fallback' => 'hide',
+      'skip_perm' => FALSE,
+      'og_context' => TRUE,
+      'action_on_edit' => TRUE
+    );
+    og_create_field(OG_AUDIENCE_FIELD, 'biblio', $type, $og_field);
   }
 
-  if(module_exists('biblio_citeproc')){
+  // Will be un use until the biblio citeproc will be back.
+  return;
+  if (module_exists('biblio_citeproc')) {
     //Remove Line indentation from citeproc styles
     foreach (biblio_get_styles() as $name => $desc){
       $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
@@ -60,18 +61,6 @@ function os_publications_install() {
 	    biblio_set_map('field_map', 'csl', $field_map);
 	  }
     }
-  }
-}
-
-// Implements hook_schema_alter().
-function os_publications_schema_alter(&$schema) {
-  if (isset($schema['biblio'])) {
-    $schema['biblio']['fields']['biblio_url_title'] = array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => FALSE,
-      'description' => 'A title to go with the Relevant URL',
-    );
   }
 }
 
@@ -101,7 +90,7 @@ function os_publications_uninstall() {
 }
 
 function os_publications_enable() {
-  _os_publications_update_field_data();
+//  _os_publications_update_field_data();
 
   // place it behind import/export modules
   db_update('system')
@@ -342,7 +331,7 @@ function os_publications_update_7007() {
  * Set biblio to use views_litepager
  */
 function os_publications_update_7008() {
-  variable_set('biblio_pager', 'pager_lite'); 
+  variable_set('biblio_pager', 'pager_lite');
 }
 
 /**
@@ -1049,4 +1038,33 @@ function os_publications_update_7012() {
  */
 function os_publications_update_7013() {
   features_revert(array('os_publications' => array('field')));
+}
+
+/**
+ * Attaching OG audience fields to the new biblio bundles.
+ */
+function os_publications_update_7014() {
+  // Attaching OG audience fields to the biblio bundles.
+  $types = biblio_get_types_info();
+  foreach (array_keys($types) as $type) {
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['instance']['display'] = array(
+      'default' => array(
+        'type' => 'hidden'
+      ),
+      'teaser' => array(
+        'type' => 'hidden'
+      )
+    );
+    // Enable Entity reference prepopulate.
+    $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+      'status' => TRUE,
+      'action' => 'hide',
+      'fallback' => 'hide',
+      'skip_perm' => FALSE,
+      'og_context' => TRUE,
+      'action_on_edit' => TRUE
+    );
+    og_create_field(OG_AUDIENCE_FIELD, 'biblio', $type, $og_field);
+  }
 }

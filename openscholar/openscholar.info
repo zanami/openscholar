@@ -43,6 +43,7 @@ dependencies[] = feeds
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
+dependencies[] = biblio_ui
 dependencies[] = advanced_help
 dependencies[] = jquery_update
 

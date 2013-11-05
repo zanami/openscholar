@@ -28,15 +28,6 @@ function os_publications_os_app_info() {
  * Defines the overview menu entry
  */
 function os_publications_menu_alter(&$items) {
-  $items['publications'] = array(
-    'title' => 'Publications',
-    'page callback' => 'os_publications_overview',
-    'access callback' => 'spaces_access_feature',
-    'access arguments' => array('view', 'os_publications'),
-    'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
-    'menu_name' => 'primary',
-  );
-
   $items['publications/export'] = array(
     'title' => '',
     'page callback' => 'os_publications_export',
@@ -211,6 +202,7 @@ function _os_publications_filter_by_term(QueryAlterableInterface $query) {
  * Replaces biblio theme functions with our own.
  */
 function os_publications_theme_registry_alter(&$reg) {
+  return;
   $reg['biblio_tabular'] = array_merge($reg['biblio_tabular'], array(
       'file' => 'os_publications.theme.inc',
       'theme path' => drupal_get_path('module', 'os_publications'),
@@ -662,7 +654,10 @@ function os_publications_os_add_new_links_alter(&$links) {
       'href' => 'publications/import',
       'html' => TRUE,
     );
-    $links['biblio']['title'] = 'Publication';
+    $links['biblio'] = array(
+      'href' => 'biblio/add',
+      'title' => 'Publication',
+    );
   }
 }
 
@@ -827,6 +822,43 @@ function os_publications_field_attach_load($entity_type, $entities, $view_mode) 
 }
 
 /**
+ * Implements hook_biblio_fields_info().
+ */
+function os_publications_biblio_fields_info() {
+  // URL title.
+  $items['biblio_url_title'] = array(
+    'description' => 'Biblio URL title',
+    'field' => array(
+      'cardinality' => '1',
+      'field_name' => 'biblio_url_title',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'type' => 'text',
+    ),
+    'instance' => array(
+      'label' => 'Biblio URL title',
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '-3',
+      ),
+    ),
+  );
+
+  return $items;
+}
+
+/**
  * Create publication manually.
  *
  * @param $name
@@ -896,4 +928,19 @@ function os_publications_import_type($name, $field_settings) {
       ->fields($ct_vals)
       ->execute();
   }
+}
+
+/**
+ * Implements hook_views_data().
+ */
+function os_publications_views_data() {
+  $data['biblio']['space'] = array(
+    'title' => t('Biblio in space'),
+    'help' => t('Filter biblio entries which belong to your vsite.'),
+    'filter' => array(
+      'handler' => 'os_publication_biblio_space_filter',
+    ),
+  );
+
+  return $data;
 }
