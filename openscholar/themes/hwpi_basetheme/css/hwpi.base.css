@@ -120,6 +120,12 @@ table caption {
   color: #1e1e1e;
 }
 
+@-moz-document url-prefix() { 
+a.biblio-abstract-link.toggle {
+    background-position: 0 -397px;
+ }
+}
+
 
 /* Block Styles */
 #content-column .block ul {
