@@ -124,6 +124,32 @@ function vsite_get_purl($vsite = FALSE){
   return ! empty($vsite->group) ? $vsite->group->purl : '';
 }
 
+
+/**
+ * Implements hook_js_alter().
+ *
+ * Prefix Overlay's Ajax callback with our PURL.
+ */
+function vsite_js_alter(&$javascript) {
+  if (!module_exists('overlay') || empty($javascript['settings']['data'])) {
+    // No overlay, or no javascript settings.
+    return;
+  }
+
+  if (!$vsite = vsite_get_vsite()) {
+    // No VSite context.
+    return;
+  }
+
+  foreach ($javascript['settings']['data'] as $key => $value) {
+    if (!empty($value['overlay']['ajaxCallback'])) {
+      // Prefix the callback with our PURL.
+      $value['overlay']['ajaxCallback'] = $vsite->og->purl . '/' . $value['overlay']['ajaxCallback'];
+      $javascript['settings']['data'][$key] = $value;
+    }
+  }
+}
+
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
