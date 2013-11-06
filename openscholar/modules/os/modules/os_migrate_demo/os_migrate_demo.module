@@ -559,3 +559,24 @@ function os_migrate_demo_import_csv($type) {
 
   feeds_source($importers[$type], 0)->import();
 }
+
+/**
+ * @param $bundle
+ *  The content type.
+ * @param $vocabulary
+ *  The vocabulary name.
+ */
+function os_migrate_demo_bind_content_to_vocab($bundle, $vocabulary) {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_vocabulary')
+    ->propertyCondition('name', $vocabulary)
+    ->execute();
+
+  if (empty($result['taxonomy_vocabulary'])) {
+    return;
+  }
+
+  $vid = reset($result['taxonomy_vocabulary'])->vid;
+  og_vocab_create_og_vocab($vid, 'node', $bundle)->save();
+}

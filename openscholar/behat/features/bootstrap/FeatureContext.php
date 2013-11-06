@@ -1008,6 +1008,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the node of type "([^"]*)" named "([^"]*)" using contextual link$/
+   */
+  public function iEditTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
    * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
    */
   public function iVerifyTheValueIs($label, $value) {
@@ -1171,5 +1182,12 @@ class FeatureContext extends DrupalContext {
   public function iImportTheBlogFor($vsite) {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
     $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
   }
 }
