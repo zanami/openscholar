@@ -73,6 +73,21 @@ function os_files_rest_media_browser() {
           'type' => 'setting',
         ),
         array (
+          'data' => drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserFilters.js',
+          'type' => 'file',
+          'scope' => 'footer',
+        ),
+        array (
+          'data' => drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserDirectives.js',
+          'type' => 'file',
+          'scope' => 'footer',
+        ),
+        array (
+          'data' => drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserServices.js',
+          'type' => 'file',
+          'scope' => 'footer',
+        ),
+        array (
           'data' => drupal_get_path('module', 'os_files_rest').'/misc/MediaBrowserModule.js',
           'type' => 'file',
           'scope' => 'footer',

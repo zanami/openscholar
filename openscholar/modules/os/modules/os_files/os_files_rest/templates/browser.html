@@ -12,6 +12,7 @@
             </div>
         </div>
     </div>
+    <div mb-pager page-size="10" collection-length="(files | filter:queryFilename).length"></div>
     <div class="pager" ng-show="files.length">
         <button ng-disabled="currentPage() == 0" ng-click="setCurrentPage(currentPage()-1)">&lt;&lt;</button>
         {{currentPage()+1}}/{{numberOfPages()}}
