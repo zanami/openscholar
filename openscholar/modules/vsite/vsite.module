@@ -124,6 +124,18 @@ function vsite_get_purl($vsite = FALSE){
   return ! empty($vsite->group) ? $vsite->group->purl : '';
 }
 
+/**
+ * Implements hook_library_alter().
+ */
+function vsite_library_alter(&$libraries, $module) {
+  if ($module != 'overlay') {
+    return;
+  }
+
+  $path = drupal_get_path('module', 'vsite') . '/js/overlay-parent.js';
+  $libraries['parent']['js'][$path] = array();
+}
+
 
 /**
  * Implements hook_js_alter().
@@ -143,8 +155,8 @@ function vsite_js_alter(&$javascript) {
 
   foreach ($javascript['settings']['data'] as $key => $value) {
     if (!empty($value['overlay']['ajaxCallback'])) {
-      // Prefix the callback with our PURL.
-      $value['overlay']['ajaxCallback'] = $vsite->og->purl . '/' . $value['overlay']['ajaxCallback'];
+      // PURLify the ajax callback URL.
+      $value['overlay']['ajaxCallback'] = url($value['overlay']['ajaxCallback'], array('absolute' => TRUE));
       $javascript['settings']['data'][$key] = $value;
     }
   }
@@ -1019,7 +1031,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
-  
+
   // Ensures that "field_subsite_domains" field is created.
   if (!field_info_field('field_subsite_domains')) {
     $field = array(
@@ -1051,7 +1063,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     $field = field_create_field($field);
   }
-  
+
   if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
@@ -1098,7 +1110,7 @@ function vsite_attach_fields_to_group($bundle){
       ),
     );
     field_create_instance($instance);
-  }  
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
