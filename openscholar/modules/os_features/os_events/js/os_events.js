@@ -36,7 +36,6 @@
 
   // Update the End Date field according to the Start Date field.
   Drupal.behaviors.osEventsUpdateEndDate = {
-
     attach: function () {
 
       $('div.start-date-wrapper:not(.start-date-processed)').addClass('start-date-processed').find('input[id*=datepicker]').change(function() {
