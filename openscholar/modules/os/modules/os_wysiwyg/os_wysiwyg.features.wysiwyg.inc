@@ -29,6 +29,7 @@ function os_wysiwyg_wysiwyg_default_profiles() {
           'justifyleft' => 1,
           'justifycenter' => 1,
           'justifyright' => 1,
+          'justifyfull' => 1,
           'bullist' => 1,
           'numlist' => 1,
           'outdent' => 1,
