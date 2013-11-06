@@ -458,10 +458,10 @@ function vsite_update_7012() {
 function vsite_update_7013() {
   //subsite domains field
   features_revert(array('vsite' => array('field')));
-  
+
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   $group_types = array_intersect($group_types, variable_get('subsite_parents', array('department')));
-  
+
   foreach ($group_types as $type) {
     vsite_attach_fields_to_group($type);
   }
@@ -471,4 +471,17 @@ function vsite_update_7013() {
   $og_field['instance']['label'] = 'Support expire';
   $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
   og_create_field('vsite_support_expire', 'user', 'user', $og_field);
+}
+
+
+/**
+ * Add "Override roles and permissions" functionality to VSites.
+ */
+function vsite_update_7014() {
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  $group_types = array_intersect($group_types, variable_get('subsite_parents', array('department')));
+
+  foreach ($group_types as $type) {
+    vsite_attach_fields_to_group($type);
+  }
 }

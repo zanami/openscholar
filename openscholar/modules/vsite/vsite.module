@@ -686,6 +686,7 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
 function vsite_attach_fields_to_group($bundle){
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
   og_create_field(VSITE_ACCESS_FIELD, 'node', $bundle);
+  og_create_field(OG_DEFAULT_ACCESS_FIELD, 'node', $bundle);
 
   if (! field_info_field('field_site_address')) {
     // field_site_address.
@@ -993,7 +994,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
-  
+
   // Ensures that "field_subsite_domains" field is created.
   if (!field_info_field('field_subsite_domains')) {
     $field = array(
@@ -1025,7 +1026,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     $field = field_create_field($field);
   }
-  
+
   if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
@@ -1072,7 +1073,7 @@ function vsite_attach_fields_to_group($bundle){
       ),
     );
     field_create_instance($instance);
-  }  
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
