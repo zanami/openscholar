@@ -631,11 +631,11 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 .sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
      margin-right: 0;
 }
-
+/* I DONT THINK THIS IS NEEDED ANYMORE,BUT LEAVING IN UNTIL TESTED
 .sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
 	margin-left: 95px;
 }
-
+*/
 /* Node FAQ */
 .node-teaser.node-faq {
   line-height: 19px;

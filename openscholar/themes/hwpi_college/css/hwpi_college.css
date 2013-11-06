@@ -407,6 +407,10 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 margin-left: 5.7em;
 }
 
+.sidebar article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
+margin-left: 6em;
+}
+
 .block.no-title .block-content {
   margin-top: 0;
 }
