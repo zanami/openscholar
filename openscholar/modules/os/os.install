@@ -380,3 +380,9 @@ function os_update_7022() {
     ->fields(array('promote' => 0))
     ->execute();
 }
+/**
+ * Enable message notify.
+ */
+function os_update_7023() {
+  module_enable(array('message_notify'));
+}
