@@ -34,13 +34,16 @@
     }
   };
 
+  // Update the End Date field according to the Start Date field.
   Drupal.behaviors.osEventsUpdateEndDate = {
-    // Update the End Date field according to the Start Date field.
 
     attach: function () {
 
-      $('div.start-date-wrapper').find('input[id*=datepicker]').change(function() {
-       $(this).parents('div.fieldset-wrapper').find('div.end-date-wrapper').find('input[id*=datepicker]').val($(this).val());
+      $('div.start-date-wrapper').find('input[id*=datepicker]:not(.start-date-processed)').change(function() {
+        $(this).parents('div.fieldset-wrapper').find('div.end-date-wrapper').find('input[id*=datepicker]').val($(this).val());
+
+        // Prevent double binding.
+        $(this).addClass('start-date-processed');
       });
 
     }
