@@ -39,11 +39,8 @@
 
     attach: function () {
 
-      $('div.start-date-wrapper').find('input[id*=datepicker]:not(.start-date-processed)').change(function() {
+      $('div.start-date-wrapper:not(.start-date-processed)').addClass('start-date-processed').find('input[id*=datepicker]').change(function() {
         $(this).parents('div.fieldset-wrapper').find('div.end-date-wrapper').find('input[id*=datepicker]').val($(this).val());
-
-        // Prevent double binding.
-        $(this).addClass('start-date-processed');
       });
 
     }
