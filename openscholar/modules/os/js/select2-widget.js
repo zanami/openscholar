@@ -1,5 +1,4 @@
 (function ($) {
-
   Drupal.behaviors.osSelect2Widget = {
     // Add Select2 functionality to select fields.
 
@@ -23,6 +22,5 @@
 
     }
   }
-
 })(jQuery);
 
