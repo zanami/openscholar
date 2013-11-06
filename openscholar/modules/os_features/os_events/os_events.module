@@ -645,7 +645,7 @@ function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) 
 /**
  * Implements hook_entity_insert().
  *
- * Sending notification for user when he subscribe to event.
+ * Sending notification for user when subscribing to event.
  */
 function os_events_entity_insert($entity, $type) {
   if ($type != 'registration') {
