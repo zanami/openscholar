@@ -12,7 +12,7 @@
         var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha' ];
 
         var display_style = $('#edit-display');
-        var display_whitelist = [ 'display_title', 'display_teaser', 'display_body' ];
+        var display_whitelist = [ 'display_title', 'display_teaser', 'display_body', 'display_slider_teaser', 'display_slider_body' ];
 
         var content_type = $('#os_sv_list_content_type').val();
         var selected_sort = 'sort_' + content_type;

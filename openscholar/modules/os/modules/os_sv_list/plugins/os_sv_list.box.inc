@@ -115,6 +115,8 @@ class os_sv_list_box extends os_boxes_default {
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
         'display_links' => t('Link'),
+        'display_slider_teaser' => t('Title/Teaser Slider'),
+        'display_slider_body' => t('Title/Body Slider'),
       ),
       // This #states rule limits use to when the $form['query_scope']
       // 'subsites' checkbox is not checked."
@@ -701,8 +703,10 @@ class os_sv_list_box extends os_boxes_default {
    */
   function display_view_mode($nodes, $viewmode = 'full') {
     $output = array();
+    drupal_add_js(drupal_get_path('module', 'os').'/theme/os_toggle.js');
+    
     foreach ($nodes as $n) {
-      $output[] = node_view($n, $viewmode);
+      $output[] =  node_view($n, $viewmode); 
     }
 
     return drupal_render($output);
@@ -724,6 +728,30 @@ class os_sv_list_box extends os_boxes_default {
     return $this->display_view_mode($nodes, 'teaser');
   }
 
+  function display_slider_teaser($nodes) {
+    return $this->display_view_mode_slider($nodes, 'teaser');
+  }
+  
+  function display_slider_body($nodes) {
+    return $this->display_view_mode_slider($nodes, 'body');
+  }
+  
+  function display_view_mode_slider($nodes, $viewmode = 'full') {
+    $output = array();
+    drupal_add_js(drupal_get_path('module', 'os').'/theme/os_toggle.js');
+  
+    foreach ($nodes as $n) {
+      $n->os_sv_list_toggle = TRUE;
+      $render = node_view($n, $viewmode);
+      if ($viewmode == 'teaser' && @strlen($n->body[LANGUAGE_NONE]['value']) < @strlen($render['body'][0]['#markup'])) {
+        $render['body'][0]['#markup'] .= l('Read more', 'node/'.$n->nid);
+      }
+      $output[] = $render; 
+    }
+  
+    return drupal_render($output);
+  }
+  
   function display_title($nodes) {
 
     $cross_site_links = FALSE;
