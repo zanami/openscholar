@@ -656,7 +656,6 @@ function os_events_entity_insert($entity, $type) {
   $wrapper = entity_metadata_wrapper('message', $message);
   $wrapper->field_node_reference->set($entity->entity_id);
   $wrapper->field_registration_reference->set($entity);
-  $wrapper->save();
 
   message_notify_send_message($message, array('mail' => $entity->anon_mail));
 }
