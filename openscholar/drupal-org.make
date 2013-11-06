@@ -229,6 +229,9 @@ projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-lightb
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.8
 
+projects[message_notify][subdir] = "contrib"
+projects[message_notify][version] = 2.5
+
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
 

@@ -641,3 +641,22 @@ function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) 
   // Prevent placing a backslash before a colon, because it makes iCal crash.
   $event['description'] = str_replace('\:', ':', $event['description']);
 }
+
+/**
+ * Implements hook_entity_insert().
+ *
+ * Sending notification for user when he subscribe to event.
+ */
+function os_events_entity_insert($entity, $type) {
+  if ($type != 'registration') {
+    return;
+  }
+
+  $message = message_create('os_event_registration');
+  $wrapper = entity_metadata_wrapper('message', $message);
+  $wrapper->field_node_reference->set($entity->entity_id);
+  $wrapper->field_registration_reference->set($entity);
+  $wrapper->save();
+
+  message_notify_send_message($message, array('mail' => $entity->anon_mail));
+}
