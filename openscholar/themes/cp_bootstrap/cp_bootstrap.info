@@ -1,0 +1,6 @@
+name         = "Control Panel: Bootstrap"
+description  = "A Control Panel theme based on Twitter Bootstrap"
+core         = 7.x
+base theme   = bootstrap
+engine       = phptemplate
+screenshot   = screenshot.png
