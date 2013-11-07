@@ -659,7 +659,7 @@ function os_events_entity_insert($entity, $type) {
   $message = message_create('os_event_registration');
   $wrapper = entity_metadata_wrapper('message', $message);
   $wrapper->field_node_reference->set($entity->entity_id);
-  $wrapper->field_registration_reference->set($entity);
+  $wrapper->field_registration->set($entity);
 
   message_notify_send_message($message, array('mail' => $entity->anon_mail));
 }

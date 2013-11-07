@@ -108,14 +108,14 @@ function os_events_field_default_fields() {
     ),
   );
 
-  // Exported field: 'message-os_event_registration-field_registration_reference'.
-  $fields['message-os_event_registration-field_registration_reference'] = array(
+  // Exported field: 'message-os_event_registration-field_registration'.
+  $fields['message-os_event_registration-field_registration'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_registration_reference',
+      'field_name' => 'field_registration',
       'foreign keys' => array(
         'registration' => array(
           'columns' => array(
@@ -178,7 +178,7 @@ function os_events_field_default_fields() {
         ),
       ),
       'entity_type' => 'message',
-      'field_name' => 'field_registration_reference',
+      'field_name' => 'field_registration',
       'label' => 'Registration reference',
       'required' => FALSE,
       'settings' => array(

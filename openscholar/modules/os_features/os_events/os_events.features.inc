@@ -57,9 +57,9 @@ function os_events_default_message_type() {
           "safe_value" : "\\u003Cp\\u003E[message:field-node-reference:title] event registration confirmation\\u003Ca title=\\u0022Insert this token into your form\\u0022\\u003E\\u003Cbr \\/\\u003E\\u003C\\/a\\u003E\\u003C\\/p\\u003E"
         },
         {
-          "value" : "\\u003Cp\\u003EHello [message:field-registration-reference:field_full_name].\\u003Cbr\\u003E\\u003Cbr\\u003EYou registered to the event \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022 data-url=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E\\u0026nbsp;successfully.\\u003C\\/p\\u003E",
+          "value" : "\\u003Cp\\u003EHello [message:field-registration:field_full_name].\\u003Cbr\\u003E\\u003Cbr\\u003EYou registered to the event \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022 data-url=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E\\u0026nbsp;successfully.\\u003C\\/p\\u003E",
           "format" : "full_html",
-          "safe_value" : "\\u003Cp\\u003EHello [message:field-registration-reference:field_full_name].\\u003Cbr \\/\\u003E\\u003Cbr \\/\\u003EYou registered to the event \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022 data-url=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E\\u00a0successfully.\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003EHello [message:field-registration:field_full_name].\\u003Cbr \\/\\u003E\\u003Cbr \\/\\u003EYou registered to the event \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022 data-url=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E\\u00a0successfully.\\u003C\\/p\\u003E\\n"
         }
       ]
     },
