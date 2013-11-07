@@ -339,6 +339,7 @@ function _openscholar_install_profile_modules_finished($success, $results, $oper
       'mimemail' => 'MimeMailSystem',
     ));
   }
+
 }
 
 /**
