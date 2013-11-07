@@ -42,7 +42,7 @@
             $(menuLinkSel).append($("<i class='os-tour-notifications-icon'/>"));
             $(menuLinkSel).append($("<span id='os-tour-notifications-count'/>"));
             os_tour_notifications_count(items.length);
-
+            $('#os-tour-notifications-menu-link').slideDown('slow');
             // Sets up the tour object with the loaded feed item steps.
             var tour = {
               showPrevButton: true,
@@ -173,6 +173,7 @@
       return value;
     }
     if (parseInt(num_remaining) === -1) {
+      $(count).text('0');
       $("#os-tour-notifications-menu-link").slideUp('slow');
       return;
     }
