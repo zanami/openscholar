@@ -7,13 +7,6 @@
  */
 function os_events_install() {
 
-
-  // Testing for travis
-  variable_set('mail_system', array(
-    'default-system' => 'DevelMailLog',
-    'mimemail' => 'MimeMailSystem',
-  ));
-
   //Don't store the 'last_viewed' date, This is annoying
   variable_set('calendar_track_date', 0);
 
