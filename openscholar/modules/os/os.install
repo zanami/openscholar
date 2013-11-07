@@ -8,6 +8,7 @@
 
 function os_install() {
   _os_date_formats();
+  variable_set('mimemail_format', 'full_html');
 }
 
 /**
@@ -381,8 +382,9 @@ function os_update_7022() {
     ->execute();
 }
 /**
- * Enable message notify.
+ * Enable message notify and set emails to be send as full HTML.
  */
 function os_update_7023() {
-  module_enable(array('message_notify'));
+  module_enable(array('message_notify', 'mailsystem', 'mimemail'));
+  variable_set('mimemail_format', 'full_html');
 }

@@ -207,6 +207,9 @@ projects[link][download][revision] = "ff518b60113f29885a8f358e8b0fa4499b0c608d"
 projects[linkchecker][subdir] = "contrib"
 projects[linkchecker][version] = 1.0-beta1
 
+projects[mailsystem][subdir] = "contrib"
+projects[mailsystem][version] = 2.34
+
 projects[media][subdir] = "contrib"
 projects[media][version] = 2.x-dev
 projects[media][download][type] = git
@@ -244,6 +247,9 @@ projects[migrate][version] = 2.5
 projects[migrate_extras][patch][] = "http://drupal.org/files/migrate_extras-duplicate_MigrateDestinationOgMembership-1788440-5.patch"
 projects[migrate_extras][subdir] = "contrib"
 projects[migrate_extras][version] = 2.4
+
+projects[mimemail][subdir] = "contrib"
+projects[mimemail][version] = 1.0-beta1
 
 projects[mollom][subdir] = "contrib"
 projects[mollom][version] = 2.2
