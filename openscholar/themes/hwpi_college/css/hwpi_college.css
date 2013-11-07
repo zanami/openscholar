@@ -187,7 +187,13 @@ padding-right: 0;
 #branding_footer a, #branding_header a {
     color: #BAC5C6;
     font-family: arial,serif;
-    font-size: .91em;
+
+}
+
+
+.region-header-third .os-custom-menu,
+.region-header-third #block-os-secondary-menu {
+margin-top:-2px;
 }
 
 .region-header-third ul.nice-menu a {
@@ -673,9 +679,13 @@ background-color: none !important;
 
 #footer ul.menu li a {
     font-family:arial;
-    text-transform: uppercase;
-    font-size:13px;
+ 	font-size:13px;
 }
+
+#footer ul.menu li a.menu-heading {
+  text-transform: uppercase;
+ }
+
 
 #footer ul.menu li ul li a {
     font-family:arial;
