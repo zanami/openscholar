@@ -207,7 +207,7 @@ function os_software_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'exe',
+        'file_extensions' => 'exe gz tar tgz zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -239,13 +239,13 @@ function os_software_field_default_fields() {
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 'audio',
-            'default' => 'default',
-            'html' => 'html',
-            'image' => 'image',
-            'video' => 'video',
-            'document' => 'document',
+            'audio' => 0,
+            'document' => 0,
             'executable' => 'executable',
+            'html' => 0,
+            'image' => 0,
+            'undefined' => 0,
+            'video' => 0,
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
