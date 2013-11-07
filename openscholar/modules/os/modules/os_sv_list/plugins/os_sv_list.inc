@@ -1,0 +1,600 @@
+<?php
+
+class os_sv_list extends os_boxes_default {
+  private $plugins = array();
+  protected $entity_type;// = NULL;
+  protected $bundle = NULL;
+  
+  public function __construct() {
+    $this->entity_type = NULL;
+  }
+  
+  /**
+   * Implementation of boxes_content::options_defaults().
+   */
+  public function options_defaults() {
+    $options = parent::options_defaults();
+
+    $options += array(
+      'content_type' => 'all',
+      'display' => 'display_title',
+      'more' => FALSE,
+      'more_text' => t('More'),
+      'more_link' => '', // what's a good default?
+  
+      'pager' => FALSE,
+      'number_of_items' => 6,
+      'sort_by' => 'sort_newest',
+      'vocabs' => array(),
+      'terms' => array(),
+      'only_vocabs' => TRUE,
+      'only_vocabs_values' => array(),
+  
+      // Do not include subsites by default.
+      'query_scope' => array('current'),
+    );
+
+    //get options from plugins
+    foreach ($this->_plugins($this->entity_type) as $plugin) {
+      if (method_exists($plugin['instance'], 'options_defaults')) {
+        $options += $plugin['instance']->options_defaults();
+      }
+    }
+  
+    return $options;
+  }
+  
+  /**
+   * Implementation of boxes_content::options_form().
+   */
+  public function options_form(&$form_state) {
+    $form = parent::options_form($form_state);
+    $this->options += $this->options_defaults(); //avoid notices when new options are added
+    drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
+  
+    $form['#submit'] = array('os_sv_list_form_submit');
+ 
+    if (module_exists('vsite')) {
+      ctools_include('subsite','vsite');
+      $form['query_scope'] = array(
+        '#title' => 'Include results from',
+        '#type' => 'checkboxes',
+        '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+        '#default_value' => $this->options['query_scope'],
+        '#access' => vsite_has_subsites(),
+        '#required' => TRUE,
+      );
+    }
+  
+    $form['content_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Content Type'),
+//       '#default_value' => $content_types_value,
+//       '#options' => $content_types,
+      '#id' => 'os_sv_list_content_type',
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
+        ),
+      ),
+      '#ajax' => array(
+        'callback' => 'os_sv_list_vocabs_content_type',
+        'wrapper' => 'vocabs',
+      ),
+    );
+    
+    $form['display'] = array(
+      '#type' => 'select',
+      '#title' => 'Display style',
+      '#default_value' => $this->options['display'],
+      '#options' => $this->_display_options(),
+      // Subsite content can only show titles, so hide this element when subsites are active
+      '#states' => array(
+        'visible' => array(// action to take.
+        ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+
+    $form['sort_by'] = array(
+      '#type' => 'select',
+      '#title' => 'Sorting',
+      '#default_value' => $this->options['sort_by'],
+      '#options' => $this->_sort_options(),
+    );
+  
+    $form['query_details'] = array(
+      '#prefix' => '<div id="query-details">',
+      '#suffix' => '</div>',
+      '#parents' => array('query_details'),
+    );
+  
+    $form['#attached'] = array(
+      'js' => array(libraries_get_path('select2') . '/select2.js'),
+      'css' => array(
+        libraries_get_path('select2') . '/select2.css',
+        drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css',
+      ),
+    );
+
+    /*
+    //@TODO separate function?
+    // Get all vocabularies.
+    $default = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
+    $vocabs = os_sv_list_get_content_type_vocabs($default);
+
+    // The 'vocabs' tree will contain select fields - one for each vocabulary.
+    if (empty($vocabs)) {
+      $form['vocabs'] = array(
+        '#type' => 'item',
+        '#prefix' => '<div id="vocabs">',
+        '#suffix' => '</div>',
+      );
+    } else {
+      $form['vocabs'] = array(
+        '#type' => 'item',
+        '#title' => t('filter by vocabulary'),
+        '#description' => t('Select for each vocabulary the terms to be used.'),
+        '#prefix' => '<div id="vocabs">',
+        '#suffix' => '</div>',
+        '#tree' => TRUE,
+      );
+    }
+  
+    // Create a select field for each vocabulary, with the vocabulary's terms as
+    // the field's options.
+    foreach ($vocabs as $vid => $vocab) {
+      // Get the vocabulary's terms.
+      $terms = array();
+      $tree = taxonomy_get_tree($vid);
+      foreach ($tree as $item) {
+        $term = taxonomy_term_load($item->tid);
+        $terms[$term->tid] = $term->name;
+      }
+  
+      // Get the already selected terms in this vocabulary.
+      if (!empty($form_state['values']['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $form_state['values']['vocabs']['vocab_' . $vid];
+      } elseif (!empty($this->options['vocabs']['vocab_' . $vid])) {
+        $vocab_default_value = $this->options['vocabs']['vocab_' . $vid];
+      } else {
+        $vocab_default_value = array();
+      }
+    
+      // Create select field with the terms as options.
+      $form['vocabs']['vocab_' . $vid] = array(
+        '#type' => 'select',
+        '#options' => $terms,
+        '#title' => $vocab,
+        '#multiple' => TRUE,
+        '#default_value' => $vocab_default_value,
+        // The validate function takes the selected terms from all 'vocab'
+            // fields and groups them together as 'terms'.
+        // We are using #element_validate because we cannot reach the #validate
+        // property from here.
+        '#element_validate' => array('os_sv_list_terms_element_validate'),
+      );
+    }
+  */
+    $form['query_details']['more'] = array(
+      '#title' => 'Show "more" link',
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['more'],
+    );
+  /*
+  //populate list of content types => paths
+  ctools_include('os', 'os');
+    $content_map = os_get_app_path();
+  $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
+  if (isset($content_types['image'])) {
+  $content_map['image'] = $content_map['media_gallery'];
+  }
+  
+  // Use blank path for unknown paths.
+  $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
+  
+  if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
+    $default_value = $content_map[$content_types_value];
+  }
+  else {
+  $default_value = $this->options['more_link'];
+  }
+  
+  if (!empty($form_state['values']['more_link'])) {
+  // Unset the values from the text field, as otherwise FAPI will add
+  // it to the #value of the form-element.
+  // @see http://drupal.org/node/1024962#comment-4021826
+      unset($form_state['input']['more_link']);
+  }
+  
+  $form['query_details']['more_link'] = array(
+    '#title' => t('URL for the more link'),
+        '#type' => 'textfield',
+        '#default_value' => $default_value,
+      '#states' => array(
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+    'invisible'  => array('input[name=more]' => array('checked' => FALSE)),
+  ),
+  '#prefix' => '<div id="more_link_div">',
+  '#suffix' => '</div>',
+      '#attached' => array(
+          'js' => array(
+            array(
+                'data' => array(
+                  'more_link_defaults' => $content_map,
+                      ),
+                          'type' => 'setting',
+                              )
+                                  )
+  )
+  );
+  
+  $form['query_details']['more_text'] = array(
+    '#title' => 'Label of the more link (default: "more")',
+    '#type' => 'textfield',
+    '#default_value' => $this->options['more_text'],
+        '#states' => array(
+          'visible' => array('input[name=more]' => array('checked' => TRUE)),
+    ),
+  );
+  
+  $form['pager'] = array(
+      '#title' => 'Show pager',
+      '#type' => 'checkbox',
+        '#default_value' => $this->options['pager'],
+    );
+  */
+    if (module_exists('vsite')) {
+  
+          ctools_include('subsite','vsite');
+  
+          $form['query_scope'] = array(
+          '#title' => 'Include results from',
+          '#type' => 'checkboxes',
+          '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+          '#default_value' => $this->options['query_scope'],
+	      '#access' => vsite_has_subsites(),
+  	      '#required' => TRUE,
+  );
+  }
+  
+    $form['number_of_items'] = array(
+      '#title' => 'Number of items to display',
+      '#type' => 'select',
+      '#options' => array_slice(range(0, 20), 1, NULL, TRUE),
+      '#default_value' => $this->options['number_of_items'],
+    );
+    
+    //get options from plugins
+    foreach ($this->_plugins($this->entity_type) as $plugin) {
+      if (method_exists($plugin['instance'], 'options_form')) {
+        $options_form = $plugin['instance']->options_form($this->options);
+        
+        //add states to only show when this plugin's bundle is selected
+        
+        //hold off on the states for now.  
+        //see https://api.drupal.org/comment/24708#comment-24708 for lists of bundles.  can we do that on nodes or files?
+//         foreach ($plugin['bundle'] as $bundle) {
+//           $states['visible']['#os_sv_list_content_type'][] = array('value' => $bundle);
+//           $states['invisible']['#os_sv_list_content_type'][] = array('!value' => $bundle);
+//         }
+        
+//         if (isset($states)) {
+//           foreach ($options_form as $delta => $value) {
+//             if (empty($options_form[$delta]['#states'])) {
+//               $options_form[$delta]['#states'] = $states;
+//             }
+//           }     
+//         }
+        $form += $options_form;
+      }
+    }
+
+    return $form;
+  }
+    
+  public function render() {
+    if (module_exists('vsite') && !vsite_get_vsite()) {
+      return;
+    }
+    $block = parent::render();
+    $options = $this->options + $this->options_defaults();
+    $page_num = (isset($_GET['page'])) ? $_GET['page'] : 0;
+    $page = 0;
+    
+    $ids = $this->get_ids($page_num, $page);
+    $ids = array_slice($ids, 0, 5); //filters aren't in place yet, so load a sane amount of entities
+    $more_link = FALSE;
+    
+    $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
+    //don't forget to check plugins for display funcs!
+    $block['content'] = $this->$display_func($ids);
+    
+    //$block['content'] = "new sv block:";
+    return $block;
+  }
+  
+  public function get_ids($page_num, $page) {
+    $options = $this->options + $this->options_defaults();
+    
+    //////nids
+    //EFQ
+    //content type
+    //vsite or subsites
+    //book filter
+    $query = $this->query();
+    
+    //////pager
+    
+    /////sort
+    //person, !image
+    
+    ///////vocab
+    
+    //execute
+    $result = $query->execute();
+    return (isset($result[$this->entity_type])) ? array_keys($result[$this->entity_type]) : array();
+  }
+  
+  public function query() {
+    $efq = new EntityFieldQuery();
+    $efq->entityCondition('entity_type', $this->entity_type);
+   // $efq->propertyCondition('status', 1); //do files have status I wonder?
+    
+    if (module_exists('vsite') && $space = spaces_get_space()) {
+      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+    }
+    
+    return $efq;
+  }
+  
+  
+  /**
+   * @function _load_plugins
+   * 
+   * Instantiates all the plugins this box will use.  Call this on demand instead of on __construct,
+   * because the plugins loaded will depend on context.  A node box has a fixed entity_type.  During
+   * render, its bundle is fixed, but in the options form, its bundle can change.
+   * 
+   */
+  private function _plugins($entity_type = NULL, $bundle = NULL) {
+    if (empty($this->plugins)) {
+      foreach (os_sv_list_plugins($entity_type, $bundle) as $plugin) {
+        $class = ctools_plugin_get_class($plugin, 'handler');
+        $plugin['instance'] = new $class;
+        $this->plugins[$plugin['name']] = $plugin;
+      }
+    }
+    
+    return $this->plugins;
+  }
+  
+  protected function _display_options() {
+    return array(
+      'display_title' => t('Title'),
+      'display_sidebar_teaser' => t('Sidebar Teaser'),
+      'display_teaser' => t('Teaser'),
+      'display_body' => t('Entire Post'),
+      'display_links' => t('Link'),
+    );
+  }
+  
+  protected function _sort_options() {
+    return array(
+      // Content type sensitive sorts.  // in the future get these from sv render plugins
+      'sort_event' => t('Event Date'),
+      'sort_presentation' => t('Recently Presented'),
+      'sort_biblio' => t('Year of Publication'),
+      'sort_news' => t('News Date'),
+    
+      // Standard sorts,
+      'sort_newest' => t('Newest Post'),
+      'sort_oldest' => t('Oldest Post'),
+      'sort_alpha' => t('Alphabetical'),
+      //sort_random?  http://community.openscholar.harvard.edu/openscholar/topics/refresh_queue
+    );
+  }
+  
+  
+  /**
+   * Display functions
+   */
+  function display_view_mode($ids, $viewmode = 'full') {
+    //$output = array();
+    //foreach ($ids as $id) {
+//       $entity_view = $this->entity_type . '_view';
+//       $entity_view($id, $viewmode);
+      $output = entity_view($this->entity_type, $ids, $viewmode);
+      
+    //}
+  
+    return drupal_render($output);
+  }
+  
+
+  function display_title($ids) {
+/*  
+    $cross_site_links = FALSE;
+    if (module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))) {
+      ctools_include('subsite','vsite');
+      $cross_site_links = TRUE;
+    }
+  
+    foreach ($nodes as $node) {
+      $options = array();
+      if ($cross_site_links) {
+        vsite_subsite_node_url_options($node, $options);
+      }
+  
+      $items[] = l($node->title, 'node/' . $node->nid, $options);
+    }
+  */
+    $entities = entity_load($this->entity_type, $ids);
+    $info = entity_get_info($this->entity_type);
+    $title = $info['entity keys']['label'];
+    $key =   $info['entity keys']['id'];
+    $uri_func = $info['uri callback']; //why you no work yet?
+    
+    return theme('item_list', array(
+      'items' => array_map(function($o) use ($title, $key, $uri_func) {
+        return l($o->{$title}, $uri_func($o->{$key}));
+      }, $entities), 
+      'type' => 'ul'
+    ));
+  }
+}
+
+class os_sv_list_node extends os_sv_list { 
+  public function __construct() {
+    parent::__construct();
+    $this->entity_type = 'node';
+  }
+  
+  /**
+   * Implementation of boxes_content::options_defaults().
+   */
+  /*
+  public function options_defaults() {
+    $options = parent::options_defaults();
+    return $options;
+  }
+  */
+  
+  /**
+   * Implementation of boxes_content::options_form().
+   */
+  public function options_form(&$form_state) {
+    $form = parent::options_form($form_state);
+    $defaults = $this->options_defaults();
+    
+    $content_types = array(
+      'all' => t('All'),
+    ) + os_get_bundles(array(1));
+    
+    if (isset($content_types['media_gallery'])) {
+      $content_types['image'] = t('Images');
+    }
+    
+
+    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
+    
+    $form['content_type']['#default_value'] = $content_types_value;
+    $form['content_type']['#options'] = $content_types;
+
+    
+    // Defines which display types are content type specific.
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
+      'display_sidebar_teaser' => array('news', 'event', 'person'),
+      'display_links' => array('link'),
+    ))));
+    
+    return $form;
+  }
+  
+  public function render() {
+    $block = parent::render();
+    $block['content'] .= ' posts';
+    return $block;
+  }
+  
+}
+
+class os_sv_list_file extends os_sv_list {
+  public function __construct() {
+    parent::__construct();
+    $this->entity_type = 'file';
+  }
+  /**
+   * Implementation of boxes_content::options_defaults().
+   */
+  /*
+  public function options_defaults() {
+    $options = parent::options_defaults();
+    return $options;
+  }
+  */
+  
+  /**
+   * Implementation of boxes_content::options_form().
+   */
+  public function options_form(&$form_state) {
+    $form = parent::options_form($form_state);
+    $defaults = $this->options_defaults();
+    $form['file'] = array('#markup' => '<h3>This box is for files</h3>');
+    $types = array('all' => t('All')) + 
+      array_reduce(file_type_get_all_types(), function ($ret, $o) {$ret[$o->type] = $o->label; return $ret;});
+    $form['content_type']['#title'] = t('File Type');
+    $form['content_type']['#options'] = $types;
+    return $form;
+  }
+  
+  public function render() {
+    $block = parent::render();
+    
+    $block['content'] .= ' files';
+    return $block;
+  }
+
+  protected function _display_options() {
+    return array(
+      'display_title' => t('Title'),
+      'display_preview' => t('Preview'),
+      'display_details' => t('Details'),
+      'display_grid' => t('Grid'),
+    );
+  }
+  
+  protected function _sort_options() {
+    return array(
+      'sort_newest' => t('Newest'),
+      'sort_oldest' => t('Oldest'),
+      'sort_alpha' => t('Alphabetical'),
+      'sort_filesize' => t('Filesize'),
+      //usage?
+    );
+  }
+  
+  /**********************
+   * Display functions  *
+   **********************/
+//   function display_title($ids) {
+//     return $this->display_view_mode($ids, ''); //title view mode?
+//   }
+  function display_preview($ids) {
+    return $this->display_view_mode($ids, 'preview');
+  }
+  function display_details($ids) {
+    return $this->display_view_mode($ids, 'full');
+  }
+  function display_grid($ids) {
+    return $this->display_view_mode($ids, '');  //todo grid view
+  }
+  
+  /*
+   * 
+   file views
+     //$entity_info = entity_get_info("file"); print_r(array_keys($entity_info["view modes"]));
+  Array
+  (
+      [0] => ical
+      [1] => diff_standard
+      [2] => teaser
+      [3] => full
+      [4] => preview
+      [5] => search_index
+      [6] => search_result
+      [7] => media_gallery_thumbnail
+      [8] => media_gallery_lightbox
+      [9] => media_gallery_detail
+      [10] => media_gallery_block_thumbnail
+      [11] => os_files_xxlarge
+      [12] => os_files_xlarge
+      [13] => os_files_large
+      [14] => os_files_med
+      [15] => os_files_small
+      [16] => os_files_link_icon
+      [17] => os_files_link
+      [18] => token
+  )*/
+  
+}
