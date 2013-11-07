@@ -302,7 +302,7 @@ function _openscholar_module_batch($modules) {
 function _openscholar_install_profile_modules_finished($success, $results, $operations) {
   _install_profile_modules_finished($success, $results, $operations);
 
-  if(variable_get('file_default_scheme', 'public') == 'private'){
+  if(variable_get('file_default_scheme', 'public') == 'private') {
     //Disallow indexing for this install. (Uses already enabled robotstxt module)
     variable_set('robotstxt', "User-agent: *\nDisallow: /");
   }
@@ -329,6 +329,15 @@ function _openscholar_install_profile_modules_finished($success, $results, $oper
     // Get the role ID of the group-member.
     $rid = array_search(OG_AUTHENTICATED_ROLE, $rids);
     og_role_grant_permissions($rid, $permissions);
+  }
+
+  // When installing in Travis CI we need to change the mail system handlers
+  // so the travis CI could install the Drupal without failing.
+  if (variable_get('on_travis')) {
+    variable_set('mail_system', array(
+      'default-system' => 'DevelMailLog',
+      'mimemail' => 'MimeMailSystem',
+    ));
   }
 }
 
@@ -379,16 +388,6 @@ function openscholar_install_finished(&$install_state) {
   // will be warned if they've installed an out of date Drupal version.
   // Will also trigger indexing of profile-supplied content or feeds.
   drupal_cron_run();
-
-  // When installing in Travis CI we need to change the mail system handlers
-  // so the travis CI could install the Drupal without failing.
-  if (variable_get('on_travis')) {
-    variable_set('mail_system', array(
-      'default-system' => 'DevelMailLog',
-      'mimemail' => 'MimeMailSystem',
-    ));
-  }
-
 
   return $output;
 }
