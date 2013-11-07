@@ -1709,6 +1709,11 @@ function os_field_default_fields_alter(&$fields) {
  */
 function os_load_jquery_version() {
   global $conf;
-  $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
-  $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'build/menu') != FALSE ? '1.5' : '1.8';
+  
+  if (strpos($_GET['q'], 'admin') === 0 || strpos($_GET['q'], 'build/menu') != FALSE) {
+    $conf['jquery_update_jquery_version'] = '1.5';
+  }
+  else {
+    $conf['jquery_update_jquery_version'] = '1.8';
+  }
 }
