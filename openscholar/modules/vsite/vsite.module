@@ -130,7 +130,9 @@ function vsite_get_purl($vsite = FALSE){
  * Allow overrding the global roles and permissions.
  */
 function vsite_form_spaces_features_form_alter(&$form, $form_state) {
-  $vsite = vsite_get_vsite();
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
   $wrapper = entity_metadata_wrapper('node', $vsite->id);
   $form[OG_DEFAULT_ACCESS_FIELD] = array(
     '#type' => 'checkbox',
