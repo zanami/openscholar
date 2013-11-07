@@ -263,6 +263,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     $extensions = array_unique($extensions);
     $extras = array_unique($extras);
     if (empty($args[0]['override_extensions'])) {
+      sort($extensions);
       $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     }
     
@@ -1604,14 +1605,15 @@ function _os_files_extensions_from_type($type) {
       'tex',
       'wtml',
       'wtt',
-      'wwtfig'
+      'wwtfig',
     );
 
     $types['executable'] = array(
       'zip',
       'tgz',
       'gz',
-      'exe'
+      'exe',
+      'tar',
     );
   }
   
