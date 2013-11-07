@@ -69,7 +69,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'alt_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'png gif jpg jpeg',
+        'file_extensions' => 'gif jpeg jpg png',
         'max_filesize' => '6 MB',
         'max_resolution' => '',
         'min_resolution' => '',
@@ -156,7 +156,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'alt_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'png gif jpg jpeg',
+        'file_extensions' => 'gif jpeg jpg png',
         'max_filesize' => '6 MB',
         'max_resolution' => '',
         'min_resolution' => '',
@@ -243,7 +243,7 @@ function vsite_field_default_fields() {
       'settings' => array(
         'alt_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'png gif jpg jpeg',
+        'file_extensions' => 'gif jpeg jpg png',
         'max_filesize' => '6 MB',
         'max_resolution' => '',
         'min_resolution' => '',

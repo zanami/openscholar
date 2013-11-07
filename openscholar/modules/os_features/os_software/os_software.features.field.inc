@@ -207,7 +207,7 @@ function os_software_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'jpg jpeg gif png txt doc docx gz xls xlsx pdf ppt pptx pps odt ods odp tex tgz xml zip',
+        'file_extensions' => 'exe',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -392,7 +392,7 @@ function os_software_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'tgz tar gz zip',
+        'file_extensions' => 'gz tar tgz zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(

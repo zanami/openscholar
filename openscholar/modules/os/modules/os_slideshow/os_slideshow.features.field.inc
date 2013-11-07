@@ -208,7 +208,7 @@ function os_slideshow_field_default_fields() {
         'alt_field' => 0,
         'default_image' => 0,
         'file_directory' => '',
-        'file_extensions' => 'png gif jpg jpeg',
+        'file_extensions' => 'gif jpeg jpg png',
         'max_filesize' => '',
         'max_resolution' => '',
         'min_resolution' => '',
