@@ -389,5 +389,6 @@ function openscholar_install_finished(&$install_state) {
     ));
   }
 
+
   return $output;
 }
