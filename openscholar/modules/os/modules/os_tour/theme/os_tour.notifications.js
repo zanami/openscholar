@@ -101,23 +101,25 @@
 
     // Adds a date like "5 days ago", or blank if no valid date found.
     var date = "";
+    /** @FIXME parse entry.contentSnippet to see if it starts with a date first.
     if (typeof entry.publishedDate != 'undefined' && entry.publishedDate != '') {
       date = os_tour_notifications_fuzzy_date(entry.publishedDate);
-      if (typeof date == 'undefined') {
+      if (typeof date === 'undefined') {
         date = "";
       } else {
         date = "<span class='date'>" + date + "</span>";
       }
     }
+    */
     output += date;
 
     // Builds the remainder of the content, with a "Read more" link.
-    output += "<span class='description'>" + content + "<span/>";
+    output += "<span class='description'>";
     var content = entry.content;
     if (typeof entry.contentSnippet != 'undefined') {
       content = entry.contentSnippet;
     }
-    output += content;
+    output += content + "</span>";
     output += '<div class="os-tour-notifications-readmore"><a target="_blank" href="' + entry.link + '">Read more &raquo;</a></div></div>';
 
     // Returns the item to be added to the tour's (array) `items` property .
