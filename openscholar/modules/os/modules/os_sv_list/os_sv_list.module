@@ -108,13 +108,26 @@ function os_sv_list_boxes_plugins() {
     ),
     'factory' => TRUE,
   );
+
+  //load the base class for node and file lists
+  $plugins['os_sv_list'] = array(
+    //'title' => '** List of Posts **',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_sv_list',
+      'file' => 'os_sv_list.inc',
+      'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
+      'parent' => 'os_boxes_default',
+    ),
+    'factory' => FALSE,
+  );
   
   $plugins['os_sv_list_node'] = array(
     'title' => '** List of Posts **',
     'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_sv_list_node',
-      'file' => 'os_sv_list.inc',
+      'file' => 'os_sv_list_node.inc',
       'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
       'parent' => 'os_sv_list',
     ),
@@ -126,7 +139,7 @@ function os_sv_list_boxes_plugins() {
     'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_sv_list_file',
-      'file' => 'os_sv_list.inc',
+      'file' => 'os_sv_list_file.inc',
       'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
       'parent' => 'os_sv_list',
     ),
