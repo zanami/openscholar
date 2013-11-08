@@ -752,6 +752,12 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     border-radius: 0;
     border:0;
 } 
+
+
+
+.ui-dialog.ui-front.media-wrapper {
+	z-index:500;
+}
  
  #media-browser-tabset .media-browser-tab {
     border: none;
