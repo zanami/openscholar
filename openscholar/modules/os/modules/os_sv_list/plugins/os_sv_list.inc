@@ -432,12 +432,14 @@ class os_sv_list extends os_boxes_default {
     $entities = entity_load($this->entity_type, $ids);
     $info = entity_get_info($this->entity_type);
     $title = $info['entity keys']['label'];
-    $key =   $info['entity keys']['id'];
+    //$key =   $info['entity keys']['id'];
+    $type = $this->entity_type;
     $uri_func = $info['uri callback']; //why you no work yet?
     
     return theme('item_list', array(
-      'items' => array_map(function($o) use ($title, $key, $uri_func) {
-        return l($o->{$title}, $uri_func($o->{$key}));
+      'items' => array_map(function($entity) use ($title, $type, $uri_func) {
+        $uri = $uri_func($entity);
+        return l($entity->{$title}, ($type != 'file') ? $uri['path'] : file_create_url($entity->uri)); //works for nodes, but files are still file/$fid
       }, $entities), 
       'type' => 'ul'
     ));
@@ -493,7 +495,7 @@ class os_sv_list_node extends os_sv_list {
   
   public function render() {
     $block = parent::render();
-    $block['content'] .= ' posts';
+    //$block['content'] .= ' posts';
     return $block;
   }
   
@@ -531,7 +533,7 @@ class os_sv_list_file extends os_sv_list {
   public function render() {
     $block = parent::render();
     
-    $block['content'] .= ' files';
+    //$block['content'] .= ' files';
     return $block;
   }
 
