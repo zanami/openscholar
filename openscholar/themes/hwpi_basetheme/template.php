@@ -550,7 +550,7 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
 
   // Don't remove the field date when exporting the calendar. This the unique
   // identifier of Google calendar.
-  if ($entity->view->current_display == 'feed_1') {
+  if ($entity->view->plugin_name == 'date_ical') {
     return;
   }
 
