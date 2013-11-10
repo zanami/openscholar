@@ -23,8 +23,8 @@ function os_links_os_app_info() {
       'os_links' => array('page'),
     ),
     'importers' => array(
-      'links' => array(
-        'csv' => 'os_link',
+      'link' => array(
+        'csv' => 'os_links',
       ),
     ),
   );
