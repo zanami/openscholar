@@ -866,5 +866,8 @@ ul.pager li.pager-item {
   float: left;
 }
 
+.two-sidebars .sidebar .node-person.node-teaser .field-name-field-email {
+  float: none;
+}
 
 
