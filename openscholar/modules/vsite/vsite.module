@@ -433,7 +433,7 @@ function vsite_og_role_grant($group_type, $gid, $uid, $rid) {
   $role = user_role_load_by_name('vsite admin');
   $rid = $role->rid;
 
-  if (empty($user->roles[$rid])) {
+  if (empty($account->roles[$rid])) {
     $account->roles[$rid] = 'vsite admin';
     user_save($account);
   }
