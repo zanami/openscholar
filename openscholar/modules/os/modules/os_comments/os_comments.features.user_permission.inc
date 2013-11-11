@@ -14,8 +14,6 @@ function os_comments_user_default_permissions() {
   $permissions['access comments'] = array(
     'name' => 'access comments',
     'roles' => array(
-      0 => 'vsite admin',
-      1 => 'vsite user',
       2 => 'content editor',
     ),
     'module' => 'comment',
@@ -45,8 +43,6 @@ function os_comments_user_default_permissions() {
   $permissions['post comments'] = array(
     'name' => 'post comments',
     'roles' => array(
-      0 => 'vsite admin',
-      1 => 'vsite user',
       2 => 'content editor',
     ),
     'module' => 'comment',
@@ -58,8 +54,6 @@ function os_comments_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'comment',
@@ -71,8 +65,6 @@ function os_comments_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'disqus',

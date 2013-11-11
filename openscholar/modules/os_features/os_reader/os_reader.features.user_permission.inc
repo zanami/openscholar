@@ -17,8 +17,6 @@ function os_reader_user_default_permissions() {
       0 => 'administrator',
       1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -39,8 +37,6 @@ function os_reader_user_default_permissions() {
       0 => 'administrator',
       1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -62,8 +58,6 @@ function os_reader_user_default_permissions() {
       0 => 'administrator',
       1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );

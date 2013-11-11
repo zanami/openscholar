@@ -16,8 +16,6 @@ function os_slideshow_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'node',
@@ -39,8 +37,6 @@ function os_slideshow_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'node',
@@ -62,8 +58,6 @@ function os_slideshow_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'node',
