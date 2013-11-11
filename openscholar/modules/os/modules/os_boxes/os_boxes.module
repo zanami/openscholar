@@ -29,7 +29,7 @@ function os_boxes_menu() {
     //'title arguments' => array(3),
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
-    'access callback' => 'boxes_access_edit',
+    'access callback' => 'os_boxes_access_edit',
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
   );
@@ -40,7 +40,7 @@ function os_boxes_menu() {
     //'title arguments' => array(3),
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
-    'access callback' => 'boxes_access_edit',
+    'access callback' => 'os_boxes_access_edit',
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
@@ -53,7 +53,7 @@ function os_boxes_menu() {
     //'title arguments' => array(3, true),
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(3),
-    'access callback' => 'boxes_access_edit',
+    'access callback' => 'os_boxes_access_edit',
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
@@ -83,6 +83,17 @@ function os_boxes_menu() {
  }
  }
  */
+
+/**
+ * Access callbackl Return TRUE if user can edit a box in VSite.
+ */
+function os_boxes_access_edit() {
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  return og_user_access('node', $vsite->id, 'administer group');
+}
 
  /**
   * Implements hook_load().
@@ -121,15 +132,15 @@ function os_boxes_get_boxes_plugins($name = NULL) {
     ctools_include('plugins');
     $boxes = ctools_get_plugins('boxes', 'plugins');
     drupal_alter('boxes_plugins', $boxes);
-    
+
     unset($boxes['twitter']);
   }
-    
-  
+
+
   if (isset($name)) {
     return isset($boxes[$name]) ? $boxes[$name] : FALSE;
   }
-  
+
   return $boxes;
 }
 
