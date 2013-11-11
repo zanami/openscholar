@@ -391,7 +391,7 @@ function vsite_custom_theme(){
   global $user;
   $roles = $user->roles;
 
-  if (!og_is_member('node', $vsite->id) && $rid = array_search('vsite admin', $roles)) {
+  if (!og_user_access('node', $vsite->id, 'administer group') && $rid = array_search('vsite admin', $roles)) {
     // Re-populate "user_access" static to not include "vsite admin" roles.
     $perm = &drupal_static('user_access');
     unset($roles[$rid]);
