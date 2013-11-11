@@ -380,6 +380,10 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 
 /**
  * Implements hook_custom_theme().
+ *
+ * - Make sure the themes are properly initialized.
+ * - Make sure that a user with the site-wide "vsite admin" role, isn't granted
+ *   related permissions if outside of their own VSite.
  */
 function vsite_custom_theme(){
   _vsite_purl_init();
@@ -392,7 +396,7 @@ function vsite_custom_theme(){
   $roles = $user->roles;
 
   if (!og_user_access('node', $vsite->id, 'administer group') && $rid = array_search('vsite admin', $roles)) {
-    // Re-populate "user_access" static to not include "vsite admin" roles.
+    // Re-populate "user_access" static to not include "vsite admin" role.
     $perm = &drupal_static('user_access');
     unset($roles[$rid]);
 
