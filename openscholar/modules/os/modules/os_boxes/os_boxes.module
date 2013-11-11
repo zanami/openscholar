@@ -85,7 +85,7 @@ function os_boxes_menu() {
  */
 
 /**
- * Access callbackl Return TRUE if user can edit a box in VSite.
+ * Access callback; Return TRUE if user can edit a box in VSite.
  */
 function os_boxes_access_edit() {
   if (!$vsite = vsite_get_vsite()) {
