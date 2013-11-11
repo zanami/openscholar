@@ -418,28 +418,6 @@ function vsite_custom_theme(){
 }
 
 /**
- * Implements hook_og_role_grant().
- *
- * Add the site-wide role "vsite admin" when a user is given the OG role "vsite
- * admin".
- */
-function vsite_og_role_grant($group_type, $gid, $uid, $rid) {
-  $account = user_load($uid);
-  $og_role = og_role_load($rid);
-  if ($og_role->name != 'vsite admin') {
-    return;
-  }
-
-  $role = user_role_load_by_name('vsite admin');
-  $rid = $role->rid;
-
-  if (empty($account->roles[$rid])) {
-    $account->roles[$rid] = 'vsite admin';
-    user_save($account);
-  }
-}
-
-/**
  * Implements hook_spaces_presets_alter().
  *
  * Alter the space presets to add vsite specific information.
