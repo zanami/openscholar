@@ -392,7 +392,9 @@ function vsite_custom_theme(){
     // Re-populate "user_access" static.
     global $user;
     $cache = &drupal_static('user_access');
-    $cache[$user->uid] = array();
+    $cache[$user->uid] = array(
+      'access content' => TRUE,
+    );
   }
 
   if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
