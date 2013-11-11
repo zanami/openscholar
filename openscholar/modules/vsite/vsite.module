@@ -388,13 +388,21 @@ function vsite_custom_theme(){
     return;
   }
 
-  if (!og_is_member('node', $vsite->id)) {
-    // Re-populate "user_access" static.
-    global $user;
-    $cache = &drupal_static('user_access');
-    $cache[$user->uid] = array(
-      'access content' => TRUE,
-    );
+  global $user;
+  $roles = $user->roles;
+
+  if (!og_is_member('node', $vsite->id) && $rid = array_search('vsite admin', $roles)) {
+    // Re-populate "user_access" static to not include "vsite admin" roles.
+    $perm = &drupal_static('user_access');
+    unset($roles[$rid]);
+
+    $role_permissions = user_role_permissions($roles);
+
+    $perms = array();
+    foreach ($role_permissions as $one_role) {
+      $perms += $one_role;
+    }
+    $perm[$user->uid] = $perms;
   }
 
   if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
