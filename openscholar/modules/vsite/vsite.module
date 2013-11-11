@@ -17,6 +17,7 @@ include_once ('includes/vsite.inc');
  */
 define('VSITE_PER_USER_DEFAULT', 1);
 
+
 /**
  * Returns the current vsite (space).
  */
@@ -382,6 +383,17 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
  */
 function vsite_custom_theme(){
   _vsite_purl_init();
+
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  if (!og_is_member('node', $vsite->id)) {
+    // Re-populate "user_access" static.
+    global $user;
+    $cache = &drupal_static('user_access');
+    $cache[$user->uid] = array();
+  }
 
   if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
     //If the space is enabled correctly then set the custom theme
