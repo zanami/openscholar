@@ -554,6 +554,15 @@ function os_user_default_permissions() {
     'module' => 'file_entity',
   );
 
+  // Exported permission: view own private files.
+  $permissions['view own private files'] = array(
+    'name' => 'view own private files',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'file_entity',
+  );
+
   // Exported permission: view own unpublished content.
   $permissions['view own unpublished content'] = array(
     'name' => 'view own unpublished content',
