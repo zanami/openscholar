@@ -413,5 +413,13 @@ class vsite extends space_og {
   function access_space($account = NULL) {
     return parent::access_space($account) && node_access('view', $this->group, $account);
   }
+
+  /**
+   * Check if the user is a group administator.
+   */
+  function og_is_group_admin($group, $account){
+    list($nid) = entity_extract_ids($this->group_type, $group);
+    return og_user_access('node', $nid, 'administer group', $account);
+  }
 }
 
