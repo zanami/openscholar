@@ -6,7 +6,6 @@ php = 5.2.4
 dependencies[] = features
 dependencies[] = media
 dependencies[] = oembed
-dependencies[] = oembedcore
 dependencies[] = oembedembedly
 dependencies[] = os_wysiwyg_link
 dependencies[] = wysiwyg
