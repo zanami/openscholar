@@ -15,7 +15,7 @@ Drupal.behaviors.os_toggle = {
         if (potentials.length) {
           slider = $(potentials[0]);
         }
-      })
+      });
 
       if (!$.browser.msie) {
         slider.slideToggle("fast");

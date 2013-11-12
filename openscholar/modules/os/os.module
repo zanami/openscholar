@@ -967,9 +967,8 @@ function theme_openscholar_login($variables) {
 /**
  * Returns HTML for the Get Started Block.
  *
- * @todo Add Slider
  * @todo Add 'hide forever' code
- *       @ingroup themeable
+ * @ingroup themeable
  */
 function theme_openscholar_get_started() {
   if (module_exists('vsite') && $vsite = spaces_get_space()) {
@@ -977,28 +976,29 @@ function theme_openscholar_get_started() {
   }
 
   $links = theme('item_list', array(
-      'items' => array(
-        l("Enable or disable features for your site", 'cp/build/features'),
-        l("Add/manage content", 'cp/content'),
-        l("Manage who may use your site", 'cp/users'),
-        l("Change the look of your site", 'cp/appearance'),
-        l("Move elements in your page layout", 'cp/build/layout'),
-        l("View documentation", "help/os_help/OpenScholar-Documentation"),
-      ),
-    ));
+    'items' => array(
+      l("Enable or disable features for your site", 'cp/build/features'),
+      l("Add/manage content", 'cp/content'),
+      l("Manage who may use your site", 'cp/users'),
+      l("Change the look of your site", 'cp/appearance'),
+      l("Move elements in your page layout", 'cp/build/layout'),
+      l("View documentation", "help/os_help/OpenScholar-Documentation"),
+    ),
+  ));
 
   // Created in the last 26 hours?
   $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
   $short_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Need help <span>getting started?</span>" : "Need quick access to <span>common settings?</span>";
-  // drupal_add_js(drupal_get_path('module',
-  // 'vsite').'/theme/vsite.js','module');
+  $below_message = t('Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.');
+  $click = t('Click on me');
+  drupal_add_js(drupal_get_path('module', 'os') . '/theme/os_toggle.js');
 
   $result = <<<MESSAGE
       <div id="message_welcome_message">
-        <div class="toggle">$short_message</div>
+        <div class="toggle">{$short_message} {$click}</div>
         <div id="welcome_wrapper" class="os-slider">
           <h3>{$welcome_message}</h3>
-          <p>Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.</p>
+          <p>{$below_message}</p>
           {$links}
         </div> <!-- SLIDER -->
       </div>
