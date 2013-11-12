@@ -402,7 +402,6 @@ function vsite_custom_theme(){
   // Re-populate "user_access" static to not include or exclude the
   // "vsite admin" site-wide role.
   if (!og_user_access('node', $vsite->id, 'administer group')) {
-    $perm = &drupal_static('user_access');
     unset($roles[$role->rid]);
   }
   else {
@@ -410,7 +409,6 @@ function vsite_custom_theme(){
   }
 
   $role_permissions = user_role_permissions($roles);
-
   $perms = array();
   foreach ($role_permissions as $one_role) {
     $perms += $one_role;
@@ -732,6 +730,7 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['instance']['required'] = TRUE;
   $og_field['instance']['display'] = array(
     'default' => array(
       'type' => 'hidden'
