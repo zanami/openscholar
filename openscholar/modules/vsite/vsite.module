@@ -417,12 +417,15 @@ function vsite_custom_theme(){
   }
   $perm[$user->uid] = $perms;
 
-  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
-    //If the space is enabled correctly then set the custom theme
-    ctools_include('themes', 'os');
-    $theme = os_theme_get();
-    return $theme;
+  if (module_exists('cp') && cp_use_cp_theme()) {
+    // Use CP's own theme.
+    return;
   }
+
+  // The VSite is enabled correctly so set the custom theme.
+  ctools_include('themes', 'os');
+  $theme = os_theme_get();
+  return $theme;
 }
 
 /**
