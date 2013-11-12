@@ -151,7 +151,7 @@ function os_taxonomy_in_taxonomy_term_context($view = NULL) {
   }
 
   // Check the path prefixed with the purl if we are in a vsite.
-  if (module_exists('vsite') && vsite_get_vsite() && !in_array(vsite_get_purl(), $path_parts) && strpos($path, 'taxonomy/term/') !== 0) {
+  if (module_exists('vsite') && vsite_get_vsite() && strpos($path, 'taxonomy/term/') !== 0) {
     array_unshift($path_parts, vsite_get_purl());
     if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
       return;
