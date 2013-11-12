@@ -971,37 +971,57 @@ function theme_openscholar_login($variables) {
  * @ingroup themeable
  */
 function theme_openscholar_get_started() {
-  if (module_exists('vsite') && $vsite = spaces_get_space()) {
-    $create_time = $vsite->group->created;
-  }
-
-  $links = theme('item_list', array(
-    'items' => array(
-      l("Enable or disable features for your site", 'cp/build/features'),
-      l("Add/manage content", 'cp/content'),
-      l("Manage who may use your site", 'cp/users'),
-      l("Change the look of your site", 'cp/appearance'),
-      l("Move elements in your page layout", 'cp/build/layout'),
-      l("View documentation", "help/os_help/OpenScholar-Documentation"),
-    ),
-  ));
-
-  // Created in the last 26 hours?
-  $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
-  $short_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Need help <span>getting started?</span>" : "Need quick access to <span>common settings?</span>";
-  $below_message = t('Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.');
-  $click = t('Click on me');
   drupal_add_js(drupal_get_path('module', 'os') . '/theme/os_toggle.js');
 
+  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    $create_time = $vsite->group->created;
+
+    // Created in the last 26 hours?
+    $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
+    $short_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Need help <span>getting started?</span> Click on me." : "Need quick access to <span>common settings?</span> Click on me.";
+    $below_message = t('Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.');
+
+    $items = theme('item_list', array(
+      'items' => array(
+        l("Enable or disable features for your site", 'cp/build/features'),
+        l("Add/manage content", 'cp/content'),
+        l("Manage who may use your site", 'cp/users'),
+        l("Change the look of your site", 'cp/appearance'),
+        l("Move elements in your page layout", 'cp/build/layout'),
+        l("View documentation", "help/os_help/OpenScholar-Documentation"),
+      ),
+    ));
+  }
+  else {
+    $params = array(
+      '!modules' => l('Module', 'admin/modules'),
+      '!context' => l('Context', 'admin/structure/context'),
+      '!wiki' => l(t('Wiki'), 'https://github.com/openscholar/openscholar/wiki/Adding-widgets-to-the-sitewide-frontpage'),
+    );
+
+    $items = theme('item_list', array(
+      'items' => array(
+        t("Enable the context UI module from the !modules page", $params),
+        t("Go to the !context page and look for os_sitewide_front and click on 'Edit'.", $params),
+        t("Click on blocks. This will open a layout where you can check blocs and add them to different layouts on the page."),
+      ),
+      'type' => 'ol',
+    ));
+
+    $short_message = t('Need help in setting this front page? Click on me.');
+    $welcome_message = t('Welcome!');
+    $below_message = t('You can use the next steps in order to set this page properly or just visit our !wiki.', $params);
+  }
+
   $result = <<<MESSAGE
-      <div id="message_welcome_message">
-        <div class="toggle">{$short_message} {$click}</div>
-        <div id="welcome_wrapper" class="os-slider">
-          <h3>{$welcome_message}</h3>
-          <p>{$below_message}</p>
-          {$links}
-        </div> <!-- SLIDER -->
-      </div>
+    <div id="message_welcome_message">
+      <div class="toggle">{$short_message}</div>
+      <div id="welcome_wrapper" class="os-slider">
+        <h3>{$welcome_message}</h3>
+        <p>{$below_message}</p>
+        {$items}
+      </div> <!-- SLIDER -->
+    </div>
 MESSAGE;
 
   return $result;

@@ -786,6 +786,10 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   padding: 1em;
 }
 
+.os-slider .item-list {
+  margin-left: 20px; /* LTR */
+}
+
 .node-type-faq .os-slider,
 .page-faq .os-slider {
   border:none;
