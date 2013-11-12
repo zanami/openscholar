@@ -53,6 +53,11 @@ class os_sv_list_node extends os_sv_list {
 //     return $block;
 //   }
 
+  public function query() {
+    $efq = parent::query();
+    $efq->propertyCondition('status', 1); 
+    return $efq;
+  }
 
   /**
    * sorting functions

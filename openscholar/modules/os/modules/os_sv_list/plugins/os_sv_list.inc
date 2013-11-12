@@ -325,6 +325,10 @@ class os_sv_list extends os_boxes_default {
     //////nids
     //EFQ
     //content type
+    //   biblio done
+    //   image - todo, convert to file box
+    //   event
+    //    book list
     //vsite or subsites
     //book filter
     $query = $this->query();
@@ -358,7 +362,6 @@ class os_sv_list extends os_boxes_default {
   public function query() {
     $efq = new EntityFieldQuery();
     $efq->entityCondition('entity_type', $this->entity_type);
-   // $efq->propertyCondition('status', 1); //do files have status I wonder?
     
     if (module_exists('vsite') && $space = spaces_get_space()) {
       $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
