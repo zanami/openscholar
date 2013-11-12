@@ -165,7 +165,7 @@ function os_block_view($delta = '') {
     case 'get-started':
       if (user_access('manage group space')) {
         $block['subject'] = NULL;
-        $block['content'] = theme('openscholar_get_started');
+        $block['content'] = openscholar_get_started();
       }
       return $block;
 
@@ -375,8 +375,12 @@ function os_theme() {
     ),
     'openscholar_get_started' => array(
       'variables' => array(
-        'elements' => array(),
+        'short_message' => NULL,
+        'welcome_message' => NULL,
+        'items' => NULL,
       ),
+      'template' => 'openscholar-get-started',
+      'path' => drupal_get_path('module', 'os') . '/theme',
     ),
     'os_nice_menus' => array(
       'variables' => array(
@@ -970,10 +974,10 @@ function theme_openscholar_login($variables) {
  * @todo Add 'hide forever' code
  * @ingroup themeable
  */
-function theme_openscholar_get_started() {
+function openscholar_get_started() {
   drupal_add_js(drupal_get_path('module', 'os') . '/theme/os_toggle.js');
 
-  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
     $new = (isset($vsite->group->created) && (time() - $vsite->group->created < 93600));
 
     // Created in the last 26 hours?
@@ -1013,18 +1017,12 @@ function theme_openscholar_get_started() {
     $below_message = t('You can use the next steps in order to set this page properly or just visit our <a href="@wiki-url">wiki</a>.', $params);
   }
 
-  $result = <<<MESSAGE
-    <div id="message_welcome_message">
-      <div class="toggle">{$short_message}</div>
-      <div id="welcome_wrapper" class="os-slider">
-        <h3>{$welcome_message}</h3>
-        <p>{$below_message}</p>
-        {$items}
-      </div> <!-- SLIDER -->
-    </div>
-MESSAGE;
-
-  return $result;
+  return theme('openscholar_get_started', array(
+    'short_message' => $short_message,
+    'welcome_message' => $welcome_message,
+    'below_message' => $below_message,
+    'items' => $items,
+  ));
 }
 
 /**
