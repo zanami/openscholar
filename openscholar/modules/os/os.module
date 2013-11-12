@@ -974,11 +974,11 @@ function theme_openscholar_get_started() {
   drupal_add_js(drupal_get_path('module', 'os') . '/theme/os_toggle.js');
 
   if (module_exists('vsite') && $vsite = spaces_get_space()) {
-    $create_time = $vsite->group->created;
+    $new = (isset($vsite->group->created) && (time() - $vsite->group->created < 93600));
 
     // Created in the last 26 hours?
-    $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
-    $short_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Need help <span>getting started?</span> Click on me." : "Need quick access to <span>common settings?</span> Click on me.";
+    $welcome_message = $new ? "Welcome to your new website!" : "";
+    $short_message = $new ? t("Need help <span>getting started?</span> Click on me.") : t("Need quick access to <span>common settings?</span> Click on me.");
     $below_message = t('Below are a few additional resources to help you. You may access the control panel at any time by clicking the link in the top right corner of the screen.');
 
     $items = theme('item_list', array(
@@ -994,15 +994,15 @@ function theme_openscholar_get_started() {
   }
   else {
     $params = array(
-      '!modules' => l('Module', 'admin/modules'),
-      '!context' => l('Context', 'admin/structure/context'),
-      '!wiki' => l(t('Wiki'), 'https://github.com/openscholar/openscholar/wiki/Adding-widgets-to-the-sitewide-frontpage'),
+      '@modules-url' => url('admin/modules'),
+      '@context-url' => url('admin/structure/context'),
+      '@wiki-url' => 'https://github.com/openscholar/openscholar/wiki/Adding-widgets-to-the-sitewide-frontpage',
     );
 
     $items = theme('item_list', array(
       'items' => array(
-        t("Enable the context UI module from the !modules page", $params),
-        t("Go to the !context page and look for os_sitewide_front and click on 'Edit'.", $params),
+        t("Enable the context UI module from the <a href='@modules-url'>modules</a> page", $params),
+        t("Go to the <a href='@context-url'>context</a> page and look for os_sitewide_front and click on 'Edit'.", $params),
         t("Click on blocks. This will open a layout where you can check blocs and add them to different layouts on the page."),
       ),
       'type' => 'ol',
@@ -1010,7 +1010,7 @@ function theme_openscholar_get_started() {
 
     $short_message = t('Need help in setting this front page? Click on me.');
     $welcome_message = t('Welcome!');
-    $below_message = t('You can use the next steps in order to set this page properly or just visit our !wiki.', $params);
+    $below_message = t('You can use the next steps in order to set this page properly or just visit our <a href="@wiki-url">wiki</a>.', $params);
   }
 
   $result = <<<MESSAGE
