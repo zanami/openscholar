@@ -259,7 +259,7 @@ function cp_permission() {
 function cp_custom_theme() {
   // Turn the CP theme on
   if (cp_use_cp_theme()) {
-    return variable_get('os_cp_theme', 'cp_theme');
+    return variable_get('os_cp_theme', 'cp_bootstrap');
   }
 }
 
