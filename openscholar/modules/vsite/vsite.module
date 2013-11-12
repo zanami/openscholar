@@ -365,7 +365,7 @@ function vsite_spaces_presets_alter(&$presets) {
   // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ($presets as $name => &$preset) {
-    if (substr($name, 0, 3) == "os_") {
+    if (in_array($name, variable_get('os_enabled_spaces_presets',array()))) {
       $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
     }
   }
@@ -993,7 +993,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
-  
+
   // Ensures that "field_subsite_domains" field is created.
   if (!field_info_field('field_subsite_domains')) {
     $field = array(
@@ -1025,7 +1025,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     $field = field_create_field($field);
   }
-  
+
   if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
@@ -1072,7 +1072,7 @@ function vsite_attach_fields_to_group($bundle){
       ),
     );
     field_create_instance($instance);
-  }  
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
