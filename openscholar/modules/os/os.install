@@ -380,3 +380,10 @@ function os_update_7022() {
     ->fields(array('promote' => 0))
     ->execute();
 }
+
+/**
+ * Reverts `os` module's presets to use new HWPI theme defaults.
+ */
+function os_update_7023() {
+  features_revert(array('os' => array('spaces_presets')));
+}

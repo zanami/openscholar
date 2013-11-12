@@ -128,7 +128,7 @@ a.advanced-help-link {
     text-decoration: none !important;
 }
 
-
+a#edit-cancel,
 a.form-cancel {
   cursor: pointer;
   padding: 5px 17px;
