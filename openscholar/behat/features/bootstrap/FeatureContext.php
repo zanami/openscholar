@@ -1182,6 +1182,9 @@ class FeatureContext extends DrupalContext {
 
   /**
    * @Then /^I search for "([^"]*)"$/
+   *
+   * Defining a new step because when using the step "I should see" for the iCal
+   * page the test is failing.
    */
   public function iSearchFor($string) {
     $element = $this->getSession()->getPage();
