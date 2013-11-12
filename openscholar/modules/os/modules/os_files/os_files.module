@@ -745,15 +745,22 @@ function os_files_file_default_displays(){
       'image_style' => 'square_thumbnail',
       'alt' => '',
       'title' => ''
-    )
+    ),
   );
 
-  foreach ( file_type_get_enabled_types() + array(
-    'default' => array()
-  ) as $type => $info ) {
+  foreach ( file_type_get_enabled_types() + array('default' => array()) as $type => $info ) {
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
     $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
     $keys["{$type}__os_files_link_icon__os_link"] = array();
+
+    // For default view mode, use the default width and height from
+    // hook_file_formatter_info().
+    $keys[$type . '__default__oembed'] = array('wmode' => 'transparent');
+    $keys[$type . '__default__oembed_thumbnail'] = array();
+
+    // For the Preview view mode, match the width and height of the square
+    // thumbnail in media_image_default_styles().
+    $keys[$type . '__preview__oembed_thumbnail'] = array('width' => '180', 'height' => '180');
   }
 
   $displays = array();
