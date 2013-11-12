@@ -21,7 +21,6 @@ class os_sv_list_file extends os_sv_list {
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
     $defaults = $this->options_defaults();
-    $form['file'] = array('#markup' => '<h3>This box is for files</h3>');
     $types = array('all' => t('All')) + 
       array_reduce(file_type_get_all_types(), function ($ret, $o) {$ret[$o->type] = $o->label; return $ret;});
     $form['content_type']['#title'] = t('File Type');
@@ -97,5 +96,18 @@ class os_sv_list_file extends os_sv_list {
       [17] => os_files_link
       [18] => token
   )*/
+  
+  /**
+   * sorting functions
+   */
+  function sort_newest(&$efq) {
+    $efq->propertyOrderBy('timestamp', 'DESC');
+  }
+  function sort_oldest(&$efq) {
+    $efq->propertyOrderBy('timestamp', 'ASC');
+  }
+  function sort_alpha(&$efq) {
+    $efq->propertyOrderBy('filename', 'ASC');
+  }
   
 }

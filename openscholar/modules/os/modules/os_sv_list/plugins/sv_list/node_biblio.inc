@@ -63,4 +63,35 @@ class sv_list_node_biblio {
   
     return $options;
   }
+  
+  /**
+   * @function query_alter 
+   * 
+   * Adds a filter to only use the selected biblio types.
+   */
+  public function query_alter($options, $efq) {
+    $types = $this->_biblio_types();
+    $whitelist = array_filter($options['biblio_whitelist']);
+    
+    if (count($types) > count($whitelist)) {
+      $nids = db_select('biblio', 'b') 
+        ->condition('biblio_type', array_values($whitelist), 'IN')
+        ->fields('b', array('nid'))
+        ->execute()
+        ->fetchCol();  
+
+      $efq->entityCondition('nid', $nids, 'IN');
+    }
+  }
+  
+  public function sort_biblio($options, $efq) {
+    //borken!  biblio_year isn't a field so efq can't sort it.  
+    $efq->fieldOrderBy('biblio_year', 'DESC'); 
+    $efq->propertyOrderBy('created', 'DESC'); 
+  }
+  
+  public function re_sort($options, $efq) {
+    //if we can't figure out how to make the efq sort, maybe do a sort afterwards?  
+    //not as ugly as it sounds, since we could just query for the 1-20 pubs we have to display on this page.
+  }
 }

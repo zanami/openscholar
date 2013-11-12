@@ -36,9 +36,11 @@ class os_sv_list extends os_boxes_default {
     );
 
     //get options from plugins
-    foreach ($this->_plugins($this->entity_type) as $plugin) {
-      if (method_exists($plugin['instance'], 'options_defaults')) {
-        $options += $plugin['instance']->options_defaults();
+    if (empty($this->plugins)) {
+      foreach ($this->_set_plugins($this->entity_type) as $plugin) {
+        if (method_exists($plugin['instance'], 'options_defaults')) {
+          $options += $plugin['instance']->options_defaults();
+        }
       }
     }
   
@@ -267,7 +269,7 @@ class os_sv_list extends os_boxes_default {
     );
     
     //get options from plugins
-    foreach ($this->_plugins($this->entity_type) as $plugin) {
+    foreach ($this->plugins as $plugin) {
       if (method_exists($plugin['instance'], 'options_form')) {
         $options_form = $plugin['instance']->options_form($this->options);
         
@@ -298,6 +300,10 @@ class os_sv_list extends os_boxes_default {
     if (module_exists('vsite') && !vsite_get_vsite()) {
       return;
     }
+    
+    $bundle = ($this->options['content_type'] != 'all') ? $this->options['content_type'] : NULL;
+    $this->_set_plugins($this->entity_type, $bundle);
+    
     $block = parent::render();
     $options = $this->options + $this->options_defaults();
     $page_num = (isset($_GET['page'])) ? $_GET['page'] : 0;
@@ -315,19 +321,31 @@ class os_sv_list extends os_boxes_default {
     return $block;
   }
   
-  public function get_ids($page_num, $page) {
-    $options = $this->options + $this->options_defaults();
-    
+  public function get_ids($page_num, $page) {    
     //////nids
     //EFQ
     //content type
     //vsite or subsites
     //book filter
     $query = $this->query();
+    $this->_plugins_invoke('query_alter', $query);
+    
+    if ($this->options['content_type'] != 'all') {
+      $query->propertyCondition('type', $this->options['content_type']);
+      //any special hook here?
+    }
     
     //////pager
     
-    /////sort
+    /////sort - if $this doesn't have it, one of the plugins will.
+    $sort = $this->options['sort_by'];
+    if (method_exists($this, $sort)) {
+      $this->$sort($query);
+    } else {
+      $this->_plugins_invoke($sort, $query);
+    }
+    $this->_plugins_invoke('sort_alter', $query);
+    
     //person, !image
     
     ///////vocab
@@ -351,25 +369,45 @@ class os_sv_list extends os_boxes_default {
   
   
   /**
-   * @function _load_plugins
+   * @function _set_plugins
    * 
    * Instantiates all the plugins this box will use.  Call this on demand instead of on __construct,
    * because the plugins loaded will depend on context.  A node box has a fixed entity_type.  During
    * render, its bundle is fixed, but in the options form, its bundle can change.
    * 
+   * Re-run with new criteria to reset.  This way if a box's option form loads all options for its
+   * entity_type, the render method can reset to only those applicable to the bundle.   
    */
-  private function _plugins($entity_type = NULL, $bundle = NULL) {
-    if (empty($this->plugins)) {
-      foreach (os_sv_list_plugins($entity_type, $bundle) as $plugin) {
-        $class = ctools_plugin_get_class($plugin, 'handler');
-        $plugin['instance'] = new $class;
-        $this->plugins[$plugin['name']] = $plugin;
-      }
+  private function _set_plugins($entity_type = NULL, $bundle = NULL) {
+    $this->plugins = array();
+    
+    foreach (os_sv_list_plugins($entity_type, $bundle) as $plugin) {
+      $class = ctools_plugin_get_class($plugin, 'handler');
+      $plugin['instance'] = new $class;
+      $this->plugins[$plugin['name']] = $plugin;
     }
     
     return $this->plugins;
   }
   
+  /**
+   * @function _plugins_invoke
+   *
+   * Runs a method on all loaded plugins.  Plugin return values will return in
+   * keyed array.
+   */
+  private function _plugins_invoke($method, &$args) {
+    $options = $this->options + $this->options_defaults();
+    foreach ($this->plugins as $plugin) {
+      if (method_exists($plugin['instance'], $method)) {
+        $ret[$plugin['name']] = $plugin['instance']->$method($options, $args); //to pass by ref we can't use func_get_args
+      }
+    }
+    
+    return (isset($ret)) ? $ret : array();
+  }
+  
+    
   protected function _display_options() {
     return array(
       'display_title' => t('Title'),
@@ -435,8 +473,9 @@ class os_sv_list extends os_boxes_default {
     $title = $info['entity keys']['label'];
     //$key =   $info['entity keys']['id'];
     $type = $this->entity_type;
-    $uri_func = $info['uri callback']; //why you no work yet?
+    $uri_func = $info['uri callback']; 
     
+    //this is just a placeholder.  it omits things like contextual menus   
     return theme('item_list', array(
       'items' => array_map(function($entity) use ($title, $type, $uri_func) {
         $uri = $uri_func($entity);
@@ -445,4 +484,6 @@ class os_sv_list extends os_boxes_default {
       'type' => 'ul'
     ));
   }
+
+  
 }

@@ -47,10 +47,24 @@ class os_sv_list_node extends os_sv_list {
     return $form;
   }
   
-  public function render() {
-    $block = parent::render();
-    //$block['content'] .= ' posts';
-    return $block;
+//   public function render() {
+//     $block = parent::render();
+//     //$block['content'] .= ' posts';
+//     return $block;
+//   }
+
+
+  /**
+   * sorting functions
+   */
+  function sort_newest(&$efq) {
+    $efq->propertyOrderBy('created', 'DESC');
+  }
+  function sort_oldest(&$efq) {
+    $efq->propertyOrderBy('created', 'ASC');
+  }
+  function sort_alpha(&$efq) {
+    $efq->propertyOrderBy('title', 'ASC');
   }
   
 }
