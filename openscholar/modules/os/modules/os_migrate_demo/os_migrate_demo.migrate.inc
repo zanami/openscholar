@@ -610,6 +610,10 @@ class OsMigrateEventsNode extends OsMigrate {
   public function prepare($entity, $row) {
     $date = explode(';', $row->field_date);
 
+    if ($date[0] == 'now') {
+      $date[0] = date('Y-m-d H:i', time());
+    }
+
     $entity->field_date[LANGUAGE_NONE][0] = array(
        'value' => $date[0],
        'date_type' => 'datetime',
@@ -617,6 +621,10 @@ class OsMigrateEventsNode extends OsMigrate {
 
     // Adding the end date of the event.
     if (isset($date[1])) {
+      if ($date[1] == 'now') {
+        $date[1] = date('Y-m-d H:i', time());
+      }
+
       $entity->field_date[LANGUAGE_NONE][0]['value2'] = $date[1];
     }
   }
