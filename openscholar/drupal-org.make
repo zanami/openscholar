@@ -257,12 +257,8 @@ projects[nodeorder][subdir] = "contrib"
 projects[nodeorder][version] = 1.1
 
 projects[oembed][subdir] = "contrib"
-;projects[oembed][version] = 0.x-dev
-projects[oembed][download][type] = git
-projects[oembed][download][branch] = 7.x-0.x
-projects[oembed][download][revision] = "852f97e"
-projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
-projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
+projects[oembed][version] = 7.x-1.0-rc2
+projects[oembed][patch][] = "http://drupalcode.org/project/oembed.git/patch/a27adf7c1afe763ee5f386f30f0aea73a6097ff1"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
