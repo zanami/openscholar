@@ -1158,7 +1158,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
         // url() will return eventually the path.
         // This section alter the $path to the $_GET['q'] which is node/%.json
         // which will convert by the url() to foo/bar.
-        $path = $_GET['q'];
+        // $path = $_GET['q'];
         return;
       }
     }
