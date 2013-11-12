@@ -22,27 +22,10 @@ function vsite_context_default_contexts() {
         '<front>' => '<front>',
       ),
     ),
-    'os_site' => array(
-      'values' => array(
-        0 => '0',
-      ),
-    ),
   );
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'os_search_solr-site-search' => array(
-          'module' => 'os_search_solr',
-          'delta' => 'site-search',
-          'region' => 'header_third',
-          'weight' => '-10',
-        ),
-        'os_search_db-site-search' => array(
-          'module' => 'os_search_db',
-          'delta' => 'site-search',
-          'region' => 'header_third',
-          'weight' => '-10',
-        ),
         'vsite_register-get_your_site_block' => array(
           'module' => 'vsite_register',
           'delta' => 'get_your_site_block',
@@ -54,6 +37,18 @@ function vsite_context_default_contexts() {
           'delta' => 'install_status',
           'region' => 'footer',
           'weight' => '10',
+        ),
+        'os_search_db-site-search' => array(
+          'module' => 'os_search_db',
+          'delta' => 'site-search',
+          'region' => 'header_third',
+          'weight' => '-10',
+        ),
+        'os-get-started' => array(
+          'module' => 'os',
+          'delta' => 'get-started',
+          'region' => 'content_second',
+          'weight' => '-10',
         ),
       ),
     ),
