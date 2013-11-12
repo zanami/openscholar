@@ -1199,6 +1199,7 @@ class csl_label extends csl_format {
     }
     if (empty($text)) {
     foreach ($variables as $variable) {
+      $t = (array)$data;
       if (empty($t['nid'])) {
         // Data is a Biblio contributor.
         $show_term = TRUE;
