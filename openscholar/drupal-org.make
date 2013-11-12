@@ -257,7 +257,7 @@ projects[nodeorder][subdir] = "contrib"
 projects[nodeorder][version] = 1.1
 
 projects[oembed][subdir] = "contrib"
-projects[oembed][version] = 7.x-1.0-rc2
+projects[oembed][version] = 1.0-rc2
 projects[oembed][patch][] = "http://drupalcode.org/project/oembed.git/patch/a27adf7c1afe763ee5f386f30f0aea73a6097ff1"
 projects[oembed][patch][] = "https://drupal.org/files/issues/oembed.2134415.wysiwyg_dimensions.patch"
 
