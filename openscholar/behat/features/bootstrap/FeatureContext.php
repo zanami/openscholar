@@ -1172,4 +1172,25 @@ class FeatureContext extends DrupalContext {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
     $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
   }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
+
+  /**
+   * @Then /^I search for "([^"]*)"$/
+   *
+   * Defining a new step because when using the step "I should see" for the iCal
+   * page the test is failing.
+   */
+  public function iSearchFor($string) {
+    $element = $this->getSession()->getPage();
+
+    if (strpos($element->getContent(), $string) === FALSE) {
+      throw new Exception("the string '$string' was not found.");
+    }
+  }
 }
