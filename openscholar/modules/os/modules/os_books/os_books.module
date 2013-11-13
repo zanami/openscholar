@@ -104,7 +104,8 @@ function os_books_build_toc($node, $style = 'partial', $separate = FALSE) {
       $block['content'] = render(menu_tree_output($top['below']));
     }
     else {
-      $block['content'] = render(menu_tree_output($menu_tree));
+      $output = menu_tree_output($menu_tree);
+      $block['content'] = render($output);
     }
   }
 
