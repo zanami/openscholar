@@ -111,65 +111,7 @@ class os_sv_list extends os_boxes_default {
       ),
     );
 
-    /*
-    //@TODO separate function?
-    // Get all vocabularies.
-    $default = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
-    $vocabs = os_sv_list_get_content_type_vocabs($default);
 
-    // The 'vocabs' tree will contain select fields - one for each vocabulary.
-    if (empty($vocabs)) {
-      $form['vocabs'] = array(
-        '#type' => 'item',
-        '#prefix' => '<div id="vocabs">',
-        '#suffix' => '</div>',
-      );
-    } else {
-      $form['vocabs'] = array(
-        '#type' => 'item',
-        '#title' => t('filter by vocabulary'),
-        '#description' => t('Select for each vocabulary the terms to be used.'),
-        '#prefix' => '<div id="vocabs">',
-        '#suffix' => '</div>',
-        '#tree' => TRUE,
-      );
-    }
-  
-    // Create a select field for each vocabulary, with the vocabulary's terms as
-    // the field's options.
-    foreach ($vocabs as $vid => $vocab) {
-      // Get the vocabulary's terms.
-      $terms = array();
-      $tree = taxonomy_get_tree($vid);
-      foreach ($tree as $item) {
-        $term = taxonomy_term_load($item->tid);
-        $terms[$term->tid] = $term->name;
-      }
-  
-      // Get the already selected terms in this vocabulary.
-      if (!empty($form_state['values']['vocabs']['vocab_' . $vid])) {
-        $vocab_default_value = $form_state['values']['vocabs']['vocab_' . $vid];
-      } elseif (!empty($this->options['vocabs']['vocab_' . $vid])) {
-        $vocab_default_value = $this->options['vocabs']['vocab_' . $vid];
-      } else {
-        $vocab_default_value = array();
-      }
-    
-      // Create select field with the terms as options.
-      $form['vocabs']['vocab_' . $vid] = array(
-        '#type' => 'select',
-        '#options' => $terms,
-        '#title' => $vocab,
-        '#multiple' => TRUE,
-        '#default_value' => $vocab_default_value,
-        // The validate function takes the selected terms from all 'vocab'
-            // fields and groups them together as 'terms'.
-        // We are using #element_validate because we cannot reach the #validate
-        // property from here.
-        '#element_validate' => array('os_sv_list_terms_element_validate'),
-      );
-    }
-  */
     $form['query_details']['more'] = array(
       '#title' => 'Show "more" link',
       '#type' => 'checkbox',
@@ -313,7 +255,7 @@ class os_sv_list extends os_boxes_default {
     $this->_plugins_invoke('query_alter', $query);
     
     if ($this->options['content_type'] != 'all') {
-      $query->propertyCondition('type', $this->options['content_type']);
+     $query->propertyCondition('type', $this->options['content_type']);
       //any special hook here?
     }
     

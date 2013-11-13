@@ -14,7 +14,7 @@ $plugin = array(
 
 class sv_list_subsites {
   
-  public function options() {
+  public function options_defaults() {
     return array('query_scope' => 'current');
   }
   
