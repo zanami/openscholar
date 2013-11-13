@@ -49,6 +49,18 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_random_post'] = array(
+    'title' => 'Random Posts',
+    'description' => 'Display one post from a list',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_random_post',
+      'file' => 'os_boxes_random_post.inc',
+      'path' => $path.'/os_boxes_random_post',
+      'parent' => 'os_boxes_manual_list',
+    ),
+  );
+
   $info['os_boxes_media'] = array(
     'title' => 'Embed Media',
     'description' => 'Embed a video, audio or other internet resource',
