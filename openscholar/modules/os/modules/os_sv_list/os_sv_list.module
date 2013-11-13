@@ -150,6 +150,16 @@ function os_sv_list_boxes_plugins() {
 }
 
 /**
+ * Implements hook_query_TAG_alter
+ * 
+ * EFQs tagged with random will be randomly sorted.  
+ * http://rupertj.tumblr.com/post/21641418129/randomly-sorting-an-entityfieldquery
+ */
+function os_sv_list_query_random_alter($query) {
+  $query->orderRandom();
+}
+
+/**
  * Get Vocabularies by content type.
  *
  * @param $bundle

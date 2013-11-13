@@ -9,7 +9,7 @@
       // when content type changes, update sorting options list.
       $('#os_sv_list_content_type').change(function() {
         var sortby = $('#edit-sort-by');
-        var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha' ];
+        var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha', 'sort_random' ];
 
         var display_style = $('#edit-display');
         var display_whitelist = [ 'display_title', 'display_teaser', 'display_body' ];

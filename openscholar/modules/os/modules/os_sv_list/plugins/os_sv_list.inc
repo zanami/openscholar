@@ -353,7 +353,7 @@ class os_sv_list extends os_boxes_default {
       'sort_newest' => t('Newest Post'),
       'sort_oldest' => t('Oldest Post'),
       'sort_alpha' => t('Alphabetical'),
-      //sort_random?  http://community.openscholar.harvard.edu/openscholar/topics/refresh_queue
+      'sort_random' => t('Random'),
     );
   }
   
@@ -408,5 +408,8 @@ class os_sv_list extends os_boxes_default {
     ));
   }
 
+  function sort_random(&$efq) {
+    $efq->addTag('random');
+  }
   
 }
