@@ -379,6 +379,21 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ * Deny access to create node outside of a VSite for non-privileged user.
+ */
+function vsite_node_access($node, $op, $account) {
+  if ($op != 'create' || user_access('administer group')) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  if (!vsite_get_vsite()) {
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
  * Implements hook_custom_theme().
  *
  * - Make sure the themes are properly initialized.
