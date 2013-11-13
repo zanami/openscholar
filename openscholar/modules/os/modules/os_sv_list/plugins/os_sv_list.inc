@@ -173,13 +173,13 @@ class os_sv_list extends os_boxes_default {
           'visible' => array('input[name=more]' => array('checked' => TRUE)),
     ),
   );
-  
-  $form['pager'] = array(
+  */
+    $form['pager'] = array(
       '#title' => 'Show pager',
       '#type' => 'checkbox',
-        '#default_value' => $this->options['pager'],
+      '#default_value' => $this->options['pager'],
     );
-  */
+  
   
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
@@ -226,7 +226,7 @@ class os_sv_list extends os_boxes_default {
     $this->_set_plugins($this->entity_type, $bundle);
     
     $block = parent::render();
-    $options = $this->options + $this->options_defaults();
+    $this->options += $this->options_defaults();
     $page_num = (isset($_GET['page'])) ? $_GET['page'] : 0;
     $page = 0;
     
@@ -234,11 +234,29 @@ class os_sv_list extends os_boxes_default {
     $ids = array_slice($ids, 0, 5); //filters aren't in place yet, so load a sane amount of entities
     $more_link = FALSE;
     
-    $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
-    //don't forget to check plugins for display funcs!
-    $block['content'] = $this->$display_func($ids);
+    if ($this->options['pager'] && $ids) {
+      // theme_pager();
+      $parameters = array(
+        'sv_list_box_delta' => $this->delta,
+        'pager_id' => $page,
+        'destination' => $_GET['q'],
+      );
+      $use_pager = 'views_mini_pager';
+      $pager = theme($use_pager , array(
+        'parameters' => $parameters,
+        'element' => $page,
+        'quantity' => $this->options['number_of_items'],
+      ));
+    } else {
+      $pager = '';
+    }
     
-    //$block['content'] = "new sv block:";
+    $display_func = (method_exists($this, $this->options['display'])) ? $this->options['display'] : 'display_title';
+    //don't forget to check plugins for display funcs!
+    $content = $this->$display_func($ids);
+    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $content . '</div>' . $pager;
+    
+    
     return $block;
   }
   
@@ -255,11 +273,15 @@ class os_sv_list extends os_boxes_default {
     $this->_plugins_invoke('query_alter', $query);
     
     if ($this->options['content_type'] != 'all') {
-     $query->propertyCondition('type', $this->options['content_type']);
+      $query->propertyCondition('type', $this->options['content_type']);
       //any special hook here?
     }
     
     //////pager
+    if ($this->options['pager'] && is_int($page)) {
+      $query->pager($this->options['number_of_items']);
+      $page = $query->pager['element'];
+    }
     
     /////sort - if $this doesn't have it, one of the plugins will.
     $sort = $this->options['sort_by'];
