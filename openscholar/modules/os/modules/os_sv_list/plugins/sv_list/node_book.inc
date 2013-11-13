@@ -24,7 +24,7 @@ class sv_list_node_book {
     $nids = db_select('menu_links', 'ml')
       ->condition('module', 'book')
       ->condition('depth', 1)
-      ->field('ml', array('link_path'))
+      ->fields('ml', array('link_path'))
       ->execute()
       ->fetchCol();
     $nids = preg_replace('/node\//', '', $nids);
