@@ -168,8 +168,8 @@ function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
       if ($e->type != 'person') continue;
 
       if (!empty($e->field_person_photo)) {
-        $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
-        $e->field_person_photo[LANGUAGE_NONE][0]['title'] = $e->title;
+        $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = entity_label('node', $e) ? entity_label('node', $e) : '';
+        $e->field_person_photo[LANGUAGE_NONE][0]['title'] = entity_label('node', $e) ? entity_label('node', $e) : '';
       }
 
       if (!empty($e->field_website[LANGUAGE_NONE])) {
