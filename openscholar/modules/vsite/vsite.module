@@ -386,34 +386,11 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
  *   related permissions if outside of their own VSite.
  */
 function vsite_custom_theme(){
-  global $user;
   _vsite_purl_init();
 
   if (!$vsite = vsite_get_vsite()) {
     return;
   }
-
-  $roles = $user->roles;
-  $role = user_role_load_by_name('vsite admin');
-
-  // Re-populate "user_access" static to not include "vsite admin" role.
-  $perm = &drupal_static('user_access');
-
-  // Re-populate "user_access" static to not include or exclude the
-  // "vsite admin" site-wide role.
-  if (!og_user_access('node', $vsite->id, 'administer group')) {
-    unset($roles[$role->rid]);
-  }
-  else {
-    $roles[$role->rid] = $role->name;
-  }
-
-  $role_permissions = user_role_permissions($roles);
-  $perms = array();
-  foreach ($role_permissions as $one_role) {
-    $perms += $one_role;
-  }
-  $perm[$user->uid] = $perms;
 
   if (module_exists('cp') && cp_use_cp_theme()) {
     // Use CP's own theme.
