@@ -56,7 +56,7 @@ class os_boxes_booktoc extends os_boxes_default {
       '#default_value' => $this->options['toc_type'],
     );
 
-    $form['advanced']['as_nav'] = array(
+    $form['as_nav'] = array(
       '#type' => 'checkbox',
       '#default_value' => $this->options['as_nav'],
       '#title' => t('Display As Navigation'),
@@ -71,9 +71,6 @@ class os_boxes_booktoc extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
-    if (module_exists('vsite') && !vsite_get_vsite()) {
-      return;
-    }
     $block = parent::render();
 
     // Checks for the table of contents display position setting configured
@@ -94,6 +91,19 @@ class os_boxes_booktoc extends os_boxes_default {
       $node = menu_get_object();
       if (isset($node->book['bid']) && book_type_is_allowed($node->type)) {
         $book_nid = $node->book['bid'];
+      }
+      elseif (isset($_GET['contexts'])) {
+        // coming from an ajax command that readds the widget to the list
+        foreach ($_GET['contexts'] as $c) {
+          if (strpos($c, 'os_books') !== FALSE) {
+            $nid = str_replace('os_books-book-', '', $c);
+            $node = node_load($nid);
+            if (isset($node->book['bid']) && book_type_is_allowed($node->type)) {
+              $book_nid = $nid;
+              break;
+            }
+          }
+        }
       }
       else {
         $block['title'] = $block['subject'] = '';
