@@ -22,6 +22,11 @@ function os_profiles_os_app_info() {
     'views tabs' => array(
       'os_profiles' => array('page'),
     ),
+    'importers' => array(
+      'person' => array(
+        'csv' => 'os_reader',
+      ),
+    ),
   );
 
   return $apps;
