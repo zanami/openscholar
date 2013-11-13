@@ -37,12 +37,15 @@ class os_sv_list extends os_boxes_default {
 
     //get options from plugins
     if (empty($this->plugins)) {
-      foreach ($this->_set_plugins($this->entity_type) as $plugin) {
-        if (method_exists($plugin['instance'], 'options_defaults')) {
-          $options += $plugin['instance']->options_defaults();
-        }
+      $this->_set_plugins($this->entity_type);
+    }
+    
+    foreach ($this->plugins as $plugin) {
+      if (method_exists($plugin['instance'], 'options_defaults')) {
+        $options += $plugin['instance']->options_defaults();
       }
     }
+    
   
     return $options;
   }
@@ -52,7 +55,7 @@ class os_sv_list extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-    $this->options += $this->options_defaults(); //avoid notices when new options are added
+    $this->options = ($this->options) ? $this->options + $this->options_defaults() : $this->options_defaults(); //avoid notices when new options are added
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
   
     $form['#submit'] = array('os_sv_list_form_submit');
@@ -327,8 +330,8 @@ class os_sv_list extends os_boxes_default {
     //content type
     //   biblio done
     //   image - todo, convert to file box
-    //   event
-    //    book list
+    //   event - what's with the delta
+    //    book list - done
     //vsite or subsites
     //book filter
     $query = $this->query();
@@ -401,7 +404,7 @@ class os_sv_list extends os_boxes_default {
    */
   private function _plugins_invoke($method, &$args) {
     $options = $this->options + $this->options_defaults();
-    foreach ($this->plugins as $plugin) {
+    foreach ($this->plugins as $name => $plugin) {
       if (method_exists($plugin['instance'], $method)) {
         $ret[$plugin['name']] = $plugin['instance']->$method($options, $args); //to pass by ref we can't use func_get_args
       }

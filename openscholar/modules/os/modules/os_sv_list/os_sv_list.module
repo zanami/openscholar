@@ -83,7 +83,7 @@ function os_sv_list_plugins($entity_type = NULL, $bundle = NULL) {
     $var = ${$filter}; 
     if ($var) {
       $plugins = array_filter($plugins, function($plugin) use ($var, $filter) {
-        return (in_array($var, $plugin[$filter]));    
+        return (in_array($var, $plugin[$filter]) || empty($plugin[$filter]));    
       });
     }
 
