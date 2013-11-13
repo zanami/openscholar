@@ -8,6 +8,16 @@
  * 2. Uncomment the required function to use.
  */
 
+
+/**
+ * Implements hook_theme_registry_alter
+ *
+ * Removes template_preprocess_menu_tree so that os_basetheme_preprocess_menu_tree has access to all vars.
+ */
+function os_basetheme_theme_registry_alter(&$reg) {
+  $reg['menu_tree']['preprocess functions'] = array_diff($reg['menu_tree']['preprocess functions'], array('template_preprocess_menu_tree'));
+}
+
 /**
  * add classes to the body of a page
  */
