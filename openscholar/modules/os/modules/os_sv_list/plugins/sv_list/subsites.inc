@@ -14,6 +14,31 @@ $plugin = array(
 
 class sv_list_subsites {
   
+  public function options() {
+    return array('query_scope' => 'current');
+  }
+  
+  public function options_form($options) {
+    if (!module_exists('vsite') || ($vsite = spaces_get_space()) == FALSE) {
+      return;
+    }
+    
+    if (!in_array($vsite->og->type, variable_get('subsite_parents', array()))) {
+      return;
+    }
+    
+    ctools_include('subsite','vsite');
+    $form['query_scope'] = array(
+      '#title' => 'Include results from',
+      '#type' => 'checkboxes',
+      '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+      '#default_value' => $options['query_scope'],
+      '#access' => vsite_has_subsites(),
+      '#required' => TRUE,
+    );
+    //how to alter the display style?  do we need a separate alter hook?
+  }
+  
   /**
    * @function query_alter
    * 

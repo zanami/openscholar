@@ -30,9 +30,7 @@ class os_sv_list extends os_boxes_default {
       'terms' => array(),
       'only_vocabs' => TRUE,
       'only_vocabs_values' => array(),
-  
-      // Do not include subsites by default.
-      'query_scope' => array('current'),
+
     );
 
     //get options from plugins
@@ -60,17 +58,7 @@ class os_sv_list extends os_boxes_default {
   
     $form['#submit'] = array('os_sv_list_form_submit');
  
-    if (module_exists('vsite')) {
-      ctools_include('subsite','vsite');
-      $form['query_scope'] = array(
-        '#title' => 'Include results from',
-        '#type' => 'checkboxes',
-        '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
-        '#default_value' => $this->options['query_scope'],
-        '#access' => vsite_has_subsites(),
-        '#required' => TRUE,
-      );
-    }
+
   
     $form['content_type'] = array(
       '#type' => 'select',
@@ -250,19 +238,6 @@ class os_sv_list extends os_boxes_default {
         '#default_value' => $this->options['pager'],
     );
   */
-    if (module_exists('vsite')) {
-  
-          ctools_include('subsite','vsite');
-  
-          $form['query_scope'] = array(
-          '#title' => 'Include results from',
-          '#type' => 'checkboxes',
-          '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
-          '#default_value' => $this->options['query_scope'],
-	      '#access' => vsite_has_subsites(),
-  	      '#required' => TRUE,
-  );
-  }
   
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
@@ -274,7 +249,7 @@ class os_sv_list extends os_boxes_default {
     //get options from plugins
     foreach ($this->plugins as $plugin) {
       if (method_exists($plugin['instance'], 'options_form')) {
-        $options_form = $plugin['instance']->options_form($this->options);
+        if ($options_form = $plugin['instance']->options_form($this->options)) {
         
         //add states to only show when this plugin's bundle is selected
         
@@ -292,7 +267,8 @@ class os_sv_list extends os_boxes_default {
 //             }
 //           }     
 //         }
-        $form += $options_form;
+          $form += $options_form;
+        }
       }
     }
 
@@ -332,8 +308,7 @@ class os_sv_list extends os_boxes_default {
     //   image - todo, convert to file box
     //   event - what's with the delta
     //    book list - done
-    //vsite or subsites
-    //book filter
+    //    vsite or subsites - done
     $query = $this->query();
     $this->_plugins_invoke('query_alter', $query);
     
