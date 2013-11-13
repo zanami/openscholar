@@ -1660,7 +1660,7 @@ function os_field_default_fields_alter(&$fields) {
     $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
 
     // Change the media widget to use private files instead of public.
-    if ($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])) {
+    if (in_array($config['field_instance']['widget']['module'], array('media', 'image', 'imagefield_crop')) && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])) {
       unset($fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['public']);
       $fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
 
