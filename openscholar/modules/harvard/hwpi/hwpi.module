@@ -1,6 +1,33 @@
 <?php
 
 /**
+ * Implements hook_init
+ */
+function hwpi_init() {
+  global $conf;
+
+  // Is securepages enabled?
+  // If we are not on a harvard domain turn it off.
+  if (variable_get('securepages_enable', 0)) {
+
+    //Turn SSL off for pages that don't match the wildcard certificate
+    $conf['securepages_enable'] = 0;
+
+    // Loop through the domains that are configured to work with our SSL certificate
+    foreach (variable_get('hwpi_ssl_domains',array()) as $domain) {
+      $offset = (strlen($domain) * -1);
+      // Check to see if the current domain matches one of our wildcard domains in the SSL cert.
+      // IF the cert has ".harvard.edu" then "foo.harvard.edu" is valid and we should enable, whild "bar.foo.harvard.edu" is not.
+      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",($offset-1))){
+        //We found a Match
+        $conf['securepages_enable'] = 1;
+        break;
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page.
  */
 function hwpi_preprocess_page(&$vars) {
@@ -15,10 +42,13 @@ function hwpi_preprocess_page(&$vars) {
  *
  * @return bool
  */
-function _is_hwpi_theme() {
+function _is_hwpi_theme($theme_name = NULL) {
+  if (is_null($theme_name)) {
+    $theme_name = $GLOBALS['theme'];
+  }
   $themes = list_themes();
-  if (isset($themes[$GLOBALS['theme']])) {
-    $t = $themes[$GLOBALS['theme']];
+  if (isset($themes[$theme_name])) {
+    $t = $themes[$theme_name];
     if (isset($t->base_themes) && isset($t->base_themes['hwpi_basetheme'])) {
       return TRUE;
     }

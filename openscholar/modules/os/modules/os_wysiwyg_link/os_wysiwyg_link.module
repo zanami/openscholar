@@ -105,11 +105,32 @@ function os_wysiwyg_link_filter($text) {
         break;
 
       case 'url':
-        if (url_is_external($m[3])) {
-          $url = url($m[3], array('external' => TRUE));
+        $comps = parse_url($m[3]);
+        $options = array();
+        // set defaults so no notices appear
+        if ($comps) {
+          $comps += array('query' => '', 'fragment' => '');
+          $page = str_replace(array('?'.$comps['query'], '#'.$comps['fragment']), '', $m[3]);
+          // query string is in var=val&var=val format. parse it into an array for drupal
+          parse_str($comps['query'], $query);
+          $options = array(
+            'query' => $query,
+            'fragment' => $comps['fragment']
+          );
         }
         else {
-          $url = url($m[3], array('absolute' => TRUE));
+          $page = $m[3];
+        }
+        if (url_is_external($page)) {
+          $url = url($page, $options + array('external' => TRUE));
+        }
+        elseif ($page) {
+          $url = url($page, $options + array('absolute' => TRUE));
+        }
+        // if page is blank, the url is #something, linking to an anchor on the same page
+        // we use the external flag to prevent drupal from changing it to the site's frontpage
+        else {
+          $url = url($page, $options + array('external' => TRUE));
         }
         $link = str_replace('href="'.$m[1], 'href="'.$url, $m[0]);
         $text = str_replace($m[0], $link, $text);

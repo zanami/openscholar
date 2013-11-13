@@ -58,14 +58,6 @@ function vsite_domain_cp_settings_domain_validate($form, $form_state) {
     }
   }
 
-  // Validates both shared and owned domains.
-  // Checks that the custom domain is not the same as purl_base_domain.
-  $purl_base_domain = variable_get('purl_base_domain', '');
-  $purl_base_domain = preg_replace("(https?://)", "", $purl_base_domain);
-  if ($domain && strtolower($domain) == strtolower($purl_base_domain)) {
-    form_set_error('vsite_domain_name', t('You may not use the sitewide URL as a custom url.'));
-  }
-
   return TRUE;
 }
 
@@ -80,6 +72,7 @@ function vsite_domain_cp_settings_domain_submit(&$form, &$form_state) {
 
   // Checks to see if there is a new group path field value for the vsite node.
   $vsite = vsite_get_vsite();
+  $form_state['values']['vsite_domain_name']['value'] = $form_state['input']['vsite_domain_name']['value'];  
   $new_values = _vsite_domain_process_new_values($form, $form_state, $vsite);
 
   // Saves new "vsite_domain_name" & "vsite_domain_shared" variable overrides.
@@ -110,14 +103,21 @@ function vsite_domain_cp_settings_domain_submit(&$form, &$form_state) {
 
   // Clears the specified cache if necessary (i.e. "purl_modifiers_en" cid).
   if ($actions['cache']) {
-    cache_clear_all($actions['cache'], 'cache', TRUE);
+    try {
+      cache_clear_all($actions['cache']);
+    }
+    catch (Exception $e) {
+      drupal_set_message('Couldn\'t clear cache.');
+    }
   }
 
+  watchdog('vsite_domain', "actions, new values: \n@a\n@v\n", array('@a' => json_encode($actions), '@v' => json_encode($new_values)));
   // Redirects this form to the correct new URL if necessary.
   if ($actions['redirect']) {
     $form_state['redirect'] = $actions['redirect'];
   }
 }
+
 
 /**
  * Returns an array of necessary actions for these new values, or FALSE.
@@ -165,7 +165,6 @@ function _vsite_domain_submit_actions($new_values) {
  *     'one group to another group'
  */
 function _vsite_domain_get_domain_change($domain, $shared) {
-
   // If the site is changing from "standard" domain setting...
   if (!$domain['original']) {
     // Note: Only the 2 distinct cases below match the above condition.
@@ -288,7 +287,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'owned to group':
       $actions['callback'] = 'purl_delete';
       $actions['value'] = $domain['new'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $purl = vsite_get_purl();
       $redirect = "$purl/$destination";
       $actions['redirect'] = $redirect;
@@ -308,7 +307,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'one owned to another owned':
       $actions['callback'] = 'purl_save';
       $actions['value'] = $domain['new'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $redirect = "$group_path/$destination";
       $actions['redirect'] = $redirect;
       break;
@@ -316,7 +315,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
     case 'one owned to another group':
       $actions['callback'] = 'purl_delete';
       $actions['value'] = $domain['original'];
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       $redirect = "$group_path/$destination";
       $actions['redirect'] = $redirect;
       break;
@@ -327,7 +326,7 @@ function _vsite_domain_change_actions($domain_change, $domain, $group_path = '')
       break;
 
     case 'one group to another group':
-      $actions['cache'] = array('purl_modifiers_en');
+      $actions['cache'] = 'purl_modifiers_en';
       break;
   }
 
@@ -445,7 +444,7 @@ function _vsite_domain_check_shared($form, $form_state) {
  */
 function _vsite_domain_check_domain(&$form, &$form_state) {
   $original_path = array('domain', 'vsite_domain_name', 'value', '#default_value');
-  $new_path = array('values', 'vsite_domain_name', 'value');
+  $new_path = array('input', 'vsite_domain_name', 'value');
   return _vsite_domain_form_value_modified($form, $form_state, $original_path, $new_path);
 }
 

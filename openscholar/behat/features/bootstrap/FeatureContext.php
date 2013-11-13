@@ -594,6 +594,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I execute vsite cron$/
+   */
+  public function iExecuteVsiteCron() {
+    $this->invoke_code('vsite_cron');
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
@@ -606,7 +613,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
-    $this->invoke_code($function, array($variable, $value));
+    $this->invoke_code($function, array($variable, "'$value'"));
   }
 
   /**
@@ -675,6 +682,17 @@ class FeatureContext extends DrupalContext {
   public function iInvalidateCache() {
     $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
+   */
+  public function iPopulateInWith($field, $url) {
+    $url = str_replace('LOCALHOST', $this->locatePath(''), $url);
+
+    return array(
+      new Step\When('I fill in "' . $field . '" with "' . $url . '"'),
+    );
   }
 
   /**
@@ -979,6 +997,40 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the node "([^"]*)"$/
+   */
+  public function iEditTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @When /^I edit the node of type "([^"]*)" named "([^"]*)" using contextual link$/
+   */
+  public function iEditTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
+    }
+  }
+
+  /**
    * @Given /^I am adding the subtheme "([^"]*)" in "([^"]*)"$/
    */
   public function iAmAddingTheSubthemeIn($subtheme, $vsite) {
@@ -1022,5 +1074,120 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("The JS asset %s wasn't found.", $asset));
     }
   }
-}
 
+  /**
+   * @Given /^I set feed item to import$/
+   */
+  public function iSetFeedItemToImport() {
+    return array(
+      new Step\When('I visit "admin"'),
+      new Step\When('I visit "admin/structure/feeds/os_reader/settings/OsFeedFetcher"'),
+      new Step\When('I check the box "Debug mode"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Given /^I import feed items for "([^"]*)"$/
+   */
+  public function iImportFeedItemsFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite) . "'", $nid));
+  }
+
+  /**
+   * @Given /^I import the feed item "([^"]*)"$/
+   */
+  public function iImportTheFeedItem($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Import')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s wasn't found or it's already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the feed item "([^"]*)" was imported$/
+   */
+  public function iShouldSeeTheFeedItemWasImported($feed_item) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item %s was not found or is already imported.", $feed_item));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Then /^I should see the news photo "([^"]*)"$/
+   */
+  public function iShouldSeeTheNewsPhoto($image_name) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[contains(@class, 'field-name-field-photo')]//img[contains(@src, '{$image_name}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The feed item's image %s was not imported into field_photo.", $image_name));
+    }
+  }
+
+  /**
+   * @Given /^I display watchdog$/
+   */
+  public function iDisplayWatchdog() {
+    $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
+  }
+
+  /**
+   * @When /^I login as "([^"]*)" in "([^"]*)"$/
+   */
+  public function iLoginAsIn($username, $site) {
+    $title = str_replace("'", "\'", $site);
+
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    try {
+      $password = $this->users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    return array(
+      new Step\When('I visit "node/' . $nid .'"'),
+      new Step\When('I click "Admin Login"'),
+      new Step\When('I fill in "Username" with "' . $username . '"'),
+      new Step\When('I fill in "Password" with "' . $password . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I set the Share domain name to "([^"]*)"$/
+   */
+  public function iSetTheShareDomainNameTo($value) {
+    $action = $value ? 'I checked "edit-vsite-domain-name-vsite-domain-shared"' : 'I uncheck "edit-vsite-domain-name-vsite-domain-shared"';
+    return array(
+      new Step\When('I click "Settings"'),
+      new Step\When($action),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
+}

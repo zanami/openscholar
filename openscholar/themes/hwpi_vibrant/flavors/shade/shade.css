@@ -17,7 +17,7 @@
 
 #menu-bar nav {
     background: none repeat scroll 0 0 #A61D31;
-    border-radius: 0 0 0 0;
+    border-radius: 2px 2px 2px 2px;
      box-shadow: 0 0;
 }
 #menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
@@ -31,15 +31,16 @@
     text-decoration: none !important;
 }
 #columns .boxes-box-content h2 {
-    border-bottom: 3px solid #A61D31;
     color: #000000;
     font-size: 22px;
     line-height: 28px;
     padding: 7px 15px 7px 0;
 }
+
+#menu-bar ul.nice-menu .menuparent.over > a,
 #menu-bar ul.nice-menu a.active, #menu-bar ul.nice-menu a:hover, #menu-bar ul.nice-menu a.active:hover,
  #menu-bar ul.nice-menu .menuparent a.active {
-    background: none repeat scroll 0 0 #731422;
+    background: #731422;
     color: #F4f4f4;
 }
 .front.no-sidebars .region-content-top .block-boxes-os_slideshow_box:after {
@@ -88,32 +89,72 @@ h1, h2, h3, h4 {
 .front #content-panels .block-content, .sidebar .block-content {
     border-top: 0 none;
 }
-.front #content-panels .block, .sidebar .block {
+body.front #columns{
+	background-image:none;
+}
+.front #content-panels .block {
+    box-shadow: 0 0;
+}
+.sidebar .block {
     -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #f6f8f8;
-    border: medium none;
     border-radius: 3px;
     box-shadow: 0 0;
 }
+#layout_16_9_overlay .slide-copy p, #layout_16_9_overlay .slide-copy h2, #layout_16_9_side .slide-copy p, #layout_16_9_side .slide-copy h2, .slide-copy p {
+    font-family: open sans,arial,sans-serif;
+}
 .front #content-panels .block-title {
-    border-bottom: 3px solid #A61D31;
-    font-size: 22px;
+    background-color: #e3eaef;
+    color: #000000;
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      margin-bottom: 25px;
-   }
+    border-bottom:none;
+}
+.front #content-panels .block{
+	background: none repeat scroll 0 0 transparent;
+	border:none;
+}
+.sidebar .navigation .block-content{
+	padding:0;
+}
+.navigation ul li, .navigation ul.menu li{
+	background-color:#FFF;
+}
+
+.image-style-profile-thumbnail,
+.image-style-book-cover-thumb{
+	border:1px solid #f4f4f4;
+}
+#layout_16_9_overlay .caption.slide-copy > h2{
+	padding-left:25px;
+}
+#layout_16_9_below .slide-copy,
+#layout_16_9_below .rslides_tabs{
+	background-color:#687781;
+}
+.front article{
+	padding-bottom:25px;
+	border-bottom:1px dotted #ccc;
+}
+.front .node{
+	margin-bottom:25px!important;
+}
 sidebar .block-title {
     border-bottom: 3px solid #A61D31;
     font-size: 20px;
     font-weight: normal;
     line-height: 28px;
     padding: 7px 15px;
-      margin-bottom: 0;
+    margin-bottom: 0;
+    background: none repeat scroll 0 0 transparent;
+   }
+   span[style]{
+   	font-family:open sans,arial, sans-serif!important;
    }
    
 .event-start-month {
-    color: #666666;
+    color: #474747;
 }
 .event-start-day {
     color: #A61D31;
@@ -121,11 +162,13 @@ sidebar .block-title {
 .event-start .event-start {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #E3EAEF;
-    border-radius: 20px 20px 20px 20px;
+    -webkit-border-radius: 15px;
+-moz-border-radius: 15px;
+border-radius: 15px;
     width: 60px;
 }
 span.date-display-single {
-    color: #666666;
+    color: #474747;
     font-size:14px;
 }
 .front #content-panels .block, .sidebar .block {
@@ -203,6 +246,10 @@ ul.links li.link-count-node-readmore {
 #page-wrapper {
     background-color: #F6F8F8;
 }
+.page-node #content-column .content-inner, .not-front .content-inner {
+    box-shadow: 0 0;
+ 
+}
 
 #branding_footer, #branding_header {
     color: #FFFFFF;
@@ -223,8 +270,18 @@ ul.links li.link-count-node-readmore {
 #menu-bar ul.nice-menu .menuparent ul li a.active {
   background: #1d1d1d !important;
 }
-#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
-    background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -341px transparent;
+
+#search-block-form input.form-submit, 
+#search-block-form #edit-submit, 
+#search-form #edit-submit {
+    background-position: 2px -373px;
+}
+
+.sidebar .block-title {
+    background-color: #687781;
+    border-bottom: medium none;
+    color: #FFFFFF;
+    font-weight: normal;
 }
 
 .front #content-panels .block-content, .sidebar .block-content {
@@ -232,16 +289,9 @@ ul.links li.link-count-node-readmore {
 }
 .block-boxes-os_boxes_sectionnav .block-content{
 	padding:0!important;
-	
+
 }
 /*slideshow*/
-#layout_3_1_overlay .slide-copy {
-    background: none repeat scroll 0 0 #8996A0;
-    opacity: 0.95;
-    position: relative;
-    width: 420px;
-    z-index: 2;
-}
 
 #layout_3_1_overlay h2 {
     border-bottom: none;
@@ -255,7 +305,7 @@ ul.links li.link-count-node-readmore {
 }
 /*sidebar*/
 .section-nav .menu-depth-1 > a {
-    background: none repeat scroll 0 0 #8996A0 !important;
+    background: none repeat scroll 0 0 #687781 !important;
 
 }
 .section-nav ul.menu li a {
@@ -263,9 +313,6 @@ ul.links li.link-count-node-readmore {
 }
 /*inside pages*/
 
-.not-front.two-sidebars #content-column .content-inner {
-    border-right: 0;
-}
 .section-nav .menu-depth-1 > ul {
     border-color: -moz-use-text-color #DDDDDD #DDDDDD;
     border-image: none;
@@ -282,13 +329,18 @@ ul.links li.link-count-node-readmore {
     font-family: open sans, arial, sans-serif;
     font-size: 16px;
 }
+h2.field-label {
+    border-bottom: 0 none !important;
+    font-size: 1em !important;
+    padding: 0 !important;
+}
 
 #layout_16_9_overlay .slide-copy .boxes-box-content h2 {
     border-bottom: none;
     padding: 7px 15px 7px 15px;
 }
 .breadcrumb a, .breadcrumb {
-    color: #666666;
+    color: #474747;
 }
 #footer ul li a {
     font-weight: normal;
@@ -302,32 +354,26 @@ ul.links li.link-count-node-readmore {
 }
 .branding-right {
     font-size: 12px;
-
 }
 #columns {
     background-image: url("/profiles/openscholar/themes/hwpi_vibrant/images/standard-body-gradient_sh.png");
 }
 .view .node-teaser{
 	border-bottom:1px dotted #ccc;
-	
 }
 #footer a,
 #powerby-login a{
 	color:#fff;
 }
-#boxes-box-site_info h1{
-	max-width:65%
-}
 .block-no-title .view .date-nav-wrapper{
-	
 	border-top:0;
 }
 
-#block-boxes-os-addthis{
-	background:transparent;
-}
 .caption h2{
 	border-bottom:0 none;
+}
+.one-sidebar.sidebar-first .content-inner {
+    padding-bottom: 35px;
 }
 .boxes-box-content .caption h2{
 	border-bottom:0!important;
@@ -335,6 +381,17 @@ ul.links li.link-count-node-readmore {
 .node{
 	margin-bottom:50px;
 }
+
+.navigation a:link, 
+.navigation a:visited {
+color: #215990;
+}
+
+
 #footer {
     background: none repeat scroll 0 0 #8F323E;
+}
+
+#footer .footer-login {
+color: #FFF;
 }

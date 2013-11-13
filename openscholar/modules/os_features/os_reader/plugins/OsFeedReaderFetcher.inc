@@ -42,12 +42,15 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Save a imported entity.
    */
   protected function entitySave($entity) {
+    $node = node_load($entity->feeds_item->feed_nid);
     $values = array(
       'title' => $entity->title,
       'description' => $entity->description,
       'created' => $entity->created,
       'guid' => $entity->feeds_item->guid,
       'url' => $entity->feeds_item->url,
+      'importer_nid' => $entity->feeds_item->feed_nid,
+      'importer_type' => $node->type == 'blog_import' ? 'blog' : 'news',
     );
     os_reader_feed_item_create($values)->save();
   }
@@ -111,10 +114,14 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       return $id;
     }
 
+    $node = node_load($source->feed_nid);
+    $type = $node->type == 'blog_import' ? 'blog' : 'news';
+
     $query = new entityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'os_feed_item')
       ->propertyCondition('guid', $result->current_item['guid'])
+      ->propertyCondition('importer_type', $type)
       ->execute();
 
     if (!empty($result['os_feed_item'])) {

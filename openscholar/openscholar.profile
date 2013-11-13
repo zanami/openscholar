@@ -59,6 +59,12 @@ function openscholar_flavor_form($form, &$form_state) {
     '#default_value' => 'development'
   );
 
+  $form['intranet_site'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Intranet Site'),
+    '#description' => t('If checked, all sites created will be private and have private files, public websites will not be available.'),
+  );
+
   $form['dummy_content'] = array(
     '#type' => 'checkbox',
     '#title' => t('Add dummy content'),
@@ -128,6 +134,14 @@ function openscholar_flavor_form_submit($form, &$form_state) {
   // Define dummy content migration.
   if (!empty($form_state['input']['dummy_content'])) {
     variable_set('os_dummy_content', TRUE);
+  }
+
+  // Define dummy content migration.
+  if (!empty($form_state['input']['intranet_site'])) {
+    variable_set('file_default_scheme', 'private');
+
+    $private_path = variable_get('file_private_path', '/private');
+    variable_set('file_private_path', $private_path);
   }
 }
 
@@ -277,6 +291,12 @@ function _openscholar_module_batch($modules) {
  */
 function _openscholar_install_profile_modules_finished($success, $results, $operations) {
   _install_profile_modules_finished($success, $results, $operations);
+
+  if(variable_get('file_default_scheme', 'public') == 'private'){
+    //Disallow indexing for this install. (Uses already enabled robotstxt module)
+    variable_set('robotstxt', "User-agent: *\nDisallow: /");
+  }
+
   if (!module_exists('vsite')) {
     return;
   }
@@ -341,6 +361,9 @@ function openscholar_install_finished(&$install_state) {
 
   // Remove the variable we used during the installation.
   variable_del('os_dummy_content');
+
+  // Grant permission to view unpublished group content.
+  os_grant_unpublished_viewing_permission();
 
   // Run cron to populate update status tables (if available) so that users
   // will be warned if they've installed an out of date Drupal version.

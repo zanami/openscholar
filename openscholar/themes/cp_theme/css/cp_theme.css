@@ -69,6 +69,8 @@ textarea {
   border: 1px solid #CDCDCD;
 }
 
+#og-vocabulary-add-more-wrapper select.form-select {height:120px;}
+
 html.js input.form-autocomplete {
   background-position: 100% 8px;  
 }
@@ -124,6 +126,31 @@ a.advanced-help-link {
     float: none;
     margin: 0;
     text-decoration: none !important;
+}
+
+a#edit-cancel,
+a.form-cancel {
+  cursor: pointer;
+  padding: 5px 17px;
+  margin-bottom: 1em;
+  margin-right: 1em; /* LTR */
+  color: #5a5a5a;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.077em;
+  font-family: "Lucida Grande", Verdana, sans-serif;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  background: url(/themes/seven/images/buttons.png) 0 0 repeat-x;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+}
+
+a.form-cancel:hover {
+ text-decoration:none;
 }
 
 /* CTools MODAL OVERRIDES */
@@ -241,6 +268,33 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
  	margin: -30px 0 0;
  	right: 50px;
 }
+
+ /* OVERRIDES WITH TABS IN MODAL - EXPERIMENTAL */
+#overlay-tabs {
+     border-bottom: 1px solid #CCCCCC;
+     margin: 20px 0px 40px 75px;
+     position: relative;
+}
+
+#overlay-content {
+     padding: 2.5em 1em;
+}
+
+#overlay-tabs li a, #overlay-tabs li.active a, #overlay-tabs li.active a.active, #overlay-tabs li.active a:active, #overlay-tabs li.active a:visited {
+     margin-bottom: -1px;
+     padding-bottom: 0px;
+}
+
+#overlay-tabs li.active a, #overlay-tabs li.active a.active, #overlay-tabs li.active a:active, #overlay-tabs li.active a:visited {
+     background-color: #EFEFEF;
+     color: #555555;
+}
+
+#overlay-tabs li a, #overlay-tabs li a:active, #overlay-tabs li a:visited, #overlay-tabs li a:hover {
+     color: #FFFFFF;
+     margin-bottom: -1px;
+     padding-bottom: 0px;
+}
  
 
 /** CP TABLE STYLES **/
@@ -283,6 +337,11 @@ table.spaces td.option, table.spaces td.storage {
 
 
 #cp-appearance-theme-picker-form select {max-width:90px;overflow:hidden;}
+
+#cp-appearance-theme-picker-form #theme-header-featured h2,
+#cp-appearance-theme-picker-form #theme-header-other h2 {font-weight:normal;}
+
+#cp-appearance-theme-picker-form #theme-header-featured p {color:#777;font-size:15px;margin:-8px 0 28px 0;}
 
 
 /* CP/BUILD LAYOUT */   
@@ -335,23 +394,24 @@ body.page-cp.page-cp-account #messages {
 .os_publications-customize-form .column-left,
 .os_publications-customize-form #comment_settings {
 	float:left;
-	width:48%;
 	clear:left;
+}
+.os_publications-customize-form .column-left {
+    width: 48%;
+}
+.os_publications-customize-form #comment_settings {
+    width: 100%;
 }
 
 .os_publications-customize-form .form-actions {
 	clear:both;
 }
 
-.os_publications-customize-form #comment_settings {
-width:30%;
-}
-
 .os_publications-customize-form .column-right {
 	float:right;
 	width:48%;
 	clear:right;
-	margin-top: -1045px;
+	margin-bottom:20px;
 }
  
 .tabledrag-toggle-weight-wrapper {
