@@ -1658,9 +1658,27 @@ function os_files_file_fields() {
  * Grants access to the full list of files
  */
 function os_files_file_entity_access($op, $file, $account) {
+  if (!$vsite = vsite_get_vsite()) {
+    return FILE_ENTITY_ACCESS_IGNORE ;
+  }
+
+  $node = node_load($vsite->id);
+
+  // Check if user is a vsite member.
+  if (!node_access($op, $node, $account)) {
+    return FILE_ENTITY_ACCESS_IGNORE;
+  }
+
+  // Check if the vsite member can view files.
   if (!$file && $op == 'view' && user_access('view files', $account)) {
     return FILE_ENTITY_ACCESS_ALLOW;
   }
+
+  if ($file && og_get_membership('node', $vsite->id, 'file', $file->fid)) {
+    return FILE_ENTITY_ACCESS_ALLOW;
+  }
+
+  return FILE_ENTITY_ACCESS_DENY;
 }
 
 /**
