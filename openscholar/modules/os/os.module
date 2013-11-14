@@ -1663,12 +1663,16 @@ function os_field_default_fields_alter(&$fields) {
     // Get the field's machine name.
     $field_name = $config['field_config']['field_name'];
 
+    if (!$field = field_info_field($field_name)) {
+      // Field does not exist yet, we cannot update it using the functions
+      // field_update_field() and field_update_instance().
+      continue;
+    }
+
     // Change the field to use private files instead of public.
     $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
-    if ($field = field_info_field($field_name)) {
-      // Save changes in field.
-      field_update_field($fields[$id]['field_config']);
-    }
+    // Save changes in field.
+    field_update_field($fields[$id]['field_config']);
 
     // Media widget fields require more configuration - changing field settings
     // is not enough, the instance settings must be altered too.
@@ -1678,30 +1682,28 @@ function os_field_default_fields_alter(&$fields) {
       continue;
     }
 
-    if ($field = field_info_field($field_name)) {
-      // Run through all instances of this field and make sure that its
-      // "allowed schemes" include private instead of "public".
-      foreach ($field['bundles'] as $entity_type => $bundles) {
-        foreach ($bundles as $bundle) {
-          // Get field instance.
-          $instance = field_info_instance($entity_type, $field_name, $bundle);
-          if (!$instance) {
-            // No field instance.
-            continue;
-          }
-
-          if (!empty($instance['widget']['settings']['allowed_schemes']['private'])) {
-            // Already changed from public to private.
-            continue;
-          }
-
-          // Do not allow public files.
-          unset($instance['widget']['settings']['allowed_schemes']['public']);
-          // Allow private files.
-          $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
-          // Save changes in instance.
-          field_update_instance($instance);
+    // Run through all instances of this field and make sure that its
+    // "allowed schemes" include "private" instead of "public".
+    foreach ($field['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        // Get field instance.
+        $instance = field_info_instance($entity_type, $field_name, $bundle);
+        if (!$instance) {
+          // No field instance.
+          continue;
         }
+
+        if (!empty($instance['widget']['settings']['allowed_schemes']['private']) && empty($instance['widget']['settings']['allowed_schemes']['public'])) {
+          // Already changed from public to private.
+          continue;
+        }
+
+        // Do not allow public files.
+        unset($instance['widget']['settings']['allowed_schemes']['public']);
+        // Allow private files.
+        $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
+        // Save changes in instance.
+        field_update_instance($instance);
       }
     }
   }
