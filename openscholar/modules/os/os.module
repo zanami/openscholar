@@ -314,15 +314,6 @@ function os_os_widget() {
   return $blocks;
 }
 
-function os_os_app_info_alter(&$info) {
-  dpm($info);
-  foreach ($info as $app => $app_info) {
-    if (isset($app_info['nodetypes']) && $app_info['nodetypes']) {
-      $app_info['view modes'][] = 'full';
-      $app_info['view modes'][] = 'teaser';
-    }
-  }
-}
 /**
  * Implements hook_os_widget_alter().
  */
