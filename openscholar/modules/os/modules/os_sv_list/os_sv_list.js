@@ -40,20 +40,20 @@
         });
 
         //apply content_type appropriate sorts when ct changes
-        display_style.children('option').each(function() {
-          this_display = $(this).attr('value');
-          if ($.inArray(this_display, display_whitelist) == -1) {
-
-            // show/hide appropriate options
-            remove = ($.inArray(content_type, Drupal.settings.os_sv_list.has_display[this_display]) == -1);
-            $(this).attr('hidden', remove).attr('disabled',remove);
-
-            // deselect invalidated option if its currently selected
-            if (remove && $(this).parent().find(':selected').val() == this_display) {
-              $(this).parent().attr('value', display_whitelist[0]);
-            }
-          }
-        });
+//        display_style.children('option').each(function() {
+//          this_display = $(this).attr('value');
+//          if ($.inArray(this_display, display_whitelist) == -1) {
+//
+//            // show/hide appropriate options
+//            remove = ($.inArray(content_type, Drupal.settings.os_sv_list.has_display[this_display]) == -1);
+//            $(this).attr('hidden', remove).attr('disabled',remove);
+//
+//            // deselect invalidated option if its currently selected
+//            if (remove && $(this).parent().find(':selected').val() == this_display) {
+//              $(this).parent().attr('value', display_whitelist[0]);
+//            }
+//          }
+//        });
 
         // swap out the more link url.
         more_link.val(defaults[content_type]);

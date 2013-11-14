@@ -18,7 +18,7 @@ class os_sv_list extends os_boxes_default {
 
     $options += array(
       'content_type' => 'all',
-      'display' => 'display_title',
+      'display' => 'teaser',
       'more' => FALSE,
       'more_text' => t('More'),
       'more_link' => '', // what's a good default?
@@ -251,9 +251,16 @@ class os_sv_list extends os_boxes_default {
       $pager = '';
     }
     
-    $display_func = (method_exists($this, $this->options['display'])) ? $this->options['display'] : 'display_title';
-    //don't forget to check plugins for display funcs!
-    $content = $this->$display_func($ids);
+    //use drupal display functions or sv list ones.  it'd be great if all these could come from drupal.
+    $info = entity_get_info($this->entity_type);
+    if (isset($info['view modes'][$this->options['display']])) {
+      $entities = entity_load($this->entity_type, $ids);
+      $render = entity_view($this->entity_type, $entities, $this->options['display']);
+      $content = drupal_render($render);      
+    } else {
+      $content = 'fix my view mode: ' . $this->options['display'];
+    }
+    
     $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $content . '</div>' . $pager;
     
     
@@ -277,6 +284,8 @@ class os_sv_list extends os_boxes_default {
       //any special hook here?
     }
     
+    //more link
+    
     //////pager
     if ($this->options['pager'] && is_int($page)) {
       $query->pager($this->options['number_of_items']);
@@ -293,8 +302,8 @@ class os_sv_list extends os_boxes_default {
     $this->_plugins_invoke('sort_alter', $query);
     
     //person, !image
-    
-    ///////vocab
+    //event exception.  dletas.
+
     
     //execute
     $result = $query->execute();
@@ -354,13 +363,24 @@ class os_sv_list extends os_boxes_default {
   
     
   protected function _display_options() {
-    return array(
-      'display_title' => t('Title'),
-      'display_sidebar_teaser' => t('Sidebar Teaser'),
-      'display_teaser' => t('Teaser'),
-      'display_body' => t('Entire Post'),
-      'display_links' => t('Link'),
-    );
+    //list all the available view modes for this entity
+    $view_modes = os_entity_view_modes($this->entity_type);
+    $view_modes = array_unique(array_reduce($view_modes, 'array_merge', array())); 
+    
+    //get labels for these view modes
+    $info = entity_get_info($this->entity_type);
+    $options = array_reduce($view_modes, function($ret, $mode) use ($info) {$ret[$mode] = $info['view modes'][$mode]['label']; return $ret;});
+    return $options;    
+    //get labels
+    
+    //deprecate the following options...
+//     return array(
+//       'display_title' => t('Title'),
+//       'display_sidebar_teaser' => t('Sidebar Teaser'),
+//       'display_teaser' => t('Teaser'),
+//       'display_body' => t('Entire Post'),
+//       'display_links' => t('Link'),
+//     );
   }
   
   protected function _sort_options() {
@@ -377,57 +397,6 @@ class os_sv_list extends os_boxes_default {
       'sort_alpha' => t('Alphabetical'),
       'sort_random' => t('Random'),
     );
-  }
-  
-  
-  /**
-   * Display functions
-   */
-  function display_view_mode($ids, $viewmode = 'full') {
-    //$output = array();
-    //foreach ($ids as $id) {
-//       $entity_view = $this->entity_type . '_view';
-//       $entity_view($id, $viewmode);
-      $output = entity_view($this->entity_type, $ids, $viewmode);
-      
-    //}
-  
-    return drupal_render($output);
-  }
-  
-
-  function display_title($ids) {
-/*  
-    $cross_site_links = FALSE;
-    if (module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))) {
-      ctools_include('subsite','vsite');
-      $cross_site_links = TRUE;
-    }
-  
-    foreach ($nodes as $node) {
-      $options = array();
-      if ($cross_site_links) {
-        vsite_subsite_node_url_options($node, $options);
-      }
-  
-      $items[] = l($node->title, 'node/' . $node->nid, $options);
-    }
-  */
-    $entities = entity_load($this->entity_type, $ids);
-    $info = entity_get_info($this->entity_type);
-    $title = $info['entity keys']['label'];
-    //$key =   $info['entity keys']['id'];
-    $type = $this->entity_type;
-    $uri_func = $info['uri callback']; 
-    
-    //this is just a placeholder.  it omits things like contextual menus   
-    return theme('item_list', array(
-      'items' => array_map(function($entity) use ($title, $type, $uri_func) {
-        $uri = $uri_func($entity);
-        return l($entity->{$title}, ($type != 'file') ? $uri['path'] : file_create_url($entity->uri)); //works for nodes, but files are still file/$fid
-      }, $entities), 
-      'type' => 'ul'
-    ));
   }
 
   function sort_random(&$efq) {

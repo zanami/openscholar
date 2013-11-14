@@ -35,14 +35,21 @@ class os_sv_list_file extends os_sv_list {
     return $block;
   }
 
-  protected function _display_options() {
-    return array(
-      'display_title' => t('Title'),
-      'display_preview' => t('Preview'),
-      'display_details' => t('Details'),
-      'display_grid' => t('Grid'),
-    );
-  }
+//   protected function _display_options() {
+//     $info = entity_get_info('file'); 
+//     foreach ($info['view modes'] as $mode => $info) {
+//       $modes[$mode] = $info['label'];
+//     }
+    
+//     dpm($modes);
+//     return $modes; //lets see how this plays out....
+//     return array(
+//       'display_title' => t('Title'),
+//       'display_preview' => t('Preview'),
+//       'display_details' => t('Details'),
+//       'display_grid' => t('Grid'),
+//     );
+//   }
   
   protected function _sort_options() {
     return array(
