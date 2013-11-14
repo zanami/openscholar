@@ -13,10 +13,12 @@ a:visited {
   color: #215990;
 }
 
-.field-name-body a {
+#columns .block-boxes-os_boxes_html a,
+#columns .field-name-body a {
      text-decoration: underline;
 }
 
+.block-boxes-os_boxes_html a:hover,
 .field-name-body a:hover {
      text-decoration: none;
 }
@@ -118,6 +120,12 @@ table caption {
   color: #1e1e1e;
 }
 
+@-moz-document url-prefix() { 
+a.biblio-abstract-link.toggle {
+    background-position: 0 -397px;
+ }
+}
+
 
 /* Block Styles */
 #content-column .block ul {
@@ -128,6 +136,9 @@ table caption {
   list-style: circle;
 }
 
+.block .node:last-child {
+    margin-bottom: 0;
+}
 
 /* Search Results */
 .page-search input.form-text {
@@ -184,21 +195,30 @@ ol.search-results li.search-result:last-child {
 
 /* Calendar Pages */
 
-
+.lt-ie9 .view .date-nav-wrapper .date-prev {
+    right: 90% !important;
+}
 .view .date-nav-wrapper .date-prev {
-    right: 590px;
+    right: 90%;
 }
 
-
+.lt-ie9 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 88% !important;
+}
 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
-    right: 430px;
+    right: 88%;
 }
 
+.lt-ie9 .no-sidebars .view .date-nav-wrapper .date-prev {
+    right: 90% !important;
+}
 .no-sidebars .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
 
-
+.lt-ie9 .content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
+    right: auto !important;
+}
 .content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
     right: auto;
 }
@@ -282,9 +302,19 @@ ol.search-results li.search-result:last-child {
   text-align: center;
 }
 
+.lt-ie9 .calendar-calendar .week-view .full .calendar-agenda-hour {
+    width: 50px !important;
+}
 .calendar-calendar .week-view .full .calendar-agenda-hour {
   padding: 0;
   width: 50px;
+}
+
+.lt-ie9 .calendar-calendar td.calendar-agenda-hour .calendar-hour,
+.lt-ie9 .calendar-calendar td.calendar-agenda-hour .calendar-ampm,
+.lt-ie9 .calendar-calendar .week-view .full div.calendar-agenda-hour span,
+.lt-ie9 .calendar-calendar .day-view .full div.calendar-agenda-hour span {
+   font-size: 0.8em !important;
 }
 
 .calendar-calendar .week-view .full .days {
@@ -369,7 +399,9 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 18px;
 }
 
-
+.block .view-os-events.view-id-os_events .view-header {
+  padding-top: 0;
+}
 
 /* Views Node Lists */
 .view .node-teaser {
@@ -421,7 +453,7 @@ ol.search-results li.search-result:last-child {
 }
 
 .node-event .field-name-field-date {
-  color: #7e7e7e;
+  color: #6D6D6D;
   margin-bottom: 7px;
 }
 
@@ -482,7 +514,7 @@ ol.search-results li.search-result:last-child {
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
-  border-bottom: 1px solid #2769AC;
+  text-decoration: underline;
 }
 
 .node-class .view-os-classes .views-row {
@@ -513,16 +545,20 @@ ol.search-results li.search-result:last-child {
   margin-top: -17px;
 }
 
- .node-type-person #content-column .node-person .pic-bio {
+.node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
+}
+
+#content-column article.node-teaser.node-person .field-name-field-person-photo ~ .node-header {
+	margin-left: 5.4em;
 }
 
 .node-type-person .node-person .field-name-field-person-photo,
@@ -589,23 +625,25 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
   padding: 15px 0 30px;
 }
 
+.node-link.node-teaser {
+	padding: 10px 0 5px;
+	}
+
+
 /**
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
 .sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
-
      margin-right: 0;
 }
 
-.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
-	 margin-left: 95px;
-}
-
+/* I DONT THINK THIS IS NEEDED ANYMORE,BUT LEAVING IN UNTIL TESTED
+>>>>>>> SCHOLAR-3.9
 .sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
 	margin-left: 95px;
 }
-
+*/
 /* Node FAQ */
 .node-teaser.node-faq {
   line-height: 19px;
@@ -619,6 +657,9 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 .page-faq h1.node-title {
 	margin-bottom: 14px;
 }
+
+.sidebar .node-faq h1.node-title a {font-size:16px !important;}
+
 
 .page-faq .node-faq .field-name-body p {
     margin: 0 0 0.5em;
@@ -716,7 +757,7 @@ h2.comment-title.comment-form {
 }
 
 .links li a {
-  border-bottom: 1px solid #215990;
+  text-decoration: underline;
 }
 
 
@@ -827,5 +868,8 @@ ul.pager li.pager-item {
   float: left;
 }
 
+.two-sidebars .sidebar .node-person.node-teaser .field-name-field-email {
+  float: none;
+}
 
 

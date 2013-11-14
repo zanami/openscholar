@@ -1,14 +1,16 @@
 /**
- * 
+ *
  */
 (function ($, undefined) {
-  
+
 Drupal.behaviors.osLinkExternal = {
   attach: function (ctx) {
     $('#-os-link-external-form').submit(function (e) {
       if ($(this).filter(':visible').length > 0) {
-        Drupal.settings.osWysiwygLinkResult = $('#edit-external', this).val();
-        Drupal.settings.osWysiwygLinkAttributes = {'data-url': $('#edit-external', this).val()};
+        var value = $('#edit-external', this).val()
+        // Trims the leading slash from the raw input value.
+        Drupal.settings.osWysiwygLinkResult = value.replace(/^\//, "");
+        Drupal.settings.osWysiwygLinkAttributes = {'data-url': Drupal.settings.osWysiwygLinkResult};
         e.preventDefault();
       }
     });
@@ -20,7 +22,7 @@ Drupal.behaviors.osLinkInternal = {
     $('#-os-link-internal-form').submit(function (e) {
       // need to do something here to make sure we get a path and not a node title
       if ($(this).filter(':visible').length > 0) {
-        Drupal.settings.osWysiwygLinkResult = $('#edit-internal', this).val(); 
+        Drupal.settings.osWysiwygLinkResult = $('#edit-internal', this).val();
         e.preventDefault();
       }
     });
@@ -71,15 +73,15 @@ Drupal.behaviors.osLinkFile = {
 
 Drupal.behaviors.osLinkUpload = {
   attach: function (ctx, settings) {
-    
+
     Drupal.ajax.prototype.commands.switchTab = function (ajax, response, settings) {
       jQuery('#'+response.tab).data('verticalTab').tabShow();
     };
-    
+
     Drupal.ajax.prototype.commands.clickOn = function (ajax, response, settings) {
       jQuery(response.target).bind('click', Drupal.media.browser.views.click).click();
     }
-    
+
     $('#file-entity-add-upload input[value="Next"]').addClass('use-ajax-submit');
     Drupal.behaviors.AJAX.attach(ctx, settings);
   }
@@ -90,7 +92,7 @@ Drupal.behaviors.osLinkTweaks = {
     $('label[for="edit-upload-upload"]', ctx).each(function () {
       $(this).addClass('add-new').html('Add New');
     });
-  }  
+  }
 };
 
 })(jQuery, undefined);

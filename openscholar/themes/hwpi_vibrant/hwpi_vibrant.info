@@ -1,12 +1,14 @@
 ;----------// Theme Information
 
-  name        = HWPI vibrant
+  name        = HWP Vibrant
   description = A vibrant looking theme for use by departments at Harvard.
   core        = 7.x
   base theme  = hwpi_basetheme
   release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
+     flavor_name = "Bold"
+  plugins[os][flavor] = flavors
 
 
 

@@ -173,6 +173,28 @@ div.messages {
 
   .footer-left.footer-right .at-panel .region.region-footer-third,
   .footer-right .at-panel .region.region-footer-third {float: right;}
+  
+  
+ /* MAKE IT POSSIBLE TO HAVE WIDGETS IN THE LEFT AND RIGHT HEADER REGIONS ONLY */ 
+.header-left.header-main.header-right .region-header-first,
+.header-left.header-main .region-header-first {margin-left:-100%;}
+
+.header-left.header-right .region-header-first {
+    margin-left: 0;
+}
+
+.header-left.header-right .region-header-third {
+	float:right !important;
+}
+
+.header-left .region-header-first {
+    margin-left: 0;
+}
+  
+.header-right .region-header-third {
+	float:right !important;
+}
+  
 /*
  * Branding
  */
@@ -585,7 +607,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 /* CTools MODAL OVERRIDES */
 
 #modalContent {
-  top: 0 !important;
+  top: 0;
   color: #666;
   position: fixed !important;
 }
@@ -730,6 +752,12 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     border-radius: 0;
     border:0;
 } 
+
+
+
+.ui-dialog.ui-front.media-wrapper {
+	z-index:500;
+}
  
  #media-browser-tabset .media-browser-tab {
     border: none;
@@ -768,7 +796,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 
 
 .field-name-og-vocabulary a.toggle {
-	background:url('../images/scholarbase-sprite.png') -12px -197px no-repeat;
+	background:url('../images/scholarbase-sprite.png') -12px -194px no-repeat;
 	padding: 1px 0 3px 14px
 }
 
@@ -907,10 +935,28 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.file-os-files-large, .file-os-files-xlarge, .file-os-files-xxlarge, .file-os-files-small, .file-os-files-medium {
+.file-os-files-large, 
+.file-os-files-xlarge, 
+.file-os-files-xxlarge, 
+.file-os-files-small, 
+.file-os-files-medium {
 	padding-right:10px;
 	}
 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-large, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xlarge, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xxlarge, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-small, 
+.lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-medium,
+span[style*="float: right;"] .file-os-files-large, 
+span[style*="float: right;"] .file-os-files-xlarge, 
+span[style*="float: right;"] .file-os-files-xxlarge, 
+span[style*="float: right;"] .file-os-files-small, 
+span[style*="float: right;"] .file-os-files-medium {
+	padding-left:10px;
+	padding-right:0;
+	}	
+	
 /**
  * "News" node-type styles.
  *
@@ -921,7 +967,7 @@ ul.recent-images-list li a:hover img {
  */
 
 
-.node-news.node-teaser .field-name-field-photo {
+.node-news .field-name-field-photo {
   float: left;
   margin: 0 1.5em .5em 0;
 }
@@ -941,6 +987,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 
 .block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
 .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person.article.modified-in-os_profiles_process_node .pic-bio,
 .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
  	float:left;
      margin-right: 10px;
@@ -948,8 +995,7 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 
 
 
-.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
-.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
 	display:block;
 	margin-left: 85px;
 }

@@ -26,13 +26,13 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  * Adds mobile menu controls to menubar.
  */
 function hwpi_basetheme_page_alter(&$page) {
-  $page['header_third']['#sorted'] = false;
-  $page['header_third']['mobile'] = array(
+  $page['header_second']['#sorted'] = false;
+  $page['header_second']['mobile'] = array(
     '#theme' => 'links',
     '#attributes' => array(
       'class' => array('mobile-buttons'),
     ),
-    '#weight' => -1000,
+    '#weight' => 5000,
     '#links' => array(
       'mobi-main' => array(
         'href' => '#',
@@ -49,7 +49,7 @@ function hwpi_basetheme_page_alter(&$page) {
         'external' => true,
         'html' => true,
         'attributes' => array(
-          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #block-os-custom-menu',
+          'data-target' => '#block-os-quick-links, #block-os-secondary-menu, #header .os-custom-menu',
         ),
       ),
       'mobi-search' => array(
@@ -82,11 +82,42 @@ function hwpi_basetheme_page_alter(&$page) {
  * Preprocess variables for comment.tpl.php
  */
 function hwpi_basetheme_preprocess_node(&$vars) {
-
   // Event persons, change title markup to h1
-  if ($vars['type'] == 'person') {
-    if (isset($vars['field_person_photo']) && !empty($vars['field_person_photo'])) {
-      $vars['classes_array'][] = 'with-person-photo';
+  if ($vars['type'] != 'person') {
+    return;
+  }
+
+  if (!empty($vars['field_person_photo'])) {
+    $vars['classes_array'][] = 'with-person-photo';
+  }
+  else {
+    // If node is in teaser view mode, load a default image. If node is displayed
+    // in "List of posts" widget or in full display mode, load a bigger default image.
+    if ($vars['view_mode'] == 'teaser') {
+      $path = variable_get('os_person_default_image', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image.png');
+      $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Default image.
+      $vars['content']['field_person_photo'][0] = array('#markup' => $image);
+    }
+    elseif ((!empty($vars['os_sv_list_box']) && $vars['os_sv_list_box']) || $vars['view_mode'] == 'full') {
+      $path = variable_get('os_person_default_image_big', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image-big.png');
+      $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Big image.
+      $vars['content']['pic_bio']['field_person_photo'][0] = array('#markup' => $image);
+
+      // If 'body' is empty make sure image is displayed.
+      if (empty($vars['body'])) {
+        $vars['content']['pic_bio']['#access'] = TRUE;
+      }
+    }
+    elseif ($vars['view_mode'] == 'sidebar_teaser') {
+      $path = variable_get('os_person_default_image', drupal_get_path('theme', 'hwpi_basetheme') . '/images/person-default-image.png');
+      $image = '<div class="field-name-field-person-photo">' . theme('image',  array('path' => $path)) . '</div>';
+      // Default image.
+      $vars['content']['pic_bio']['field_person_photo'][0] = array('#markup' => $image);
+
+      // Make sure image will be displayed.
+      $vars['content']['pic_bio']['#access'] = TRUE;
     }
   }
 }
@@ -103,7 +134,6 @@ function hwpi_basetheme_process_node(&$vars) {
     }
   }
 }
-
 
 /**
  * Alter the results of node_view().
@@ -349,10 +379,6 @@ function hwpi_basetheme_menu_link(array $vars) {
     }
   }
 
-  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
-    unset($element['#localized_options']['attributes']['title']);
-  }
-
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
 }
@@ -521,6 +547,12 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
 
   // only display the start time for this particular instance of a repeat event
   $entity->view = views_get_current_view();
+
+  // Don't remove the field date when exporting the calendar. This the unique
+  // identifier of Google calendar.
+  if ($entity->view->plugin_name == 'date_ical') {
+    return;
+  }
 
   if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
     $result = $entity->view->result[$entity->view->row_index];

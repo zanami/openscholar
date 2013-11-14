@@ -9,13 +9,13 @@ include_once 'os_slideshow.features.inc';
 /**
  * Implements hook_boxes_plugins().
  */
-function os_slideshow_boxes_plugins(){
+function os_slideshow_boxes_plugins() {
   $info = array();
   $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
 
   $info['os_slideshow_box'] = array(
-    'title' => 'HC Slideshow',
-    'description' => 'HC Slideshow',
+    'title' => 'Slideshow',
+    'description' => 'Slideshow',
     'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_slideshow_box',
@@ -26,6 +26,15 @@ function os_slideshow_boxes_plugins(){
   );
 
   return $info;
+}
+
+/**
+ * Implelements hook_boxes_plugins_alter
+ * 
+ * Removes deprecated gallery slideshow from the new widgets list
+ */
+function os_slideshow_boxes_plugins_alter(&$plugins) {
+  $plugins['os_boxes_slideshow']['factory'] = false;
 }
 
 /**
@@ -53,7 +62,8 @@ function os_slideshow_library() {
     'title' => 'ResponsiveSlides.js',
     'website' => 'https://github.com/viljamis/ResponsiveSlides.js',
     'version' => '1.53',
-    'js' => array(libraries_get_path('responsiveslides') . '/responsiveslides.js' => array(),), //not original verison.  patched by HappyCog!
+    // Not original version. patched by HappyCog!
+    'js' => array(libraries_get_path('responsiveslides') . '/responsiveslides.js' => array(),),
     //'css' => array(libraries_get_path('responsiveslides') . '/responsiveslides.css' => array('type' => 'file','media' => 'screen')),
   );
   return $libraries;
@@ -70,7 +80,8 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
   $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
   if (module_exists('spaces') && $space = spaces_get_space()) {
     $box = $space->controllers->boxes->get($widget);
-  } else {
+  }
+  else {
     $box = boxes_box_load($widget);
   }
 
@@ -79,23 +90,24 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
     $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
   }
 
-  //remove sticky.  pull published out of vertical tab
+  // Remove sticky. Pull published out of vertical tab.
   $form['options']['sticky']['#type'] = 'hidden';
-  unset($form['options']['#type']); //only one item, so no need for the fieldset
+  // Only one item, so no need for the fieldset.
+  unset($form['options']['#type']);
   unset($form['options']['#group']);
 
-  //hide additional settings except publishing options.
+  // Hide additional settings except publishing options.
   foreach ($form as $name => &$item) {
     if (is_array($item) && isset($item['#group']) && ($item['#group'] == 'additional_settings')) {
       $item['#type'] = 'hidden';
     }
   }
 
-  //hide title.  it will be automatically generated later.
+  // Hide title. it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
   
-  //remove preview, diff buttons
+  // Remove preview, diff buttons.
   foreach (array('preview', 'preview_changes') as $action) {
     if (isset($form['actions'][$action])) {
       unset($form['actions'][$action]);
@@ -113,7 +125,8 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
 function os_slideshow_imagefield_crop_instance_alter(&$instance, $context) {
   if (isset($context['form']) && $context['form']['#id'] == 'slideshow-slide-node-form') {
     $widget = $context['form']['widget']['#value'];
-  } elseif (isset($context['entity']) && isset($context['entity']->widget)) {
+  }
+  elseif (isset($context['entity']) && isset($context['entity']->widget)) {
     $widget = $context['entity']->widget;
   }
   
@@ -142,19 +155,22 @@ function os_slideshow_node_insert($node) {
   if (isset($node->widget)) {
     if (module_exists('spaces') && $space = spaces_get_space()) {
       $box = $space->controllers->boxes->get($node->widget);
-    } else {
+    }
+    else {
       $box = boxes_box_load($node->widget);
     }
 
-    //array reduce's anon function gets the highest weight of all the slides, so the newly inserted one can come last.
+    // Array reduce's anon function gets the highest weight of all the slides,
+    // so the newly inserted one can come last.
     $box->options['nodes'][(int)$node->nid] = array(
       'nid' => (int)$node->nid,
       'weight' => 1 + array_reduce($box->options['nodes'], create_function('$val, $next', 'return ($next["weight"]>$val) ? $next["weight"] : $val;'), 0),
-	);
+	  );
 
     if ($space) {
       $space->controllers->boxes->set($box->delta, $box);
-    } else {
+    }
+    else {
       $box->save();
     }
   }
@@ -173,10 +189,10 @@ function os_slideshow_node_presave($node) {
       return;      
     } 
 
-    //set a default title
+    // Set a default title.
     $node->title = isset($node->field_headline[$lang][0]) ? $node->field_headline[$lang][0]['value'] : $file->filename;
     
-    //add og_group_ref to attached slide
+    // Add og_group_ref to attached slide.
     if (empty($file->og_group_ref)) {
       $file->og_group_ref = $node->og_group_ref;
       file_save($file);
@@ -190,12 +206,12 @@ function os_slideshow_node_presave($node) {
  * Form #process function.  After form is saved, remove the nids that were deleted.
  */
 function os_slideshow_process_form_nodes($element, &$state, &$form) {
-  //bail out while the form is being built.
+  // Bail out while the form is being built.
   if (empty($state['input'])) {
     return $element;
   }
 
-  //only keep nodes that have been returned from the form
+  // Only keep nodes that have been returned from the form.
   $nodes_left = (isset($state['input']['nodes'])) ? array_keys($state['input']['nodes']) : array();
   foreach($form['options']['nodes_list']['#value'] as $nid) {
     if (!in_array($nid, $nodes_left)) {
@@ -240,7 +256,7 @@ function os_slideshow_image_default_styles() {
     'weight' => '1',
   );
 
-  //make a preset for each aspect ratio using each of the widths available
+  // Make a preset for each aspect ratio using each of the widths available.
   $widths = _os_slideshow_region_size(NULL, 'content');
   foreach (_os_slideshow_image_aspect_ratios() as $label => $ratio) {
     foreach ($widths as $w) {
@@ -260,7 +276,7 @@ function os_slideshow_image_default_styles() {
 }
 
 /**
- * Implements hook_theme
+ * Implements hook_theme(),
  */
 function os_slideshow_theme($existing, $type, $theme, $path) {
   return array(
@@ -276,7 +292,6 @@ function os_slideshow_theme($existing, $type, $theme, $path) {
         'layout' => NULL,
         'random' => FALSE,
       ),
-
     ),
     'os_slideshow_slide' => array(
       'template' => 'os_slideshow_slide',
@@ -319,33 +334,36 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_hook
+ * Implements hook_preprocess_hook().
  */
 function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
-  //load javascript, pass it our settings
+  // Load javascript, pass it our settings.
   drupal_add_library('os_slideshow', 'responsiveslides');
   drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_slider.js');
   $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
     array('boxes-box-'.$vars['box_delta'] => array(
-      'pager' => TRUE,    //pager
-      'nav' => TRUE,  //control buttons
-      'timeout' => intval($vars['timeout'] + $vars['speed']), //flex starts the timer after transition.  responsive starts it during.  adding them will let responsive look like flex did
+      'pager' => TRUE,
+      'nav' => TRUE,
+      // Flex starts the timer after transition. Responsive starts it during.
+      // Adding them will let responsive look like flex did.
+      'timeout' => intval($vars['timeout'] + $vars['speed']),
       'speed' => $vars['speed'],  
       'random' => $vars['random'],
-    )
+    ),
   ));
-  //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
+  // slideshowSpeed, animationSpeed, randomize, animation (fade or slide
+  // (horizontal or vertical)).
   drupal_add_js($settings, 'setting');
   _os_slideshow_add_css();
 
-  //prepare images.
+  // Prepare images.
   $nodes = $vars['nodes'];
   foreach ($nodes as $nid => $node) {
     $nodes[$nid]['#weight'] = $node['weight'];
   }
   uasort($nodes, 'element_sort');
 
-  //get slides - image with description
+  // Get slides - image with descriptionץ
   $nodes = node_load_multiple(array_keys($nodes));
   $vars['slides'] = array();
   $slide_vars = array('style_name' => _os_slideshow_get_style_name($vars['layout'], $vars['box_delta']));
@@ -353,12 +371,15 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
     if ($node->status) {
       $slide_vars['node'] = $node;
       $vars['slides'][] = theme('os_slideshow_slide', $slide_vars);
-    } else {
-      unset($nodes[$nid]); //controls should only know about published images so remove the unpublished ones
+    }
+    else {
+      // Controls should only know about published images so remove the
+      // unpublished ones
+      unset($nodes[$nid]);
     }
   }
 
-  //get controls
+  // Get controls.
   $control_vars = array('node_count' => count($nodes));
   $vars['controls'] = theme('os_slideshow_controls', $control_vars);
 }
@@ -381,15 +402,16 @@ function _os_slideshow_get_animation_direction($effect) {
 function _os_slideshow_get_style_name($layout, $delta) {
   $layouts = _os_slideshow_layouts();
   if (!isset($layouts[$layout])) {
-    $layout = current(array_keys($layouts)); //default to a ratio we've defined here.
+    $layout = current(array_keys($layouts));
   }
   $aspect_ratio = current(array_keys($layouts[$layout]['ratio']));
 
-  //figure out what region the slideshow is in and what other regions are active so we can determine how wide the slideshow can be
+  // Figure out what region the slideshow is in and what other regions are
+  // active so we can determine how wide the slideshow can be.
   $context_blocks = &drupal_static('context_reaction_block_list');
   $region = 'content_top';
   if(!$context_blocks){
-    //Populate $context_blocks
+    // Populate $context_blocks.
     $plugin = context_get_plugin('reaction', 'block');
     $plugin->block_list($region);
   }
@@ -401,7 +423,7 @@ function _os_slideshow_get_style_name($layout, $delta) {
     }
   }
 
-  //get valid image styles for this aspect ratio
+  // Get valid image styles for this aspect ratio.
   $sizes = array();
   foreach (os_slideshow_image_default_styles() as $style) {
     if (strpos($style['name'], 'os_slideshow_'.$aspect_ratio) === 0) {
@@ -409,7 +431,7 @@ function _os_slideshow_get_style_name($layout, $delta) {
     }
   }
 
-  //select the smallest style that's bigger than the current region.
+  // Select the smallest style that's bigger than the current region.
   ksort($sizes);
   $size = _os_slideshow_region_size($region);
   foreach ($sizes as $width => $name) {
@@ -433,11 +455,16 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
 
   $rows = array(
     'content' => array(
-      'main' => 'content_top',                                //this region
-      'sides' =>  array('sidebar_first', 'sidebar_second'),   //its sidebars
-      'solo_side_width' => 300,                               //widest sidebar when one sidebar is shown
-      'pair_side_width' => 250,                               //widest sidebar when both are shown
-      'min_side' => 160,                                      //thinnest possible sidebar
+      // This region.
+      'main' => 'content_top',
+      // Its sidebars.
+      'sides' =>  array('sidebar_first', 'sidebar_second'),
+      // Widest sidebar when one sidebar is shown.
+      'solo_side_width' => 300,
+      // Widest sidebar when both are shown.
+      'pair_side_width' => 250,
+      // Thinnest possible sidebar.
+      'min_side' => 160,
     ),
     'headers' => array(
       'main' => 'header_second',
@@ -454,8 +481,8 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       'min_side' => .25 * $full_width,
     )
   );
-  
-  //page content has extra regions
+
+  // Page content has extra regions.
   $rows['content_bottom'] = $rows['content'];
   $rows['content_bottom']['main'] = 'content_bottom';
 
@@ -465,16 +492,15 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
   $rows['content_first'] = $rows['content'];
   $rows['content_first']['main'] = 'content_first';
   
-  //default behavior
+  // Default behavior.
   if (!$get_row_widths) {
-
     $plugin = context_get_plugin('reaction', 'block');
     foreach($rows as $row) {
       if ($region != $row['main'] && !in_array($region, $row['sides'])) { 
         continue;
       }
 
-      //Count the number of active regions
+      // Count the number of active regions.
       $sides_count = 0;
       foreach ($row['sides'] as $side){
         if (count($plugin->block_list($side))) {
@@ -490,10 +516,11 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       }
     }
 
-    return $full_width; //just assume full and let the browser resize.
+    //just assume full and let the browser resize.
+    return $full_width;
   }
 
-  //or describe the possible widths of one of the rows
+  // Or describe the possible widths of one of the rows.
   if (isset($rows[$get_row_widths])) {
     $row = $rows[$get_row_widths];
     return array(
@@ -514,8 +541,8 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
  */
 function _os_slideshow_image_aspect_ratios() {
   return array(
-      '3:1' => 3/1,
-      '16:9' => 16/9,
+    '3:1' => 3/1,
+    '16:9' => 16/9,
   );
 }
 
@@ -544,7 +571,8 @@ function _os_slideshow_add_css() {
   $theme = os_get_themes(os_theme_get());
   if ($file = @$theme->info['os']['os_slideshow']) {
     drupal_add_css(drupal_get_path('theme', $theme->name)) . $file;
-  } else {
+  }
+  else {
     drupal_add_css(drupal_get_path('module', 'os_slideshow') . '/os_slideshow.css');
   }
 }

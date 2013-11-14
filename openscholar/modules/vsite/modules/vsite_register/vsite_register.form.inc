@@ -108,8 +108,28 @@ function vsite_register_form($form, &$state) {
       unset($enabled_presets[$key]);
     }
   }
-  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
+  // Sorts presets with Minimal as default, and others alphabetical.
+  if (count($enabled_presets) > 1) {
+    $unsorted_presets = $enabled_presets;
+    $enabled_presets = array();
+    $minimal_title = ucfirst($selected_bundle) . ' Minimal';
+    foreach ($unsorted_presets as $key => $value) {
+      // Only makes any order changes if a "Bundle Minimal" preset exists.
+      if ($value == $minimal_title) {
+        // Adds the minimal value as the first option.
+        $enabled_presets[$key] = t('Minimal');
+        unset($unsorted_presets[$key]);
+        // Sorts and adds the remaining preset options.
+        asort($unsorted_presets);
+        foreach ($unsorted_presets as $key => $value) {
+          $enabled_presets[$key] = $value;
+        }
+        break;
+      }
+    }
+  }
 
+  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
   $form['preset'] = array(
     '#prefix' => '<div id="preset-wrapper">',
     '#suffix' => '</div>',
@@ -263,11 +283,6 @@ function _vsite_register_user_form() {
     '#type' => 'password_confirm',
     '#size' => 35,
   );
-//  $form['notify'] = array(
-//    '#type' => 'checkbox',
-//    '#title' => t('Send email notification of this account.'),
-//  );
-
   return $form;
 }
 
@@ -279,7 +294,11 @@ function _vsite_register_user_form() {
 function vsite_register_form_submit(&$form, &$state) {
   ctools_include('user', 'os');
   ctools_include('vsite', 'vsite');
+  $values = &drupal_static('vsite_register_form_values');
   $values = $state['values'];
+
+  // The site has created on the behalf of a new user.
+  $new_user = FALSE;
 
   // If the specified user account already exists...
   if ($values['vicarious_user'] && $values['existing_username']) {
@@ -297,6 +316,10 @@ function vsite_register_form_submit(&$form, &$state) {
       'field_last_name' => $values['last_name'],
     );
     $site_owner = os_user_create($user_options);
+
+    // We created a new user. After creating the vsite we'll grant him the vsite
+    // admin role.
+    $new_user = TRUE;
 
     // Send out an email to notify the user of the newly created account.
     // Email only sent if user requested to be notified of new account.
@@ -326,10 +349,14 @@ function vsite_register_form_submit(&$form, &$state) {
   $visibility = isset($values['vsite_private']) ? $values['vsite_private'] : FALSE;
   $vsite = vsite_create_vsite($name, $purl, $author, $bundle, $preset, $parent, $visibility);
   if ($vsite) {
-
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace('#submit-suffix', $message);
     $commands[] = ajax_command_remove('#edit-submit');
+
+    // Grant the proper roles to the user.
+    if ($new_user) {
+      os_role_grant($site_owner->uid, 'vsite admin', $vsite->nid);
+    }
 
     // If we have gotten to this point, then the vsite registration was success.
     // Clears the errors.
@@ -550,6 +577,17 @@ function _vsite_register_validate($element, &$values) {
         else {
           $msg[] = t('The password field is required.');
         }
+        
+        if (module_exists('password_policy')) {
+          //borrowed from `password_policy_user_profile_form_validate()`
+          $account = user_load(0);
+          $policies = PasswordPolicy::matched_policies($account);
+          $errors = array();
+          foreach ($policies as $policy) {
+            $errors = $errors + $policy->check($pass1, $account);
+          }
+          $msg = array_merge($msg, $errors);
+        }
       }
 
       // If an existing user is selected...
@@ -730,9 +768,9 @@ function _vsite_register_mail_replacements($vsite, $author, $key) {
   // Initialize replacements array with values common to both mail keys.
   $replacements = array(
     '!username' => $author->name,
-    '!site_login_uri' => url($base_url . '/' . $vsite->group->title . '/home', array('absolute' => TRUE)),
+    '!site_login_uri' => url($base_url . '/' . $vsite->group->purl . '/user/login', array('absolute' => TRUE, 'query' => array('destination' => $vsite->group->purl))),
     '!user_mail' => $author->mail,
-    '!site_url' => url($base_url . '/' . $vsite->group->title, array('absolute' => TRUE)),
+    '!site_url' => url($base_url . '/' . $vsite->group->purl, array('absolute' => TRUE)),
     '!sitewide_name' => variable_get('site_name', 'OpenScholar'),
   );
 

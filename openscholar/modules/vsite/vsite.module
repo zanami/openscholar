@@ -20,9 +20,9 @@ define('VSITE_PER_USER_DEFAULT', 1);
 /**
  * Returns the current vsite (space).
  */
-function vsite_get_vsite($sid = FALSE){
+function vsite_get_vsite($sid = FALSE, $reset = FALSE){
   if ($sid && intval($sid)) {
-    $vsite = spaces_load('og', $sid, FALSE);
+    $vsite = spaces_load('og', $sid, $reset);
   }
   else {
     $vsite = spaces_get_space();
@@ -36,6 +36,82 @@ function vsite_get_vsite($sid = FALSE){
 }
 
 /**
+ * Implementation of hook_default_og_membership_type().
+ */
+function vsite_default_og_membership_type() {
+  $items = array();
+  $items['support_expire'] = entity_import('og_membership_type', '{
+    "name" : "support_expire",
+    "description" : "Support team expirable membership",
+    "rdf_mapping" : []
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_og_user_access_alter().
+ *
+ * Allow "support team" members to subscribe without approval to groups.
+ */
+function vsite_og_user_access_alter(&$perm, $context) {
+  $account = $context['account'];
+  if (og_is_member($context['group_type'], $context['group'], 'user', $account)) {
+    // User is already a member of the group.
+    return;
+  }
+
+  if (!user_access('subscribe as support team')) {
+    // Not a support team user.
+    return;
+  }
+
+  // Grant permission to subscribe without approval.
+  $perm['subscribe without approval'] = TRUE;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Get up to 10 group memberships that should be expired, and set their status
+ * to pending.
+ */
+function vsite_cron() {
+  $date = variable_get('vsite_support_expire', '3 days');
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'og_membership')
+    ->entityCondition('bundle', 'support_expire')
+    ->propertyCondition('state', OG_STATE_ACTIVE)
+    ->propertyCondition('created', strtotime('-' . $date), '<')
+    ->range(0, 10)
+    ->execute();
+
+  if (empty($result['og_membership'])) {
+    return;
+  }
+  foreach (og_membership_load_multiple(array_keys($result['og_membership'])) as $og_membership) {
+    // Remove the user from the group.
+    og_ungroup($og_membership->group_type ,$og_membership->gid, $og_membership->entity_type, $og_membership->etid);
+  }
+}
+
+/**
+ * Implements hook_og_membership_insert().
+ *
+ * Make the "support team" and admin member of the group.
+ */
+function vsite_og_membership_insert(OgMembership $og_membership) {
+  if ($og_membership->entity_type != 'user' || $og_membership->type != 'support_expire') {
+    // Not a "support team" membership.
+    return;
+  }
+
+  $og_role = og_roles($og_membership->group_type, NULL, $og_membership->gid);
+  $rid = array_search('vsite admin', $og_role);
+  og_role_grant($og_membership->group_type, $og_membership->gid, $og_membership->etid, $rid);
+}
+
+/**
  * Returns the current purl prefix, or empty string if none found.
  *
  * @param object $vsite
@@ -46,6 +122,44 @@ function vsite_get_purl($vsite = FALSE){
   }
 
   return ! empty($vsite->group) ? $vsite->group->purl : '';
+}
+
+/**
+ * Implements hook_library_alter().
+ */
+function vsite_library_alter(&$libraries, $module) {
+  if ($module != 'overlay') {
+    return;
+  }
+
+  $path = drupal_get_path('module', 'vsite') . '/js/overlay-parent.js';
+  $libraries['parent']['js'][$path] = array();
+}
+
+
+/**
+ * Implements hook_js_alter().
+ *
+ * Prefix Overlay's Ajax callback with our PURL.
+ */
+function vsite_js_alter(&$javascript) {
+  if (!module_exists('overlay') || empty($javascript['settings']['data'])) {
+    // No overlay, or no javascript settings.
+    return;
+  }
+
+  if (!$vsite = vsite_get_vsite()) {
+    // No VSite context.
+    return;
+  }
+
+  foreach ($javascript['settings']['data'] as $key => $value) {
+    if (!empty($value['overlay']['ajaxCallback'])) {
+      // PURLify the ajax callback URL.
+      $value['overlay']['ajaxCallback'] = url($value['overlay']['ajaxCallback'], array('absolute' => TRUE));
+      $javascript['settings']['data'][$key] = $value;
+    }
+  }
 }
 
 /**
@@ -72,7 +186,17 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
  */
 function vsite_node_form_after_build($form) {
   if (!module_exists('vsite_domain')) {
-    return;
+    return $form;
+  }
+  // Only continues if we have a node object.
+  if (!isset($form['#node'])) {
+    return $form;
+  }
+  // Only continues to modify the node form for group content, not group types.
+  // We don't want to modify alias values on vsite nodes.
+  $node = $form['#node'];
+  if (!og_is_group_content_type('node', $node->type) || og_is_group_type('node', $node->type)) {
+    return $form;
   }
   // Prepares a field prefix to store this site's path.
   $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
@@ -202,14 +326,22 @@ function vsite_form_os_settings_form_alter(&$form, &$form_state, $form_id){
   }
 
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
-  $form['subsite_parents'] = array(
+
+  $form['vsite'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Virtual sites'),
+    '#weight' => 0,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['vsite']['subsite_parents'] = array(
     '#type' => 'checkboxes',
     '#options' => drupal_map_assoc($group_types),
     '#title' => t('Parent Sites'),
     '#default_value' => $subsite_parents,
   );
 
-  $form['subsite_bundles'] = array(
+  $form['vsite']['subsite_bundles'] = array(
     '#type' => 'checkboxes',
     '#options' => drupal_map_assoc($group_types),
     '#title' => t('Subsite Bundles'),
@@ -271,7 +403,7 @@ function vsite_spaces_presets_alter(&$presets) {
   // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ($presets as $name => &$preset) {
-    if (substr($name, 0, 3) == "os_") {
+    if (in_array($name, variable_get('os_enabled_spaces_presets',array()))) {
       $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
     }
   }
@@ -426,7 +558,7 @@ function _vsite_user_access_create_vsite($vsites = FALSE){
   }
 
   // Returns FALSE if user does not have permission to create vsites at all.
-  if (! user_access('create vsite content on behalf') && ! $user_access_create_vsite) {
+  if (!user_access('create vsite content on behalf') && ! $user_access_create_vsite) {
     return FALSE;
   }
 
@@ -456,6 +588,10 @@ function vsite_permission(){
     'create subsites' => array(
       'title' => t('Create Subsites'),
       'description' => t('Create sites that belong to another site.')
+    ),
+    'subscribe as support team' => array(
+      'title' => t('Subscribe as support team'),
+      'description' => t('Allow users to subscribe as a supporter.')
     )
   );
 }
@@ -492,7 +628,6 @@ function vsite_vsite_og_node_type_info(){
     'department' => 'group'
   );
 }
-
 /**
  * Returns whether bundle is a group or is group content.
  *
@@ -500,8 +635,8 @@ function vsite_vsite_og_node_type_info(){
  *    The node type bundle.
  *
  *  @return
- *    group/group content. If $bundle is empty, all the node types info will be
- *    returned.
+ *    group/group content.
+ *  If $bundle is empty, all the node types info will be returned.
  */
 function vsite_get_type_from_bundle($bundle = NULL){
   $info = module_invoke_all('vsite_og_node_type_info');
@@ -896,6 +1031,86 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
+
+  // Ensures that "field_subsite_domains" field is created.
+  if (!field_info_field('field_subsite_domains')) {
+    $field = array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_subsite_domains',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+        'type' => 'text',
+    );
+    $field = field_create_field($field);
+  }
+
+  if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
+    $instance = array(
+      'bundle' => $bundle,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Domain(s) entered here will be available to your subsites.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '6',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_subsite_domains',
+      'label' => 'Subsite Domains',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => '60',
+      ),
+      'type' => 'text_textfield',
+      'weight' => '34',
+      ),
+    );
+    field_create_instance($instance);
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
@@ -990,6 +1205,20 @@ function vsite_attach_fields_to_subsite($bundle){
     );
     field_create_instance($instance);
   }
+}
+
+/**
+ * Implements hook_field_access().
+ *
+ * Deny access to "vsite_support_expire", thus allow subscribing as supoprt team
+ * only to people with the site-wide permission.
+ */
+function vsite_field_access($op, $field, $entity_type, $entity, $account) {
+  if ($field['field_name'] != 'vsite_support_expire') {
+    return;
+  }
+
+  return user_access('subscribe as support team', $account);
 }
 
 /**
@@ -1438,6 +1667,7 @@ function vsite_node_insert($node){
   if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
     ctools_include('subsite','vsite');
     vsite_get_subsites(FALSE,TRUE);
+    vsite_inherit($node);
   }
 
   if (og_is_group_type('node', $node->type)) {
@@ -1921,18 +2151,6 @@ function vsite_user_autocomplete($string = '') {
 }
 
 /**
- * Implements hook_og_tasks_info().
- */
-function vsite_og_tasks_info($entity_type, $entity) {
-  $tasks = array();
-
-//   $tasks['AboutSection'] = new vsiteTaskAboutSection($entity_type, $entity);
-//   $tasks['NewsEventsSection'] = new vsiteTaskNewsEventsSection($entity_type, $entity);
-
-  return $tasks;
-}
-
-/**
  * Alter metadata for entity properties for use with entity module.
  *
  * Expose group entity properties to the entityAPI module.
@@ -1958,7 +2176,7 @@ function vsite_entity_property_info_alter(&$info) {
     $properties['purl'] = array(
       'label' => t("vsite PURL"),
       'description' => t("The purl for a vsite."),
-      'type' => NULL,
+      'type' => 'text',
       'getter callback' => 'entity_metadata_node_get_properties',
       'setter callback' => 'entity_property_verbatim_set',
     );
@@ -2018,4 +2236,90 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
   }
 
   return $build;
+}
+
+/**
+ * Implements hook_pathauto_alias_alter().
+ */
+function vsite_pathauto_alias_alter(&$alias, $context) {
+  // Only continues if we are outside of a vsite.
+  if ($vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  // Only continues if we have a valid group content and alias to modify.
+  $node = $context['data']['node'];
+  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
+    return;
+  }
+  if (og_is_group_type('node', $node->type)) {
+    return;
+  }
+  if (empty($alias)) {
+    return;
+  }
+
+  // Only continues if we can get a vsite group ID.
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+  $gid = isset($gids[0]) ? $gids[0] : NULL;
+  if ($gid === NULL) {
+    return;
+  }
+
+  // Only continues if we can get a non-empty purl value from the vsite.
+  // Note: We don't need to set $reset = TRUE here because it was already reset.
+  // @see vsite_add_node()
+  $vsite = vsite_get_vsite($gid);
+  $purl = vsite_get_purl($vsite);
+
+  // Only continues if we were able to find a purl value.
+  if (empty($purl)) {
+    return;
+  }
+
+  // Only continues if the purl isn't yet present as a prefix.
+  $purl_present = (bool) (strpos($alias, "$purl/") === 0);
+  if ($purl_present) {
+    return;
+  }
+
+  // Prefixes the alias with the purl.
+  // Note: This occurs BEFORE pathauto_alias_uniquify().
+  $alias = "$purl/$alias";
+}
+
+/**
+ * Implements hook_cp_settings().
+ */
+function vsite_cp_settings() {
+  $vsite = vsite_get_vsite();
+  if (!$vsite || !isset($vsite->group->type)) {
+    return;
+  }
+  $default = array('department');
+  $subsite_parents = variable_get('subsite_parents', $default);
+  if (!in_array($vsite->group->type, $subsite_parents)) {
+    return;
+  }
+
+  $settings = array();
+
+  $default = 0;
+  $inherit_theme = variable_get('vsite_subsite_inherit_theme', $default);
+  $settings['vsite_subsite_inherit_theme'] = array(
+    'form' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Inherit parent site theme'),
+      '#default_value' => $inherit_theme,
+      '#description' => t('Check to have newly created subsites start with this site\'s currently enabled theme by default.'),
+    ),
+    'group' => array(
+      '#id' => 'vsite_subsite',
+      '#title' => t('Subsites'),
+      '#weight' => -100,
+    ),
+  );
+
+  return $settings;
 }

@@ -10,6 +10,16 @@
     attach: function (ctx) {
       if ($('.mobile-buttons', ctx).length == 0) return;
 
+      $('.mobile-buttons a[data-target]').each(function () {
+          var $this = $(this),
+              $pop = $($this.attr('data-target'));
+
+          if ($pop.length == 0) {
+            $this.remove();
+          }
+        }
+      )
+
       $('.mobile-buttons a[data-target]').click(function (e) {
           var $this = $(this),
               $pop = $($this.attr('data-target'));

@@ -22,6 +22,12 @@ function os_news_os_app_info() {
     'views tabs' => array(
       'os_news' => array('page'),
     ),
+    'importers' => array(
+      'news' => array(
+        'csv' => 'os_news',
+        'rss' => 'feed_importer',
+      ),
+    ),
   );
 
   return $apps;
@@ -78,7 +84,6 @@ function os_news_process_node(&$vars) {
       'data' => drupal_get_path('module', 'os_news') . '/os_news.css',
     ),
   );
-
 }
 
 /**
@@ -88,6 +93,18 @@ function os_news_vsite_og_node_type_info() {
   return array(
     'news' => 'group content',
   );
+}
+
+/**
+ * Implements hook_field_access().
+ *
+ * Restrict access to the redirect field on the news node.
+ */
+function os_news_field_access($op, $field, $entity_type, $entity, $account) {
+  if (!empty($entity) && $field['field_name'] == 'field_url' && $entity_type == 'node' && $entity->type == 'news' && $op == 'edit') {
+    return user_access('bypass redirection', $account);
+  }
+  return TRUE;
 }
 
 /**

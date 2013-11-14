@@ -189,13 +189,13 @@ function os_books_node_view($node, $view_mode) {
       }
 
       // Printed links.
-      if (user_access('access printer-friendly version')) {
+      if (user_access('access print version')) {
         $book_links = &$node->content['links']['book']['#links'];  // because I'm lazy
         $book_links['book_printer_full'] = array(
-          'title' => t('Printer-friendly version'),
+          'title' => t('Print'),
           'href' => 'book/export/html/' . $node->book['bid'],
           'attributes' => array(
-            'title' => t('Show a printer-friendly version of this book.'),
+            'title' => t('Show a print version of this book.'),
             'class' => array('book_printer')
           )
         );

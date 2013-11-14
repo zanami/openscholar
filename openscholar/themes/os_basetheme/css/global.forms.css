@@ -57,9 +57,12 @@ textarea:focus {
   margin: 0; /* Drupal core uses "0.4em 0" */
 }
 
-/*.form-submit  The submit button  {
-	margin-right:10px;
-}*/
+.form-cancel {
+}
+
+/*.form-submit  The submit button  {*/
+	/*margin-right:10px;*/
+/*}*/
 
 .container-inline div,
 .container-inline label /* Inline labels and form divs */ {

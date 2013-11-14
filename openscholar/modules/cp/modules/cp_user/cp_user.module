@@ -129,6 +129,9 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
     ) . '</div>',
     '#weight' => 2,
   );
+
+  $field_names = og_get_group_audience_fields('user', 'user');
+
   // Attach the custom js file to control the toggle of the two forms.
   $form['og_user']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_user') . '/cp_user.js'));
 
@@ -138,7 +141,7 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   );
   $form['og_user']['field_name'] = array(
     '#type' => 'value',
-    '#value' => 'og_user_node',
+    '#value' => key($field_names),
   );
 
   // Hide the option to select a user role for now.
