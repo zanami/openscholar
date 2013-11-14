@@ -262,6 +262,7 @@ class os_sv_list extends os_boxes_default {
     $info = entity_get_info($this->entity_type);
     if (isset($info['view modes'][$this->options['display']])) {
       $entities = entity_load($this->entity_type, $ids);
+      $this->_plugins_invoke('entities_alter', $entities);
       $render = entity_view($this->entity_type, $entities, $this->options['display']);
       $content = drupal_render($render);      
     } else {
