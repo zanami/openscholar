@@ -1,7 +1,7 @@
 Feature:
   Testing the event registration module.
 
-  @api
+  @api @wip
   Scenario: Limit the registration capacity to 1 and verify it for a normal user.
     Given I am logging in as "john"
       And I turn on event registration on "Halley's Comet"
@@ -15,7 +15,7 @@ Feature:
       And I should not see "Sign up for Halley's Comet"
      Then I delete "john" registration
 
-  @api
+  @api @wip
   Scenario: Limit the registration capacity to 2 and verify it for a normal user.
     Given I am logging in as "john"
      When I visit "john/event/halleys-comet"
