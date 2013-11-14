@@ -736,7 +736,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
-  
+
   // After deleting a node, we need to redirect the user to the app path.
   // i.e. if the user deleted a node people object, they need to return to
   // /people
