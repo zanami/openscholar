@@ -1649,43 +1649,61 @@ function os_views_query_alter(&$view, &$query) {
  */
 function os_field_default_fields_alter(&$fields) {
   if (!is_array($fields) || variable_get('file_default_scheme', 'public') != 'private'){
+    // No fields to alter or default scheme is public.
     return;
   }
 
+  // Run through fields to make all file fields use private files.
   foreach ($fields as $id => $config) {
     if (!isset($config['field_config']) || !in_array($config['field_config']['type'], array('file','imagefield_crop','image'))) {
+      // Not file field.
       continue;
     }
+
+    // Get the field's machine name.
+    $field_name = $config['field_config']['field_name'];
+
+    if (!$field = field_info_field($field_name)) {
+      // Field does not exist yet, we cannot update it using the functions
+      // field_update_field() and field_update_instance().
+      continue;
+    }
+
     // Change the field to use private files instead of public.
     $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
+    // Save changes in field.
+    field_update_field($fields[$id]['field_config']);
 
-    // Change the media widget to use private files instead of public.
-    if ($config['field_instance']['widget']['module'] == 'media' && isset($config['field_instance']['widget']['settings']['allowed_schemes']['public'])) {
-      unset($fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['public']);
-      $fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
+    // Media widget fields require more configuration - changing field settings
+    // is not enough, the instance settings must be altered too.
 
-      $field_name = $config['field_config']['field_name'];
-      if ($field = field_info_field($field_name)) {
-        // Run through all instances of this field and make sure that its
-        // "allowed schemes" include private instead of "public".
-        foreach ($field['bundles'] as $entity_type => $bundles) {
-          foreach ($bundles as $bundle) {
-            $instance = field_info_instance($entity_type, $field_name, $bundle);
-            if (!$instance) {
-              // No field instance.
-              continue;
-            }
+    if ($config['field_instance']['widget']['module'] != 'media') {
+      // Not media widget field.
+      continue;
+    }
 
-            if (!empty($instance['widget']['settings']['allowed_schemes']['private'])) {
-              // Already changed from public to private.
-              continue;
-            }
-
-            unset($instance['widget']['settings']['allowed_schemes']['public']);
-            $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
-            field_update_instance($instance);
-          }
+    // Run through all instances of this field and make sure that its
+    // "allowed schemes" include "private" instead of "public".
+    foreach ($field['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        // Get field instance.
+        $instance = field_info_instance($entity_type, $field_name, $bundle);
+        if (!$instance) {
+          // No field instance.
+          continue;
         }
+
+        if (!empty($instance['widget']['settings']['allowed_schemes']['private']) && empty($instance['widget']['settings']['allowed_schemes']['public'])) {
+          // Already changed from public to private.
+          continue;
+        }
+
+        // Do not allow public files.
+        unset($instance['widget']['settings']['allowed_schemes']['public']);
+        // Allow private files.
+        $instance['widget']['settings']['allowed_schemes']['private'] = 'private';
+        // Save changes in instance.
+        field_update_instance($instance);
       }
     }
   }
