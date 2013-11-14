@@ -1365,6 +1365,19 @@ function os_files_views_data_alter(&$data){
   );
 }
 
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_files_os_entity_view_modes() {
+  return array('file' => array(
+    'image' => array('teaser', 'full', 'preview'),
+    'video' => array('teaser', 'full', 'preview'),
+    'audio' => array('teaser', 'full', 'preview'),
+    'document' => array('teaser', 'full', 'preview'),
+  ));
+}
+
+
 function os_files_file_default_types() {
   $types = array();
 

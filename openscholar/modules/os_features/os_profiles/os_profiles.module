@@ -28,6 +28,16 @@ function os_profiles_os_app_info() {
 }
 
 /**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_profiles_os_entity_view_modes() {
+  return array('node' => array(
+    'person' => array('sidebar_teaser')
+  ));
+}
+
+
+/**
  * Implements hook_process_hook() for node.
  *
  * Enter description here...

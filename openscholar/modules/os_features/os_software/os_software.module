@@ -376,4 +376,3 @@ function _os_software_packaging_method_options() {
 function _os_software_form_redirect($form, &$form_state) {
   $form_state['redirect'] = 'software';
 }
-
