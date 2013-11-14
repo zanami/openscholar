@@ -1673,11 +1673,6 @@ function os_field_default_fields_alter(&$fields) {
       continue;
     }
 
-    // Do not allow public scheme.
-//    unset($fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['public']);
-//    // Allow private scheme.
-//    $fields[$id]['field_instance']['widget']['settings']['allowed_schemes']['private'] = 'private';
-
     // Get the media field machine name.
     $field_name = $config['field_config']['field_name'];
 
