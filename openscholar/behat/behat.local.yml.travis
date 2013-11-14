@@ -12,6 +12,8 @@ default:
           'clinton'
         alexander:
           'bell'
+        demo:
+          'demo'
       # the node ID of the group
       vsite:
         2

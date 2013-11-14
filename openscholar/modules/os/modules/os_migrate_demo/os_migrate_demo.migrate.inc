@@ -681,6 +681,7 @@ class OsMigrateBlogNode extends OsMigrate {
     array(OG_AUDIENCE_FIELD, 'Site'),
     array(OG_VOCAB_FIELD, 'Terms'),
     array('uid', 'UID'),
+    array('status','Status'),
   );
 
   public $dependencies = array(
@@ -701,6 +702,9 @@ class OsMigrateBlogNode extends OsMigrate {
 
     $this->addFieldMapping('uid', 'uid')
       ->sourceMigration('OsMigrateUsers');
+
+    $this->addFieldMapping('status', 'status')
+      ->defaultValue(NODE_PUBLISHED);
   }
 
   public function prepare($entity, $row) {
