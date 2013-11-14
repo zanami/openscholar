@@ -390,6 +390,7 @@ function vsite_node_access($node, $op, $account) {
     return NODE_ACCESS_IGNORE;
   }
 
+  // @todo: Just remove from the permissions list?
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   if (in_array($node,  $group_types)) {
     // Deny direct access to creating groups.
