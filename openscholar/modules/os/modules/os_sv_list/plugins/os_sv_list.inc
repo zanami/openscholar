@@ -57,9 +57,7 @@ class os_sv_list extends os_boxes_default {
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
   
     $form['#submit'] = array('os_sv_list_form_submit');
- 
 
-  
     $form['content_type'] = array(
       '#type' => 'select',
       '#title' => t('Content Type'),
@@ -69,6 +67,7 @@ class os_sv_list extends os_boxes_default {
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
+          array('type' => 'setting', 'data' => array('entity_view_modes' => $this->entity_view_modes())),
         ),
       ),
       '#ajax' => array(
@@ -85,7 +84,7 @@ class os_sv_list extends os_boxes_default {
       // Subsite content can only show titles, so hide this element when subsites are active
       '#states' => array(
         'visible' => array(// action to take.
-        ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
+          ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
         ),
       ),
     );
@@ -361,6 +360,18 @@ class os_sv_list extends os_boxes_default {
     return (isset($ret)) ? $ret : array();
   }
   
+  /**
+   * @function entity_view_modes
+   * 
+   * Wrapper for os_entity_view_modes.  Also derives common view modes
+   * available to all content types.
+   */
+  private function entity_view_modes() {
+    $modes = os_entity_view_modes($this->entity_type);
+    $all = array_reduce($modes, 'array_intersect', current($modes)); //starting with an empty array means we'll get an empty back.
+    $modes['all'] = array_values($all);  
+    return $modes;
+  }
     
   protected function _display_options() {
     //list all the available view modes for this entity

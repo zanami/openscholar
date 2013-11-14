@@ -11,8 +11,8 @@
         var sortby = $('#edit-sort-by');
         var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha', 'sort_random' ];
 
-        var display_style = $('#edit-display');
-        var display_whitelist = [ 'display_title', 'display_teaser', 'display_body' ];
+        var $display_style = $('#edit-display');
+        //var display_whitelist = [ 'display_title', 'display_teaser', 'display_body' ];
 
         var content_type = $('#os_sv_list_content_type').val();
         var selected_sort = 'sort_' + content_type;
@@ -40,20 +40,14 @@
         });
 
         //apply content_type appropriate sorts when ct changes
-//        display_style.children('option').each(function() {
-//          this_display = $(this).attr('value');
-//          if ($.inArray(this_display, display_whitelist) == -1) {
-//
-//            // show/hide appropriate options
-//            remove = ($.inArray(content_type, Drupal.settings.os_sv_list.has_display[this_display]) == -1);
-//            $(this).attr('hidden', remove).attr('disabled',remove);
-//
-//            // deselect invalidated option if its currently selected
-//            if (remove && $(this).parent().find(':selected').val() == this_display) {
-//              $(this).parent().attr('value', display_whitelist[0]);
-//            }
-//          }
-//        });
+        $display_style.children('option').each(function() {
+          var this_display = $(this).attr('value');
+          var hide = ($.inArray(this_display, Drupal.settings.entity_view_modes[content_type]) == -1)
+          $(this).attr('hidden', hide).attr('disabled', hide);
+        });
+        
+        //uncheck if selected option is no longer valid.
+        $display_style.children('option:checked:hidden').attr('selected', false);
 
         // swap out the more link url.
         more_link.val(defaults[content_type]);
