@@ -191,6 +191,23 @@ function _os_files_private_fid_from_uri($uri) {
 }
 
 /**
+ * Implements hook_().
+ *
+ * All files within a vsite must have OG_AUDIENCE_FIELD set to the vsite.
+ */
+function os_files_private_file_presave($file) {
+  if (!$vsite = vsite_get_vsite()) {
+    // Might be AJAX request, try og_
+    $og_context = og_context();
+
+    if (empty($og_context['gid'])) {
+      // No VSite.
+      return;
+    }
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function os_files_private_form_file_entity_delete_form_alter(&$form, $form_state) {

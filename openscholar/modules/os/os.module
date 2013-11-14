@@ -1660,10 +1660,15 @@ function os_field_default_fields_alter(&$fields) {
       continue;
     }
 
+    // Get the field's machine name.
+    $field_name = $config['field_config']['field_name'];
+
     // Change the field to use private files instead of public.
     $fields[$id]['field_config']['settings']['uri_scheme'] = 'private';
-    // Save changes in field.
-    field_update_field($fields[$id]['field_config']);
+    if ($field = field_info_field($field_name)) {
+      // Save changes in field.
+      field_update_field($fields[$id]['field_config']);
+    }
 
     // Media widget fields require more configuration - changing field settings
     // is not enough, the instance settings must be altered too.
@@ -1672,9 +1677,6 @@ function os_field_default_fields_alter(&$fields) {
       // Not media widget field.
       continue;
     }
-
-    // Get the media field machine name.
-    $field_name = $config['field_config']['field_name'];
 
     if ($field = field_info_field($field_name)) {
       // Run through all instances of this field and make sure that its
