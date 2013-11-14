@@ -116,69 +116,67 @@ class os_sv_list extends os_boxes_default {
       '#type' => 'checkbox',
       '#default_value' => $this->options['more'],
     );
-  /*
-  //populate list of content types => paths
-  ctools_include('os', 'os');
+  
+    
+    //more link.  still needs some refactoring love.
+    //populate list of content types => paths
+    ctools_include('os', 'os');
+    $content_types = array('all' => t('All')) + os_get_bundles(array(1));
+    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type']; //wtf
+    
     $content_map = os_get_app_path();
-  $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
-  if (isset($content_types['image'])) {
-  $content_map['image'] = $content_map['media_gallery'];
-  }
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
+    if (isset($content_types['image'])) {
+      $content_map['image'] = $content_map['media_gallery'];
+    }
   
-  // Use blank path for unknown paths.
-  $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
+    // Use blank path for unknown paths.
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
+    
+    if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
+      $default_value = $content_map[$content_types_value];
+    } else {
+      $default_value = $this->options['more_link'];
+    }
   
-  if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
-    $default_value = $content_map[$content_types_value];
-  }
-  else {
-  $default_value = $this->options['more_link'];
-  }
-  
-  if (!empty($form_state['values']['more_link'])) {
-  // Unset the values from the text field, as otherwise FAPI will add
-  // it to the #value of the form-element.
-  // @see http://drupal.org/node/1024962#comment-4021826
-      unset($form_state['input']['more_link']);
-  }
-  
-  $form['query_details']['more_link'] = array(
-    '#title' => t('URL for the more link'),
-        '#type' => 'textfield',
-        '#default_value' => $default_value,
+    if (!empty($form_state['values']['more_link'])) {
+    // Unset the values from the text field, as otherwise FAPI will add
+    // it to the #value of the form-element.
+    // @see http://drupal.org/node/1024962#comment-4021826
+        unset($form_state['input']['more_link']);
+    }
+    
+    $form['query_details']['more_link'] = array(
+      '#title' => t('URL for the more link'),
+      '#type' => 'textfield',
+      '#default_value' => $default_value,
       '#states' => array(
         'visible' => array('input[name=more]' => array('checked' => TRUE)),
-    'invisible'  => array('input[name=more]' => array('checked' => FALSE)),
-  ),
-  '#prefix' => '<div id="more_link_div">',
-  '#suffix' => '</div>',
+        'invisible'  => array('input[name=more]' => array('checked' => FALSE)),
+      ),
+      '#prefix' => '<div id="more_link_div">',
+      '#suffix' => '</div>',
       '#attached' => array(
-          'js' => array(
-            array(
-                'data' => array(
-                  'more_link_defaults' => $content_map,
-                      ),
-                          'type' => 'setting',
-                              )
-                                  )
-  )
-  );
-  
-  $form['query_details']['more_text'] = array(
-    '#title' => 'Label of the more link (default: "more")',
-    '#type' => 'textfield',
-    '#default_value' => $this->options['more_text'],
+        'js' => array(
+          array('data' => array('more_link_defaults' => $content_map,),'type' => 'setting',)
+        )
+      )
+    );
+    
+    $form['query_details']['more_text'] = array(
+      '#title' => 'Label of the more link (default: "more")',
+      '#type' => 'textfield',
+      '#default_value' => $this->options['more_text'],
         '#states' => array(
           'visible' => array('input[name=more]' => array('checked' => TRUE)),
-    ),
-  );
-  */
+        ),
+    );
+    
     $form['pager'] = array(
       '#title' => 'Show pager',
       '#type' => 'checkbox',
       '#default_value' => $this->options['pager'],
     );
-  
   
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
@@ -228,27 +226,37 @@ class os_sv_list extends os_boxes_default {
     $this->options += $this->options_defaults();
     $page_num = (isset($_GET['page'])) ? $_GET['page'] : 0;
     $page = 0;
-    
     $ids = $this->get_ids($page_num, $page);
-    $ids = array_slice($ids, 0, 5); //filters aren't in place yet, so load a sane amount of entities
-    $more_link = FALSE;
-    
+   
+    //add the pager
     if ($this->options['pager'] && $ids) {
-      // theme_pager();
       $parameters = array(
         'sv_list_box_delta' => $this->delta,
-        'pager_id' => $page,
+        'pager_id' => $this->pager_element,
         'destination' => $_GET['q'],
       );
       $use_pager = 'views_mini_pager';
       $pager = theme($use_pager , array(
         'parameters' => $parameters,
-        'element' => $page,
+        'element' => $this->pager_element,
         'quantity' => $this->options['number_of_items'],
       ));
+      
+      //if the pager is active, the more link needs its vars to know whether or not to display.
+      global $pager_page_array, $pager_total;
+      $pager_current = $pager_page_array[$parameters['pager_id']] + 1;
+      $pager_max = $pager_total[$parameters['pager_id']];
     } else {
       $pager = '';
     }
+        
+    //truncate items and prepare the more link
+    $more = '';
+    if (count($ids) > $this->options['number_of_items'] || ($this->options['pager'] && $ids && $pager_current < $pager_max)) {
+      $ids = array_slice($ids, 0, $this->options['number_of_items']);
+      $more = ($this->options['more']) ? l($this->options['more_text'], $this->options['more_link'], array('attributes' => array('class' => array('more-link')))) : '';
+    }
+    
     
     //use drupal display functions or sv list ones.  it'd be great if all these could come from drupal.
     $info = entity_get_info($this->entity_type);
@@ -260,7 +268,7 @@ class os_sv_list extends os_boxes_default {
       $content = 'fix my view mode: ' . $this->options['display'];
     }
     
-    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $content . '</div>' . $pager;
+    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $content . '</div>' . $pager . $more;
     
     
     return $block;
@@ -288,7 +296,9 @@ class os_sv_list extends os_boxes_default {
     //////pager
     if ($this->options['pager'] && is_int($page)) {
       $query->pager($this->options['number_of_items']);
-      $page = $query->pager['element'];
+      $this->pager_element = $query->pager['element'];
+    } elseif (is_int($page)) {
+      $query->range(0, 1 + $this->options['number_of_items']); //add one so more link knows there's more.
     }
     
     /////sort - if $this doesn't have it, one of the plugins will.
