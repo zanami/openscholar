@@ -8,29 +8,30 @@ Feature:
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing normal user can't access the control panel
+  Scenario: Testing vsite user can add node outside of the vsite context.
     Given I am logging in as "michelle"
      When I go to "node/add"
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing normal user can't access the control panel
+  Scenario: Testing normal user can't see unpublished content
     Given I am logging in as "michelle"
      When I go to "john/blog/unpublish-blog"
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing normal user can't access the control panel
+  Scenario: Testing admin can view unpublished content.
     Given I am logging in as "john"
      When I go to "john/blog/unpublish-blog"
      Then I should get a "200" HTTP response
 
-  @api
-  Scenario: Testing normal user can't access the control panel
+  @api @current
+  Scenario: Testing vsite user can add node only in the vsite he is a member.
     Given I am logging in as "michelle"
      When I go to "obama/node/add/blog"
       And I should get a "200" HTTP response
       And I go to "john/node/add/blog"
+      And I should print page
      Then I should get a "403" HTTP response
 
   @api
