@@ -164,6 +164,44 @@ function vsite_form_spaces_features_form_submit($form, &$form_state) {
 }
 
 /**
+ * Implements hook_library_alter().
+ */
+function vsite_library_alter(&$libraries, $module) {
+  if ($module != 'overlay') {
+    return;
+  }
+
+  $path = drupal_get_path('module', 'vsite') . '/js/overlay-parent.js';
+  $libraries['parent']['js'][$path] = array();
+}
+
+
+/**
+ * Implements hook_js_alter().
+ *
+ * Prefix Overlay's Ajax callback with our PURL.
+ */
+function vsite_js_alter(&$javascript) {
+  if (!module_exists('overlay') || empty($javascript['settings']['data'])) {
+    // No overlay, or no javascript settings.
+    return;
+  }
+
+  if (!$vsite = vsite_get_vsite()) {
+    // No VSite context.
+    return;
+  }
+
+  foreach ($javascript['settings']['data'] as $key => $value) {
+    if (!empty($value['overlay']['ajaxCallback'])) {
+      // PURLify the ajax callback URL.
+      $value['overlay']['ajaxCallback'] = url($value['overlay']['ajaxCallback'], array('absolute' => TRUE));
+      $javascript['settings']['data'][$key] = $value;
+    }
+  }
+}
+
+/**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
  * Hides the comment settings form from the VSites.
