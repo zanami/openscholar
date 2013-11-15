@@ -94,10 +94,7 @@ class sv_list_node_biblio {
   }
   
   public function sort_biblio($options, $efq) {
-    //borken!  biblio_year isn't a field so efq can't sort it.  
-    $efq->fieldOrderBy('biblio_year', 'DESC'); 
-    $efq->propertyOrderBy('created', 'DESC'); 
-    $efq->addTag('biblio');
+    $efq->addTag('sv_list_biblio');
   }
   
   public function re_sort($options, $efq) {

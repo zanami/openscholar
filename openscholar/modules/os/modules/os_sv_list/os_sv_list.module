@@ -161,12 +161,11 @@ function os_sv_list_query_random_alter($query) {
 
 /**
  * Implements hook_query_TAG_alter
- *
- * EFQs tagged with random will be randomly sorted.
- * http://rupertj.tumblr.com/post/21641418129/randomly-sorting-an-entityfieldquery
  */
-function os_sv_list_query_biblio_alter($query) {
-  $query->orderRandom();
+function os_sv_list_query_sv_list_biblio_alter(&$query) {
+  $query->join('biblio', 'b', 'b.nid = ogm.etid');
+  $query->orderBy('b.biblio_year', 'DESC'); 
+  $query->orderBy('node.created', 'DESC');
 }
 
 /**
