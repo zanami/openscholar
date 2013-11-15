@@ -79,7 +79,7 @@ class os_sv_list_node extends os_sv_list {
     );
     
     
-    return $sorts + parent::_sort_options();
+    return parent::_sort_options() + $sorts;
   }
     
     
