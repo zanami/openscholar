@@ -1750,3 +1750,21 @@ function os_select2_widget_after_build($element, &$form_state) {
 
   return $element;
 }
+
+
+/**
+ * Clear the internal page_cache when a cache clear is executed before any other external cache is cleared
+ *
+ * Implements hook_expire_cache().
+ */
+function os_expire_cache($urls, $wildcards, $object_type, $object) {
+
+	foreach ($urls as $internal_path => $absolute_url) {
+
+	  // Check if wildcard is enabled for this URL.
+	  $wildcard = !empty($wildcards[$internal_path]);
+
+	  // Clear cached page data.
+	  cache_clear_all($absolute_url, 'cache_page', $wildcard);
+  }
+}
