@@ -263,7 +263,10 @@ class os_sv_list extends os_boxes_default {
     if (isset($info['view modes'][$this->options['display']])) {
       $entities = entity_load($this->entity_type, $ids);
       $this->_plugins_invoke('entities_alter', $entities);
-      $render = entity_view($this->entity_type, $entities, $this->options['display']);
+      
+      $render = $this->_plugins_invoke('render', $entities);
+      $this->_plugins_invoke('render_alter', $render);
+      $render = (isset($render) && $render) ? $render : entity_view($this->entity_type, $entities, $this->options['display']);
       $content = drupal_render($render);      
     } else {
       $content = 'fix my view mode: ' . $this->options['display'];

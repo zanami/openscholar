@@ -13,27 +13,6 @@ $plugin = array(
 );
 
 class sv_list_node_event {
-  
-  /**
-   * @function sort_alter
-   */
-//   public function sort_alter($options, $efq) {  
-//     if ($options['sort_by'] == 'sort_event') {
-      //filters new events, and handles repeats.
-//       $query = db_select('field_data_field_date', 'fd')
-//         ->fields('fd', array('entity_id', 'delta'))
-//         ->where('field_date_value > NOW()')
-//         ->orderBy('field_date_value');
-//       $query->join('node', 'n', 'n.vid = fd.revision_id');
-//       $query->condition('n.status', 1);
-//       $entity_field = "fd.entity_id";
-//     }
-//   }
-  public function query_alter($options, $efq) {
-    //get the entity delta.  I don't know why.
-    //         ->fields('fd', array('entity_id', 'delta'))
-  }
-
   /**
    * @function sort_event
    * 
@@ -43,7 +22,6 @@ class sv_list_node_event {
   public function sort_event($options, $efq) {
     $efq->fieldOrderBy('field_date', 'value');
     $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
-    $efq->addTag('event');
   }
   
   /**
@@ -57,29 +35,44 @@ class sv_list_node_event {
       return;
     }
     
-//     $query = db_select('field_data_field_date', 'fd')
-//       ->fields('fd', array('entity_id', 'delta')) //@TODO date sehnanigans
-//       ->condition('entity_id', array_keys($entities), 'IN')
-//       ->where('field_date_value > NOW()')
-//       ->orderBy('field_date_value');
-//     $query->join('node', 'n', 'n.vid = fd.revision_id');
-//     $query->condition('n.status', 1);
-//     $result = $query->execute();
-    
-//     while ($repeat = $result->fetchObject()) {
-//       $repeat;
-//     }
+    //split repeated event into many nodes - one for each instance of event
+    //key them by timestamp for easy sorting.
     $exploded = array();
     foreach ($entities as $entity) {
-      foreach ($entity->field_date[LANGUAGE_NONE] as $date) {
+      foreach ($entity->field_date[LANGUAGE_NONE] as $delta => $date) {
+        $time_index = strtotime($date['value']);
+        while (array_key_exists($time_index, $exploded)) {
+          $time_index += 1; //don't clobber events that start at same time.
+        }
+        
         $new = clone $entity;
         $new->field_date[LANGUAGE_NONE][0] = $date;
-        $exploded[] = $new;
-        
+        $new->date_id = implode('.', array('date', $new->nid, 'field_date', $delta));   
+        $exploded[$time_index] = $new;
       }
     }
     
-    $entities = $exploded;
-    //how to sort?
+    ksort($exploded);    //now sort by timestamp
+    $entities = array_slice(array_values($exploded), 0, $options['number_of_items']);  //and re-apply the item limit
+  }
+  
+  /**
+   * @function render
+   * 
+   * The default entity_view() render function loads new copies of the entities.
+   * We can't allow that because it'll invalidate entities_alter().  Instead, 
+   * just call node_view on each of them.
+   */
+  public function render($options, &$entities) {
+    if ($options['content_type'] != 'event' || $options['sort_by'] != 'sort_event') {
+      return;
+    }
+
+    $render = array();
+    foreach ($entities as $node) {
+      $render[] = node_view($node, $options['display']);
+    }
+
+    return $render;
   }
 }
