@@ -106,15 +106,21 @@ function os_wysiwyg_link_filter($text) {
 
       case 'url':
         $comps = parse_url($m[3]);
+        $options = array();
         // set defaults so no notices appear
-        $comps += array('query' => '', 'fragment' => '');
-        $page = str_replace(array('?'.$comps['query'], '#'.$comps['fragment']), '', $m[3]);
-        // query string is in var=val&var=val format. parse it into an array for drupal
-        parse_str($comps['query'], $query);
-        $options = array(
-          'query' => $query,
-          'fragment' => $comps['fragment']
-        );
+        if ($comps) {
+          $comps += array('query' => '', 'fragment' => '');
+          $page = str_replace(array('?'.$comps['query'], '#'.$comps['fragment']), '', $m[3]);
+          // query string is in var=val&var=val format. parse it into an array for drupal
+          parse_str($comps['query'], $query);
+          $options = array(
+            'query' => $query,
+            'fragment' => $comps['fragment']
+          );
+        }
+        else {
+          $page = $m[3];
+        }
         if (url_is_external($page)) {
           $url = url($page, $options + array('external' => TRUE));
         }

@@ -116,7 +116,9 @@
     float: right;
     line-height: 38px;
     margin: 0;
+    text-transform:uppercase;
   }
+  
   #branding_footer .branding-container {
     height: 45px;
     line-height: 45px;
@@ -266,17 +268,6 @@
     padding-right: 15px;
   }
   
-  .two-sidebars #content-panels,
-  .one-sidebar.sidebar-first #content-panels {
-    border-left: 1px solid #e7e7e7;
-    /*padding-left: 15px; Added 10px padding to content-inner in OS base. Will leave in, commented out, until convinced it isnt necessary*/
-  }
-
-  .two-sidebars #content-panels,
-  .one-sidebar.sidebar-second #content-panels {
-    border-right: 1px solid #e7e7e7;
-    /*padding-right: 15px;Added 10px padding to content-inner in OS base. Will leave in, commented out, until convinced it isnt necessary*/
-  }
 
   .not-front.two-sidebars #content-panels,
   .not-front.one-sidebar.sidebar-first #content-panels,

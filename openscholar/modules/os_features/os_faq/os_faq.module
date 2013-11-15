@@ -22,6 +22,11 @@ function os_faq_os_app_info() {
     'views tabs' => array(
       'os_faq' => array('page'),
     ),
+    'importers' => array(
+      'faq' => array(
+        'csv' => 'os_faq',
+      ),
+    ),
   );
 
   return $apps;

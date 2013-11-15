@@ -34,6 +34,10 @@ div.hopscotch-bubble.os-tour-notifications .hopscotch-bubble-number {
     background-repeat: no-repeat;
 }
 
+#toolbar #os-tour-notifications-menu-link {
+    display: none;
+}
+
 .os-tour-notifications .feed_item span {
     font-style: normal;
 }
@@ -43,3 +47,6 @@ div.hopscotch-bubble.os-tour-notifications .hopscotch-bubble-number {
     margin-bottom: -3.5em;
 }
 
+div.hopscotch-bubble.os-tour-notifications .hopscotch-actions {
+    margin: 24px 0 0;
+}

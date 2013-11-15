@@ -146,6 +146,7 @@ features[variable][] = pathauto_node_pattern
 features[variable][] = pathauto_update_action
 features[variable][] = securepages_enable
 features[variable][] = securepages_pages
+features[variable][] = securepages_switch
 features[variable][] = site_404
 features[variable][] = site_frontpage
 features[variable][] = spaces_features
