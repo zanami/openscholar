@@ -102,6 +102,7 @@ function cp_content_views_default_views() {
 
   /* Display: Approval Queue */
   $handler = $view->new_display('page', 'Approval Queue', 'page_1');
+  $handler->display->display_options['enabled'] = FALSE;
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Bulk operations: Comment */
