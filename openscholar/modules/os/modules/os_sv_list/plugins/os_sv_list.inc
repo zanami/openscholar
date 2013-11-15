@@ -123,26 +123,8 @@ class os_sv_list extends os_boxes_default {
     );
   
     
-    //more link.  still needs some refactoring love.
-    //populate list of content types => paths
-    ctools_include('os', 'os');
-    $content_types = array('all' => t('All')) + os_get_bundles(array(1));
-    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type']; //wtf
+ 
     
-    $content_map = os_get_app_path();
-    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
-    if (isset($content_types['image'])) {
-      $content_map['image'] = $content_map['media_gallery'];
-    }
-  
-    // Use blank path for unknown paths.
-    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
-    
-    if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
-      $default_value = $content_map[$content_types_value];
-    } else {
-      $default_value = $this->options['more_link'];
-    }
   
     if (!empty($form_state['values']['more_link'])) {
     // Unset the values from the text field, as otherwise FAPI will add
@@ -154,7 +136,7 @@ class os_sv_list extends os_boxes_default {
     $form['query_details']['more_link'] = array(
       '#title' => t('URL for the more link'),
       '#type' => 'textfield',
-      '#default_value' => $default_value,
+      '#default_value' => $this->options['more_link'],
       '#states' => array(
         'visible' => array('input[name=more]' => array('checked' => TRUE)),
         'invisible'  => array('input[name=more]' => array('checked' => FALSE)),
@@ -163,7 +145,7 @@ class os_sv_list extends os_boxes_default {
       '#suffix' => '</div>',
       '#attached' => array(
         'js' => array(
-          array('data' => array('more_link_defaults' => $content_map,),'type' => 'setting',)
+          array('data' => array('more_link_defaults' => $this->_more_link_defaults(),),'type' => 'setting',)
         )
       )
     );
@@ -411,6 +393,28 @@ class os_sv_list extends os_boxes_default {
 //       'display_body' => t('Entire Post'),
 //       'display_links' => t('Link'),
 //     );
+  }
+  
+  /**
+   * @function _more_link_defaults()
+   * 
+   * Gets the defaults that fill in for the more link when the content type changes
+   */
+  protected function _more_link_defaults() {
+    //more link.  still needs some refactoring love.
+    //populate list of content types => paths
+    ctools_include('os', 'os');
+    $content_types = array('all' => t('All')) + os_get_bundles(array(1));
+    
+    $content_map = os_get_app_path();
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
+    if (isset($content_types['image'])) {
+      $content_map['image'] = $content_map['media_gallery'];
+    }
+    
+    // Use blank path for unknown paths.
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
+    return $content_map;     
   }
   
   /**
