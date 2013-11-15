@@ -644,6 +644,11 @@ padding: 20px 0;
 .section-nav .expanded.menu-depth-2 .leaf.menu-depth-3 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-4 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-5 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-6 > a {
     font-weight: normal;
 }
+
+.section-nav a.active {
+    font-weight: bold !important;
+}
+
 .ui-tabs-panel h2.block-title{
 	border-top:0;}
 
