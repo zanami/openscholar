@@ -14,6 +14,15 @@ $plugin = array(
 
 class sv_list_node_event {
   /**
+   * @function register_sorts()
+   *
+   * Adds a custom sort for this entity/bundle
+   */
+  public function register_sorts() {
+    return array('sort_event' => t('Event Date'));
+  }
+  
+  /**
    * @function sort_event
    * 
    * Custom sort for events.  Uses event date, but only for

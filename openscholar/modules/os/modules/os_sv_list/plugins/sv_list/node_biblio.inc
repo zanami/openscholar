@@ -23,6 +23,15 @@ class sv_list_node_biblio {
     );
   }
   
+  /**
+   * @function register_sorts()
+   * 
+   * Adds a custom sort for this entity/bundle
+   */
+  public function register_sorts() {
+    return array('sort_biblio' => t('Year of Publication'));
+  }
+  
   public function options_form($box_options) {
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
@@ -88,6 +97,7 @@ class sv_list_node_biblio {
     //borken!  biblio_year isn't a field so efq can't sort it.  
     $efq->fieldOrderBy('biblio_year', 'DESC'); 
     $efq->propertyOrderBy('created', 'DESC'); 
+    $efq->addTag('biblio');
   }
   
   public function re_sort($options, $efq) {

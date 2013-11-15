@@ -94,6 +94,11 @@ class os_sv_list extends os_boxes_default {
       '#title' => 'Sorting',
       '#default_value' => $this->options['sort_by'],
       '#options' => $this->_sort_options(),
+      '#attached' => array(
+        'js' => array(
+          array('type' => 'setting', 'data' => array('sv_list_sort' => $this->_sort_options_type_bundles())),
+        )
+      )
     );
   
     $form['query_details'] = array(
@@ -363,7 +368,7 @@ class os_sv_list extends os_boxes_default {
    * Runs a method on all loaded plugins.  Plugin return values will return in
    * keyed array.
    */
-  private function _plugins_invoke($method, &$args) {
+  private function _plugins_invoke($method, &$args = NULL) {
     $options = $this->options + $this->options_defaults();
     foreach ($this->plugins as $name => $plugin) {
       if (method_exists($plugin['instance'], $method)) {
@@ -408,20 +413,60 @@ class os_sv_list extends os_boxes_default {
 //     );
   }
   
+  /**
+   * @function _sort_options()
+   * 
+   * Returns hash of sort options and their labels
+   */
   protected function _sort_options() {
-    return array(
-      // Content type sensitive sorts.  // in the future get these from sv render plugins
-      'sort_event' => t('Event Date'),
-      'sort_presentation' => t('Recently Presented'),
-      'sort_biblio' => t('Year of Publication'),
-      'sort_news' => t('News Date'),
     
-      // Standard sorts,
-      'sort_newest' => t('Newest Post'),
-      'sort_oldest' => t('Oldest Post'),
-      'sort_alpha' => t('Alphabetical'),
-      'sort_random' => t('Random'),
-    );
+//     $type_sorts = array();
+//     $sorts = array();
+//     foreach ($this->_plugins_invoke('register_sorts') as $plugin => $sort) {
+//       $info = $this->plugins[$plugin];
+//       $sorts += $sort;
+//       $types = ($info['entity_type']) ? $info['entity_type'] : array('all');
+//       $bundles = ($info['bundle']) ? $info['bundle'] : array('all');
+      
+//       foreach ($types as $type) {          
+//         foreach ($bundles as $bundle) {
+//           $type_sorts[$type][$bundle] = (!isset($type_sorts[$type][$bundle])) ? $sort : array_merge($type_sorts[$type][$bundle], $sort); 
+//         } 
+//       }
+      
+//     }
+    $sorts = array_reduce($this->_plugins_invoke('register_sorts'), 'array_merge', array());
+    
+    return $sorts;
+//     return array(
+//       // Content type sensitive sorts.  // in the future get these from sv render plugins
+//       'sort_event' => t('Event Date'),
+//       'sort_presentation' => t('Recently Presented'),
+//       'sort_biblio' => t('Year of Publication'),
+//       'sort_news' => t('News Date'),
+    
+//       // Standard sorts,
+//       'sort_newest' => t('Newest Post'),
+//       'sort_oldest' => t('Oldest Post'),
+//       'sort_alpha' => t('Alphabetical'),
+//       'sort_random' => t('Random'),
+//     );
+  }
+  
+  /**
+   * @function _sort_options_type_bundles
+   * 
+   * Returns list of sort options, and the entities/bundles that can use them.
+   * Items not appearing here are universal.
+   */
+  function _sort_options_type_bundles() {
+    $return = array();
+    foreach ($this->_plugins_invoke('register_sorts') as $plugin => $sorts) {
+      $plugin = $this->plugins[$plugin];
+      $return += array_fill_keys(array_keys($sorts), array_filter(array('entity_type' => $plugin['entity_type'], 'bundle' => $plugin['bundle'])));
+    }
+    
+    return $return;
   }
 
   function sort_random(&$efq) {

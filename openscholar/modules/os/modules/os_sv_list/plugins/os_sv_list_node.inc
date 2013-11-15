@@ -59,10 +59,35 @@ class os_sv_list_node extends os_sv_list {
     return $efq;
   }
 
+  //add our node specific sorts
+  protected function _sort_options() {
+    $sorts = array(
+      // Standard sorts,
+      'sort_newest' => t('Newest Post'),
+      'sort_oldest' => t('Oldest Post'),
+      'sort_alpha' => t('Alphabetical'),
+      'sort_random' => t('Random'),
+      
+     
+      // Content type sensitive sorts.  // in the future get these from sv render plugins
+//       'sort_event' => t('Event Date'),
+//       'sort_presentation' => t('Recently Presented'),
+//       'sort_biblio' => t('Year of Publication'),
+//       'sort_news' => t('News Date'),
+  
+      
+    );
+    
+    
+    return $sorts + parent::_sort_options();
+  }
+    
+    
   /**
    * sorting functions
    */
   function sort_newest(&$efq) {
+    //could thiese be made generic by using entity_get_info to figure out $created and $title per type?
     $efq->propertyOrderBy('created', 'DESC');
   }
   function sort_oldest(&$efq) {
