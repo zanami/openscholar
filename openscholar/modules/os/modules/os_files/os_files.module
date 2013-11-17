@@ -1659,16 +1659,16 @@ function os_files_file_fields() {
  */
 function os_files_file_entity_access($op, $file, $account) {
   if ($op != 'view') {
-    return FILE_ENTITY_ACCESS_DENY;
+    return FILE_ENTITY_ACCESS_IGNORE;
   }
 
   if (!module_exists('vsite')) {
-    return FILE_ENTITY_ACCESS_DENY;
+    return FILE_ENTITY_ACCESS_IGNORE;
   }
 
   // Deny access if there's no vsite context.
   if (!$vsite = vsite_get_vsite()) {
-    return FILE_ENTITY_ACCESS_DENY;
+    return FILE_ENTITY_ACCESS_IGNORE;
   }
 
   // Check if the user have access to the vsite.
