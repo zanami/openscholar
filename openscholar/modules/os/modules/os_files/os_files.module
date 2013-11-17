@@ -1655,32 +1655,29 @@ function os_files_file_fields() {
 }
 
 /**
- * Implements hook_file_entity_access()
+ * Implements hook_file_entity_access().
  */
 function os_files_file_entity_access($op, $file, $account) {
   if ($op != 'view') {
+    // Not a "view" operation.
     return FILE_ENTITY_ACCESS_IGNORE;
   }
 
-  if (!module_exists('vsite')) {
+  if (!module_exists('vsite') || !$vsite = vsite_get_vsite()) {
+    // No VSite context.
     return FILE_ENTITY_ACCESS_IGNORE;
   }
 
-  // Deny access if there's no vsite context.
-  if (!$vsite = vsite_get_vsite()) {
-    return FILE_ENTITY_ACCESS_IGNORE;
-  }
-
-  // Check if the user have access to the vsite.
   if (!node_access('view', $vsite->og, $account)) {
+    // User doesn't have access to view the VSite node, probably because it is
+    // private.
     return FILE_ENTITY_ACCESS_DENY;
   }
 
   if (!$file && user_access('view files', $account)) {
+    // Explain.
     return FILE_ENTITY_ACCESS_ALLOW;
   }
-
-  return FILE_ENTITY_ACCESS_DENY;
 }
 
 /**
