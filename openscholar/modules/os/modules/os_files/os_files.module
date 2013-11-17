@@ -1675,7 +1675,7 @@ function os_files_file_entity_access($op, $file, $account) {
   }
 
   if (!$file && user_access('view files', $account)) {
-    // Explain.
+    // When trying to access file.json, $file is null.
     return FILE_ENTITY_ACCESS_ALLOW;
   }
 }
