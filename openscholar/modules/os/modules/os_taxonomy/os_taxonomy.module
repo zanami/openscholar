@@ -146,19 +146,21 @@ function os_taxonomy_in_taxonomy_term_context($view = NULL) {
   // Get the term alias, if exists.
   $path_parts = array_slice($item['original_map'], $path_elements);
 
-  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
-    return;
-  }
-
-  // Check the path prefixed with the purl if we are in a vsite.
-  if (module_exists('vsite') && vsite_get_vsite() && strpos($path, 'taxonomy/term/') !== 0) {
-    array_unshift($path_parts, vsite_get_purl());
-    if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
-      return;
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    if ($vsite->purl_provider == 'spaces_og') {
+      // Inside a VSite the uses spaces, meaning all aliases must start with the
+      // VSite's name.
+      array_unshift($path_parts, vsite_get_purl());
     }
   }
 
+  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+    // Path doesn't exist.
+    return;
+  }
+
   if (strpos($path, 'taxonomy/term/') !== 0) {
+    // Path is not taxonomy term.
     return;
   }
 
