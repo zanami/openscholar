@@ -544,20 +544,20 @@ class csl_name extends csl_format {
   function render($names, $mode = NULL) {
     $text = '';
     $authors = array();
-    $count = 0;
     $auth_count = 0;
     $et_al_triggered = FALSE;
     $initialize_with = $this->{'initialize-with'};
 
     if (!$this->attr_init || $this->attr_init != $mode) $this->init_attrs($mode);
 
+    $iteration_count = 0;
     foreach ($names as $rank => $name) {
       if (empty($name['literal'])) {
         if (!isset($name['lastname'])) {
           module_load_include('inc', 'biblio', '/includes/biblio.contributors');
           $name = biblio_parse_author($name); // this is needed for form preview to fill in all fields
         }
-        $count++;
+        $iteration_count++;
         if (!empty($name['firstname']) && isset($initialize_with)) {
           $name['firstname'] = preg_replace("/([$this->upper])[$this->lower]+/$this->patternModifiers", '\\1', $name['firstname']);
           $name['firstname'] = preg_replace("/(?<=[-$this->upper]) +(?=[-$this->upper])/$this->patternModifiers", "", $name['firstname']);
@@ -623,8 +623,16 @@ class csl_name extends csl_format {
 
       $authors[] = $this->format($text);
 
-      if (isset($this->{'et-al-min'}) && $count >= $this->{'et-al-min'}) break;
+      // If the number of names matches or exceeds the number set on et-al-min,
+      // stop the count. The rendered name list is truncated after reaching the
+      // number of names set on et-al-use-first.
+      if (isset($this->{'et-al-min'}) && $iteration_count >= $this->{'et-al-min'}) {
+        break;
+      }
     }
+    // This is the number of authors of the publication.
+    $count = count($names);
+
     if (isset($this->{'et-al-min'}) &&
     $count >= $this->{'et-al-min'} &&
     isset($this->{'et-al-use-first'}) &&

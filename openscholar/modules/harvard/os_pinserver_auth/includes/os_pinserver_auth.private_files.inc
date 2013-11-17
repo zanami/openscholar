@@ -98,8 +98,10 @@ function _os_pinserver_auth_file_download($uri) {
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
 
     //Check for ctools to assure we are not in js.php
-    if (function_exists('ctools_include')){
+    if (function_exists('ctools_include')) {
       $file = file_uri_to_object($uri);
+    } else {
+      $file = file_uri_to_object($uri,FALSE);
     }
 
     if (pinserver_get_user() || (function_exists('ctools_include') && file_entity_access('update', $file))) {

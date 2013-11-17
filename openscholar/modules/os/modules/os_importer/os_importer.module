@@ -63,6 +63,16 @@ function os_importer_node_insert($node) {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function os_importer_admin_paths() {
+  return array(
+    'cp/os-importer/*' => TRUE,
+    'cp/os-importer/blog/manage' => TRUE,
+  );
+}
+
+/**
  * Implements hook_os_add_new_links_alter().
  */
 function os_importer_os_add_new_links_alter(&$links) {
@@ -249,26 +259,6 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   }
 
   $entity->{$field_name}[$entity->language] = $files;
-}
-
-/**
- * Callback function for creating a node on behalf of another user.
- *
- * @see os_importer_map_files().
- */
-function os_importer_map_author($source, $entity, $target, $value, $mapping) {
-  global $user;
-
-  if ($value && $account = user_load_by_name($value)) {
-    // Check that the user can create node of this type.
-    $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
-  }
-  else {
-    // Loading the current user.
-    $account = user_load($user->uid);
-  }
-
-  $entity->uid = $account->uid;
 }
 
 /**
@@ -536,6 +526,45 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
     return;
   }
 
+  _os_importer_import_vocab($source, $entity, $item, $id);
+  _os_importer_import_behalf_of_user($source, $entity, $item, $id);
+}
+
+/**
+ * Helper function to import a node on a behalf of another user.
+ */
+function _os_importer_import_behalf_of_user(FeedsSource $source, $entity, $item, $id) {
+  global $user;
+
+  // When importing an iCal don't search for the author, just use the current
+  // user UID.
+  if ($source->importer->id == 'os_ical') {
+    $entity->uid = $user->uid;
+    return;
+  }
+
+  if (empty($item['author'])) {
+    $account = user_load($user->uid);
+  }
+  else {
+    if ($account = user_load_by_name($item['author'])) {
+      // Check that the user is a group member and verify he can create node of
+      // this type.
+      $account = og_is_member('node', $id, 'user', $account) && node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
+    }
+    else {
+      // Loading the current user.
+      $account = user_load($user->uid);
+    }
+  }
+
+  $entity->uid = $account->uid;
+}
+
+/**
+ * Helper function to import vocabularies and taxonomy terms on the fly.
+ */
+function _os_importer_import_vocab(FeedsSource $source, $entity, $item, $id) {
   $config = $source->importer->getConfig();
 
   // Getting the mappings from the processor config.
