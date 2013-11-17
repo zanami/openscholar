@@ -70,6 +70,7 @@ dependencies[] = restws
 ; boxes
 dependencies[] = views_slideshow_cycle
 dependencies[] = os_mailchimp
+dependencies[] = os_slideshow
 
 ; OS
 dependencies[] = os
