@@ -1676,7 +1676,7 @@ function os_files_file_entity_access($op, $file, $account) {
     return FILE_ENTITY_ACCESS_DENY;
   }
 
-  if (!$file && $op == 'view' && user_access('view files', $account)) {
+  if (!$file && user_access('view files', $account)) {
     return FILE_ENTITY_ACCESS_ALLOW;
   }
 
