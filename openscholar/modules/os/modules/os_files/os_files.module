@@ -1655,14 +1655,16 @@ function os_files_file_fields() {
 }
 
 /**
- * Grants access to the full list of files
+ * Implements hook_file_entity_access()
  */
 function os_files_file_entity_access($op, $file, $account) {
-  if (!$vsite = vsite_get_vsite()) {
+  // Deny access if there's no vsite context.
+  if (module_exists('vsite') && !$vsite = vsite_get_vsite()) {
     return FILE_ENTITY_ACCESS_DENY ;
   }
 
-  if (!node_access($op, $vsite->og, $account)) {
+  // Check if the user have access to the vsite.
+  if (!node_access('view', $vsite->og, $account)) {
     return FILE_ENTITY_ACCESS_DENY;
   }
 
