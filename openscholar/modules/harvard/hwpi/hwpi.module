@@ -184,6 +184,23 @@ function _hwpi_branding_footer() {
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for cp_settings_form.
+ */
+function hwpi_form_cp_settings_form_alter(&$form, &$form_state) {
+  // Only continues to hide the responsive setting from non-HWPI-themed sites.
+  $theme = variable_get('theme_default');
+  if (_is_hwpi_theme($theme)) {
+    return;
+  }
+
+  // Hides the responsive setting unless user is User 1.
+  global $user;
+  if ($user->uid != 1 && isset($form['responsive'])) {
+    $form['responsive']['#access'] = FALSE;
+  }
+}
+
+/**
  * Implements hook_block_view_alter().
  *
  * Hides the search bar title display.
