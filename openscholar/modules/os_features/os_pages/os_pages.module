@@ -756,6 +756,7 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
   // Prepares this form for alias preview generation.
   $data['alias_preview']['type'] = $type;
   $data['alias_preview']['make_alias'] = TRUE;
+  $data['alias_preview']['url'] = url('os/pages/alias-preview');
 
   // Integrates with vsite module.
   if (module_exists('vsite')) {
