@@ -417,9 +417,13 @@ function vsite_vocab_field_formatter_view($entity_type, $entity, $field, $instan
   // terms from the vocab.
   $hide_terms = array();
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  foreach ($wrapper->{OG_VOCAB_FIELD} as $term) {
-    if (!og_vocab_load_og_vocab($term->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
-      $hide_terms[] = $term->getIdentifier();
+  foreach ($wrapper->{OG_VOCAB_FIELD} as $term_wrapper) {
+    if (!$term_wrapper->value()) {
+      // Term was deleted.
+      continue;
+    }
+    if (!og_vocab_load_og_vocab($term_wrapper->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
+      $hide_terms[] = $term_wrapper = $term->getIdentifier();
     }
   }
 
