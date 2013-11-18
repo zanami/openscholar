@@ -236,7 +236,7 @@ function _os_stats_v1_json($type, $style) {
   // Adds current OpenScholar version to JSON object, like "7.x-1.0".
   $path = drupal_get_path('profile', 'openscholar') . '/openscholar.info';
   $info = drupal_parse_info_file($path);
-  $output['os_version'] = $info['version'];
+  $output['os_version'] = $info['os_version'];
 
   if ($style == 'geckoboard') {
     $items = array();

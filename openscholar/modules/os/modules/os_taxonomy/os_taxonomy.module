@@ -91,12 +91,18 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
  * Verify the user is in a taxonomy term context.
  *
  * @param $view
- *  The current view the user watching.
+ *  The current view the user watching, or NULL in order to get the path from
+ *  cache.
  *
  * @return mixed
  *  The path of the term, i.e: taxonomy/term/1.
  */
-function os_taxonomy_in_taxonomy_term_context($view) {
+function os_taxonomy_in_taxonomy_term_context($view = NULL) {
+  $path = &drupal_static(__FUNCTION__, FALSE);
+  if (!$view) {
+    // Return path from cache.
+    return $path;
+  }
   $view_names = array();
   foreach (os_app_info() as $info) {
     if (empty($info['views tabs'])) {
@@ -617,11 +623,19 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
   $form['#attached']['js'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.js';
+
+  $default_value = NULL;
+  if ($term_path = os_taxonomy_in_taxonomy_term_context()) {
+    $term_path = explode('/', $term_path);
+    $default_value = end($term_path);
+  }
+
   // Giving a unique name for the form element will allow us coloring it when
   // there is a problem in the submission of the form.
   $form['terms_' . $form['#vocabulary']->vid] = array(
     '#type' => 'select',
     '#options' => array('--none--' => t('Select a term')) + $terms_list,
+    '#default_value' => $default_value,
     '#attributes' => array(
       'class' => array('terms-list'),
     ),

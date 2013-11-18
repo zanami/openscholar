@@ -948,7 +948,7 @@ class FeatureContext extends DrupalContext {
     return array(
       new Step\When('I am not logged in'),
       new Step\When('I am logging in as "john"'),
-      new Step\When('I visit "john/halleys-comet"'),
+      new Step\When('I visit "john/event/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
       new Step\When('I press "Delete"'),
@@ -1004,6 +1004,17 @@ class FeatureContext extends DrupalContext {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
     return array(
       new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @When /^I edit the node of type "([^"]*)" named "([^"]*)" using contextual link$/
+   */
+  public function iEditTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
     );
   }
 
@@ -1132,10 +1143,65 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I login as "([^"]*)" in "([^"]*)"$/
+   */
+  public function iLoginAsIn($username, $site) {
+    $title = str_replace("'", "\'", $site);
+
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    try {
+      $password = $this->users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    return array(
+      new Step\When('I visit "node/' . $nid .'"'),
+      new Step\When('I click "Admin Login"'),
+      new Step\When('I fill in "Username" with "' . $username . '"'),
+      new Step\When('I fill in "Password" with "' . $password . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I set the Share domain name to "([^"]*)"$/
+   */
+  public function iSetTheShareDomainNameTo($value) {
+    $action = $value ? 'I checked "edit-vsite-domain-name-vsite-domain-shared"' : 'I uncheck "edit-vsite-domain-name-vsite-domain-shared"';
+    return array(
+      new Step\When('I click "Settings"'),
+      new Step\When($action),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
    * @Given /^I import the blog for "([^"]*)"$/
    */
   public function iImportTheBlogFor($vsite) {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
     $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
+
+  /**
+   * @Then /^I search for "([^"]*)"$/
+   *
+   * Defining a new step because when using the step "I should see" for the iCal
+   * page the test is failing.
+   */
+  public function iSearchFor($string) {
+    $element = $this->getSession()->getPage();
+
+    if (strpos($element->getContent(), $string) === FALSE) {
+      throw new Exception("the string '$string' was not found.");
+    }
   }
 }

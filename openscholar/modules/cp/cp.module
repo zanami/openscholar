@@ -264,16 +264,17 @@ function cp_custom_theme() {
 }
 
 /**
+ * @function cp_use_cp_theme()
+ * 
  * Returns TRUE/FALSE, whether or not to use cp theme.
  */
 function cp_use_cp_theme() {
-  if ((arg(0) == 'cp') ||
-    (arg(0) == 'os') ||
-    (arg(0) == 'media') ||
-    ((arg(0) == 'node' || arg(0) == 'file') && (arg(1) == 'add' || arg(2) == 'edit' || arg(2) == 'delete'))
-  ) {
+  if (in_array(arg(0), array('cp', 'os', 'media'))) {
     return TRUE;
+  } elseif (in_array(arg(0), array('file', 'node'))) {
+    return (arg(1) == 'add' || in_array(arg(2), array('edit', 'usage', 'delete')));
   }
+
   return FALSE;
 }
 
@@ -406,10 +407,18 @@ function cp_site_sitewide_contact() {
   if ($id) {
     $loading = drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif';
     $image = theme('image', array('path' => $loading));
+    $description =<<<EOF
+<p>Every question you ask adds to the power of our OpenScholar Community. Type 
+  your question below and click the Continue button. You will need to login or 
+  create an account to finish posting.</p>
+<p>If you don't want to post publicly to the community, click Send Privately</p>     
+EOF;
     return array(
       'div' => array(
         '#type' => 'markup',
-        '#markup' => '<div class="getsat-widget" id="getsat-widget-'.$id.'"><span class="gsfn-loading">Loading...'.$image.'</span></div>',
+        '#markup' => '<div class="getsat-widget" id="getsat-widget-'.$id.'"><span class="description">'. $description . '</span><span class="gsfn-loading">Loading...'.$image.'</span></div>',
+
+      
       ),
       '#attached' => array(
         'js' => array(

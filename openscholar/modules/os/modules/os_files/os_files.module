@@ -230,6 +230,17 @@ function os_files_clippy($url_file, $options = array()){
   return $html;
 }
 
+function os_files_menu_local_tasks_alter(&$tasks, $item, $path) {
+
+  if (!isset($_GET['destination'])) return;
+  if (strpos($path, 'file/%') === FALSE) return;
+
+  $dest = $_GET['destination'];
+  foreach ($tasks['tabs'][0]['output'] as $d => $link) {
+    $tasks['tabs'][0]['output'][$d]['#link']['localized_options']['query'] = array('destination' => $dest);
+  }
+}
+
 function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $path = drupal_get_path('module', 'os_files');
   $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
@@ -485,7 +496,7 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       $info = field_info_field($field);
 
       // Verify the field type.
-      if (!in_array($info['type'], array('file', 'imagefield_crop'))) {
+      if (!in_array($info['type'], array('file', 'imagefield_crop', 'image'))) {
         continue;
       }
 
@@ -497,6 +508,12 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
           // NULL. We cannot set a NULL value.
           unset($file_field[$delta]);
         }
+      }
+
+      if (empty($file_field)) {
+        // If no deltas are left, unset the field or the LANGUAGE_NONE will be
+        // an empty array.
+        unset($node->{$field}[LANGUAGE_NONE]);
       }
     }
 

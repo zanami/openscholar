@@ -35,7 +35,7 @@ if (!class_exists('purl_vsite_path')) {
       foreach ($parsed as $site => $settings) {
         if ($settings->provider == 'spaces_og' && variable_get('purl_base_domain', FALSE)) {
           $vsite_domain = db_query("SELECT value FROM {spaces_overrides} WHERE type = :type AND id = :id AND object_id = 'vsite_domain_name' AND object_type = 'variable' ", array(':type' => 'og', ':id' => $settings->id,
-            ))->fetchField();
+          ))->fetchField();
           if ($vsite_domain) {
             $vsite_domain = unserialize($vsite_domain);
           }
@@ -46,8 +46,8 @@ if (!class_exists('purl_vsite_path')) {
 
           global $base_url;
           if ($space_found || in_array($settings->value, self::$disabled) ||
-             (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
-             (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST))
+            (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
+            (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != parse_url(variable_get('purl_base_domain', $base_url),PHP_URL_HOST))
           ) {
             unset($parsed[$site]);
           }else{
@@ -71,10 +71,14 @@ if (!class_exists('purl_vsite_path')) {
         return;
       }
 
-      // If we are asking for the absolute url then return the correct base url for a path provider
+      // If we are asking for the absolute url then return the correct base url
+      // for a path provider
       if (array_key_exists('absolute', $options) && $options['absolute']) {
         if ($element->id && $vsite = spaces_load('og', $element->id)) {
-          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
+          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name','space');
+          if(!$vsite_domain){
+            $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name','preset');
+          }
         }
 
         if ($vsite_domain) {
@@ -87,11 +91,12 @@ if (!class_exists('purl_vsite_path')) {
         }
       }
 
-      // Disables addition of URL prefix if prefix is part of the path alias
+      // Disables addition of URL prefix if prefix is part of the path alias.
       if (!empty($path) && $path != '<front>') {
         $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
         $alias = drupal_get_path_alias($path, $language);
         if ($alias != $path && $alias != $this->remove($alias, $element)) {
+          // The alias now contains the prefix of the viste, no need to rewrite.
           return;
         }
       }
@@ -100,4 +105,3 @@ if (!class_exists('purl_vsite_path')) {
     }
   }
 }
-

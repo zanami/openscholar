@@ -8,7 +8,7 @@ Feature:
      Then I should see "Engadget rss"
 
   @api
-    Scenario: Testing the UX fo importing an RSS feed.
+    Scenario: Testing the UI for importing an RSS feed.
       Given I am logging in as "john"
         And I visit "john/cp/os-importer/blog"
         And I select the radio button "Rss" with the id "edit-format-rss"
@@ -61,10 +61,15 @@ Feature:
   @api
   Scenario: Verify images in feed item description are imported as images.
     Given I am logging in as "admin"
+<<<<<<< HEAD
       And I import feed items for "john"
       And I visit "john/cp/os-importer/news/manage"
      When I import the feed item "Lee Harvey Oswald"
       And I should see the feed item "Lee Harvey Oswald" was imported
+=======
+     When I visit "john/cp/os-importer/news/manage"
+      And I should see the feed item "JFK was murdered" was imported
+>>>>>>> SCHOLAR-3.x
      Then I should see the news photo "druplicon.small__"
 
   @api

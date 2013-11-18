@@ -238,8 +238,8 @@ function os_importer_import_access($type, $feed = TRUE) {
  * @param $value
  *   The value to populate the target with.
  * @param $mapping
- *  Associative array of the mapping settings from the per mapping
- *  configuration form.
+ *  Associative array of the mapping settings from the per mapping configuration
+ *  form.
  */
 function os_importer_map_files($source, $entity, $target, $value, $mapping) {
   if (!$value) {
@@ -270,7 +270,7 @@ function os_importer_import($form, &$form_state, $type) {
 
   $options = array();
   foreach (array_keys($bundle) as $option) {
-    $options[$option] = ucfirst($option);
+    $options[$option] = $option == 'ical' ? t('iCal') : strtoupper($option);
   }
 
   $feed_importer = !empty($bundle['csv']) ? feeds_importer($bundle['csv']) : NULL;
@@ -282,9 +282,9 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
-  $params = array('!new-York-times' => l(t('New York times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
+  $params = array('!new-york-times' => l(t('New York Times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
   $text = 'Importing content from RSS feeds supports only news and blog content. ';
-  $text .= 'For example: you can import a feed item from the !new-York-times rss news feeds.<br />';
+  $text .= 'For example: you can import a feed item from the !new-york-times rss news feeds.<br />';
   $text .= "When submitting the form, the import process will begin. After that, you can choose which news items you want to import into your site.";
   $text = t($text, $params);
 
@@ -361,6 +361,8 @@ function os_importer_import($form, &$form_state, $type) {
     ),
   );
 
+  $form['#validate'][] = 'os_importer_verify_uploaded_file';
+
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
@@ -429,6 +431,57 @@ function os_importer_import_validate($form, $form_state) {
 }
 
 /**
+ * Validate handler - verify that the uploaded CSV file has a validate columns
+ * structure.
+ */
+function os_importer_verify_uploaded_file($form, $form_state) {
+  if ($form_state['values']['format'] == 'ical') {
+    // Don't validate iCal files.
+    return;
+  }
+  $bundle = os_importer_importable_content($form_state['type']);
+
+  $source = feeds_source($bundle[$form_state['values']['format']]);
+  $config = $source->importer->getConfig();
+
+  // Get the mappings of the current importer.
+  $mappings = array();
+  foreach ($config['processor']['config']['mappings'] as $mapping) {
+    $mappings[] = strtolower($mapping['source']);
+  }
+
+  // Load the uploaded file and parse his headers.
+  $file = file_load($form_state['values']['file']);
+  feeds_include_library('ParserCSV.inc', 'ParserCSV');
+  $parser = new ParserCSV();
+  $parser->setDelimiter(',');
+  $iterator = new ParserCSVIterator($file->uri);
+  $header = _os_importer_parse_header($parser, $iterator);
+
+  // Check what missing in the uploaded CSV file and display message if needed.
+  if ($missing = array_diff($mappings, $header)) {
+    $params = array('!missing' => theme('item_list', array('items' => $missing)));
+    form_set_error('file', t('The next columns are missing in you CSV: !missing', $params));
+  }
+}
+
+/**
+ * Parsing the header.
+ */
+function _os_importer_parse_header(ParserCSV $parser, ParserCSVIterator $iterator) {
+  $parser->setLineLimit(1);
+  $rows = $parser->parse($iterator);
+  if (!count($rows)) {
+    return array();
+  }
+  $header = array_shift($rows);
+  foreach ($header as $i => $title) {
+    $header[$i] = trim(drupal_strtolower($title));
+  }
+  return $header;
+}
+
+/**
  * Form submit.
  */
 function os_importer_import_submit($form, &$form_state) {
@@ -473,6 +526,45 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
     return;
   }
 
+  _os_importer_import_vocab($source, $entity, $item, $id);
+  _os_importer_import_behalf_of_user($source, $entity, $item, $id);
+}
+
+/**
+ * Helper function to import a node on a behalf of another user.
+ */
+function _os_importer_import_behalf_of_user(FeedsSource $source, $entity, $item, $id) {
+  global $user;
+
+  // When importing an iCal don't search for the author, just use the current
+  // user UID.
+  if ($source->importer->id == 'os_ical') {
+    $entity->uid = $user->uid;
+    return;
+  }
+
+  if (empty($item['author'])) {
+    $account = user_load($user->uid);
+  }
+  else {
+    if ($account = user_load_by_name($item['author'])) {
+      // Check that the user is a group member and verify he can create node of
+      // this type.
+      $account = og_is_member('node', $id, 'user', $account) && node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
+    }
+    else {
+      // Loading the current user.
+      $account = user_load($user->uid);
+    }
+  }
+
+  $entity->uid = $account->uid;
+}
+
+/**
+ * Helper function to import vocabularies and taxonomy terms on the fly.
+ */
+function _os_importer_import_vocab(FeedsSource $source, $entity, $item, $id) {
   $config = $source->importer->getConfig();
 
   // Getting the mappings from the processor config.
@@ -508,25 +600,24 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
  *  The ID of the group.
  */
 function _os_importer_determine_context() {
+  // Vsite context exists - use him.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    return $vsite->id;
+  }
+
   // Verify we're in a queue.
-  if ($_GET['q'] != 'batch' && !(module_exists('vsite') && $vsite = vsite_get_vsite())) {
+  if ($_GET['q'] != 'batch') {
     return;
   }
 
   // Decide how we should get the vsite ID.
-  $determine_method = $_GET['q'] == 'batch' ? 'batch' : 'vsite';
-  if ($determine_method == 'batch') {
-    $batch = batch_load($_GET['id']);
+  $batch = batch_load($_GET['id']);
 
-    if (empty($batch['form_state']['complete form']['#space']['#value'])) {
-      return;
-    }
+  if (empty($batch['form_state']['complete form']['#space']['#value'])) {
+    return;
+  }
 
-    list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
-  }
-  else {
-    $id = $vsite->id;
-  }
+  list(, $id) = explode(':', $batch['form_state']['complete form']['#space']['#value']);
 
   return $id;
 }
@@ -549,26 +640,33 @@ function _os_importer_determine_context() {
  *
  * @return array
  *  Array with the vocabulary ID and the his term IDs.
- *
- * TODO: Export into OG vocab module.
  */
 function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_type, $bundle) {
-  $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
-
   $query = db_select('og_vocab_relation', 'ogr');
   $query->join('taxonomy_vocabulary', 'v', 'v.vid = ogr.vid');
 
+  // We need to check if a vocabulary with that name exists in the group.
   $result = $query
     ->fields('v')
     ->condition('group_type', $group_type)
     ->condition('gid', $gid)
-    ->condition('v.machine_name', $machine_name)
+    ->condition('v.name', $name)
     ->execute()
     ->fetchAllAssoc('vid');
 
-  $vocabulary = reset($result);
+  if ($result) {
+    // The vocabulary is already exists, we can use him.
+    $vocabulary = reset($result);
+  }
+  else {
+    // We didn't found any vocabulary - create a new one.
+    $i = 0;
+    $machine_name = str_replace(array(' ', '-'), '_', strtolower($name));
+    while (taxonomy_vocabulary_machine_name_load($machine_name)) {
+      $machine_name = substr($machine_name, 0, 32 - strlen($i)) . $i;
+      $i++;
+    }
 
-  if (!$vocabulary) {
     // Creating the new vocabulary.
     $vocabulary = new stdClass();
     $vocabulary->name = $name;
@@ -582,14 +680,18 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
   $taxonomy_terms = explode("|", $terms);
 
   foreach ($taxonomy_terms as $taxonomy_term) {
-    if (!$term = taxonomy_get_term_by_name($taxonomy_term, $machine_name)) {
+    $term = taxonomy_get_term_by_name($taxonomy_term, $vocabulary->machine_name);
+
+    if (!$term) {
       $term = new stdClass();
       $term->name = $taxonomy_term;
       $term->vid = $vocabulary->vid;
       taxonomy_term_save($term);
+      $tids[] = $term->tid;
     }
-
-    $tids[] = $term->tid;
+    else {
+      $tids[] = reset($term)->tid;
+    }
   }
 
   // Create the OG vocabulary and the relation to the group.

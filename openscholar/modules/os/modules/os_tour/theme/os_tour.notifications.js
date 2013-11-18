@@ -7,7 +7,10 @@
 
       // Setup.
       var menuLinkSel = '#os-tour-notifications-menu-link';
-      $(menuLinkSel).attr('href', '#').text('');
+      if ($(menuLinkSel + '.os-notifications-processed').length) {
+        return;
+      }
+      $(menuLinkSel).attr('href', '#').text('').addClass('os-notifications-processed');
       var settings = Drupal.settings.os_notifications;
       if (typeof google == 'undefined') {
         return;
@@ -39,7 +42,7 @@
             $(menuLinkSel).append($("<i class='os-tour-notifications-icon'/>"));
             $(menuLinkSel).append($("<span id='os-tour-notifications-count'/>"));
             os_tour_notifications_count(items.length);
-
+            $('#os-tour-notifications-menu-link').slideDown('slow');
             // Sets up the tour object with the loaded feed item steps.
             var tour = {
               showPrevButton: true,
@@ -54,11 +57,14 @@
 
             // Adds our tour overlay behavior with desired effects.
             $('#os-tour-notifications-menu-link').click(function() {
-              hopscotch.startTour(tour);
-              // Removes animation for each step.
-              $('.hopscotch-bubble').removeClass('animated');
-              // Allows us to target just this tour in CSS rules.
-              $('.hopscotch-bubble').addClass('os-tour-notifications');
+              $('html, body').animate({scrollTop:0}, '500', 'swing', function() {
+                $('.hopscotch-bubble').addClass('animated');
+                hopscotch.startTour(tour);
+                // Removes animation for each step.
+                $('.hopscotch-bubble').removeClass('animated');
+                // Allows us to target just this tour in CSS rules.
+                $('.hopscotch-bubble').addClass('os-tour-notifications');
+              });
             });
           }
         }
@@ -95,23 +101,25 @@
 
     // Adds a date like "5 days ago", or blank if no valid date found.
     var date = "";
+    /** @FIXME parse entry.contentSnippet to see if it starts with a date first.
     if (typeof entry.publishedDate != 'undefined' && entry.publishedDate != '') {
       date = os_tour_notifications_fuzzy_date(entry.publishedDate);
-      if (typeof date == 'undefined') {
+      if (typeof date === 'undefined') {
         date = "";
       } else {
         date = "<span class='date'>" + date + "</span>";
       }
     }
+    */
     output += date;
 
     // Builds the remainder of the content, with a "Read more" link.
-    output += "<span class='description'>" + content + "<span/>";
+    output += "<span class='description'>";
     var content = entry.content;
     if (typeof entry.contentSnippet != 'undefined') {
       content = entry.contentSnippet;
     }
-    output += content;
+    output += content + "</span>";
     output += '<div class="os-tour-notifications-readmore"><a target="_blank" href="' + entry.link + '">Read more &raquo;</a></div></div>';
 
     // Returns the item to be added to the tour's (array) `items` property .
@@ -165,6 +173,7 @@
       return value;
     }
     if (parseInt(num_remaining) === -1) {
+      $(count).text('0');
       $("#os-tour-notifications-menu-link").slideUp('slow');
       return;
     }
