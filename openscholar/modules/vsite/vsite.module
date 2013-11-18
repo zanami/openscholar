@@ -181,8 +181,7 @@ function vsite_form_spaces_features_form_alter(&$form, $form_state) {
   $form[OG_DEFAULT_ACCESS_FIELD] = array(
     '#type' => 'checkbox',
     '#title' => t('Get full access on VSite roles and permissions'),
-    // @todo: Do we want to limit this, or let everyone?
-    '#access' => user_access('administer site configuration'),
+    '#access' => user_access('administer group'),
     '#default_value' => $wrapper->{OG_DEFAULT_ACCESS_FIELD}->value(),
     '#vsite_id' => $vsite->id,
   );
