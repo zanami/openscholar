@@ -194,3 +194,21 @@ function hwpi_block_view_alter(&$render, $block) {
   }
 }
 
+/**
+ * Implements hook_node_insert().
+ */
+function hwpi_node_insert($node) {
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for cp_appearance_theme_picker_form.
+ */
+function hwpi_form_cp_appearance_theme_picker_form_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'][] = 'hwpi_theme_picker_form_submit';
+}
+/**
+ * Submit callback for cp_appearance_theme_picker_form.
+ */
+function hwpi_theme_picker_form_submit($form, &$form_state) {
+}
+
