@@ -450,8 +450,18 @@ function os_importer_verify_uploaded_file($form, $form_state) {
     $mappings[] = strtolower($mapping['source']);
   }
 
-  // Load the uploaded file and parse his headers.
+  // Load the uploaded file and.
   $file = file_load($form_state['values']['file']);
+
+  // Replace the \r with \n.
+  // WIP.
+  $path = drupal_realpath($file->uri);
+  chmod($path, 777);
+  $file_content = fopen($path, 'w');
+  fwrite($file_content, $_POST['save']);
+  fclose($file_content);
+
+  // Parse file's headers.
   feeds_include_library('ParserCSV.inc', 'ParserCSV');
   $parser = new ParserCSV();
   $parser->setDelimiter(',');
