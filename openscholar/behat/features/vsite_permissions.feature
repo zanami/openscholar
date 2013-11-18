@@ -25,13 +25,12 @@ Feature:
      When I go to "john/blog/unpublish-blog"
      Then I should get a "200" HTTP response
 
-  @api @current
+  @api
   Scenario: Testing vsite user can add node only in the vsite he is a member.
-    Given I am logging in as "michelle"
-     When I go to "obama/node/add/blog"
+    Given I am logging in as "alexander"
+     When I go to "edison/node/add/blog"
       And I should get a "200" HTTP response
       And I go to "john/node/add/blog"
-      And I should print page
      Then I should get a "403" HTTP response
 
   @api

@@ -1,7 +1,7 @@
 Feature:
   Testing the aliases of a node.
 
-  @api @current
+  @api @wip
   Scenario: Check that the OG audience field will be shown when editing content.
     Given I am logging in as "john"
       And I visit "john/node/add/blog"
