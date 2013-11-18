@@ -14,6 +14,11 @@ Feature:
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Test view access for a anonymous user.
+  Scenario: Test view access for a anonymous user for a private group.
     Given I go to "washington/file.json"
      Then I should get a "403" HTTP response
+
+  @api
+  Scenario: Test view access for a anonymous user for a public group.
+    Given I go to "john/file.json"
+     Then I should get a "200" HTTP response
