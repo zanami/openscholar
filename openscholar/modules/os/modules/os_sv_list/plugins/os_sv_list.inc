@@ -267,7 +267,7 @@ class os_sv_list extends os_boxes_default {
     
     //let a plugin do the rendering.  if they don't, use the default.
     $render = $this->_plugins_invoke('render', $entities);
-    $render = (isset($render) && $render) ? $render : entity_view($this->entity_type, $entities, $this->options['display']);
+    $render = ($render) ? $render : entity_view($this->entity_type, $entities, $this->options['display']);
     
     //apply a layout.  just doing grid for now.
     $layout = 'sv-list-' . $this->options['layout'];
@@ -392,7 +392,7 @@ class os_sv_list extends os_boxes_default {
       }
     }
     
-    return (isset($ret)) ? $ret : array();
+    return (isset($ret)) ? array_filter($ret) : array();
   }
   
   /**
@@ -409,9 +409,11 @@ class os_sv_list extends os_boxes_default {
   }
     
   protected function _display_options() {
+    $defaults = array('title', 'teaser', 'full');
+    
     //list all the available view modes for this entity
     $view_modes = os_entity_view_modes($this->entity_type);
-    $view_modes = array_unique(array_reduce($view_modes, 'array_merge', array())); 
+    $view_modes = array_unique(array_reduce($view_modes, 'array_merge', $defaults)); 
     
     //get labels for these view modes
     $info = entity_get_info($this->entity_type);

@@ -163,24 +163,39 @@ function os_software_node_view($node, $view_mode, $langcode) {
  * Implements hook_process_HOOK for node.
  */
 function os_software_process_node(&$vars) {
-  if ($vars['type'] !== 'software_project') {
+  if (!in_array($vars['type'], array('software_project', 'software_release'))) {
     return;
   }
-  if ($vars['view_mode'] === 'full') {
-    // Orders the EVA fields so that "Recommended" is above "Recent".
-    if (isset($vars['content']['os_software_releases_entity_view_2']['#weight']) && isset($vars['content']['os_software_releases_entity_view_1'])) {
-      $weight = $vars['content']['os_software_releases_entity_view_2']['#weight'];
-      $vars['content']['os_software_releases_entity_view_1']['#weight'] = $weight + 1;
+  
+  if ($vars['type'] == 'software_release') {
+    if ($vars['view_mode'] == 'title') {
+      $vars['content'] = array_intersect_key($vars['content'], array('links' => TRUE));
     }
+    return;
   }
-  elseif ($vars['view_mode'] === 'teaser') {
-    // Hides EVA fields "Recommended Release" and "Recent Releases" on /software.
-    if (isset($vars['content']['os_software_releases_entity_view_1'])) {
-      unset($vars['content']['os_software_releases_entity_view_1']);
-    }
-    if (isset($vars['content']['os_software_releases_entity_view_2'])) {
-      unset($vars['content']['os_software_releases_entity_view_2']);
-    }
+  
+  switch ($vars['view_mode']) {
+    case 'full':
+      // Orders the EVA fields so that "Recommended" is above "Recent".
+      if (isset($vars['content']['os_software_releases_entity_view_2']['#weight']) && isset($vars['content']['os_software_releases_entity_view_1'])) {
+        $weight = $vars['content']['os_software_releases_entity_view_2']['#weight'];
+        $vars['content']['os_software_releases_entity_view_1']['#weight'] = $weight + 1;
+      }
+      break;
+      
+    case 'teaser': 
+      // Hides EVA fields "Recommended Release" and "Recent Releases" on /software.
+      if (isset($vars['content']['os_software_releases_entity_view_1'])) {
+        unset($vars['content']['os_software_releases_entity_view_1']);
+      }
+      if (isset($vars['content']['os_software_releases_entity_view_2'])) {
+        unset($vars['content']['os_software_releases_entity_view_2']);
+      }
+      break;
+      
+    case 'title':
+      $vars['content'] = array_intersect_key($vars['content'], array('links' => TRUE));
+      break;
   }
 }
 

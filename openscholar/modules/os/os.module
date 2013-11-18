@@ -116,7 +116,11 @@ function os_menu_alter(&$items) {
  */
 function os_entity_info_alter(&$info) {
   $info['node']['view modes']['sidebar_teaser'] = array(
-    'label' => 'Sidebar Teaser',
+    'label' => t('Sidebar Teaser'),
+    'custom settings' => TRUE,
+  );
+  $info['node']['view modes']['title'] = array(
+    'label' => t('Title'),
     'custom settings' => TRUE,
   );
 }
@@ -1518,7 +1522,7 @@ function os_entity_view_modes($entity_type = NULL, $bundle = NULL) {
 function os_os_entity_view_modes_alter(&$info) {
   $bundles = array_keys(os_get_bundles(TRUE));
   $bundles = array_diff($bundles, array('feed_importer'));
-  $bundle_views = array_fill_keys($bundles, array('full', 'teaser'));
+  $bundle_views = array_fill_keys($bundles, array('full', 'teaser', 'title'));
   $info['node'] = array_merge_recursive($info['node'], $bundle_views);
 }
 

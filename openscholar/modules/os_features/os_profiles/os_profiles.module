@@ -80,7 +80,7 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
+  if (!$vars['teaser'] && !in_array($vars['view_mode'], array('sidebar_teaser', 'title'))) {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 
