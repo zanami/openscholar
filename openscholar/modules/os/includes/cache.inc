@@ -28,9 +28,8 @@ function os_remove_cache($urls, $wildcard = FALSE){
 
   $absolute_urls = array();
   $internal_paths = array();
-  $urls = explode("\r\n", $urls);
   foreach ($urls as &$url) {
-    if (strpos($url, $base_url) === 0) {
+    if (strpos($url, '://')) {
       $absolute_urls[] = trim($url);
     }
     else {

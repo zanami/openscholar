@@ -44,6 +44,20 @@ function os_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'expire_handler_file';
+  $strongarm->value = 'OSExpireFile';
+  $export['expire_handler_file'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'expire_handler_node';
+  $strongarm->value = 'OSExpireNode';
+  $export['expire_handler_node'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'expire_node_actions';
   $strongarm->value = array(
     1 => '1',
