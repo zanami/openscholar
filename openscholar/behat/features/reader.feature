@@ -74,9 +74,9 @@ Feature:
       And I click "Lee Harvey Oswald"
      Then I should see "November 22, 1963"
 
-  @api
-  Scenario: Verify a the same feed can be imported to two different vsite.
-    Given I am logging in as "admin"
+  @api @current
+  Scenario: Verify a the same feed can be imported to two different vsites.
+    Given I am logging in as "john"
       And I import "john" feed items for "obama"
      When I visit "obama/cp/os-importer/news/manage"
      Then I should see "JFK was murdered"
