@@ -1726,6 +1726,11 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
     ),
   );
 
+  if ($element['#cardinality'] != 1) {
+    // Multiple select, remove the "None" option.
+    unset($element['#options']['_none']);
+  }
+
   return $element;
 }
 
