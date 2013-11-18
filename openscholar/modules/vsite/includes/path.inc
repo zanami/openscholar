@@ -41,9 +41,10 @@ function _vsite_get_pathauto_settings() {
  */
 function _vsite_alter_node_path_settings(&$node) {
   $vsite = vsite_get_vsite();
-  if (!$vsite || ((int) $node->nid === (int) $vsite->group->nid)) {
+  if (!$vsite || empty($node->nid) || empty($vsite->group->nid) || ((int) $node->nid === (int) $vsite->group->nid)) {
     return;
   }
+
   module_load_include('inc', 'pathauto');
   $pattern = pathauto_pattern_load_by_entity('node', $node->type, $node->language);
 
