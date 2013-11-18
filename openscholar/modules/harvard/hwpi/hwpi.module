@@ -247,4 +247,19 @@ function hwpi_theme_picker_form_submit($form, &$form_state) {
  * @see
  */
 function hwpi_theme_set_defaults() {
+  // Declares settings specific to HWPI themes.
+  $settings = array(
+    'os_breadcrumbs_show_breadcrumbs' => 0,
+    'enable_responsive' => 1,
+  );
+
+  // Sets all HWPI-theme-specific settings.
+  foreach ($settings as $name => $value) {
+    if ($space = spaces_get_space()) {
+      $space->controllers->variable->set($name, $value);
+    }
+    else {
+      variable_set($name, $value);
+    }
+  }
 }
