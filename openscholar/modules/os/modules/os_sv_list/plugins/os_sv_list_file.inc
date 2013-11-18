@@ -61,49 +61,7 @@ class os_sv_list_file extends os_sv_list {
     );
   }
   
-  /**********************
-   * Display functions  *
-   **********************/
-//   function display_title($ids) {
-//     return $this->display_view_mode($ids, ''); //title view mode?
-//   }
-  function display_preview($ids) {
-    return $this->display_view_mode($ids, 'preview');
-  }
-  function display_details($ids) {
-    return $this->display_view_mode($ids, 'full');
-  }
-  function display_grid($ids) {
-    return $this->display_view_mode($ids, '');  //todo grid view
-  }
-  
-  /*
-   * 
-   file views
-     //$entity_info = entity_get_info("file"); print_r(array_keys($entity_info["view modes"]));
-  Array
-  (
-      [0] => ical
-      [1] => diff_standard
-      [2] => teaser
-      [3] => full
-      [4] => preview
-      [5] => search_index
-      [6] => search_result
-      [7] => media_gallery_thumbnail
-      [8] => media_gallery_lightbox
-      [9] => media_gallery_detail
-      [10] => media_gallery_block_thumbnail
-      [11] => os_files_xxlarge
-      [12] => os_files_xlarge
-      [13] => os_files_large
-      [14] => os_files_med
-      [15] => os_files_small
-      [16] => os_files_link_icon
-      [17] => os_files_link
-      [18] => token
-  )*/
-  
+
   /**
    * sorting functions
    */

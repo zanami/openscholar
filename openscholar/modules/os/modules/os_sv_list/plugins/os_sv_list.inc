@@ -19,18 +19,15 @@ class os_sv_list extends os_boxes_default {
     $options += array(
       'content_type' => 'all',
       'display' => 'teaser',
+      'layout' => 'list',
+      'grid_size' => 3,
       'more' => FALSE,
       'more_text' => t('More'),
-      'more_link' => '', // what's a good default?
+      'more_link' => '',
   
       'pager' => FALSE,
       'number_of_items' => 6,
       'sort_by' => 'sort_newest',
-      'vocabs' => array(),
-      'terms' => array(),
-      'only_vocabs' => TRUE,
-      'only_vocabs_values' => array(),
-
     );
 
     //get options from plugins
@@ -53,7 +50,7 @@ class os_sv_list extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-    $this->options = ($this->options) ? $this->options + $this->options_defaults() : $this->options_defaults(); //avoid notices when new options are added
+    $this->options = array_merge($this->options_defaults(), $this->options);
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
   
     $form['#submit'] = array('os_sv_list_form_submit');
@@ -86,6 +83,26 @@ class os_sv_list extends os_boxes_default {
         'visible' => array(// action to take.
           ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
         ),
+      ),
+    );
+    
+    $form['layout'] = array(
+      '#type' => 'select',
+      '#title' => t('Layout'),
+      '#default_value' => $this->options['layout'],
+      '#options' => array('list' => t('List'), 'grid' => t('Grid')), //table, slideshow, anything else?
+    );
+    
+    $form['grid_size'] = array(
+      '#type' => 'select',
+      '#title' => t('Grid Size'),
+      '#description' => t('How many items should appear in each row of the grid?'),
+      '#default_value' => $this->options['grid_size'],
+      '#options' => drupal_map_assoc(range(1, 5)),
+      '#states' => array(
+        'visible' => array(
+          'select[name="layout"]' => array('value' => 'grid'),
+        )
       ),
     );
 
@@ -244,22 +261,39 @@ class os_sv_list extends os_boxes_default {
       $more = ($this->options['more']) ? l($this->options['more_text'], $this->options['more_link'], array('attributes' => array('class' => array('more-link')))) : '';
     }
     
+    //give plguins a chance to alter the entities after loading but before rendering.  see events.
+    $entities = entity_load($this->entity_type, $ids);
+    $this->_plugins_invoke('entities_alter', $entities);
     
-    //use drupal display functions or sv list ones.  it'd be great if all these could come from drupal.
-    $info = entity_get_info($this->entity_type);
-    if (isset($info['view modes'][$this->options['display']])) {
-      $entities = entity_load($this->entity_type, $ids);
-      $this->_plugins_invoke('entities_alter', $entities);
+    //let a plugin do the rendering.  if they don't, use the default.
+    $render = $this->_plugins_invoke('render', $entities);
+    $render = (isset($render) && $render) ? $render : entity_view($this->entity_type, $entities, $this->options['display']);
+    
+    //apply a layout.  just doing grid for now.
+    $layout = 'sv-list-' . $this->options['layout'];
+    if ($this->options['layout'] == 'grid') {
+      $layout .= ' sv-list-grid-' . $this->options['grid_size'];
+      $render = (isset($render[$this->entity_type])) ? $render[$this->entity_type] : $render; 
+      $render['#attached']['css'][] = drupal_get_path('module', 'os_sv_list').'/os_sv_list_layout.css';
       
-      $render = $this->_plugins_invoke('render', $entities);
-      $this->_plugins_invoke('render_alter', $render);
-      $render = (isset($render) && $render) ? $render : entity_view($this->entity_type, $entities, $this->options['display']);
-      $content = drupal_render($render);      
-    } else {
-      $content = 'fix my view mode: ' . $this->options['display'];
+      //if the nth-child css doesn't work out, we could manually insert a div...
+//       $div = array('#markup' => '<div class="sv-list-new-row">DIV!</div>', '#type' => 'markup');
+//       $c = count($entities);
+//       for ($i = $this->options['grid_size'] ; $i < count($entities); $i += 1 + $this->options['grid_size']) {
+//         array_splice($render, $i, 0, array($div));
+//       }
+//       $render = (isset($render[$this->entity_type])) ? $render[$this->entity_type] : $render;
+//       foreach ($render as &$item) {
+//         if (is_array($item)) {
+//           $item['#attributes'] = array('class' => array('sv-grid'));
+//         }
+//       }    
     }
     
-    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $content . '</div>' . $pager . $more;
+    //now render to html.
+    $content = drupal_render($render);      
+    
+    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'" class="'. $layout .'">' . $content . '</div>' . $pager . $more;
     
     
     return $block;
