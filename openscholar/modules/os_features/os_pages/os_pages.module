@@ -662,7 +662,7 @@ function os_pages_os_add_new_links_alter(&$links) {
       $links['book_add_child'] = array(
         'title' => t('Subpage'),
         'href' => 'node/add/page',
-        'query' => isset($node->book['mlid'])?array('parent' => $node->book['mlid']):array('parent_node' => $node->nid),
+        'query' => isset($node->book['mlid']) ? array('parent' => $node->book['mlid'], 'destination' => 'node/' . $node->nid) : array('parent_node' => $node->nid),
       );
     }
   }
