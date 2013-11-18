@@ -2228,6 +2228,31 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if ($vsite = vsite_get_vsite()) {
+      if (isset($vsite->purl_provider) && $vsite->purl_provider == 'vsite_domain') {
+        // First generates an internal, relative path to the final destination.
+        $options = array(
+          'query' => array(
+            'parent' => $parent,
+          ),
+        );
+        $destination = url('site/register', $options);
+
+        // Then creates an absolute, external link to the base domain's login
+        // page with the final path URL-encoded as the destination query
+        // parameter.
+        $options = array(
+          'absolute' => TRUE,
+          'base_url' => $purl_base_domain,
+          'query' => array(
+            'destination' => $destination,
+          ),
+        );
+        $href = url('user/login', $options);
+        $build['href'] = $href;
+        $build['path'] = $href;
+      }
+    }
   }
 
   if (isset($options['attributes']['class'])) {
