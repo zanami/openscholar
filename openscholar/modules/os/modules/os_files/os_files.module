@@ -1037,6 +1037,32 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
 }
 
 /**
+ * Removes the derivatives that Imagefield_crop creates from the Media Browser
+ */
+function os_files_preprocess_media_views_view_media_browser(&$vars) {
+  $usage = array();
+  foreach ($vars['rows'] as $file) {
+    // gets a list of files that use this file
+    $u = file_usage_list($file);
+    if (isset($u['imagefield_crop']['file'])) {
+      $keys = array_keys($u['imagefield_crop']['file']);
+      foreach ($keys as $k) {
+        $usage[$k] = $file;
+      }
+    }
+  }
+
+  foreach ($vars['rows'] as $i => $file) {
+    if (isset($usage[$file->fid])) {
+      $vars['rows'][$i]->preview = $usage[$file->fid]->preview;
+    }
+    elseif (in_array($file, $usage)) {
+      unset($vars['rows'][$i]);
+    }
+  }
+}
+
+/**
  * Used in #element_validate
  * Replaces file_managed_file_validate
  *
@@ -1146,6 +1172,7 @@ function os_files_oembed_request_alter(&$attributes, $provider, $url) {
  */
 function os_files_preprocess_media_thumbnail(&$vars) {
   $element = &$vars['element'];
+
   $filename = basename($element['#file']->uri);
   if ($element['#file']->filename != $filename) {
     $element['#name'] = $element['#file']->filename.' ('.$filename.')';
