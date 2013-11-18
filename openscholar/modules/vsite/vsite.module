@@ -241,17 +241,28 @@ function vsite_form_taxonomy_form_term_after_build(&$form, &$form_state) {
   // Adds the prefix to the custom alias field on the node form.
   $form['path']['alias']['#field_prefix'] = "$field_prefix/";
 
+  // VSites that use og_spaces must have the purl at the beginning of all their
+  // aliases. The purl is added automatically to every alias.
+  // @see _vsite_alter_term_path_settings().
+  // In the UI, the alias field is prefixed with the purl to show that it cannot
+  // be removed, so the input element itself should not include the purl. This
+  // means that we must remove the purl from the field's value.
+
   // If this is a vsite...
-  if (module_exists('vsite') && $purl = vsite_get_purl()) {
-    // And if this node form contains an existing alias value...
-    if ($original = $form['path']['alias']['#value']) {
-      // Removes the purl from the editable field value
-      // in order to match user expectations: the purl must in the alias,
-      // so the user should not appear to have the option to remove it.
-      // Even if the purl is not part of the field value, it will be added.
-      // @see _vsite_alter_node_path_settings()
-      $new = substr($original, strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    // And if the vsite uses og_spaces and thus requires that aliases start with
+    // the vsite's purl...
+    if ($vsite->purl_provider == 'spaces_og') {
+      // And if this node form contains an existing alias value...
+      if ($original = $form['path']['alias']['#value']) {
+        $purl = vsite_get_purl();
+        // And if the alias starts with the vsite's purl...
+        if (strpos($original, $purl) === 0) {
+          // Remove the purl from the editable field value.
+          $new = substr($original, strlen($purl) + 1);
+          $form['path']['alias']['#value'] = $new;
+        }
+      }
     }
   }
 
