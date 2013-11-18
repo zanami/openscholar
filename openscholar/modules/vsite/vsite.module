@@ -174,15 +174,15 @@ function vsite_user_admin_roles($variables) {
  * Allow overrding the global roles and permissions.
  */
 function vsite_form_spaces_features_form_alter(&$form, $form_state) {
-  if (!$vsite = vsite_get_vsite()) {
+  if (!$vsite = vsite_get_vsite() || !user_access('administer group')) {
+    // Not in a VSite, or user doesn't have access.
     return;
   }
+
   $wrapper = entity_metadata_wrapper('node', $vsite->id);
   $form[OG_DEFAULT_ACCESS_FIELD] = array(
     '#type' => 'checkbox',
     '#title' => t('Get full access on VSite roles and permissions'),
-    // @todo: Do we want to limit this, or let everyone?
-    '#access' => user_access('administer site configuration'),
     '#default_value' => $wrapper->{OG_DEFAULT_ACCESS_FIELD}->value(),
     '#vsite_id' => $vsite->id,
   );
