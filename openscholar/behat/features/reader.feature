@@ -74,7 +74,7 @@ Feature:
       And I click "Lee Harvey Oswald"
      Then I should see "November 22, 1963"
 
-  @api @current
+  @api
   Scenario: Verify a the same feed can be imported to two different vsites.
     Given I am logging in as "john"
       And I import "john" feed items for "obama"
