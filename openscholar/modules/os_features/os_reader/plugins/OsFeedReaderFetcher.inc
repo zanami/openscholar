@@ -42,6 +42,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
    * Save a imported entity.
    */
   protected function entitySave($entity) {
+    $node = node_load($entity->feeds_item->feed_nid);
     $values = array(
       'title' => $entity->title,
       'description' => $entity->description,
@@ -49,6 +50,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       'guid' => $entity->feeds_item->guid,
       'url' => $entity->feeds_item->url,
       'importer_nid' => $entity->feeds_item->feed_nid,
+      'importer_type' => $node->type == 'blog_import' ? 'blog' : 'news',
     );
     os_reader_feed_item_create($values)->save();
   }
@@ -102,5 +104,30 @@ class OsFeedReaderFetcher extends FeedsProcessor {
     drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 
     return $targets;
+  }
+
+  /**
+   * Prevent duplication of entries.
+   */
+  protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
+    if ($id = parent::existingEntityId($source, $result)) {
+      return $id;
+    }
+
+    $node = node_load($source->feed_nid);
+    $type = $node->type == 'blog_import' ? 'blog' : 'news';
+
+    $query = new entityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'os_feed_item')
+      ->propertyCondition('guid', $result->current_item['guid'])
+      ->propertyCondition('importer_type', $type)
+      ->execute();
+
+    if (!empty($result['os_feed_item'])) {
+      return reset(array_keys($result['os_feed_item']));
+    }
+
+    return 0;
   }
 }

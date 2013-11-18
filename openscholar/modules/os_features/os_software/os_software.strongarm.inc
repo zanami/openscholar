@@ -178,7 +178,6 @@ function os_software_strongarm() {
   $strongarm->name = 'node_options_software_release';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_software_release'] = $strongarm;
 

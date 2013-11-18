@@ -19,6 +19,7 @@ function os_basetheme_preprocess_html(&$vars) {
     $vars['classes_array'][] = 'navbar-off';
   }
 
+  $vars['use_responsive_behaviors'] = (bool) variable_get('enable_responsive', FALSE);
 }
 
 /**
@@ -112,8 +113,8 @@ function os_basetheme_preprocess_status_messages(&$vars) {
 }
 
 function os_basetheme_preprocess_overlay(&$vars) {
-  // we never want these. They look awful
- $vars['tabs'] = false;
+  // we never want these. They look awful.
+ $vars['tabs'] = strpos($_GET['q'], 'os-importer/') ? FALSE : menu_primary_local_tasks();
 }
 
 /**
@@ -171,13 +172,6 @@ function os_basetheme_preprocess_node(&$vars) {
       $vars['classes_array'][] = 'event-start';
     }
   }
-
-  // When watching an imported news item - don't apply the site time zone.
-  if ($vars['node']->type == 'news' && os_reader_get_feed_item_by_nid($vars['node']->nid)) {
-    $date = new DateTime(NULL, timezone_open('UTC'));
-    $date->setTimestamp($vars['content']['field_news_date']['#items'][0]['value']);
-    $vars['content']['field_news_date'][0]['#markup'] = $date->format('F j, Y');
-  }
 }
 
 /**
@@ -217,7 +211,11 @@ function os_basetheme_menu_tree(&$variables) {
  * when we're using nice_menus.
  */
 function os_basetheme_preprocess_menu_tree(&$variables) {
-  $variables['os_nice_menus'] = ($variables['tree']['#theme'] == 'os_nice_menus');
+  if (isset($variables['tree']['#theme'])) {
+    $variables['os_nice_menus'] = ($variables['tree']['#theme'] == 'os_nice_menus');
+  }
+  else {
+    $variables['os_nice_menus'] = false;
+  }
   $variables['tree'] = $variables['tree']['#children'];
-  
 }

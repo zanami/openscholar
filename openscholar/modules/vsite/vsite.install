@@ -57,6 +57,14 @@ function vsite_install() {
     }
   }
 
+  og_create_field(OG_AUDIENCE_FIELD, 'user', 'user');
+  // Add "Support expire" field to allow support team to auto-subscribe to
+  // a group to a set interval.
+  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['instance']['label'] = 'Support expire';
+  $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
+  og_create_field('vsite_support_expire', 'user', 'user', $og_field);
+
   variable_set('og_group_manager_default_rids_node_vsite', $manager_roles);
 
   // Sets the default OG preset to be os_personal
@@ -133,6 +141,13 @@ function vsite_update_7001(&$ctx) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function vsite_uninstall() {
+  variable_del('vsite_support_expire');
 }
 
 /**
@@ -435,4 +450,25 @@ function vsite_update_7012() {
     'hwp_project' => 'hwp_project',
   );
   variable_set('os_enabled_spaces_presets', $value);
+}
+
+/**
+ * Adds subsite_domains field to vsite node types and Add "Support expire" field to allow support team to auto-subscribe to VSite.
+ */
+function vsite_update_7013() {
+  //subsite domains field
+  features_revert(array('vsite' => array('field')));
+  
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  $group_types = array_intersect($group_types, variable_get('subsite_parents', array('department')));
+  
+  foreach ($group_types as $type) {
+    vsite_attach_fields_to_group($type);
+  }
+
+  //og support field
+  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['instance']['label'] = 'Support expire';
+  $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
+  og_create_field('vsite_support_expire', 'user', 'user', $og_field);
 }

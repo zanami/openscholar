@@ -24,6 +24,12 @@ function os_events_os_app_info() {
         'feed_2', // rss
       ),
     ),
+    'importers' => array(
+      'event' => array(
+        'ical' => 'os_ical',
+        'csv' => 'os_events_csv',
+      ),
+    ),
   );
 
   return $apps;
@@ -469,11 +475,15 @@ function os_events_form_registration_entity_settings_form_alter(&$form, $form_st
     '#date_format' => $format,
   );
 
+  // Set the default time for a reminder to be a day before the event.
+  $wrapper = entity_metadata_wrapper('node', $form_state['entity']['entity_id']);
+  $event_date = reset($wrapper->field_date->value());
+  $reminder = empty($reminder_date) ? strtotime('-1 day', strtotime($event_date['value'])) : strtotime($reminder_date);
   $form['reminder']['reminder_settings']['reminder_date'] = array(
     '#type' => 'date_popup',
     '#title' => t('Reminder Date'),
     '#description' => t('When to send reminders.'),
-    '#default_value' => date('Y-m-d H:i', strtotime($reminder_date)),
+    '#default_value' => date('Y-m-d H:i', $reminder),
     '#date_format' => $format,
     '#states' => array(
       'visible' => array(
@@ -634,4 +644,14 @@ function os_events_mollom_form_info($form_id) {
 function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) {
   // Prevent placing a backslash before a colon, because it makes iCal crash.
   $event['description'] = str_replace('\:', ':', $event['description']);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Include JS to update the End Date field according to the Start Date field on
+ * event node form.
+ */
+function os_events_form_event_node_form_alter(&$form, &$form_state) {
+  $form['#attached']['js'][] = drupal_get_path('module', 'os_events') . '/js/os_events.js';
 }

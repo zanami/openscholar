@@ -34,6 +34,7 @@ function os_wysiwyg_wysiwyg_default_profiles() {
           'outdent' => 1,
           'indent' => 1,
           'unlink' => 1,
+          'anchor' => 1,
           'formatselect' => 1,
           'fontselect' => 1,
           'fontsizeselect' => 1,

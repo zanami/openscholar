@@ -945,8 +945,8 @@ body.page-iqss-gking-research-group ul.ui-tabs-nav {
 
 
 
-body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-selected a,
-body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-selected a:visited {
+body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-active a,
+body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-active a:visited {
   color: #CC6733;
   }
 
@@ -1060,7 +1060,7 @@ border:none;
 }
 
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
  background: #FFFFFF;
 }
 
@@ -1106,7 +1106,7 @@ float: none;
     color: #CC6733;
 }
 
-.not-front .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.not-front .ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background: none;
 }
 

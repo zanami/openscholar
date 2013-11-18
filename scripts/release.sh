@@ -34,7 +34,7 @@ fi
 if [ -z $TAGNAME ]
 then
     VERSION_INFO=`grep "version = 7.x" openscholar/openscholar.info`
-    VERSION=`echo $VERSION_INFO | sed -n 's/version = 7\.x-3\.\(.*\)/\1/p'`
+    VERSION=`echo $VERSION_INFO | sed -n 's/os_version = 7\.x-3\.\(.*\)/\1/p'`
 fi
 
 # Next, we'll verify that a tag exists matching either the specified git tag,

@@ -22,6 +22,12 @@ function os_news_os_app_info() {
     'views tabs' => array(
       'os_news' => array('page'),
     ),
+    'importers' => array(
+      'news' => array(
+        'csv' => 'os_news',
+        'rss' => 'feed_importer',
+      ),
+    ),
   );
 
   return $apps;

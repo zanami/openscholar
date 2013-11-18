@@ -184,9 +184,16 @@ img,
 a img {
   border: 0;
 }
+
 p {
-  margin: 0 0 1.5em;
-  padding: 0;
+     margin: 0px 0px 1.5em;
+     padding: 0px;
+}
+
+
+#columns p:only-child,
+#columns p:nth-last-of-type(1) {
+     margin: 0 0px .4em;
 }
 
 a, a:visited {
@@ -422,6 +429,11 @@ ul ul ul ul {
     margin:20px 0 0 0;
 }
 
+.calendar-calendar .week-view div.single-day .view-item {
+  position: relative;
+  float: left;
+}
+
 .view-os-events .field-items{
     display: inline-block;
 }
@@ -497,18 +509,23 @@ padding:3px 0 3px 25px !important;
 
 }
 
+.page-node.node-type-event .rss,
+.page-node.node-type-event .subscribe {
+    display: inline-block;
+    margin-top: 7px;
+}
+
+
 /* BOOK NAVS */
 .book-menu {
   width: 33%;
   float: right;
   margin: 0 0 1em 1.5em;
-  border-left: 1px dashed #ccc;
-  padding-left: .7em;
   font-size: .95em;
   }
 
 .book-menu h3 {
-  margin: .5em 0;
+  margin: .3em 0;
   }
 
 #block-book-navigation ul.menu,
@@ -693,6 +710,16 @@ header[role=banner],
   overflow: visible;
   word-wrap: break-word;
 }
+
+/* iframe padding when its floated left or right*/
+.lt-ie9 span[style*="FLOAT: LEFT;"] iframe,
+span[style*="float: left;"] iframe {
+	padding-right:15px;
+	}
+.lt-ie9	span[style*="FLOAT: RIGHT;"] iframe,
+span[style*="float: right;"] iframe {
+	padding-left:15px;
+	}
 
 /* Helpful classes for hiding content */
 .element-invisible {
