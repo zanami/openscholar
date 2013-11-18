@@ -116,7 +116,9 @@
     float: right;
     line-height: 38px;
     margin: 0;
+    text-transform:uppercase;
   }
+  
   #branding_footer .branding-container {
     height: 45px;
     line-height: 45px;

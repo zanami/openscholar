@@ -49,6 +49,13 @@ user/login';
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'securepages_switch';
+  $strongarm->value = '1';
+  $export['securepages_switch'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'site_404';
   $strongarm->value = 'page_not_found';
   $export['site_404'] = $strongarm;

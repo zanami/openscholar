@@ -126,6 +126,49 @@ function vsite_get_purl($vsite = FALSE){
 }
 
 /**
+ * Implements hook_theme_registry_alter().
+ */
+function vsite_theme_registry_alter(&$theme_registry) {
+  $theme_registry['user_admin_roles']['function'] = 'vsite_user_admin_roles';
+}
+
+/**
+ * Don't allow deleting "vsite admin" from Roles UI.
+ *
+ * @see theme_user_admin_roles().
+ */
+function vsite_user_admin_roles($variables) {
+  $form = $variables['form'];
+
+  $header = array(t('Name'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
+  foreach (element_children($form['roles']) as $rid) {
+    $name = $form['roles'][$rid]['#role']->name;
+    $row = array();
+    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || $name == 'vsite admin') {
+      $row[] = t('@name <em>(locked)</em>', array('@name' => $name));
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = '';
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    else {
+      $row[] = check_plain($name);
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = l(t('edit role'), 'admin/people/permissions/roles/edit/' . $rid);
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    $rows[] = array('data' => $row, 'class' => array('draggable'));
+  }
+  $rows[] = array(array('data' => drupal_render($form['name']) . drupal_render($form['add']), 'colspan' => 4, 'class' => 'edit-name'));
+
+  drupal_add_tabledrag('user-roles', 'order', 'sibling', 'role-weight');
+
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'user-roles')));
+  $output .= drupal_render_children($form);
+
+  return $output;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Allow overrding the global roles and permissions.
@@ -161,6 +204,44 @@ function vsite_form_spaces_features_form_submit($form, &$form_state) {
 
   $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set($value);
   $wrapper->save();
+}
+
+/**
+ * Implements hook_library_alter().
+ */
+function vsite_library_alter(&$libraries, $module) {
+  if ($module != 'overlay') {
+    return;
+  }
+
+  $path = drupal_get_path('module', 'vsite') . '/js/overlay-parent.js';
+  $libraries['parent']['js'][$path] = array();
+}
+
+
+/**
+ * Implements hook_js_alter().
+ *
+ * Prefix Overlay's Ajax callback with our PURL.
+ */
+function vsite_js_alter(&$javascript) {
+  if (!module_exists('overlay') || empty($javascript['settings']['data'])) {
+    // No overlay, or no javascript settings.
+    return;
+  }
+
+  if (!$vsite = vsite_get_vsite()) {
+    // No VSite context.
+    return;
+  }
+
+  foreach ($javascript['settings']['data'] as $key => $value) {
+    if (!empty($value['overlay']['ajaxCallback'])) {
+      // PURLify the ajax callback URL.
+      $value['overlay']['ajaxCallback'] = url($value['overlay']['ajaxCallback'], array('absolute' => TRUE));
+      $javascript['settings']['data'][$key] = $value;
+    }
+  }
 }
 
 /**
@@ -379,6 +460,31 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ * Deny access to create node outside of a VSite for non-privileged user. Also
+ * deny access to creating groups from within a VSite (e.g.
+ * john/node/add/personal) as they are handled via site/register.
+ */
+function vsite_node_access($node, $op, $account) {
+  if ($op != 'create' || user_access('administer group')) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // @todo: Just remove from the permissions list?
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (in_array($node,  $group_types)) {
+    // Deny direct access to creating groups.
+    return NODE_ACCESS_DENY;
+  }
+
+  if (!vsite_get_vsite()) {
+    // Deny access when outside of VSite.
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
  * Implements hook_custom_theme().
  *
  * - Make sure the themes are properly initialized.
@@ -386,34 +492,11 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
  *   related permissions if outside of their own VSite.
  */
 function vsite_custom_theme(){
-  global $user;
   _vsite_purl_init();
 
   if (!$vsite = vsite_get_vsite()) {
     return;
   }
-
-  $roles = $user->roles;
-  $role = user_role_load_by_name('vsite admin');
-
-  // Re-populate "user_access" static to not include "vsite admin" role.
-  $perm = &drupal_static('user_access');
-
-  // Re-populate "user_access" static to not include or exclude the
-  // "vsite admin" site-wide role.
-  if (!og_user_access('node', $vsite->id, 'administer group')) {
-    unset($roles[$role->rid]);
-  }
-  else {
-    $roles[$role->rid] = $role->name;
-  }
-
-  $role_permissions = user_role_permissions($roles);
-  $perms = array();
-  foreach ($role_permissions as $one_role) {
-    $perms += $one_role;
-  }
-  $perm[$user->uid] = $perms;
 
   if (module_exists('cp') && cp_use_cp_theme()) {
     // Use CP's own theme.
@@ -424,6 +507,17 @@ function vsite_custom_theme(){
   ctools_include('themes', 'os');
   $theme = os_theme_get();
   return $theme;
+}
+
+/**
+ * Implements hook_user_presave().
+ *
+ * Safe guard against saving a user with the "vsite admin" site-wide role.
+ */
+function vsite_user_presave(&$edit, $account, $category) {
+  if (!empty($edit['roles']) && in_array('vsite admin', $edit['roles'])) {
+    throw new Exception('User object cannot be saved with "vsite admin" role.');
+  }
 }
 
 /**
@@ -438,7 +532,7 @@ function vsite_spaces_presets_alter(&$presets) {
   // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ($presets as $name => &$preset) {
-    if (substr($name, 0, 3) == "os_") {
+    if (in_array($name, variable_get('os_enabled_spaces_presets',array()))) {
       $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
     }
   }
@@ -730,6 +824,9 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  // OG-Audience field should be required, so node_access() will take VSites
+  // into account.
+  $og_field['instance']['required'] = TRUE;
   $og_field['instance']['display'] = array(
     'default' => array(
       'type' => 'hidden'

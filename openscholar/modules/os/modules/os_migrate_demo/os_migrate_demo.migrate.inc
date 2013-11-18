@@ -610,6 +610,10 @@ class OsMigrateEventsNode extends OsMigrate {
   public function prepare($entity, $row) {
     $date = explode(';', $row->field_date);
 
+    if ($date[0] == 'now') {
+      $date[0] = date('Y-m-d H:i', time());
+    }
+
     $entity->field_date[LANGUAGE_NONE][0] = array(
        'value' => $date[0],
        'date_type' => 'datetime',
@@ -617,6 +621,10 @@ class OsMigrateEventsNode extends OsMigrate {
 
     // Adding the end date of the event.
     if (isset($date[1])) {
+      if ($date[1] == 'now') {
+        $date[1] = date('Y-m-d H:i', time());
+      }
+
       $entity->field_date[LANGUAGE_NONE][0]['value2'] = $date[1];
     }
   }
@@ -673,6 +681,7 @@ class OsMigrateBlogNode extends OsMigrate {
     array(OG_AUDIENCE_FIELD, 'Site'),
     array(OG_VOCAB_FIELD, 'Terms'),
     array('uid', 'UID'),
+    array('status','Status'),
   );
 
   public $dependencies = array(
@@ -693,6 +702,9 @@ class OsMigrateBlogNode extends OsMigrate {
 
     $this->addFieldMapping('uid', 'uid')
       ->sourceMigration('OsMigrateUsers');
+
+    $this->addFieldMapping('status', 'status')
+      ->defaultValue(NODE_PUBLISHED);
   }
 
   public function prepare($entity, $row) {

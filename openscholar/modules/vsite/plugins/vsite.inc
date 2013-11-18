@@ -387,24 +387,32 @@ class vsite extends space_og {
   }
 
   /**
-   * Activates user and modify roles based on the space.
+   * Modify permissions on the fly, based on the VSite.
    */
   protected function activate_user_roles() {
     global $user;
 
-    $og_roles = og_get_user_roles($this->group_type, $this->id, $user->uid, FALSE);
-    $drupal_roles = user_roles(TRUE);
+    $roles = $user->roles;
+    $role = user_role_load_by_name('vsite admin');
 
-    // Gets drupal core roles with the same name
-    $common_roles = array_intersect($drupal_roles, $og_roles);
+    // Re-populate "user_access" static to not include "vsite admin" role.
+    $perm = &drupal_static('user_access');
 
-    foreach ($common_roles as $role) {
-      $rid = array_search($role, $drupal_roles);
-      $user->roles[$rid] = $role;
+    // Re-populate "user_access" static to not include or exclude the
+    // "vsite admin" site-wide role.
+    if (!og_user_access('node', $this->id, 'administer group')) {
+      unset($roles[$role->rid]);
+    }
+    else {
+      $roles[$role->rid] = $role->name;
     }
 
-    // Clears any staticly cached permissions
-    drupal_static('user_access', NULL, TRUE);
+    $role_permissions = user_role_permissions($roles);
+    $perms = array();
+    foreach ($role_permissions as $one_role) {
+      $perms += $one_role;
+    }
+    $perm[$user->uid] = $perms;
   }
 
   /**

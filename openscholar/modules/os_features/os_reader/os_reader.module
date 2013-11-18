@@ -281,6 +281,11 @@ function os_reader_os_app_info() {
       'reader' => array('page'),
     ),
     'searchable' => FALSE,
+    'importers' => array(
+      'feed' => array(
+        'csv' => 'os_reader',
+      ),
+    ),
   );
 
   return $apps;
