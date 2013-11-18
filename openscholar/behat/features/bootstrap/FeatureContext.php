@@ -455,6 +455,20 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I create the term "([^"]*)" in vocabulary "([^"]*)"$/
+   */
+  public function iCreateTheTermInVocab($term_name, $vocab_name) {
+    $this->invoke_code('os_migrate_demo_create_term', array("'$term_name'","'$vocab_name'"));
+  }
+
+  /**
+   * @Given /^I delete the term "([^"]*)"$/
+   */
+  public function iDeleteTheTermInVocab($term_name) {
+    $this->invoke_code('os_migrate_demo_delete_term', array("'$term_name'"));
+  }
+
+  /**
    * @Given /^I should see the following <links>$/
    */
   public function iShouldNotSeeTheFollowingLinks(TableNode $table) {
