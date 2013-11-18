@@ -123,7 +123,7 @@ class OsFeedReaderFetcher extends FeedsProcessor {
       ->entityCondition('entity_type', 'os_feed_item')
       ->propertyCondition('guid', $result->current_item['guid'])
       ->propertyCondition('importer_type', $type)
-      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier())
+      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)), 'IN')
       ->execute();
 
     if (!empty($results['os_feed_item'])) {
