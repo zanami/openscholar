@@ -61,6 +61,7 @@ class os_sv_list extends os_boxes_default {
 //       '#default_value' => $content_types_value,
 //       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
+      '#default_value' => $this->options['content_type'],
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',

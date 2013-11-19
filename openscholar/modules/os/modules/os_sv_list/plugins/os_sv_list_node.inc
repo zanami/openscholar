@@ -32,9 +32,9 @@ class os_sv_list_node extends os_sv_list {
     }
     
 
-    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
+    //$content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
     
-    $form['content_type']['#default_value'] = $content_types_value;
+  //  $form['content_type']['#default_value'] = $content_types_value;
     $form['content_type']['#options'] = $content_types;
 
     

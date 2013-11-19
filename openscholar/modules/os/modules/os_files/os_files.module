@@ -1401,6 +1401,8 @@ function os_files_os_entity_view_modes() {
     'video' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
     'audio' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
     'document' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'executable' => array('os_files_link', 'os_files_link_icon'),
+    'html' => array('os_files_link', 'full'),
   ));
 }
 
