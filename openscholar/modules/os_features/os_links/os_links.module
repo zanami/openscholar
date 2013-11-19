@@ -22,6 +22,11 @@ function os_links_os_app_info() {
     'views tabs' => array(
       'os_links' => array('page'),
     ),
+    'importers' => array(
+      'link' => array(
+        'csv' => 'os_links',
+      ),
+    ),
   );
 
   return $apps;

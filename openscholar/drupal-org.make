@@ -30,12 +30,8 @@ projects[colorbox][subdir] = "contrib"
 ; projects[colorbox][version] = 1.3
 projects[colorbox][version] = 2.4
 
-projects[comment_sources][download][type] = git
-projects[comment_sources][download][url] = "git://github.com/openscholar/comment_sources.git"
-projects[comment_sources][download][branch] = 7.x-2.x
-projects[comment_sources][download][revision] = a60c0282a1d8a7dbd8d0021c82b73919ada7034b
 projects[comment_sources][subdir] = "contrib"
-projects[comment_sources][type] = module
+projects[comment_sources][version] = 2.0
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
@@ -70,7 +66,7 @@ projects[diff][version] = 3.2
 
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
-projects[disqus][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/disqus.patch"
+projects[disqus][patch][] = "http://drupal.org/files/comment_sources-disqus-2120703-1.patch"
 
 projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
@@ -115,7 +111,7 @@ projects[fb_social][subdir] = "contrib"
 projects[fb_social][download][type] = git
 projects[fb_social][download][branch] = 7.x-2.x
 projects[fb_social][download][revision] = cd73e9b
-projects[fb_social][patch][] = "https://raw.github.com/openscholar/comment_sources/a60c0282a1d8a7dbd8d0021c82b73919ada7034b/patches/fb_social.patch"
+projects[fb_social][patch][] = "http://drupal.org/files/comment_sources-fb_social-2120709-1.patch"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = 1.0
@@ -257,12 +253,9 @@ projects[nodeorder][subdir] = "contrib"
 projects[nodeorder][version] = 1.1
 
 projects[oembed][subdir] = "contrib"
-;projects[oembed][version] = 0.x-dev
-projects[oembed][download][type] = git
-projects[oembed][download][branch] = 7.x-0.x
-projects[oembed][download][revision] = "852f97e"
-projects[oembed][patch][] = "http://drupal.org/files/oembed.1811110.upgrade_to_media.patch"
-projects[oembed][patch][] = "https://raw.github.com/openscholar/openscholar/d3a23fd8eb0d577184fcc80d1d7a8962669a806f/patches/media_oembed.file_dimensions.patch"
+projects[oembed][version] = 1.0-rc2
+projects[oembed][patch][] = "http://drupalcode.org/project/oembed.git/patch/a27adf7c1afe763ee5f386f30f0aea73a6097ff1"
+projects[oembed][patch][] = "https://drupal.org/files/issues/oembed.2134415.wysiwyg_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
@@ -294,6 +287,7 @@ projects[password_policy][subdir] = "contrib"
 projects[password_policy][version] = 2.0-alpha1
 projects[password_policy][patch][] = "https://drupal.org/files/password-policy-anonymous-users.patch"
 projects[password_policy][patch][] = "https://drupal.org/files/password_policy-remove_focus-1998862-7455062.patch"
+projects[password_policy][patch][] = "https://gist.github.com/sagotsky/7321750/raw/b26f07c902f7cd5ef8650a3a6891941054a4a8db/password_policy-consecutive_regex-2127421-1.patch"
 
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = 1.2

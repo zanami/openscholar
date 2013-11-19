@@ -23,6 +23,11 @@ function os_software_os_app_info() {
     'views tabs' => array(
       'os_software_projects' => array('page'),
     ),
+    'importers' => array(
+      'software_project' => array(
+        'csv' => 'os_software',
+      ),
+    ),
   );
 
   return $apps;

@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.features.field.inc
@@ -68,7 +65,7 @@ function os_publications_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-biblio-field_biblio_image'
+  // Exported field: 'node-biblio-field_biblio_image'.
   $fields['node-biblio-field_biblio_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -89,6 +86,7 @@ function os_publications_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -117,7 +115,7 @@ function os_publications_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => 'content',
-            'image_style' => 'os_square_50_50',
+            'image_style' => 'book_cover_thumb',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -150,7 +148,7 @@ function os_publications_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-biblio-field_upload'
+  // Exported field: 'node-biblio-field_upload'.
   $fields['node-biblio-field_upload'] = array(
     'field_config' => array(
       'active' => '1',
@@ -171,6 +169,7 @@ function os_publications_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'file',
       'settings' => array(
         'display_default' => 0,
@@ -241,11 +240,11 @@ function os_publications_field_default_fields() {
           'allowed_types' => array(
             'audio' => 'audio',
             'default' => 'default',
+            'document' => 'document',
+            'executable' => 'executable',
             'html' => 'html',
             'image' => 'image',
             'video' => 'video',
-            'document' => 'document',
-            'executable' => 'executable',
           ),
           'browser_plugins' => array(
             'media_default--media_browser_1' => 'media_default--media_browser_1',
@@ -263,11 +262,10 @@ function os_publications_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Book Cover');
-  t('upload');
+  t('Attach Files');
   t('Extra Fields');
+  t('Publication Image');
   t('You may use these fields to add extra information about your publication that may not be common to publications if this type. For example, key "Publication Global ID" and value "http://hdl.handle.net/1902.1".');
 
   return $fields;
 }
-

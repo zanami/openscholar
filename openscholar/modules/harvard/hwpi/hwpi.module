@@ -13,9 +13,12 @@ function hwpi_init() {
     //Turn SSL off for pages that don't match the wildcard certificate
     $conf['securepages_enable'] = 0;
 
+    // Loop through the domains that are configured to work with our SSL certificate
     foreach (variable_get('hwpi_ssl_domains',array()) as $domain) {
       $offset = (strlen($domain) * -1);
-      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",$offset)){
+      // Check to see if the current domain matches one of our wildcard domains in the SSL cert.
+      // IF the cert has ".harvard.edu" then "foo.harvard.edu" is valid and we should enable, whild "bar.foo.harvard.edu" is not.
+      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",($offset-1))){
         //We found a Match
         $conf['securepages_enable'] = 1;
         break;

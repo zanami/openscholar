@@ -53,6 +53,10 @@ ul.mobile-buttons {
   background: none !important;
 }
 
+.front.no-sidebars .region-content-top .block-boxes-os_slideshow_box {
+  margin-top:15px;
+}
+
 #layout_3_1_overlay .slide-copy h2 {
     line-height: 22px !important;
 }

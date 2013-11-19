@@ -254,6 +254,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
 
   $values = $handler->get_option('style_options');
   $values['calendar_type'] = $_GET['type'];
+  $values['groupby_times'] = 'hour';
   $handler->set_option('style_options', $values);
 
   $values = $handler->get_option('pager');
@@ -654,4 +655,14 @@ function os_events_mollom_form_info($form_id) {
 function os_events_date_ical_feed_event_render_alter(&$event, $view, &$context) {
   // Prevent placing a backslash before a colon, because it makes iCal crash.
   $event['description'] = str_replace('\:', ':', $event['description']);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Include JS to update the End Date field according to the Start Date field on
+ * event node form.
+ */
+function os_events_form_event_node_form_alter(&$form, &$form_state) {
+  $form['#attached']['js'][] = drupal_get_path('module', 'os_events') . '/js/os_events.js';
 }

@@ -331,7 +331,8 @@ function _cp_appearance_theme_header_item($header_type) {
 
   switch ($header_type) {
     case 'HEADER_FEATURED':
-      $display_title = variable_get('cp_appearance_featured_display_title', '');
+      $default = t('Featured themes');
+      $display_title = variable_get('cp_appearance_featured_display_title', $default);
       if (!empty($display_title)) {
         $title = '<h2>' . check_plain($display_title) . '</h2>';
       }
