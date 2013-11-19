@@ -486,7 +486,7 @@ function vsite_update_7014() {
 
   // Delete the "vsite user" site-wide role.
   if ($role = user_role_load_by_name('vsite user')) {
-    user_role_delete($role);
+    user_role_delete('vsite user');
   }
 
   // Remove the "vsite admin" site-wide form users in case they were accidently
