@@ -12,7 +12,7 @@ $plugin = array(
   'bundle' => array(),
 );
 
-class sv_list_taxonomy {
+class sv_list_taxonomy extends sv_list_plugin {
   public function options_defaults() {
     //@todo document these.  I don't know what they all mean, especially the only_ vars
     return array(
@@ -25,7 +25,7 @@ class sv_list_taxonomy {
   
   public function options_form($options) {
     // Get all relevant vocabularies.
-    $vocabs = os_sv_list_get_content_type_vocabs($options['content_type']); //@TODO does this func work with files terms too?
+    $vocabs = os_sv_list_get_content_type_vocabs($options['content_type'], $this->entity_type); //@TODO does this func work with files terms too?
     
     // The 'vocabs' tree will contain select fields - one for each vocabulary.    
     $form['vocabs'] = array(

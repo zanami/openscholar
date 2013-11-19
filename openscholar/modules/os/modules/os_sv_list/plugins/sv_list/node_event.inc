@@ -12,7 +12,7 @@ $plugin = array(
   'bundle' => array('event'),
 );
 
-class sv_list_node_event {
+class sv_list_node_event extends sv_list_plugin  {
   /**
    * @function register_sorts()
    *
