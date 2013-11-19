@@ -548,6 +548,12 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
   // only display the start time for this particular instance of a repeat event
   $entity->view = views_get_current_view();
 
+  // Don't remove the field date when exporting the calendar. This the unique
+  // identifier of Google calendar.
+  if ($entity->view->plugin_name == 'date_ical') {
+    return;
+  }
+
   if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
     $result = $entity->view->result[$entity->view->row_index];
     $field = 'field_data_field_date_field_date_value';
