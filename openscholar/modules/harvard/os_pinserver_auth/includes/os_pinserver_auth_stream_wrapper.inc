@@ -5,7 +5,7 @@
  *
  * Provides support for loading private files via pinserver.
  */
-class OSPinserverPrivateStreamWrapper extends OSFilesPrivateStreamWrapper {
+class OSPinserverPrivateStreamWrapper extends DrupalPrivateStreamWrapper {
 
   /**
    * Overrides getExternalUrl().
@@ -15,7 +15,9 @@ class OSPinserverPrivateStreamWrapper extends OSFilesPrivateStreamWrapper {
   function getExternalUrl() {
     //Should we serve files via the pinserver URL?
     if (!variable_get('os_files_private_pinserver', 0)){
-      return parent::getExternalUrl();
+      $options = array('absolute' => TRUE, 'purl' => array('disabled' => TRUE));
+	    $path = str_replace('\\', '/', $this->getTarget());
+	    return url('system/files/' . $path, $options);
     }
 
     $options = array('absolute' => TRUE, 'purl' => array('disabled' => TRUE));
