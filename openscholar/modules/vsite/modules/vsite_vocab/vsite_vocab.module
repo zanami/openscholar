@@ -423,7 +423,7 @@ function vsite_vocab_field_formatter_view($entity_type, $entity, $field, $instan
       continue;
     }
     if (!og_vocab_load_og_vocab($term_wrapper->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
-      $hide_terms[] = $term_wrapper = $term->getIdentifier();
+      $hide_terms[] = $term_wrapper->getIdentifier();
     }
   }
 
