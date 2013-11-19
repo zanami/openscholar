@@ -1085,6 +1085,14 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I import "([^"]*)" feed items for "([^"]*)"$/
+   */
+  public function iImportVsiteFeedItemsForVsite($vsite_origin, $vsite_target) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite_target'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite_origin) . "'", $nid));
+  }
+
+  /**
    * @Given /^I import the feed item "([^"]*)"$/
    */
   public function iImportTheFeedItem($feed_item) {
