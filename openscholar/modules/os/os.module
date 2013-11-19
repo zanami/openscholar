@@ -773,7 +773,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
       }
     }
     $form['actions']['cancel'] = array(
-      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel' ))),
+      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel'))),
       '#weight' => 99,
     );
   }
@@ -1735,6 +1735,11 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
       ),
     ),
   );
+
+  if ($element['#cardinality'] != 1) {
+    // Multiple select, remove the "None" option.
+    unset($element['#options']['_none']);
+  }
 
   return $element;
 }

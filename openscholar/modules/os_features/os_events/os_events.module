@@ -244,6 +244,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
 
   $values = $handler->get_option('style_options');
   $values['calendar_type'] = $_GET['type'];
+  $values['groupby_times'] = 'hour';
   $handler->set_option('style_options', $values);
 
   $values = $handler->get_option('pager');
