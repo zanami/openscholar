@@ -50,7 +50,7 @@ class os_sv_list extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-    $this->options = array_merge($this->options_defaults(), $this->options);
+    $this->options = ($this->options) ? array_merge($this->options_defaults(), $this->options) : $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
   
     $form['#submit'] = array('os_sv_list_form_submit');
@@ -385,7 +385,7 @@ class os_sv_list extends os_boxes_default {
    * keyed array.
    */
   private function _plugins_invoke($method, &$args = NULL) {
-    $options = $this->options + $this->options_defaults();
+    $options = ($this->options) ? $this->options + $this->options_defaults() : $this->options_defaults();
     foreach ($this->plugins as $name => $plugin) {
       if (method_exists($plugin['instance'], $method)) {
         $ret[$plugin['name']] = $plugin['instance']->$method($options, $args); //to pass by ref we can't use func_get_args
@@ -409,7 +409,11 @@ class os_sv_list extends os_boxes_default {
   }
     
   protected function _display_options() {
-    $defaults = array('title', 'teaser', 'full');
+    $defaults = array(  //Display modes will be shown in this order.  If no order is provided, it'll be determined by how the hooks load them.
+      'node' => array('title', 'teaser', 'full'),
+      'file' => array('os_files_link', 'os_files_link_icon', 'teaser', 'os_files_thumbnail', 'os_files_preview', 'full'),
+    );
+    $defaults = (isset($defaults[$this->entity_type])) ? $defaults[$this->entity_type] : array();
     
     //list all the available view modes for this entity
     $view_modes = os_entity_view_modes($this->entity_type);
