@@ -91,8 +91,8 @@ function cp_content_views_default_views_alter(&$views) {
 /**
  * Implements hook_batch_alter().
  *
- * When selecting all the nodes in the views including nodes from other pages
- * we need to remove nodes that don't belong to the current vsite.
+ * When selecting all the entities in the views including nodes from other pages
+ * we need to remove entities that don't belong to the current vsite.
  */
 function cp_content_batch_alter(&$batch) {
   if ($batch['sets'][0]['finished'] != '_views_bulk_operations_execute_finished') {
