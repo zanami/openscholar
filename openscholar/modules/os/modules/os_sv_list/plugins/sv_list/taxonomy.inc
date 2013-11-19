@@ -108,14 +108,17 @@ class sv_list_taxonomy extends sv_list_plugin {
       ->condition('v.entity_type', $this->entity_type)
       ->condition('v.bundle', $content_types, 'IN');
     
-    //add an IN for each vocab.  item must be in all vocabs to show up.
+    //group tids by vocab.  
     $vocabs = array_reduce(taxonomy_term_load_multiple($tids), function ($ret, $term) {
       $ret[$term->vid][] = $term->tid;
       return $ret;
     }, array());
     
-    foreach ($vocabs as $vid => $tids) {
-      $query->condition('v.og_vocabulary_target_id', $tids, 'IN');
+    //each entity must match a term from each specified vocab.  getting a `tid IN $tids` could potentially ignore a vocab.
+    foreach ($vocabs as $vid => $terms) {
+      $alias = 'vid' . $vid;
+      $query->innerJoin('field_data_og_vocabulary', $alias, "$alias.entity_id = v.entity_id");
+      $query->condition("$alias.og_vocabulary_target_id", $terms, 'IN');
     }
 
     $result = $query->execute();
