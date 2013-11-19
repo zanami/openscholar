@@ -184,20 +184,35 @@ function _hwpi_branding_footer() {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter() for cp_settings_form.
+ * Implements hook_cp_settings().
  */
-function hwpi_form_cp_settings_form_alter(&$form, &$form_state) {
-  // Only continues to hide the responsive setting from non-HWPI-themed sites.
+function hwpi_cp_settings() {
+  // Always displays the responsive setting for User 1.
+  global $user;
+  // For non-user-1, only adds the responsive setting for HWPI-themed sites.
   $theme = variable_get('theme_default');
-  if (_is_hwpi_theme($theme)) {
+  if (!_is_hwpi_theme($theme) && $user->uid != 1) {
     return;
   }
 
-  // Hides the responsive setting unless user is User 1.
-  global $user;
-  if ($user->uid != 1 && isset($form['responsive'])) {
-    $form['responsive']['#access'] = FALSE;
-  }
+  $settings = array(
+    'enable_responsive' => array(
+      'group' => array(
+        '#title' => t('Responsive'),
+        '#id' => 'responsive',
+      ),
+      'form' => array(
+        '#type' => 'checkbox',
+        '#default_value' => variable_get('enable_responsive', FALSE),
+        '#title' => t('Enable responsive behaviors'),
+        '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
+          as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
+          on smaller devices.'),
+      ),
+    ),
+  );
+
+  return $settings;
 }
 
 /**
