@@ -462,11 +462,13 @@ function os_importer_verify_uploaded_file($form, &$form_state) {
   $file = file_load($form_state['values']['file']);
 
   // Replace the \r with \n.
-  // TODO: Convert the end line to unix/linux end line.
   $file_content = file_get_contents($file->uri);
   $file_content = str_replace("\r", "\n", $file_content);
   $new_file = file_save_data($file_content, $file->uri);
-  $form_state['file'] = $new_file->fid;
+  $form_state['values']['file'] = $new_file->fid;
+
+  // Delete the old file.
+  file_delete($file);
 
   // Parse file's headers.
   feeds_include_library('ParserCSV.inc', 'ParserCSV');
