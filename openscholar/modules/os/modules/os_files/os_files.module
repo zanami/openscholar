@@ -631,7 +631,16 @@ function os_files_entity_info_alter(&$info){
     'os_files_link' => array(
       'label' => t('Link with no icon'),
       'custom settings' => TRUE
-    )
+    ),
+    
+    'os_files_thumbnail' => array(
+      'label' => t('Thumbnail'),
+      'custom settings' => TRUE
+    ),
+    'os_files_preview' => array(
+      'label' => t('Preview'),
+      'custom settings' => TRUE
+    ),
   );
 
   $info['file']['bundles']['undefined'] = array(
@@ -1382,6 +1391,21 @@ function os_files_views_data_alter(&$data){
     'field' => 'id'
   );
 }
+
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_files_os_entity_view_modes() {
+  return array('file' => array(
+    'image' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'video' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'audio' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'document' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'executable' => array('os_files_link', 'os_files_link_icon'),
+    'html' => array('os_files_link', 'full'),
+  ));
+}
+
 
 function os_files_file_default_types() {
   $types = array();

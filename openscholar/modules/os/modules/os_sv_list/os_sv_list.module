@@ -52,6 +52,46 @@ function os_sv_list_ctools_plugin_api($module, $api) {
 }
 
 /**
+ * Implements hook_ctools_plugin_type
+ * 
+ * Defines sv_list plugins that extend the basic sv list.
+ */
+function os_sv_list_ctools_plugin_type() {
+  return array('sv_list' => array('use hooks' => TRUE));
+}
+
+/**
+ * Implements hook_ctools_plugin_directory
+ * 
+ * Provides the sv_list plugins this module provides
+ */
+function os_sv_list_ctools_plugin_directory($module, $plugin) {
+  if (($module == 'os_sv_list') && ($plugin == 'sv_list')) {
+    return 'plugins/sv_list';
+  }
+}
+
+/**
+ * @function os_sv_list_plugins
+ * 
+ * Get sv_list plugins.  Optionally filter by entity type or bundle.
+ */
+function os_sv_list_plugins($entity_type = NULL, $bundle = NULL) {
+  $plugins = ctools_get_plugins('os_sv_list', 'sv_list');
+  
+  foreach (array('entity_type', 'bundle') as $filter) {
+    $var = ${$filter}; 
+    if ($var) {
+      $plugins = array_filter($plugins, function($plugin) use ($var, $filter) {
+        return (in_array($var, $plugin[$filter]) || empty($plugin[$filter]));    
+      });
+    }
+
+  }
+  return $plugins;
+}
+
+/**
  * Implements hook_boxes_plugins
  */
 function os_sv_list_boxes_plugins() {
@@ -69,7 +109,63 @@ function os_sv_list_boxes_plugins() {
     'factory' => TRUE,
   );
 
+  //load the base class for node and file lists
+  $plugins['os_sv_list'] = array(
+    //'title' => '** List of Posts **',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_sv_list',
+      'file' => 'os_sv_list.inc',
+      'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
+      'parent' => 'os_boxes_default',
+    ),
+    'factory' => FALSE,
+  );
+  
+  $plugins['os_sv_list_node'] = array(
+    'title' => '** List of Posts **',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_sv_list_node',
+      'file' => 'os_sv_list_node.inc',
+      'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
+      'parent' => 'os_sv_list',
+    ),
+    'factory' => TRUE,
+  );
+  
+  $plugins['os_sv_list_file'] = array(
+    'title' => '** List of Files **',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_sv_list_file',
+      'file' => 'os_sv_list_file.inc',
+      'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
+      'parent' => 'os_sv_list',
+    ),
+    'factory' => TRUE,
+  );
+
   return $plugins;
+}
+
+/**
+ * Implements hook_query_TAG_alter
+ * 
+ * EFQs tagged with random will be randomly sorted.  
+ * http://rupertj.tumblr.com/post/21641418129/randomly-sorting-an-entityfieldquery
+ */
+function os_sv_list_query_random_alter($query) {
+  $query->orderRandom();
+}
+
+/**
+ * Implements hook_query_TAG_alter
+ */
+function os_sv_list_query_sv_list_biblio_alter(&$query) {
+  $query->join('biblio', 'b', 'b.nid = ogm.etid');
+  $query->orderBy('b.biblio_year', 'DESC'); 
+  $query->orderBy('node.created', 'DESC');
 }
 
 /**
