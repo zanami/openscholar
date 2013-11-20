@@ -22,65 +22,6 @@ function _vsite_get_pathauto_settings() {
   return $settings;
 }
 
-function _vsite_alter_path($entity_type, $entity) {
-  $vsite = vsite_get_vsite();
-
-  $wrapper = entity_metadata_wrapper($entity_type, $entity);
-
-  if (empty($vsite)) {
-    // Currently not inside a vsite but might have vsite context e.g Migration.
-    $gid = !empty($wrapper->{OG_AUDIENCE_FIELD}) ? $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier() : NULL;
-    $vsite = !empty($gid) ? vsite_get_vsite($gid) : NULL;
-
-    if (empty($vsite)) {
-      // No vsite context.
-      return;
-    }
-  }
-
-  if ($entity_type == 'node' && $wrapper->getIdentifier() === $vsite->group->nid) {
-    // This is the group node, it doesn't need a prefix.
-    return;
-  }
-
-  // Get purl.
-  $purl = vsite_get_purl($vsite);
-
-  // Get alias pattern for pathauto.
-  module_load_include('inc', 'pathauto');
-  $pattern = pathauto_pattern_load_by_entity('node', $node->type, $node->language);
-
-  if ($pattern && (!(isset($node->path['pathauto']) && empty($node->path['pathauto'])))) {
-    // Generate alias using pathauto.
-
-    // Generates the pathauto alias without purl.
-    $alias = _vsite_alias_without_purl($node);
-    // Add purl prefix to alias.
-    $alias = $purl . '/' . $alias;
-
-    // Aborts pathauto for this node if the path already exists.
-    if (_pathauto_path_is_callback($alias)) {
-      $node->path['pathauto'] = 0;
-      return;
-    }
-  }
-  // Note that Drupal has already validated the path prior to hook_node_presave,
-  // so there's no way that an existing path has gotten to this point.
-  else {
-    $alias = ltrim($node->path['alias'], '/');
-
-    if (empty($alias)) {
-      // No alias.
-      return;
-    }
-
-    if (!empty($purl) && (strpos($alias, $purl) !== 0)) {
-      // Add purl to alias.
-      $node->path['alias'] = $purl . '/' . $alias;
-    }
-  }
-}
-
 function _vsite_alter_node_path_settings(&$node) {
   $vsite = vsite_get_vsite();
 

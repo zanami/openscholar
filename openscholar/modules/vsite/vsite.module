@@ -2239,55 +2239,112 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
 }
 
 /**
+ * Set the alias of group content entities (e.g. nodes, terms, etc'.).
+ *
+ * @param $entity_type
+ *  The entity type.
+ * @param $entity
+ *  The entity object.
+ * @param $alias
+ *   Optional; The alias to set.
+ *
+ * @return
+ *   The alias of the entity.
+ */
+function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
+  if (empty($alias)) {
+    // Get alias.
+
+    if (!empty($entity->path['pathauto'])) {
+      // Generate pathauto alias.
+
+      // Get alias pattern for pathauto.
+      module_load_include('inc', 'pathauto');
+      $pattern = pathauto_pattern_load_by_entity('node', $entity->type, $entity->language);
+
+      $uri      = entity_uri($entity_type, $entity);
+      $language = !empty($entity->language) ? $entity->language : LANGUAGE_NONE;
+      $bundle   = isset($entity->type) ? $entity->type : '';
+      $alias    = pathauto_create_alias($entity_type, 'return', $uri['path'], array($entity_type => $entity), $bundle, $language);
+
+      // Removes purl elements from alias string.
+      $processor = purl_get_processor(PURL_VSITE_PATH);
+      $elements = purl_parse($processor, $alias);
+      foreach ($elements as $element) {
+        $alias = $processor->remove($alias, $element);
+      }
+
+      // Aborts pathauto for this node if the path already exists.
+      if (_pathauto_path_is_callback($alias)) {
+        $entity->path['pathauto'] = 0;
+        return;
+      }
+    }
+    elseif (!empty($entity->path['alias'])) {
+      // Custom alias.
+      $alias = $entity->path['alias'];
+    }
+  }
+
+  if (empty($alias)) {
+    // No alias.
+    return;
+  }
+
+  if (og_is_group($entity_type, $entity)) {
+    // No need for purl prefix in group nodes.
+    return $alias;
+  }
+
+  // Get vsite.
+  $vsite = vsite_get_vsite();
+
+  //if (empty($vsite)) {
+    // Currently not inside a vsite but might have vsite context e.g Migration.
+
+    if ($entity_type == 'node') {
+      // Attempt to get vsite from node.
+      $wrapper = entity_metadata_wrapper($entity_type, $entity);
+      $gid = !empty($wrapper->{OG_AUDIENCE_FIELD}) ? $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier() : NULL;
+      $vsite = !empty($gid) ? vsite_get_vsite($gid) : NULL;
+    }
+    else {
+      // Taxonomy term. Attempt to get vsite from its vocabulary.
+      $vid = $entity->vid;
+      $og_vocab_relation = og_vocab_relation_get($vid);
+      $gid = !empty($og_vocab_relation->gid) ? $og_vocab_relation->gid : NULL;
+      $vsite = !empty($gid) ? vsite_get_vsite($gid) : NULL;
+    }
+
+    if (empty($vsite)) {
+      // No vsite context.
+      return $alias;
+    }
+  //}
+
+  // Get purl.
+  $purl = vsite_get_purl($vsite);
+
+  // Add purl to alias.
+  $alias = $purl . '/' . $alias;
+
+  return $alias;
+}
+
+/**
  * Implements hook_pathauto_alias_alter().
  */
 function vsite_pathauto_alias_alter(&$alias, $context) {
-  // Only continues if we are outside of a vsite.
-  if ($vsite = vsite_get_vsite()) {
-    $alias = vsite_get_purl() . '/' . $alias;
+  // Get entity type.
+  $entity_type = !empty($context['data']['node']) ? 'node' : (!empty($context['data']['taxonomy_term']) ? 'taxonomy_term' : NULL);
+
+  if (empty($entity_type)) {
+    // Not node or term, no need to prefix.
     return;
   }
 
-  // Only continues if we have a valid group content and alias to modify.
-  $node = $context['data']['node'];
-  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
-    return;
-  }
-  if (og_is_group_type('node', $node->type)) {
-    return;
-  }
-  if (empty($alias)) {
-    return;
-  }
-
-  // Only continues if we can get a vsite group ID.
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
-  $gid = isset($gids[0]) ? $gids[0] : NULL;
-  if ($gid === NULL) {
-    return;
-  }
-
-  // Only continues if we can get a non-empty purl value from the vsite.
-  // Note: We don't need to set $reset = TRUE here because it was already reset.
-  // @see vsite_add_node()
-  $vsite = vsite_get_vsite($gid);
-  $purl = vsite_get_purl($vsite);
-
-  // Only continues if we were able to find a purl value.
-  if (empty($purl)) {
-    return;
-  }
-
-  // Only continues if the purl isn't yet present as a prefix.
-  $purl_present = (bool) (strpos($alias, "$purl/") === 0);
-  if ($purl_present) {
-    return;
-  }
-
-  // Prefixes the alias with the purl.
-  // Note: This occurs BEFORE pathauto_alias_uniquify().
-  $alias = "$purl/$alias";
+  // Prefix alias with purl.
+  $alias = vsite_get_entity_alias($entity_type, $context['data'][$entity_type], $alias);
 }
 
 /**
