@@ -1726,10 +1726,24 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
     ),
   );
 
+  // Hide the select list if a vocabulary is empty.
+  if ($element['#field_name'] == 'og_vocabulary' && count($element['#options']) == 1) {
+    $element['#access'] = FALSE;
+  }
+
+  // Handle special characters correctly.
+  if ($element['#field_name'] == 'og_vocabulary') {
+    foreach ($element['#options'] as $key => $option) {
+      $element['#options'][$key] = html_entity_decode($option, ENT_QUOTES);
+    }
+  }
+
   if ($element['#cardinality'] != 1) {
     // Multiple select, remove the "None" option.
     unset($element['#options']['_none']);
   }
+
+  dpm($element);
 
   return $element;
 }
