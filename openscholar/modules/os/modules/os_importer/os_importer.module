@@ -458,7 +458,7 @@ function os_importer_verify_uploaded_file($form, &$form_state) {
     $mappings[] = strtolower($mapping['source']);
   }
 
-  // Load the uploaded file and.
+  // Load the uploaded file and parse his headers.
   $file = file_load($form_state['values']['file']);
 
   // Replace the \r with \n.
@@ -533,6 +533,20 @@ function os_importer_import_submit($form, &$form_state) {
     $wrapper->field_rss_url->set($values['url']);
     $wrapper->save();
   }
+}
+
+/**
+ * Implements hook_feeds_after_import().
+ *
+ * After we import data from the file we can delete him.
+ */
+function os_importer_feeds_after_import(FeedsSource $source) {
+  if (!in_array('FeedsFileFetcher', array_keys($source->config))) {
+    return;
+  }
+
+  $file = file_load($source->config['FeedsFileFetcher']['fid']);
+  file_delete($file);
 }
 
 /**
