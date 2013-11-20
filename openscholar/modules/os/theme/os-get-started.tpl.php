@@ -1,5 +1,7 @@
 <div class="top-wrapper clearfix">
-  <?php print $os_logo; ?>
+  <div class="os-logo">
+    <?php print $os_logo; ?>
+  </div>
   <div class="tagline"><?php print $tagline; ?></div>
   <div class="first-wrapper">
     <?php print render($search_block); ?>

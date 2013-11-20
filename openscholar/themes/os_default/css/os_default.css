@@ -493,14 +493,34 @@ border-radius: 4px;
 }
 
 /* Site-wide front page */
+
+#block-os-get-started {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
 .top-wrapper {
   margin-bottom: 20px;
 }
 
-.first-wrapper,
-.last-wrapper {
+.top-wrapper .os-logo {
+  text-align: center;
+}
+
+.top-wrapper .tagline {
+  font-size: 20px;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.top-wrapper .first-wrapper,
+.top-wrapper .last-wrapper {
   width: 50%;
   float: left; /* LTR */
+}
+
+.top-wrapper .last-wrapper {
+  text-align: right; /* LTR */
 }
 
 .last-wrapper .create.btn {
