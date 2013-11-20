@@ -167,7 +167,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .custhtml h3.custheader a {
     color: #000000;
     font: 25px/1.4em "Helvetica","Arial","sans-serif";
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 .custhtml.sample h3.custheader a {
