@@ -46,6 +46,13 @@ function os_menu() {
     'access arguments' => array('administer content'),
   );
 
+  $items['admin/config/openscholar/openscholar-logout'] = array(
+    'title' => 'logout',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_confirm_logout_users'),
+    'access arguments' => array('administer content'),
+  );
+
   $items['page_not_found'] = array(
     'type' => MENU_CALLBACK,
     'file' => 'os.pages.inc',
@@ -94,7 +101,12 @@ function os_menu_alter(&$items) {
     $items['user']['page callback'] = 'os_user_page';
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
+    $items['user']['access callback'] = 'os_is_in_read_mode';
   }
+
+  // Check if the site is in read-only mode which means no login is disabled.
+  $items['user/login']['access callback'] = 'os_is_in_read_mode';
+
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
     unset($items['node']);
@@ -107,6 +119,17 @@ function os_menu_alter(&$items) {
   $items['user/autocomplete']['access arguments'] = array(
     'access user autocomplete',
   );
+}
+
+/**
+ * Access callback; Returns FALSE is login is disabled.
+ */
+function os_is_in_read_mode() {
+  if (variable_get('os_use_read_only_mode', FALSE)) {
+    return FALSE;
+  }
+
+  return !user_is_logged_in();
 }
 
 /**
@@ -824,6 +847,26 @@ function os_settings_form($form_state) {
     '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
+  );
+
+  $form['os_read_only'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Read-only mode'),
+    '#weight' => 99,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['os_read_only']['os_logout_users'] = array(
+    '#type' => 'item',
+    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/openscholar-logout'),
+  );
+
+  $form['os_read_only']['os_use_read_only_mode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable user login page'),
+    '#default_value' => variable_get('os_use_read_only_mode', FALSE),
+    '#description' => t('Disable users from logging into the site. '),
   );
 
   return system_settings_form($form);
@@ -1754,4 +1797,43 @@ function os_select2_widget_after_build($element, &$form_state) {
   drupal_add_js(array('select2_widget' => $setting), 'setting');
 
   return $element;
+}
+
+/**
+ * Logging out all currently logged-in users.
+ */
+function os_logout_logged_users() {
+  // Get a list of current logged-in users.
+  $result = db_select('sessions', 's')
+    ->fields('s')
+    ->condition('uid', 1, '<>')
+    ->execute()
+    ->fetchAllAssoc('uid');
+
+  if (empty($result)) {
+    return;
+  }
+
+  // Logout all logged users.
+  $users = user_load_multiple(array_keys($result));
+  foreach ($users as $user) {
+    module_invoke_all('user_logout', $user);
+  }
+  db_delete('sessions')->condition('uid', array_keys($result), 'IN')->execute();
+}
+
+/**
+ * Page argument; passed to drupal_get_form() in os_menu().
+ */
+function os_confirm_logout_users($form, $form_state) {
+  return confirm_form($form, t('Logout all logged users'), 'admin/config/openscholar/openscholar', t('Are you sure you want to logout all logged users?'));
+}
+
+/**
+ * Submit handler; For logging out users.
+ */
+function os_confirm_logout_users_submit($form, &$form_state) {
+  os_logout_logged_users();
+  drupal_set_message('Good!');
+  $form_state['redirect'] = 'admin/config/openscholar/openscholar';
 }
