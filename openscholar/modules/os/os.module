@@ -375,6 +375,8 @@ function os_theme() {
     ),
     'os_get_started' => array(
       'variables' => array(
+        'tagline' => NULL,
+        'create_link' => NULL,
         'short_message' => NULL,
         'welcome_message' => NULL,
         'items' => NULL,
@@ -1012,17 +1014,28 @@ function os_get_started() {
       'type' => 'ol',
     ));
 
-    $short_message = t('Need help in setting this front page? Click on me.');
+    $short_message = t('Need help in setting this front page? Click here.');
     $welcome_message = t('Welcome!');
     $below_message = t('You can use the next steps in order to set this page properly or just visit our <a href="@wiki-url">wiki</a>.', $params);
   }
 
-  return theme('os_get_started', array(
+  $params = array(
+    '!arrow' => theme('image', array('path' => drupal_get_path('module', 'os') . '/images/arrow.png')),
+  );
+  $create_link = l(t('Create a Site !arrow', $params), 'site/register', array('html' => TRUE, 'attributes' => array('class' => 'btn create')));
+
+  $variables = array(
+    'os_logo' => theme('image', array('path' => drupal_get_path('module', 'os') . '/images/os-logo.png')),
+    'tagline' => t('<strong>Welcome!</strong>. This is OpenScholar.'),
+    'search_block' => drupal_get_form('search_block_form'),
+    'create_link' => $create_link,
     'short_message' => $short_message,
     'welcome_message' => $welcome_message,
     'below_message' => $below_message,
     'items' => $items,
-  ));
+  );
+
+  return theme('os_get_started', $variables);
 }
 
 /**

@@ -38,21 +38,21 @@ h2 {
 #header-container h2 {
   margin: 0;
   }
-  
-  
-/*  Search PAGE */  
-  
+
+
+/*  Search PAGE */
+
 .page-search .search-form {width:400px; padding:0 8px;background:#F1F0F0;}
 
 .page-search .search-form input.form-text {
     padding: 8px !important;
     width: 250px;
 }
-  
+
 .page-search .search-results li {
     border-bottom: 1px solid #EEE;
     margin-bottom: 2em;
-}  
+}
 
 
 .page-search  #content-column h1#page-title {
@@ -261,8 +261,8 @@ text-decoration:none;
 	top:20px;
 	font-size: 14px;
 	}
-	
-	
+
+
 .logged-in.no-sidebars.page-user.page-user-edit #content-column input.form-text {
 width: 48%;
 }
@@ -313,7 +313,7 @@ width: 48%;
 
 .logged-in.no-sidebars.page-user #content .user-add-site-block {
 	margin: 8px 5px -10px;
-	
+
 }
 
 
@@ -435,7 +435,7 @@ border-radius: 4px;
 
 #edit-pin-fieldset {margin: 20px 0 0 10px !important;}
 
-@-moz-document url-prefix() { 
+@-moz-document url-prefix() {
 #edit-pin-fieldset {margin: 10px 0 0 0 !important;}
 }
 
@@ -490,4 +490,26 @@ border-radius: 4px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
      padding: 5px 7px;
+}
+
+/* Site-wide front page */
+.top-wrapper {
+  margin-bottom: 20px;
+}
+
+.first-wrapper,
+.last-wrapper {
+  width: 50%;
+  float: left; /* LTR */
+}
+
+.last-wrapper .create.btn {
+  background-color: #4cd964;
+  padding: 10px;
+  color: white;
+  font-size: 16px;
+}
+
+.last-wrapper .create.btn img {
+  vertical-align: middle;
 }
