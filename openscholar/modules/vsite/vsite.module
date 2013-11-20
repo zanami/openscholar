@@ -2244,6 +2244,7 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
 function vsite_pathauto_alias_alter(&$alias, $context) {
   // Only continues if we are outside of a vsite.
   if ($vsite = vsite_get_vsite()) {
+    $alias = vsite_get_purl() . '/' . $alias;
     return;
   }
 
