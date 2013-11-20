@@ -93,7 +93,7 @@ projects[entityreference_prepopulate][subdir] = "contrib"
 ; projects[entityreference_prepopulate][version] = 1.3
 projects[entityreference_prepopulate][download][type] = git
 projects[entityreference_prepopulate][download][revision] = e2c2811
-projects[entityreference_prepopulate][patch][] = "https://drupal.org/files/2007746-er-hide-access-5.patch"
+projects[entityreference_prepopulate][patch][] = "http://drupal.org/files/2007746-er-hide-access-5.patch"
 
 projects[elysia_cron][subdir] = "contrib"
 projects[elysia_cron][version] = 2.1
@@ -144,7 +144,7 @@ projects[file_entity][download][type] = git
 projects[file_entity][download][branch] = 7.x-2.x
 projects[file_entity][download][revision] = 68ab8ed52f9bb993e8f3c541b89420637e440609
 projects[file_entity][patch][] = "http://drupal.org/files/file_entity.1834902-3.dimension_overrides.patch"
-projects[file_entity][patch][] = "https://drupal.org/files/filter-by-file-schema-type-1881356-12.patch"
+projects[file_entity][patch][] = "http://drupal.org/files/filter-by-file-schema-type-1881356-12.patch"
 
 projects[filefield_paths][subdir] = "contrib"
 ;projects[filefield_paths][version] = 1.0-beta3+2-dev
@@ -163,7 +163,7 @@ projects[hierarchical_taxonomy][download][type] = git
 projects[hierarchical_taxonomy][download][url] = "http://git.drupal.org/project/hierarchical_taxonomy.git"
 projects[hierarchical_taxonomy][download][branch] = 7.x-1.x
 projects[hierarchical_taxonomy][download][revision] = 5bbe344
-projects[hierarchical_taxonomy][patch][] = "https://drupal.org/files/2034713-hs-comaprse-name-2.patch"
+projects[hierarchical_taxonomy][patch][] = "http://drupal.org/files/2034713-hs-comaprse-name-2.patch"
 
 projects[imagefield_crop][subdir] = "contrib"
 ;projects[imagefield_crop][version] = 2.0
@@ -210,7 +210,7 @@ projects[media][download][branch] = 7.x-2.x
 projects[media][download][revision] = "b433b278d7e0ab7420f5a874886843fb9fe7ebe2"
 ; projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
 ; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
-projects[media][patch][] = "https://drupal.org/files/media_fatal_wysiwyg_remove_1937864_11.patch"
+projects[media][patch][] = "http://drupal.org/files/media_fatal_wysiwyg_remove_1937864_11.patch"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 2.x-dev
@@ -255,7 +255,7 @@ projects[nodeorder][version] = 1.1
 projects[oembed][subdir] = "contrib"
 projects[oembed][version] = 1.0-rc2
 projects[oembed][patch][] = "http://drupalcode.org/project/oembed.git/patch/a27adf7c1afe763ee5f386f30f0aea73a6097ff1"
-projects[oembed][patch][] = "https://drupal.org/files/issues/oembed.2134415.wysiwyg_dimensions.patch"
+projects[oembed][patch][] = "http://drupal.org/files/issues/oembed.2134415.wysiwyg_dimensions.patch"
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.2
@@ -285,8 +285,8 @@ projects[olark][patch][] = "http://drupal.org/files/olark-js-to-d7-update-178532
 
 projects[password_policy][subdir] = "contrib"
 projects[password_policy][version] = 2.0-alpha1
-projects[password_policy][patch][] = "https://drupal.org/files/password-policy-anonymous-users.patch"
-projects[password_policy][patch][] = "https://drupal.org/files/password_policy-remove_focus-1998862-7455062.patch"
+projects[password_policy][patch][] = "http://drupal.org/files/password-policy-anonymous-users.patch"
+projects[password_policy][patch][] = "http://drupal.org/files/password_policy-remove_focus-1998862-7455062.patch"
 projects[password_policy][patch][] = "https://gist.github.com/sagotsky/7321750/raw/b26f07c902f7cd5ef8650a3a6891941054a4a8db/password_policy-consecutive_regex-2127421-1.patch"
 
 projects[pathauto][subdir] = "contrib"
