@@ -1743,8 +1743,6 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
     unset($element['#options']['_none']);
   }
 
-  dpm($element);
-
   return $element;
 }
 
