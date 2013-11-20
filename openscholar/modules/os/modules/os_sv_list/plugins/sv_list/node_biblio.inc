@@ -12,8 +12,9 @@ $plugin = array(
   'bundle' => array('biblio'),
 );
 
-class sv_list_node_biblio {
-  public function __construct() {
+class sv_list_node_biblio extends sv_list_plugin {
+  public function __construct($entity_type, $bundle) {
+    parent::__construct($entity_type, $bundle);
     $this->biblio_types = $this->_biblio_types();
   }
   

@@ -12,7 +12,7 @@ $plugin = array(
   'bundle' => array('presentation'),
 );
 
-class sv_list_node_presentation {
+class sv_list_node_presentation extends sv_list_plugin  {
   /**
    * @function register_sorts()
    */

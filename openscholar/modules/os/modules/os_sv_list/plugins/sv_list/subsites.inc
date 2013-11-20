@@ -12,7 +12,7 @@ $plugin = array(
   'bundle' => array(),
 );
 
-class sv_list_subsites {
+class sv_list_subsites extends sv_list_plugin  {
   
   public function options_defaults() {
     return array('query_scope' => 'current');

@@ -301,14 +301,7 @@ class os_sv_list extends os_boxes_default {
   }
   
   public function get_ids($page_num, $page) {    
-    //////nids
-    //EFQ
-    //content type
-    //   biblio done
-    //   image - todo, convert to file box
-    //   event - what's with the delta
-    //    book list - done
-    //    vsite or subsites - done
+    //query for all content of our type
     $query = $this->query();
     $this->_plugins_invoke('query_alter', $query);
     
@@ -317,9 +310,9 @@ class os_sv_list extends os_boxes_default {
       //any special hook here?
     }
     
-    //more link
     
-    //////pager
+    
+    //pager
     if ($this->options['pager'] && is_int($page)) {
       $query->pager($this->options['number_of_items']);
       $this->pager_element = $query->pager['element'];
@@ -327,7 +320,7 @@ class os_sv_list extends os_boxes_default {
       $query->range(0, 1 + $this->options['number_of_items']); //add one so more link knows there's more.
     }
     
-    /////sort - if $this doesn't have it, one of the plugins will.
+    //sort - if $this doesn't have it, one of the plugins will.
     $sort = $this->options['sort_by'];
     if (method_exists($this, $sort)) {
       $this->$sort($query);
@@ -372,7 +365,7 @@ class os_sv_list extends os_boxes_default {
     
     foreach (os_sv_list_plugins($entity_type, $bundle) as $plugin) {
       $class = ctools_plugin_get_class($plugin, 'handler');
-      $plugin['instance'] = new $class;
+      $plugin['instance'] = new $class($entity_type, $bundle);
       $this->plugins[$plugin['name']] = $plugin;
     }
     

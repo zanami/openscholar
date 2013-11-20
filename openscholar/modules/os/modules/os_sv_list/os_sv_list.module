@@ -67,6 +67,7 @@ function os_sv_list_ctools_plugin_type() {
  */
 function os_sv_list_ctools_plugin_directory($module, $plugin) {
   if (($module == 'os_sv_list') && ($plugin == 'sv_list')) {
+    require_once drupal_get_path('module', 'os_sv_list').'/plugins/sv_list/plugin.inc'; //base class must be present first.
     return 'plugins/sv_list';
   }
 }
@@ -177,18 +178,13 @@ function os_sv_list_query_sv_list_biblio_alter(&$query) {
  * @return Array
  *  Array keyed with vocabulary id and valued with the vocabulary name.
  */
-function os_sv_list_get_content_type_vocabs($bundle) {
-  if ($bundle != 'all') {
-    $vocabs = og_vocab_get_accessible_vocabs('node', $bundle, OG_VOCAB_FIELD);
-  }
-  else {
-    $os_bundles = os_get_bundles(array(1));
-    $vocabs = array();
-    foreach (array_keys($os_bundles) as $os_bundle) {
-      if ($vocab = og_vocab_get_accessible_vocabs('node', $os_bundle, OG_VOCAB_FIELD)) {
-        foreach ($vocab as $vid) {
-          $vocabs[] = $vid;
-        }
+function os_sv_list_get_content_type_vocabs($bundle, $entity_type = 'node') {
+  $bundles = ($bundle == 'all') ? os_get_bundles(array(1)) + os_files_get_bundles() : array($bundle => $bundle);
+  $vocabs = array();
+  foreach (array_keys($bundles) as $os_bundle) {
+    if ($vocab = og_vocab_get_accessible_vocabs($entity_type, $os_bundle, OG_VOCAB_FIELD)) {
+      foreach ($vocab as $vid) {
+        $vocabs[] = $vid;
       }
     }
   }
@@ -199,7 +195,7 @@ function os_sv_list_get_content_type_vocabs($bundle) {
 
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'og_vocab')
-    ->propertyCondition('entity_type', 'node')
+    ->propertyCondition('entity_type', $entity_type)
     ->propertyCondition('vid', $vocabs, is_array($vocabs) ? 'IN' : '=');
 
   if ($bundle != 'all') {

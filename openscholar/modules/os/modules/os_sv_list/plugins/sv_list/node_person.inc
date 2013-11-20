@@ -12,7 +12,7 @@ $plugin = array(
   'bundle' => array('person'),
 );
 
-class sv_list_node_person {
+class sv_list_node_person  extends sv_list_plugin {
   
   /**
    * @function sort_alter
