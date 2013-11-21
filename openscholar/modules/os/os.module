@@ -123,14 +123,14 @@ function os_menu_alter(&$items) {
 }
 
 /**
- * Access callback; Returns FALSE is login is disabled.
+ * Access callback; Returns FALSE if login is disabled.
  */
 function os_in_read_mode() {
   return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
 }
 
 /**
- * Access callback; Returns FALSE is login is disabled.
+ * Access callback; Returns FALSE if login is disabled.
  */
 function os_in_read_mode_register() {
   return user_register_access() && !variable_get('os_readonly_mode', FALSE);
@@ -1805,6 +1805,7 @@ function os_select2_widget_after_build($element, &$form_state) {
 
 /**
  * Logging out all non-admin logged-in users.
+ *
  * Keep admin and all users with "administer site configuration" logged.
  */
 function os_logout_logged_users() {
@@ -1836,10 +1837,6 @@ function os_logout_logged_users() {
   }
 
   // Logout all logged users.
-  $users = user_load_multiple(array_keys($result));
-  foreach ($users as $user) {
-    module_invoke_all('user_logout', $user);
-  }
   db_delete('sessions')->condition('uid', array_keys($result), 'IN')->execute();
 }
 
