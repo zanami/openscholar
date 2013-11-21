@@ -393,7 +393,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['use_more'] = FALSE;
   $handler->display->display_options['use_more'] = TRUE;
-  $handler->display->display_options['defaults']['link_display'] = FALSE;
+  $handler->display->display_options['defaults']['link_display'] = TRUE;
   $handler->display->display_options['link_display'] = 'page_4';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'some';
