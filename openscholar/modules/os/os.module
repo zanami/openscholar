@@ -101,7 +101,7 @@ function os_menu_alter(&$items) {
     $items['user']['page callback'] = 'os_user_page';
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
-    $items['user']['access callback'] = 'os_is_in_read_mode';
+    $items['user']['access callback'] = 'os_in_read_mode';
   }
 
   // Check if the site is in read-only mode which means login is disabled.
