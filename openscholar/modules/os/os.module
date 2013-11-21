@@ -866,7 +866,7 @@ function os_settings_form($form_state) {
     '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/force-logout'),
   );
 
-  $form['os_read_only']['os_use_read_only_mode'] = array(
+  $form['os_read_only']['os_readonly_mode'] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable user login page'),
     '#default_value' => variable_get('os_readonly_mode', FALSE),
