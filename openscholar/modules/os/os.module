@@ -1024,10 +1024,13 @@ function os_get_started() {
   );
   $create_link = l(t('Create a Site !arrow', $params), 'site/register', array('html' => TRUE, 'attributes' => array('class' => 'btn create')));
 
+
+  $search_form = drupal_get_form('search_block_form');
+  $search_form['actions']['submit']['#value'] = '';
   $variables = array(
     'os_logo' => theme('image', array('path' => drupal_get_path('module', 'os') . '/images/os-logo.png')),
     'tagline' => t('<strong>Welcome!</strong>. This is OpenScholar.'),
-    'search_block' => drupal_get_form('search_block_form'),
+    'search_block' => $search_form,
     'create_link' => $create_link,
     'short_message' => $short_message,
     'welcome_message' => $welcome_message,
