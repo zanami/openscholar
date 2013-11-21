@@ -105,7 +105,7 @@ function os_menu_alter(&$items) {
   }
 
   // Check if the site is in read-only mode which means login is disabled.
-  $items['user/login']['access callback'] = 'os_in_read_mode';
+  $items['user/login']['access callback'] = 'os_in_read_mode_login';
   $items['user/register']['access callback'] = 'os_in_read_mode_register';
 
   // Displays 404 Not Found instead of default /node page.
@@ -126,6 +126,13 @@ function os_menu_alter(&$items) {
  * Access callback; Returns FALSE if login is disabled.
  */
 function os_in_read_mode() {
+  return !variable_get('os_readonly_mode', FALSE);
+}
+
+/**
+ * Access callback; Returns FALSE if login is disabled.
+ */
+function os_in_read_mode_login() {
   return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
 }
 
@@ -1814,12 +1821,11 @@ function os_logout_logged_users() {
   $query = db_select('users', 'u')->fields('u');
   $query->join('users_roles', 'ur', 'u.uid = ur.uid');
   $query->join('role_permission', 'rp', 'ur.rid = rp.rid');
-  $query
-    ->condition('rp.permission','administer site configuration')
+  $user_result = $query->condition('rp.permission','administer site configuration')
     ->execute()
     ->fetchAllAssoc('uid');
 
-  if (empty($query)) {
+  if (empty($user_result)) {
     return;
   }
 
@@ -1828,7 +1834,7 @@ function os_logout_logged_users() {
   $result = db_select('sessions', 's')
     ->fields('s')
     ->condition('uid', 1, '<>')
-    ->condition('uid', array(array_keys($query)), 'NOT IN')
+    ->condition('uid', array(array_keys($user_result)), 'NOT IN')
     ->execute()
     ->fetchAllAssoc('uid');
 
