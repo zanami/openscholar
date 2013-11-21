@@ -1732,10 +1732,8 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
   }
 
   // Handle special characters correctly.
-  if ($element['#field_name'] == 'og_vocabulary') {
-    foreach ($element['#options'] as $key => $option) {
-      $element['#options'][$key] = html_entity_decode($option, ENT_QUOTES);
-    }
+  foreach ($element['#options'] as $key => $option) {
+    $element['#options'][$key] = html_entity_decode($option, ENT_QUOTES);
   }
 
   if ($element['#cardinality'] != 1) {
