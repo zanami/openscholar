@@ -435,7 +435,7 @@ function os_importer_import_validate($form, $form_state) {
  * structure.
  */
 function os_importer_verify_uploaded_file($form, $form_state) {
-  if ($form_state['values']['format'] == 'ical') {
+  if (in_array($form_state['values']['format'], array('ical', 'rss'))) {
     // Don't validate iCal files.
     return;
   }
