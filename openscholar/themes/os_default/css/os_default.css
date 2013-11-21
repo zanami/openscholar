@@ -9,8 +9,6 @@ body {
   background: #fff;
 }
 
-
-
 h2 {
   font-size: 18px;
   font-weight: normal;
@@ -493,7 +491,6 @@ border-radius: 4px;
 }
 
 /* Site-wide front page */
-
 #block-os-get-started {
   max-width: 780px;
   margin: 0 auto;
@@ -521,6 +518,13 @@ border-radius: 4px;
 
 .top-wrapper .last-wrapper {
   text-align: right; /* LTR */
+}
+
+.first-wrapper .form-actions .form-submit {
+  background: url("../images/icon_search.png") no-repeat scroll center center #4077AE !important;
+  height: 30px;
+  width: 30px;
+  border: solid 1px #ffffff;
 }
 
 .last-wrapper .create.btn {
