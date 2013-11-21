@@ -203,7 +203,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 
-.stats .sitecount {
+.sitecount {
 	font: bold 22px arial,sans-serif;
 	 text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 
