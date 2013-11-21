@@ -104,7 +104,7 @@ function os_menu_alter(&$items) {
     $items['user']['access callback'] = 'os_is_in_read_mode';
   }
 
-  // Check if the site is in read-only mode which means no login is disabled.
+  // Check if the site is in read-only mode which means login is disabled.
   $items['user/login']['access callback'] = 'os_is_in_read_mode';
 
   // Displays 404 Not Found instead of default /node page.
@@ -125,11 +125,7 @@ function os_menu_alter(&$items) {
  * Access callback; Returns FALSE is login is disabled.
  */
 function os_is_in_read_mode() {
-  if (variable_get('os_use_read_only_mode', FALSE)) {
-    return FALSE;
-  }
-
-  return !user_is_logged_in();
+  return !variable_get('os_use_read_only_mode', FALSE);
 }
 
 /**
@@ -1834,6 +1830,6 @@ function os_confirm_logout_users($form, $form_state) {
  */
 function os_confirm_logout_users_submit($form, &$form_state) {
   os_logout_logged_users();
-  drupal_set_message('Good!');
+  drupal_set_message('All users have been logged out.');
   $form_state['redirect'] = 'admin/config/openscholar/openscholar';
 }
