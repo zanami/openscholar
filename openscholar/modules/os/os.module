@@ -46,11 +46,11 @@ function os_menu() {
     'access arguments' => array('administer content'),
   );
 
-  $items['admin/config/openscholar/openscholar-logout'] = array(
+  $items['admin/config/openscholar/force-logout'] = array(
     'title' => 'logout',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_confirm_logout_users'),
-    'access arguments' => array('administer content'),
+    'access arguments' => array('administer site configuration'),
   );
 
   $items['page_not_found'] = array(
@@ -105,7 +105,8 @@ function os_menu_alter(&$items) {
   }
 
   // Check if the site is in read-only mode which means login is disabled.
-  $items['user/login']['access callback'] = 'os_is_in_read_mode';
+  $items['user/login']['access callback'] = 'os_in_read_mode';
+  $items['user/register']['access callback'] = 'os_in_read_mode_register';
 
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
@@ -124,8 +125,15 @@ function os_menu_alter(&$items) {
 /**
  * Access callback; Returns FALSE is login is disabled.
  */
-function os_is_in_read_mode() {
-  return !variable_get('os_use_read_only_mode', FALSE);
+function os_in_read_mode() {
+  return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
+}
+
+/**
+ * Access callback; Returns FALSE is login is disabled.
+ */
+function os_in_read_mode_register() {
+  return user_register_access() && !variable_get('os_readonly_mode', FALSE);
 }
 
 /**
@@ -855,13 +863,13 @@ function os_settings_form($form_state) {
 
   $form['os_read_only']['os_logout_users'] = array(
     '#type' => 'item',
-    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/openscholar-logout'),
+    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/force-logout'),
   );
 
   $form['os_read_only']['os_use_read_only_mode'] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable user login page'),
-    '#default_value' => variable_get('os_use_read_only_mode', FALSE),
+    '#default_value' => variable_get('os_readonly_mode', FALSE),
     '#description' => t('Disable users from logging into the site. '),
   );
 
@@ -1796,13 +1804,30 @@ function os_select2_widget_after_build($element, &$form_state) {
 }
 
 /**
- * Logging out all currently logged-in users.
+ * Logging out all non-admin logged-in users.
+ * Keep admin and all users with "administer site configuration" logged.
  */
 function os_logout_logged_users() {
-  // Get a list of current logged-in users.
+  // Get all user ids for users with "administer site configuration"
+  // permission.
+  $query = db_select('users', 'u')->fields('u');
+  $query->join('users_roles', 'ur', 'u.uid = ur.uid');
+  $query->join('role_permission', 'rp', 'ur.rid = rp.rid');
+  $query
+    ->condition('rp.permission','administer site configuration')
+    ->execute()
+    ->fetchAllAssoc('uid');
+
+  if (empty($query)) {
+    return;
+  }
+
+  // Get a list of no-admin logged users with no "administer site configuration"
+  // permission.
   $result = db_select('sessions', 's')
     ->fields('s')
     ->condition('uid', 1, '<>')
+    ->condition('uid', array(array_keys($query)), 'NOT IN')
     ->execute()
     ->fetchAllAssoc('uid');
 
@@ -1822,7 +1847,7 @@ function os_logout_logged_users() {
  * Page argument; passed to drupal_get_form() in os_menu().
  */
 function os_confirm_logout_users($form, $form_state) {
-  return confirm_form($form, t('Logout all logged users'), 'admin/config/openscholar/openscholar', t('Are you sure you want to logout all logged users?'));
+  return confirm_form($form, t('Logout all non-admin users'), 'admin/config/openscholar/openscholar', t('Are you sure you want to logout all non-admin users?'));
 }
 
 /**
@@ -1830,6 +1855,6 @@ function os_confirm_logout_users($form, $form_state) {
  */
 function os_confirm_logout_users_submit($form, &$form_state) {
   os_logout_logged_users();
-  drupal_set_message('All users have been logged out.');
+  drupal_set_message('All non-admin users have been logged out.');
   $form_state['redirect'] = 'admin/config/openscholar/openscholar';
 }
