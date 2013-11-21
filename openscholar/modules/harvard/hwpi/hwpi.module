@@ -187,11 +187,9 @@ function _hwpi_branding_footer() {
  * Implements hook_cp_settings().
  */
 function hwpi_cp_settings() {
-  // Always displays the responsive setting for User 1.
-  global $user;
   // For non-user-1, only adds the responsive setting for HWPI-themed sites.
   $theme = variable_get('theme_default');
-  if (!_is_hwpi_theme($theme) && $user->uid != 1) {
+  if (!_is_hwpi_theme($theme) && !user_acces('administer site configuration')) {
     return;
   }
 
