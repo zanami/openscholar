@@ -2279,16 +2279,24 @@ function vsite_form_alias_validate($form, &$form_state) {
   $entity_type = $form['#entity_type'];
 
   if ($entity_type == 'node') {
-    // Nodes must have path and audience in order to generate their alias.
+    // Nodes must have an audience field in order to generate their alias.
     $entity = $form_state['node'];
-    $entity->path = $form_state['values']['path'];
     $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
   }
   else {
-    // Terms must have path and vid in order to generate their alias.
+    // Terms must have a vid in order to generate their alias.
     $entity = $form_state['term'];
-    $entity->path = $form_state['values']['path'];
     $entity->vid = $form_state['values']['vid'];
+  }
+
+  // Entities must have a path in order to generate their alias.
+  $entity->path = $form_state['values']['path'];
+
+  list($id) = entity_extract_ids($entity_type, $entity);
+  if ($id) {
+    // Get entity source path, e.g 'node/23'.
+    $uri = entity_uri($entity_type, $entity);
+    $source = $uri['path'];
   }
 
   // Get alias.
@@ -2298,11 +2306,21 @@ function vsite_form_alias_validate($form, &$form_state) {
   $query = db_select('url_alias')
     ->condition('alias', $alias)
     ->condition('language', $entity->path['language']);
+
+  if ($id) {
+    // Prevent checking self.
+    $query->condition('source', $source, '<>');
+  }
+
   $query->addExpression('1');
   $query->range(0, 1);
-  if ($query->execute()->fetchField()) {
-    form_set_error('path', t('The alias is already in use.'));
-  }
+
+ if (!$query->execute()->fetchField()) {
+   // No duplicate aliases.
+   return;
+ }
+
+  form_set_error('path', t('The alias is already in use.'));
 }
 
 /**
