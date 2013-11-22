@@ -12,6 +12,15 @@ function os_boxes_ctools_plugin_api($module, $api) {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function os_boxes_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'oembed' && $plugin == 'providers') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
  * Passthrough function so box plugin definitions are only loaded when they're needed
  * We don't need to include and process the file on every page
  */
@@ -350,46 +359,4 @@ function os_boxes_permission() {
   );
 
   return $perms;
-}
-
-
-/**
- * Default provider for boxes
- */
-function os_boxes_box_provider($plugin, $url, $matches, $parameters) {
-
-  $result = FALSE;
-  $delta = $matches[1];
-  $defaults = array('view_mode' => 'full', 'langcode' => NULL);
-  $parameters = array_merge($defaults, $parameters);
-  $box = boxes_box_load($delta);
-  if (!$box) {
-    $s = db_select('spaces_overrides', 'so')
-      ->fields('so', array('value'))
-      ->condition('object_type', 'boxes')
-      ->condition('object_id', $delta)
-      ->execute()
-      ->fetchField();
-    $box = unserialize($s);
-    $box = boxes_box::factory($box->plugin_key, $box);
-  }
-  if ($box) {
-    module_load_include('module', 'block', 'block');
-    $block = new stdClass();
-    $block->bid = "boxes-{$box->delta}";
-    $block->delta = $box->delta;
-    $block->info = $box->description;
-    $block->cache = DRUPAL_CACHE_CUSTOM;
-    $block->module = 'boxes';
-
-    $result = array(
-      'type' => 'rich',
-      'html' => $box->render(),
-      'title' => $box->title,
-      'widget_type' => $box->plugin_key
-    );
-    $result = _oembedprovider_result($result['type'], $result);
-  }
-
-  return $result;
 }
