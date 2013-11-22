@@ -135,6 +135,7 @@ function os_files_private_file_download($uri) {
     $apps = variable_get('spaces_features');
 
     $wrapper = entity_metadata_wrapper('node', $vsite->group);
+    // Retrieve the site privacy. We don't want to check the feature settings if this is an intranet site.
     $site_privacy = (module_exists('vsite_access') && !empty($wrapper->{VSITE_ACCESS_FIELD}))? $wrapper->{VSITE_ACCESS_FIELD}->value():0;
 
     if ((module_exists('vsite_access') && $site_privacy < VSITE_ACCESS_INTRANET_PRIVATE) && isset($apps['os_files_private']) && (int) $apps['os_files_private'] !== 1) {
@@ -201,6 +202,23 @@ function _os_files_private_fid_from_uri($uri) {
     ->execute();
 
   return isset($result['file']) ? reset(array_keys($result['file'])) : '';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for spaces_features_form.
+ *
+ * Alters the features form in the cp to remove un-needed componentes
+ */
+function os_files_private_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
+  // Only alters form if we are in the OpenScholar Control Panel context and this is an intranet install.
+  if (!context_isset('context', 'os_cp') || variable_get('file_default_scheme') != 'private') {
+    return;
+  }
+
+  //Remove this app from the features form, this is not optional for Intranet's
+  if(isset($form['spaces_features']['os_files_private'])){
+    unset($form['spaces_features']['os_files_private']);
+  }
 }
 
 /**
