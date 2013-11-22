@@ -287,6 +287,16 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 	background:#dfdfdf;
 	padding:6px;
 	}
+	
+	@-moz-document url-prefix() { 
+	.whyuse .support {
+	top:-61px;
+		}
+	}
+	
+	.lt-ie9 .whyuse .support {
+	top:-47px;
+	}
 
 .whyuse .block-content {
 	padding-top:35px !important;
