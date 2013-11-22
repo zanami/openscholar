@@ -83,8 +83,13 @@ body.front.no-sidebars #content-panels .region-inner {
 #header-container h2, #header-container p {
   display:none;
   }  
-  
-  
+ 
+ .region-header-third ul.nice-menu a {
+    font: 14px 'Roboto',sans-serif;
+    text-decoration: underline !important;
+    text-transform: none;
+} 
+  /*
 .region-header-third ul.nice-menu a {
     font: normal 16px 'Roboto',sans-serif;
     text-transform: none;
@@ -94,7 +99,7 @@ body.front.no-sidebars #content-panels .region-inner {
   background:url('../images/mainnav_sidearrow.png') no-repeat 283px 7px transparent;
   padding-right: 23px;
   }
-  
+  */
 #menu-bar {
     padding: 0 0 10px;
 }  
@@ -104,6 +109,10 @@ body.front.no-sidebars #content-panels .region-inner {
     border-radius: 0;
     box-shadow: none;
 }  
+
+.lt-ie9 #menu-bar nav {
+    border:none !important;
+}
 
 #menu-bar ul a, #menu-bar ul.nice-menu a, #menu-bar ul.nice-menu .menuparent a {
     font-family: 'Roboto',Baskerville,Palatino,'Palatino Linotype','Book Antiqua','Times New Roman',serif;
@@ -162,6 +171,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .custhtml h3.custheader a {
     color: #000000;
     font: 25px/1.4em "Helvetica","Arial","sans-serif";
+    text-decoration: none !important;
 }
 
 .custhtml.sample h3.custheader a {
@@ -197,7 +207,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
     text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 }
 
-.stats .sitecount {
+.sitecount {
 	font: bold 22px arial,sans-serif;
 	 text-shadow: 0 1px 0 rgba(37, 37, 37, 0.75);
 
@@ -271,11 +281,21 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .whyuse .social {top:-53px;position:relative;}
 
 .whyuse .support {
-	top:-49px;
+	top:-65px;
 	position:relative;
 	border:1px solid #ccc;
-	background:#EFEFEF;
+	background:#dfdfdf;
 	padding:6px;
+	}
+	
+	@-moz-document url-prefix() { 
+	.whyuse .support {
+	top:-61px;
+		}
+	}
+	
+	.lt-ie9 .whyuse .support {
+	top:-47px;
 	}
 
 .whyuse .block-content {
@@ -297,8 +317,8 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .stats {
  	color:#fff;
 	position: absolute;
-    right: 378px;
-    top: 132px;
+    right: 381px;
+	top: 137px;
     z-index: 20;
 }
 

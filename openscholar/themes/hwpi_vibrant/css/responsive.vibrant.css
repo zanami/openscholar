@@ -152,3 +152,9 @@ background: none !important;
 }
 
 }
+
+@media (max-width: 768px) {
+.one-sidebar.sidebar-second .region-sidebar-second {
+width: 90%!important;
+	}
+}

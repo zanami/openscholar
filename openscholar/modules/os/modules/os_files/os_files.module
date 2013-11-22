@@ -631,7 +631,16 @@ function os_files_entity_info_alter(&$info){
     'os_files_link' => array(
       'label' => t('Link with no icon'),
       'custom settings' => TRUE
-    )
+    ),
+    
+    'os_files_thumbnail' => array(
+      'label' => t('Thumbnail'),
+      'custom settings' => TRUE
+    ),
+    'os_files_preview' => array(
+      'label' => t('Preview'),
+      'custom settings' => TRUE
+    ),
   );
 
   $info['file']['bundles']['undefined'] = array(
@@ -756,15 +765,22 @@ function os_files_file_default_displays(){
       'image_style' => 'square_thumbnail',
       'alt' => '',
       'title' => ''
-    )
+    ),
   );
 
-  foreach ( file_type_get_enabled_types() + array(
-    'default' => array()
-  ) as $type => $info ) {
+  foreach ( file_type_get_enabled_types() + array('default' => array()) as $type => $info ) {
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
     $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
     $keys["{$type}__os_files_link_icon__os_link"] = array();
+
+    // For default view mode, use the default width and height from
+    // hook_file_formatter_info().
+    $keys[$type . '__default__oembed'] = array('wmode' => 'transparent');
+    $keys[$type . '__default__oembed_thumbnail'] = array();
+
+    // For the Preview view mode, match the width and height of the square
+    // thumbnail in media_image_default_styles().
+    $keys[$type . '__preview__oembed_thumbnail'] = array('width' => '180', 'height' => '180');
   }
 
   $displays = array();
@@ -1376,6 +1392,21 @@ function os_files_views_data_alter(&$data){
   );
 }
 
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_files_os_entity_view_modes() {
+  return array('file' => array(
+    'image' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'video' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'audio' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'document' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'executable' => array('os_files_link', 'os_files_link_icon'),
+    'html' => array('os_files_link', 'full'),
+  ));
+}
+
+
 function os_files_file_default_types() {
   $types = array();
 
@@ -1824,4 +1855,18 @@ function os_files_add_fields($type) {
     field_create_instance($instance);
   }
 
+}
+
+/**
+ * @function os_files_get_bundles
+ * 
+ * Gets a list of file bundles.
+ */
+function os_files_get_bundles() {
+  $file_info =  entity_get_info('file');
+  foreach ($file_info['bundles'] as $bundle => $info) {
+    $bundles[$bundle] = $info['label'];
+  }
+  
+  return $bundles;
 }
