@@ -293,7 +293,9 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   }
     
   array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
-  $form['#submit'][] = 'os_files_file_entity_submit_redirect';
+  if (empty($form_state['#media_browser'])) {
+    $form['#submit'][] = 'os_files_file_entity_submit_redirect';
+  }
 }
 
 function os_files_upload_attributes($element) {
@@ -377,6 +379,9 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
       'os_files_edit_delete_ajax_submit'
     );
   }
+  elseif (overlay_get_mode() == 'child') {
+    $form['actions']['submit']['#submit'][] = 'os_files_close_overlay';
+  }
 }
 
 /**
@@ -389,6 +394,14 @@ function os_files_edit_delete_ajax_submit($form, &$form_state) {
 
   // Clear the page and block caches.
   cache_clear_all();
+}
+
+/**
+ * Closes the overlay when the form is saved. Prevents redirection.
+ */
+function os_files_close_overlay(&$form, &$form_state) {
+  $form_state['no_redirect'] = true;
+  overlay_close_dialog();
 }
 
 function os_files_form_file_entity_delete_form_alter(&$form, &$form_state) {
