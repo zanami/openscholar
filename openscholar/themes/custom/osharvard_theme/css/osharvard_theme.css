@@ -281,10 +281,10 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
 .whyuse .social {top:-53px;position:relative;}
 
 .whyuse .support {
-	top:-49px;
+	top:-65px;
 	position:relative;
 	border:1px solid #ccc;
-	background:#EFEFEF;
+	backgroun:#dfdfdf;
 	padding:6px;
 	}
 
