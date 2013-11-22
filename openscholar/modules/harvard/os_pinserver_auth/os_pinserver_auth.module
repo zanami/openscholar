@@ -84,10 +84,7 @@ function os_pinserver_auth_js() {
  */
 function os_pinserver_auth_file_download($uri) {
 
-  //Checks if pinserver file protection is enabled.
-  if(variable_get('os_files_private_pinserver', 0)){
-    return _os_pinserver_auth_file_download($uri);
-  }
+  return _os_pinserver_auth_file_download($uri);
 }
 
 /**

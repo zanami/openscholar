@@ -97,18 +97,59 @@ function _os_pinserver_auth_file_download($uri) {
     // Serves file if user is already authenticated, or just got authenticated throurgh PIN.
     // Times out after os_files_pinserver_timeout seconds, (default 420 minutes)
 
+    $private_files_by_pin = variable_get('os_files_private_pinserver', 0);
+    $os_fast = !function_exists('ctools_include');
+
     //Check for ctools to assure we are not in js.php
-    if (function_exists('ctools_include')) {
+    if (!$os_fast) {
       $file = file_uri_to_object($uri);
     } else {
       $file = file_uri_to_object($uri,FALSE);
     }
 
-    if (pinserver_get_user() || (function_exists('ctools_include') && file_entity_access('update', $file))) {
+    //If they are logged in via pin and this is a pin protected file return the file.
+    if ((pinserver_get_user() && $private_files_by_pin) || (!$os_fast && isset($file->fid) && file_entity_access('update', $file))) {
       return file_get_content_headers($file);
     }
+    // If we are not using the 'private files by pin' feature then we should check for a pin protected site.
+    // Note that this is not compatible with os_files_private
+    else if (!$private_files_by_pin && !$os_fast && !module_exists('os_files_private')) {
+
+      if(!isset($file->fid)){
+        $target = explode("/",file_uri_target($uri));
+        //Is this a private image style.
+        if (array_shift($target) != "styles") {
+          return NULL;
+        }
+        // Remove the style.
+        array_shift($target);
+        $image_uri = array_shift($target).'://' . implode("/", $target);
+        // Load the file from the style path.
+        $original_file = file_uri_to_object($image_uri);
+
+        // If we still could not load a file return.
+        if (!isset($original_file->fid)) {
+          return NULL;
+        }
+
+        $wrapper = entity_metadata_wrapper('file', $original_file);
+      }else{
+        $wrapper = entity_metadata_wrapper('file', $file);
+      }
+
+      // Restricts access if no OG audience is set.
+      if (isset($wrapper->{OG_AUDIENCE_FIELD}) && ($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
+        global $user;
+        // Load Group.
+        $node = node_load($gid[0]);
+        // If this is a PIN intranet site return the file.
+        if($node && ($wrapper = entity_metadata_wrapper('node', $node)) && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value() == OS_PINSERVER_INTRANET_ACCESS){
+          return file_get_content_headers($file);
+        }
+      }
+    }
     // Otherwise, sends the user to Pinserver to log in.
-    else if (function_exists('pinserver_redirect')) {
+    else if ($private_files_by_pin && function_exists('pinserver_redirect')) {
       $wrapper = file_stream_wrapper_get_instance_by_uri($uri);
       return pinserver_redirect(array('redirect' => $wrapper->getExternalUrl(), 'tk_forward' => '1'));
     }
