@@ -455,6 +455,20 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I create the term "([^"]*)" in vocabulary "([^"]*)"$/
+   */
+  public function iCreateTheTermInVocab($term_name, $vocab_name) {
+    $this->invoke_code('os_migrate_demo_create_term', array("'$term_name'","'$vocab_name'"));
+  }
+
+  /**
+   * @Given /^I delete the term "([^"]*)"$/
+   */
+  public function iDeleteTheTermInVocab($term_name) {
+    $this->invoke_code('os_migrate_demo_delete_term', array("'$term_name'"));
+  }
+
+  /**
    * @Given /^I should see the following <links>$/
    */
   public function iShouldNotSeeTheFollowingLinks(TableNode $table) {
@@ -948,7 +962,7 @@ class FeatureContext extends DrupalContext {
     return array(
       new Step\When('I am not logged in'),
       new Step\When('I am logging in as "john"'),
-      new Step\When('I visit "john/halleys-comet"'),
+      new Step\When('I visit "john/event/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
       new Step\When('I press "Delete"'),
@@ -1096,6 +1110,14 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I import "([^"]*)" feed items for "([^"]*)"$/
+   */
+  public function iImportVsiteFeedItemsForVsite($vsite_origin, $vsite_target) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite_target'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite_origin) . "'", $nid));
+  }
+
+  /**
    * @Given /^I import the feed item "([^"]*)"$/
    */
   public function iImportTheFeedItem($feed_item) {
@@ -1189,5 +1211,19 @@ class FeatureContext extends DrupalContext {
    */
   public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
     $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
+
+  /**
+   * @Then /^I search for "([^"]*)"$/
+   *
+   * Defining a new step because when using the step "I should see" for the iCal
+   * page the test is failing.
+   */
+  public function iSearchFor($string) {
+    $element = $this->getSession()->getPage();
+
+    if (strpos($element->getContent(), $string) === FALSE) {
+      throw new Exception("the string '$string' was not found.");
+    }
   }
 }
