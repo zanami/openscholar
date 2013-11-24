@@ -798,10 +798,3 @@ class os_sv_list_box extends os_boxes_default {
     return $options;
   }
 }
-
-/**
- * AJAX callback for reload the vocabulary for the selected content type.
- */
-function os_sv_list_vocabs_content_type($form, $form_state) {
-  return $form['options']['vocabs'];
-}
