@@ -45,6 +45,8 @@ function os_events_menu() {
     'title' => 'Register to events',
     'page callback' => 'registration_register_page',
     'page arguments' => array('node', 2),
+
+    /// TODO: Should we keep the access callback?
     'access callback' => TRUE,
   );
 
