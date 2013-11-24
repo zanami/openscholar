@@ -65,6 +65,9 @@ body.front.no-sidebars #content-panels .region-inner {
     background-image: none;
 }
 
+#columns {
+margin-bottom: -20px;
+}
 
 #header-container h1 {
   width:292px;
