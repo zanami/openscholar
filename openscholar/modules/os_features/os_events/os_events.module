@@ -36,6 +36,31 @@ function os_events_os_app_info() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function os_events_menu() {
+  $items = array();
+
+  $items['os_events/registration/%node'] = array(
+    'title' => 'Register to events',
+    'page callback' => 'registration_register_page',
+    'page arguments' => array('node', 2),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function os_events_admin_paths() {
+  return array(
+    'os_events/registration/*' => TRUE,
+  );
+}
+
+/**
  * Implements hook_os_entity_view_modes()
  */
 function os_events_os_entity_view_modes() {
@@ -43,7 +68,6 @@ function os_events_os_entity_view_modes() {
     array('event' => array('sidebar_teaser')
   ));
 }
-
 
 /**
  * hook os_widget
@@ -145,9 +169,10 @@ function os_events_process_node(&$variables) {
     $subscribe = str_replace('http://', 'webcal://', $subscribe);
 
     $ical = l(t('iCal'), 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
+    $register = l(t('Register'), 'os_events/registration/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
 
     $variables['content']['export'] = array(
-      '#markup' => $subscribe . ' ' . $ical,
+      '#markup' => $subscribe . ' ' . $ical . ' ' . $register,
       '#weight' => 10,
     );
   }
@@ -567,8 +592,6 @@ function os_events_form_registration_form_alter(&$form, &$form_state) {
   // @TODO: figure out why the $form['#entity'] disable the header.
   unset($form['#entity']);
 
-  $node = node_load($form_state['registration']->entity_id);
-
   $form['who_is_registering'] = array(
     '#type' => 'value',
     '#value' => 'registration_registrant_type_anon',
@@ -579,7 +602,7 @@ function os_events_form_registration_form_alter(&$form, &$form_state) {
 
   $form['event_register'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Sign up for @label', array('@label' => $node->title)),
+    '#title' => t('Sign up for this event'),
     '#collapsible' => TRUE,
     '#collapsed' => empty($form_state['input']),
 

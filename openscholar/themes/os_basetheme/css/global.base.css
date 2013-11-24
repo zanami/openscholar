@@ -511,10 +511,13 @@ padding:3px 0 3px 25px !important;
 
 .page-node.node-type-event .rss,
 .page-node.node-type-event .subscribe {
-    display: inline-block;
-    margin-top: 7px;
+  display: inline-block;
+  margin-top: 7px;
 }
 
+.page-node.node-type-event .field-type-registration {
+  padding-top: 30px;
+}
 
 /* BOOK NAVS */
 .book-menu {
