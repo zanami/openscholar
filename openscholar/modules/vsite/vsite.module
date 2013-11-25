@@ -255,6 +255,44 @@ function vsite_node_term_form_after_build($form, &$form_state) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_form_path_admin_form_alter(&$form, $form_state) {
+  $form['#validate'][] = 'vsite_path_admin_validate';
+}
+
+/**
+ * Validate handler - verify the path is not already taken.
+ */
+function vsite_path_admin_validate($form, $form_state) {
+  // verify that the user first enter a purl address.
+  $alias = explode('/', $form_state['values']['alias']);
+  $purl = reset($alias);
+
+  $query = db_select('purl')
+    ->fields('purl')
+    ->condition('value', $purl);
+
+  if (!$query->execute()->fetchField()) {
+    form_set_error('alias', t('The url of the vsite is missing.'));
+  }
+
+  // Check that the alias is not taken in the vsite.
+  $source = explode('/', $form_state['values']['source']);
+  $entity_type = strpos('node/', $form_state['values']['source']) === 0 ? 'node' : 'taxonomy_term';
+  $entity_id = end($source);
+
+  if (!$entity = entity_load_single($entity_type, $entity_id)) {
+    // The entity is not exists.
+    return;
+  }
+
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['alias'])) {
+    form_set_error('alias', t('Already in use.'));
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
  *
  * Prevent accidental delete of VSites, by hardening the confirmation page.
  */
@@ -2318,8 +2356,18 @@ function vsite_form_alias_validate($form, &$form_state) {
       break;
   }
 
+  // Verify the path is not in use.
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['path'])) {
+    form_set_error('path', t('The alias is already in use.'));
+  }
+}
+
+/**
+ * Helper function for validate the if the alias is already exists.
+ */
+function _vsite_form_alias_validate($entity_type, $entity, $path) {
   // Entities must have a path in order to generate their alias.
-  $entity->path = $form_state['values']['path'];
+  $entity->path = $path;
 
   list($id) = entity_extract_ids($entity_type, $entity);
   if ($id) {
@@ -2344,12 +2392,7 @@ function vsite_form_alias_validate($form, &$form_state) {
 
   $query->range(0, 1);
 
- if (!$query->execute()->fetchField()) {
-   // No duplicate aliases.
-   return;
- }
-
-  form_set_error('path', t('The alias is already in use.'));
+  return !$query->execute()->fetchField();
 }
 
 /**
