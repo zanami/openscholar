@@ -113,7 +113,7 @@ function _os_pinserver_auth_file_download($uri) {
     }
     // If we are not using the 'private files by pin' feature then we should check for a pin protected site.
     // Note that this is not compatible with os_files_private
-    else if (!$private_files_by_pin && !$os_fast && !module_exists('os_files_private')) {
+    else if (!$private_files_by_pin && !$os_fast) {
 
       if(!isset($file->fid)){
         $target = explode("/",file_uri_target($uri));
