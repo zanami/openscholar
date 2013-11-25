@@ -133,7 +133,7 @@ function vsite_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Don't allow deleting "vsite admin" from Roles UI.
+ * Don't allow deleting system roles from Roles UI.
  *
  * @see theme_user_admin_roles().
  */
@@ -144,7 +144,13 @@ function vsite_user_admin_roles($variables) {
   foreach (element_children($form['roles']) as $rid) {
     $name = $form['roles'][$rid]['#role']->name;
     $row = array();
-    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || $name == 'vsite admin') {
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+
+    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || in_array($name, $role_names)) {
       $row[] = t('@name <em>(locked)</em>', array('@name' => $name));
       $row[] = drupal_render($form['roles'][$rid]['weight']);
       $row[] = '';
