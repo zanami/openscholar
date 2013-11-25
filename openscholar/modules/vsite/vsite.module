@@ -178,7 +178,7 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ * Implements hook_form_FORM_ID_alter() for taxonomy form.
  *
  * Hides the comment settings form from the VSites.
  */
@@ -2278,15 +2278,19 @@ function vsite_taxonomy_term_presave($term) {
 function vsite_form_alias_validate($form, &$form_state) {
   $entity_type = $form['#entity_type'];
 
-  if ($entity_type == 'node') {
-    // Nodes must have an audience field in order to generate their alias.
-    $entity = $form_state['node'];
-    $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
-  }
-  else {
-    // Terms must have a vid in order to generate their alias.
-    $entity = $form_state['term'];
-    $entity->vid = $form_state['values']['vid'];
+  switch ($entity_type) {
+    case 'node':
+      // Nodes must have an audience field in order to generate their alias.
+      $entity = $form_state['node'];
+      $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
+      break;
+
+    default:
+    case 'taxonomy_term':
+      // Terms must have a vid in order to generate their alias.
+      $entity = $form_state['term'];
+      $entity->vid = $form_state['values']['vid'];
+      break;
   }
 
   // Entities must have a path in order to generate their alias.
@@ -2355,10 +2359,10 @@ function vsite_pathauto_alias_alter(&$alias, $context) {
  * @param $entity
  *  The entity object.
  * @param $alias
- *   Optional; The alias to set, in case it isn't present on the the entity.
+ *  Optional; The alias to set, in case it isn't present on the the entity.
  *
- * @return
- *   The alias of the entity.
+ * @return null|string
+ *  The alias of the entity.
  */
 function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
   if (empty($alias) && empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
@@ -2368,7 +2372,7 @@ function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
 
   if (empty($alias)) {
     // No alias.
-    return;
+    return NULL;
   }
 
   if (!in_array($entity_type, array('taxonomy_term', 'node'))) {
