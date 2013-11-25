@@ -184,6 +184,22 @@ function cp_menu() {
     ),
   );
 
+  // Allow user to add URL redirects.
+  if (module_exists('redirect')) {
+    $path = drupal_get_path('module', 'redirect');
+    $items['cp/redirect/add'] = array(
+      'type' => MENU_LOCAL_ACTION,
+      'title' => 'Add URL redirect',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('redirect_edit_form'),
+      'access callback' => TRUE,
+      'access callback' => 'redirect_access',
+      'access arguments' => array('create', 'redirect'),
+      'file' => 'redirect.admin.inc',
+      'file path' => $path,
+    );
+  }
+
   return $items;
 }
 
