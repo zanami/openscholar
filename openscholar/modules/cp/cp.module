@@ -486,3 +486,54 @@ function _cp_app_settings_page_title($feature_name) {
   $title = t('@app Settings', array('@app' => $feature_title));
   return $title;
 }
+
+/**
+ * Implements hook_form_alter() for redirect_edit_form.
+ *
+ * Modifies purl values if the form is being loaded inside a vsite.
+ *
+ * Stores the vsite's purl modifier as a hidden field, updates the "From" field
+ * prefix and makes additional UI modifications.
+ *
+ * @see purl.admin.inc
+ * @see purl_redirect_edit_validate()
+ */
+function cp_form_redirect_edit_form_alter(&$form, &$form_state, $form_id) {
+  // Only alters the form if we are on a vsite.
+  $vsite = vsite_get_vsite();
+  if (empty($vsite)) {
+    return;
+  }
+
+  // Determines this vsite's purl modifier value.
+  if (empty($form['purl']['modifier']['#default_value'])) {
+    $default_value = "{$vsite->purl_provider}:{$vsite->id}";
+  }
+  else {
+    $default_value = $form['purl']['modifier']['#default_value'];
+  }
+
+  // Prevents form from loading if the purl modifier is not an available choice.
+  if (!array_key_exists($default_value, $form['purl']['modifier']['#options'])) {
+    drupal_set_message(t('Sorry, no redirects may be added at this time.'), 'error');
+    $form = array();
+    return;
+  }
+
+  // Stores this vsite's purl modifier as a hidden value.
+  $form['purl']['modifier']['#value'] = $default_value;
+  $form['purl']['#type'] = 'hidden';
+
+  // Prefixes the "From" field with this vsite's front page full path.
+  $vsite_base_url = rtrim(url('<front>', array('absolute' => TRUE)), '/');
+  $form['source']['#field_prefix'] = "{$vsite_base_url}/";
+
+  // Hides the default fieldset that provides settings like 3xx status code.
+  $form['advanced']['#type'] = 'hidden';
+
+  // Updates field descriptions to replace Drupal-specific wording.
+  $description = t('Enter any non-existing path from your site to trigger a redirect on. Fragment anchors (e.g. #anchor) are not allowed');
+  $form['source']['#description'] = $description;
+  $description = t('Enter any existing destination URL (like http://example.com/) to redirect to.');
+  $form['redirect']['#description'] = $description;
+}
