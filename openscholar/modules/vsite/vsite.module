@@ -518,9 +518,16 @@ function vsite_custom_theme(){
  * Safe guard against saving a user with the "vsite admin" site-wide role.
  */
 function vsite_user_presave(&$edit, $account, $category) {
-  $role = user_role_load_by_name('vsite admin');
-  if (!empty($edit['roles'][$role->rid])) {
-    throw new Exception('User object cannot be saved with "vsite admin" role.');
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    if (!empty($edit['roles'][$role->rid])) {
+      throw new Exception('User object cannot be saved with "vsite admin" role.');
+    }
   }
 }
 
