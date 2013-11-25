@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Code for the OpenScholar: Files feature.
+ */
+
+include_once 'os_files.features.inc';
 
 /**
  * @file
