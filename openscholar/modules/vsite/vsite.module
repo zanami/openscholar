@@ -228,17 +228,19 @@ function vsite_node_term_form_after_build($form, &$form_state) {
 
   // If this is a vsite...
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
-    // And if this node form contains an existing alias value,
-    // And if this is the first loading of the form i.e not loaded again because
-    // of form errors (The following code should only happen once)...
-    if ($form['path']['alias']['#value'] && empty($form_state['_purl_prefix_removed'])) {
+    // And if this node form contains an existing alias value...
+    if ($original = $form['path']['alias']['#value']) {
+      // For sites without custom domains, aliases will include the purl.
       // Removes the purl from the editable field value
       // in order to match user expectations: the purl must in the alias,
       // so the user should not appear to have the option to remove it.
       // Even if the purl is not part of the field value, it will be added.
       // @see _vsite_alter_node_path_settings()
-      $new = substr($form['path']['alias']['#value'], strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+
+      if (strpos($original, "{$purl}/") == 0) {
+        $new = substr($original, strlen($purl) + 1);
+        $form['path']['alias']['#value'] = $new;
+      }
     }
     // Prevent removing the purl prefix more than once.
     $form_state['_purl_prefix_removed'] = TRUE;
@@ -2238,6 +2240,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if ($vsite = vsite_get_vsite() && ($vsite->purl_provider == 'vsite_domain')) {
+      // First generates an internal, relative path to the final destination.
+      $options = array(
+        'query' => array(
+          'parent' => $parent,
+        ),
+      );
+      $destination = url('site/register', $options);
+
+      // Then creates an absolute, external link to the base domain's login
+      // page with the final path URL-encoded as the destination query
+      // parameter.
+      $options = array(
+        'absolute' => TRUE,
+        'base_url' => $purl_base_domain,
+        'query' => array(
+          'destination' => $destination,
+        ),
+      );
+      $href = url('user/login', $options);
+      $build['href'] = $href;
+      $build['path'] = $href;
+    }
   }
 
   if (isset($options['attributes']['class'])) {

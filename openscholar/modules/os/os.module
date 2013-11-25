@@ -116,7 +116,11 @@ function os_menu_alter(&$items) {
  */
 function os_entity_info_alter(&$info) {
   $info['node']['view modes']['sidebar_teaser'] = array(
-    'label' => 'Sidebar Teaser',
+    'label' => t('Sidebar Teaser'),
+    'custom settings' => TRUE,
+  );
+  $info['node']['view modes']['title'] = array(
+    'label' => t('Title'),
     'custom settings' => TRUE,
   );
 }
@@ -1470,6 +1474,56 @@ function _os_get_install_status() {
   $output = '<p>' . $output . '</p>';
 
   return $output;
+}
+
+/**
+ * @function os_entity_view_modes
+ * 
+ * Gets white list of view modes for entities by bundle
+ *
+ * @param string $entity_type
+ *   (Optional) Only return view modes for entities of this type.
+ *
+ * @param string $bundle
+ *   (Optional) Only return view modes for entities of this type and bundle (requires entity_type)
+ *
+ * @return array $info
+ *   Associative array, keyed by entity type, then bundle.  Lists view 
+ *   modes available to that bundle.  
+ */
+function os_entity_view_modes($entity_type = NULL, $bundle = NULL) {
+  $info = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($info)) {
+    foreach (module_implements(__FUNCTION__) as $module) {
+      if ($entity_view_modes = module_invoke($module, __FUNCTION__)) {
+        $info = array_merge_recursive($info, $entity_view_modes);
+      }
+    }
+    drupal_alter(__FUNCTION__, $info);
+  }
+  
+  if (!$entity_type) {
+    return $info;
+  }  
+  
+  if (!$bundle) {
+    return $info[$entity_type];
+  }
+  
+  return (isset($info[$entity_type][$bundle])) ? $info[$entity_type][$bundle] : NULL;
+}
+
+/**
+ * Implements os_entity_view_modes_alter
+ * 
+ * Adds full and teaser display to all os content types, except feed_importer.
+ */
+function os_os_entity_view_modes_alter(&$info) {
+  $bundles = array_keys(os_get_bundles(TRUE));
+  $bundles = array_diff($bundles, array('feed_importer'));
+  $bundle_views = array_fill_keys($bundles, array('full', 'teaser', 'title'));
+  $info['node'] = array_merge_recursive($info['node'], $bundle_views);
 }
 
 /**
