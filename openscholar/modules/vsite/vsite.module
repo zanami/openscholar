@@ -519,6 +519,30 @@ function vsite_custom_theme(){
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove site-wide system roles from the "People" page.
+ */
+function vsite_form_user_admin_account_alter(&$form, $form_state) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $keys = array(
+      t('Add a role to the selected users') => 'add',
+      t('Remove a role from the selected users') => 'remove',
+    );
+
+    foreach ($keys as $key => $value) {
+      unset($form['options']['operation']['#options'][$key][$value . '_role-' . $role->rid]);
+    }
+  }
+}
+
+/**
  * Implements hook_user_presave().
  *
  * Safe guard against saving a user with the "vsite admin" site-wide role.
