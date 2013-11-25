@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_image_gallery.features.menu_links.inc
@@ -12,19 +10,22 @@
 function os_image_gallery_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu:galleries
-  $menu_links['primary-menu:galleries'] = array(
+  // Exported menu link: primary-menu_galleries:galleries
+  $menu_links['primary-menu_galleries:galleries'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'galleries',
     'router_path' => 'galleries',
     'link_title' => 'Galleries',
-    'options' => array(),
+    'options' => array(
+      'identifier' => 'primary-menu_galleries:galleries',
+    ),
     'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 1,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 0,
   );
   // Translatables
   // Included for use with string extractors like potx.
@@ -33,4 +34,3 @@ function os_image_gallery_menu_default_menu_links() {
 
   return $menu_links;
 }
-
