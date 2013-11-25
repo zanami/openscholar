@@ -295,13 +295,16 @@ function vsite_node_form_after_build($form) {
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
     if ($original = $form['path']['alias']['#value']) {
+      // For sites without custom domains, aliases will include the purl.
       // Removes the purl from the editable field value
       // in order to match user expectations: the purl must in the alias,
       // so the user should not appear to have the option to remove it.
       // Even if the purl is not part of the field value, it will be added.
       // @see _vsite_alter_node_path_settings()
-      $new = substr($original, strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+      if (strpos($original, "{$purl}/") == 0) {
+        $new = substr($original, strlen($purl) + 1);
+        $form['path']['alias']['#value'] = $new;
+      }
     }
   }
   return $form;
@@ -2362,6 +2365,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if ($vsite = vsite_get_vsite() && ($vsite->purl_provider == 'vsite_domain')) {
+      // First generates an internal, relative path to the final destination.
+      $options = array(
+        'query' => array(
+          'parent' => $parent,
+        ),
+      );
+      $destination = url('site/register', $options);
+
+      // Then creates an absolute, external link to the base domain's login
+      // page with the final path URL-encoded as the destination query
+      // parameter.
+      $options = array(
+        'absolute' => TRUE,
+        'base_url' => $purl_base_domain,
+        'query' => array(
+          'destination' => $destination,
+        ),
+      );
+      $href = url('user/login', $options);
+      $build['href'] = $href;
+      $build['path'] = $href;
+    }
   }
 
   if (isset($options['attributes']['class'])) {
