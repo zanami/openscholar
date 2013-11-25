@@ -388,22 +388,38 @@ class vsite extends space_og {
 
   /**
    * Modify permissions on the fly, based on the VSite.
+   *
+   * Maintain a corrolation between the VSite level roles, and the site-wide
+   * roles.
+   *
+   * The site-wide "vsite user", "vsite admin", and "content editor" roles are
+   * granted on the fly, when the user is on their VSite context. By modifying
+   * the "user_access" static varaible we are able to trick Drupal to think that
+   * user has a certain permission on a certain condition.
    */
   protected function activate_user_roles() {
     global $user;
 
     $roles = $user->roles;
-    $role = user_role_load_by_name('vsite admin');
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
 
-    // Re-populate "user_access" static to not include "vsite admin" role.
+    $og_roles = og_get_user_roles('node', $this->id);
+
+    if (!$add_role_names = array_intersect($role_names, $og_roles)) {
+      // No site-wide roles to add.
+      return;
+    }
+
+    // Re-populate "user_access" static.
     $perm = &drupal_static('user_access');
 
-    // Re-populate "user_access" static to not include or exclude the
-    // "vsite admin" site-wide role.
-    if (!og_user_access('node', $this->id, 'administer group')) {
-      unset($roles[$role->rid]);
-    }
-    else {
+    foreach ($add_role_names as $role_name) {
+      // Add site-wide roles, based on the VSite roles.
+      $role = user_role_load_by_name($role_name);
       $roles[$role->rid] = $role->name;
     }
 

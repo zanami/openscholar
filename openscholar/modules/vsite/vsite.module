@@ -133,7 +133,7 @@ function vsite_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Don't allow deleting "vsite admin" from Roles UI.
+ * Don't allow deleting system roles from Roles UI.
  *
  * @see theme_user_admin_roles().
  */
@@ -144,7 +144,13 @@ function vsite_user_admin_roles($variables) {
   foreach (element_children($form['roles']) as $rid) {
     $name = $form['roles'][$rid]['#role']->name;
     $row = array();
-    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || $name == 'vsite admin') {
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+
+    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || in_array($name, $role_names)) {
       $row[] = t('@name <em>(locked)</em>', array('@name' => $name));
       $row[] = drupal_render($form['roles'][$rid]['weight']);
       $row[] = '';
@@ -295,13 +301,16 @@ function vsite_node_form_after_build($form) {
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
     if ($original = $form['path']['alias']['#value']) {
+      // For sites without custom domains, aliases will include the purl.
       // Removes the purl from the editable field value
       // in order to match user expectations: the purl must in the alias,
       // so the user should not appear to have the option to remove it.
       // Even if the purl is not part of the field value, it will be added.
       // @see _vsite_alter_node_path_settings()
-      $new = substr($original, strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+      if (strpos($original, "{$purl}/") == 0) {
+        $new = substr($original, strlen($purl) + 1);
+        $form['path']['alias']['#value'] = $new;
+      }
     }
   }
   return $form;
@@ -510,14 +519,45 @@ function vsite_custom_theme(){
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove site-wide system roles from the "People" page.
+ */
+function vsite_form_user_admin_account_alter(&$form, $form_state) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $keys = array(
+      t('Add a role to the selected users') => 'add',
+      t('Remove a role from the selected users') => 'remove',
+    );
+
+    foreach ($keys as $key => $value) {
+      unset($form['options']['operation']['#options'][$key][$value . '_role-' . $role->rid]);
+    }
+  }
+}
+
+/**
  * Implements hook_user_presave().
  *
  * Safe guard against saving a user with the "vsite admin" site-wide role.
  */
 function vsite_user_presave(&$edit, $account, $category) {
-  $role = user_role_load_by_name('vsite admin');
-  if (!empty($edit['roles'][$role->rid])) {
-    throw new Exception('User object cannot be saved with "vsite admin" role.');
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    if (!empty($edit['roles'][$role->rid])) {
+      throw new Exception('User object cannot be saved with "vsite admin" role.');
+    }
   }
 }
 
@@ -1741,9 +1781,22 @@ function vsite_taxonomy_term_presave($term) {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter() for user_profile_form.
+ * Implements hook_form_FORM_ID_alter().
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
+  if (!empty($form['account']['roles']['#options'])) {
+    // Remove site-wide system roles.
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+    foreach ($role_names  as $role_name) {
+      $role = user_role_load_by_name($role_name);
+      unset($form['account']['roles']['#options'][$role->rid]);
+    }
+  }
+
   if (! array_key_exists('redirect_from_reset', $form)) {
     $form['redirect_from_reset'] = array(
       '#type' => 'hidden',
@@ -2362,6 +2415,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if ($vsite = vsite_get_vsite() && ($vsite->purl_provider == 'vsite_domain')) {
+      // First generates an internal, relative path to the final destination.
+      $options = array(
+        'query' => array(
+          'parent' => $parent,
+        ),
+      );
+      $destination = url('site/register', $options);
+
+      // Then creates an absolute, external link to the base domain's login
+      // page with the final path URL-encoded as the destination query
+      // parameter.
+      $options = array(
+        'absolute' => TRUE,
+        'base_url' => $purl_base_domain,
+        'query' => array(
+          'destination' => $destination,
+        ),
+      );
+      $href = url('user/login', $options);
+      $build['href'] = $href;
+      $build['path'] = $href;
+    }
   }
 
   if (isset($options['attributes']['class'])) {

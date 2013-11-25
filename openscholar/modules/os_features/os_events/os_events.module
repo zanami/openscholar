@@ -36,6 +36,16 @@ function os_events_os_app_info() {
 }
 
 /**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_events_os_entity_view_modes() {
+  return array('node' => 
+    array('event' => array('sidebar_teaser')
+  ));
+}
+
+
+/**
  * hook os_widget
  *
  * Events blocks that can be used on an OpenScholar site
@@ -100,7 +110,7 @@ function os_events_default_registration_type() {
  * Implements hook_process_node().
  */
 function os_events_process_node(&$variables) {
-  if($variables['type'] != 'event') {
+  if ($variables['type'] != 'event') {
     return;
   }
 

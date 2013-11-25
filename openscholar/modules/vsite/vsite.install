@@ -491,11 +491,20 @@ function vsite_update_7014() {
 
   // Remove the "vsite admin" site-wide role from users in case it was
   // accidentally assigned to them.
-  if ($role = user_role_load_by_name('vsite admin')) {
-    db_delete('users_roles')
-      ->condition('rid', $role->rid)
-      ->execute();
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  $rids = array();
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $rids[] = $role->rid;
   }
+
+  db_delete('users_roles')
+    ->condition('rid', $rids, 'IN')
+    ->execute();
 
   features_revert(array('os' => array('user_permission')));
   $features = array(
