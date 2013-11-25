@@ -114,8 +114,7 @@ projects[fb_social][download][revision] = cd73e9b
 projects[fb_social][patch][] = "http://drupal.org/files/comment_sources-fb_social-2120709-1.patch"
 
 projects[features][subdir] = "contrib"
-projects[features][version] = 1.0
-; projects[features][revision] = "c0b054d"
+projects[features][version] = 2.0
 
 projects[feeds][subdir] = "contrib"
 projects[feeds][version] = 2.0-alpha7
