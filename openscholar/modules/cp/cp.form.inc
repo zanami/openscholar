@@ -11,6 +11,10 @@ function cp_settings_form($form_state) {
     '#markup' => "<p>{$description}</p>",
     '#weight' => -11,
   );
+  $form['cp_settings_tabs'] = array(
+    '#type' => 'vertical_tabs',
+    '#weight' => -10,
+  );
 
   $settings = cp_get_setting_forms();
   foreach ($settings as $key => $s) {
@@ -27,9 +31,11 @@ function cp_settings_form($form_state) {
       }
 
       $form[$id][$key] = $s['form'];
+      $form[$id]['#group'] = 'cp_settings_tabs';
     }
     else {
       $form[$key] = $s['form'];
+      $form['#group'] = 'cp_settings_tabs';
     }
 
     // if the form includes its own submit handlers,
@@ -40,4 +46,4 @@ function cp_settings_form($form_state) {
   }
 
   return system_settings_form($form);
-}
+}}
