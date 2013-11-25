@@ -1037,7 +1037,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iVerifyTheValueIs($label, $value) {
     $page = $this->getSession()->getPage();
-    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/following-sibling::input[@value='{$value}']");
 
     if (empty($element)) {
       throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
