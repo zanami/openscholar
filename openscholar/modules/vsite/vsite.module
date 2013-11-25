@@ -268,11 +268,7 @@ function vsite_path_admin_validate($form, $form_state) {
   $alias = explode('/', $form_state['values']['alias']);
   $purl = reset($alias);
 
-  $query = db_select('purl')
-    ->fields('purl')
-    ->condition('value', $purl);
-
-  if (!$query->execute()->fetchField()) {
+  if (!vsite_alias_has_purl_at_start($purl)) {
     form_set_error('alias', t('The url of the vsite is missing.'));
   }
 
@@ -289,6 +285,25 @@ function vsite_path_admin_validate($form, $form_state) {
   if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['alias'])) {
     form_set_error('alias', t('Already in use.'));
   }
+}
+
+/**
+ * Check if the alias has a purl at the start.
+ *
+ * @param $alias
+ *  The alias of the node/taxonomy term,
+ * @return bool
+ *  True or false if the alias has PURL at the beginning.
+ */
+function vsite_alias_has_purl_at_start($alias) {
+  $alias = explode('/', $alias);
+  $purl = reset($alias);
+
+  $query = db_select('purl')
+    ->fields('purl')
+    ->condition('value', $purl);
+
+  return $query->execute()->rowCount();
 }
 
 /**
@@ -2364,6 +2379,16 @@ function vsite_form_alias_validate($form, &$form_state) {
 
 /**
  * Helper function for validate the if the alias is already exists.
+ *
+ * @param $entity_type
+ *  The entity type: node, taxonomy ter,
+ * @param $entity
+ *  The entity type.
+ * @param $path
+ *  The path of the entity.
+ *
+ * @return bool
+ *  True or false if the alias is already in use.
  */
 function _vsite_form_alias_validate($entity_type, $entity, $path) {
   // Entities must have a path in order to generate their alias.
