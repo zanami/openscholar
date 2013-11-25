@@ -1781,9 +1781,22 @@ function vsite_taxonomy_term_presave($term) {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter() for user_profile_form.
+ * Implements hook_form_FORM_ID_alter().
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
+  if (!empty($form['account']['roles']['#options'])) {
+    // Remove site-wide system roles.
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+    foreach ($role_names  as $role_name) {
+      $role = user_role_load_by_name($role_name);
+      unset($form['account']['roles']['#options'][$role->rid]);
+    }
+  }
+
   if (! array_key_exists('redirect_from_reset', $form)) {
     $form['redirect_from_reset'] = array(
       '#type' => 'hidden',
