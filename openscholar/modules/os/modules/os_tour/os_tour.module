@@ -164,33 +164,6 @@ function os_tour_preprocess_toolbar(&$vars) {
  * Implements hook_form_FORM_ID_form_alter() for cp_layout_full_form.
  */
 function os_tour_form_cp_layout_full_form_alter(&$form, &$form_state, $form_id) {
-  if (isset($form['context_selection'])) {
-    $path = drupal_get_path('module', 'os_tour');
-    $form['context_selection']['#attached']['css'] = array(
-      "$path/theme/os_tour.cp_build_layout.css",
-    );
-    $form['context_selection']['#attached']['library'] = array(
-      array('os_tour', 'hopscotch'),
-    );
-    $form['context_selection']['#attached']['js'] = array(
-      "$path/theme/os_tour.cp_build_layout.js",
-    );
-    $original = '';
-    if (isset($form['context_selection']['#prefix'])) {
-      $original = $form['context_selection']['#prefix'];
-    }
-    $build = array(
-      '#title' => t('Take a tour'),
-      '#type' => 'link',
-      '#href' => '',
-      '#options' => array(
-        'attributes' => array(
-          'id' => 'os-tour-cp-build-layout',
-          'class' => array('os-green-button'),
-        ),
-      ),
-    );
-    $markup = drupal_render($build);
-    $form['context_selection']['#prefix'] = $markup . $original;
-  }
+  ctools_include('form', 'os_tour');
+  $form['#after_build'][] = 'os_tour_form_cp_layout_after_build';
 }
