@@ -237,7 +237,7 @@ function vsite_node_term_form_after_build($form, &$form_state) {
       // Even if the purl is not part of the field value, it will be added.
       // @see _vsite_alter_node_path_settings()
 
-      if (strpos($original, "{$purl}/") == 0) {
+      if (strpos($original, "{$purl}/") === 0) {
         $new = substr($original, strlen($purl) + 1);
         $form['path']['alias']['#value'] = $new;
       }
@@ -2333,6 +2333,7 @@ function vsite_form_alias_validate($form, &$form_state) {
 
   // Ensure that the alias does not exist yet.
   $query = db_select('url_alias')
+    ->fields('url_alias')
     ->condition('alias', $alias)
     ->condition('language', $entity->path['language']);
 
@@ -2341,7 +2342,6 @@ function vsite_form_alias_validate($form, &$form_state) {
     $query->condition('source', $source, '<>');
   }
 
-  $query->addExpression('1');
   $query->range(0, 1);
 
  if (!$query->execute()->fetchField()) {
