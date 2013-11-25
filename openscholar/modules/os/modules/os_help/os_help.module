@@ -26,10 +26,6 @@ function os_help_help($path, $arg) {
     case 'cp/settings/site_info/%':
       $topic = 'Site-Information';
       break;
-    case 'cp/settings':
-    case 'cp/settings/generic':
-      $topic = 'Site-Settings';
-      break;
     case 'cp/content':
       $topic = 'Managing-Your-Content';
       break;
