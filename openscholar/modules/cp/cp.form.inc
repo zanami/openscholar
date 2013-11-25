@@ -5,6 +5,12 @@
 function cp_settings_form($form_state) {
   $form = array();
   $form['#submit'] = array();
+  $description = t('Customize general settings for your site, like privacy, accessibility and connected web services.');
+  $form['cp_settings_description'] = array(
+    '#type' => 'markup',
+    '#markup' => "<p>{$description}</p>",
+    '#weight' => -11,
+  );
 
   $settings = cp_get_setting_forms();
   foreach ($settings as $key => $s) {
