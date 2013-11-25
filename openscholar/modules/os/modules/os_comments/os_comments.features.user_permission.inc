@@ -15,7 +15,8 @@ function os_comments_user_default_permissions() {
     'name' => 'access comments',
     'roles' => array(
       0 => 'vsite admin',
-      1 => 'content editor',
+      1 => 'vsite user',
+      2 => 'content editor',
     ),
     'module' => 'comment',
   );
@@ -45,6 +46,7 @@ function os_comments_user_default_permissions() {
     'name' => 'post comments',
     'roles' => array(
       0 => 'vsite admin',
+      1 => 'vsite user',
       2 => 'content editor',
     ),
     'module' => 'comment',
@@ -57,6 +59,7 @@ function os_comments_user_default_permissions() {
       0 => 'administrator',
       1 => 'manager',
       2 => 'vsite admin',
+      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'comment',
@@ -69,6 +72,7 @@ function os_comments_user_default_permissions() {
       0 => 'administrator',
       1 => 'manager',
       2 => 'vsite admin',
+      3 => 'vsite user',
       4 => 'content editor',
     ),
     'module' => 'disqus',
