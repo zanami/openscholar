@@ -27,7 +27,7 @@
           });
           
           //uncheck if selected option is no longer valid.
-          $sortby.children('option:checked:hidden').attr('selected', false);
+          $sortby.children('option:checked').filter(':disabled').attr('selected', false);
   
           
           //apply content_type appropriate sorts when ct changes
@@ -38,8 +38,8 @@
           });
           
           //uncheck if selected option is no longer valid.
-          $display_style.children('option:checked:hidden').attr('selected', false);
-  
+          $display_style.children('option:checked').filter(':disabled').attr('selected', false);
+
           // swap out the more link url.
           more_link.val(defaults[content_type]);
           
