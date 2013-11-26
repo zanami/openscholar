@@ -177,7 +177,7 @@ function os_tour_module_implements_alter(&$implementations, $hook) {
  * Implements hook_process_HOOK() for page.tpl.php.
  */
 function os_tour_process_page(&$variables) {
-  $tour_info = _os_tour_help(drupal_get_path_alias(), array());
+  $tour_info = _os_tour_help();
   if (empty($tour_info)) {
     return;
   }
@@ -190,7 +190,7 @@ function os_tour_process_page(&$variables) {
   );
 
   $original = '';
-  if (isset($variables['page']['help'])) {
+  if (isset($variables['page']['help']) && is_string($variables['page']['help'])) {
     $original = $variables['page']['help'];
   }
 
@@ -214,25 +214,23 @@ function os_tour_process_page(&$variables) {
 /**
  * Provides tour settings depending on Drupal menu path.
  */
-function _os_tour_help($path, $arg) {
+function _os_tour_help() {
   $tour_info = FALSE;
 
-  switch ($path) {
-    case 'cp/build/layout':
-      $path = drupal_get_path('module', 'os_tour');
-      $tour_info = array(
-        'id' => 'os-tour-cp-build-layout',
-        'title' => 'Take a tour',
-        'attached' => array(
-          'css' => array(
-            "$path/theme/os_tour.cp_build_layout.css",
-          ),
-          'js' => array(
-            "$path/theme/os_tour.cp_build_layout.js",
-          ),
+  if (arg(0) == 'cp' && arg(1) == 'build' && arg(2) == 'layout') {
+    $path = drupal_get_path('module', 'os_tour');
+    $tour_info = array(
+      'id' => 'os-tour-cp-build-layout',
+      'title' => 'Take a tour',
+      'attached' => array(
+        'css' => array(
+          "$path/theme/os_tour.cp_build_layout.css",
         ),
-      );
-      break;
+        'js' => array(
+          "$path/theme/os_tour.cp_build_layout.js",
+        ),
+      ),
+    );
   }
 
   return $tour_info;
