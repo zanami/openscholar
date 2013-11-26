@@ -22,8 +22,8 @@ class os_sv_list_file extends os_sv_list {
     $form = parent::options_form($form_state);
     $types = array('all' => t('All')) + 
       array_reduce(file_type_get_all_types(), function ($ret, $o) {$ret[$o->type] = $o->label; return $ret;});
-    $form['content_type']['#title'] = t('File Type');
-    $form['content_type']['#options'] = $types;
+    $form['content']['content_type']['#title'] = t('File Type');
+    $form['content']['content_type']['#options'] = $types;
     return $form;
   }
   

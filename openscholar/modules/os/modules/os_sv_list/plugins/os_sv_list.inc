@@ -54,12 +54,24 @@ class os_sv_list extends os_boxes_default {
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
   
     $form['#submit'] = array('os_sv_list_form_submit');
+    $form['#attached'] = array(
+      'js' => array(libraries_get_path('select2') . '/select2.js'),
+      'css' => array(
+        libraries_get_path('select2') . '/select2.css',
+        drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css',
+      ),
+    );
 
-    $form['content_type'] = array(
+     $form['filters'] = $form['details'] = $form['content'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => FALSE,
+    );
+
+    
+    //content fieldset
+    $form['content']['content_type'] = array(
       '#type' => 'select',
       '#title' => t('Content Type'),
-//       '#default_value' => $content_types_value,
-//       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
       '#default_value' => $this->options['content_type'],
       '#attached' => array(
@@ -68,13 +80,9 @@ class os_sv_list extends os_boxes_default {
           array('type' => 'setting', 'data' => array('entity_view_modes' => $this->entity_view_modes())),
         ),
       ),
-//       '#ajax' => array(
-//         'callback' => 'os_sv_list_vocabs_content_type',
-//         'wrapper' => 'vocabs',
-//       ),
     );
     
-    $form['display'] = array(
+    $form['content']['display'] = array(
       '#type' => 'select',
       '#title' => 'Display style',
       '#default_value' => $this->options['display'],
@@ -87,14 +95,14 @@ class os_sv_list extends os_boxes_default {
       ),
     );
     
-    $form['layout'] = array(
+    $form['content']['layout'] = array(
       '#type' => 'select',
       '#title' => t('Layout'),
       '#default_value' => $this->options['layout'],
       '#options' => array('list' => t('List'), 'grid' => t('Grid')), //table, slideshow, anything else?
     );
     
-    $form['grid_size'] = array(
+    $form['content']['grid_size'] = array(
       '#type' => 'select',
       '#title' => t('Grid Size'),
       '#description' => t('How many items should appear in each row of the grid?'),
@@ -107,7 +115,7 @@ class os_sv_list extends os_boxes_default {
       ),
     );
 
-    $form['sort_by'] = array(
+    $form['content']['sort_by'] = array(
       '#type' => 'select',
       '#title' => 'Sorting',
       '#default_value' => $this->options['sort_by'],
@@ -119,31 +127,15 @@ class os_sv_list extends os_boxes_default {
       )
     );
   
-    $form['query_details'] = array(
-      '#prefix' => '<div id="query-details">',
-      '#suffix' => '</div>',
-      '#parents' => array('query_details'),
-    );
-  
-    $form['#attached'] = array(
-      'js' => array(libraries_get_path('select2') . '/select2.js'),
-      'css' => array(
-        libraries_get_path('select2') . '/select2.css',
-        drupal_get_path('module', 'os_sv_list') . '/os_sv_list.css',
-      ),
-    );
 
 
-    $form['query_details']['more'] = array(
+    //details fieldset
+    $form['details']['more'] = array(
       '#title' => 'Show "more" link',
       '#type' => 'checkbox',
       '#default_value' => $this->options['more'],
     );
-  
-    
  
-    
-  
     if (!empty($form_state['values']['more_link'])) {
     // Unset the values from the text field, as otherwise FAPI will add
     // it to the #value of the form-element.
@@ -151,7 +143,7 @@ class os_sv_list extends os_boxes_default {
         unset($form_state['input']['more_link']);
     }
     
-    $form['query_details']['more_link'] = array(
+    $form['details']['more_link'] = array(
       '#title' => t('URL for the more link'),
       '#type' => 'textfield',
       '#default_value' => $this->options['more_link'],
@@ -168,7 +160,7 @@ class os_sv_list extends os_boxes_default {
       )
     );
     
-    $form['query_details']['more_text'] = array(
+    $form['details']['more_text'] = array(
       '#title' => 'Label of the more link (default: "more")',
       '#type' => 'textfield',
       '#default_value' => $this->options['more_text'],
@@ -177,13 +169,13 @@ class os_sv_list extends os_boxes_default {
         ),
     );
     
-    $form['pager'] = array(
+    $form['details']['pager'] = array(
       '#title' => 'Show pager',
       '#type' => 'checkbox',
       '#default_value' => $this->options['pager'],
     );
   
-    $form['number_of_items'] = array(
+    $form['details']['number_of_items'] = array(
       '#title' => 'Number of items to display',
       '#type' => 'select',
       '#options' => array_slice(range(0, 20), 1, NULL, TRUE),
@@ -191,28 +183,12 @@ class os_sv_list extends os_boxes_default {
     );
     
     //get options from plugins
-    foreach ($this->plugins as $plugin) {
-      if (method_exists($plugin['instance'], 'options_form')) {
-        if ($options_form = $plugin['instance']->options_form($this->options)) {
-        
-        //add states to only show when this plugin's bundle is selected
-        
-        //hold off on the states for now.  
-        //see https://api.drupal.org/comment/24708#comment-24708 for lists of bundles.  can we do that on nodes or files?
-//         foreach ($plugin['bundle'] as $bundle) {
-//           $states['visible']['#os_sv_list_content_type'][] = array('value' => $bundle);
-//           $states['invisible']['#os_sv_list_content_type'][] = array('!value' => $bundle);
-//         }
-        
-//         if (isset($states)) {
-//           foreach ($options_form as $delta => $value) {
-//             if (empty($options_form[$delta]['#states'])) {
-//               $options_form[$delta]['#states'] = $states;
-//             }
-//           }     
-//         }
-          $form += $options_form;
-        }
+    $this->_plugins_invoke('options_form', $form);
+
+    //hide empty fieldsets.  plugins _could_ empty some of the defaults
+    foreach (array('details', 'content', 'filters') as $fieldset) {
+      if (isset($form[$fieldset]) && count($form[$fieldset]) <= 2) {
+        unset($form[$fieldset]);
       }
     }
 
