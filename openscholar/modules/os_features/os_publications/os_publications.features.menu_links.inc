@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.features.menu_links.inc
@@ -13,8 +10,8 @@
 function os_publications_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu:publications
-  $menu_links['primary-menu:publications'] = array(
+  // Exported menu link: primary-menu_publications:publications
+  $menu_links['primary-menu_publications:publications'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'publications',
     'router_path' => 'publications',
@@ -23,13 +20,15 @@ function os_publications_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
+      'identifier' => 'primary-menu_publications:publications',
     ),
     'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 0,
   );
   // Translatables
   // Included for use with string extractors like potx.
@@ -38,4 +37,3 @@ function os_publications_menu_default_menu_links() {
 
   return $menu_links;
 }
-
