@@ -6,6 +6,7 @@ $plugin = array(
   'scheme' => url('', array('absolute' => TRUE)) . 'box/*',
   'callback' => 'os_boxes_box_provider',
   'provider' => TRUE,
+  'consumer' => TRUE
 );
 
 
