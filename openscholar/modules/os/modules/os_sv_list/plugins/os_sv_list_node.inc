@@ -67,15 +67,6 @@ class os_sv_list_node extends os_sv_list {
       'sort_oldest' => t('Oldest Post'),
       'sort_alpha' => t('Alphabetical'),
       'sort_random' => t('Random'),
-      
-     
-      // Content type sensitive sorts.  // in the future get these from sv render plugins
-//       'sort_event' => t('Event Date'),
-//       'sort_presentation' => t('Recently Presented'),
-//       'sort_biblio' => t('Year of Publication'),
-//       'sort_news' => t('News Date'),
-  
-      
     );
     
     

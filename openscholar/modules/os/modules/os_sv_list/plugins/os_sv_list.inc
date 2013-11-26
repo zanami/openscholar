@@ -416,17 +416,10 @@ class os_sv_list extends os_boxes_default {
     //get labels for these view modes
     $info = entity_get_info($this->entity_type);
     $options = array_reduce($view_modes, function($ret, $mode) use ($info) {$ret[$mode] = $info['view modes'][$mode]['label']; return $ret;});
-    return $options;    
-    //get labels
     
-    //deprecate the following options...
-//     return array(
-//       'display_title' => t('Title'),
-//       'display_sidebar_teaser' => t('Sidebar Teaser'),
-//       'display_teaser' => t('Teaser'),
-//       'display_body' => t('Entire Post'),
-//       'display_links' => t('Link'),
-//     );
+    //rename some options to friendlier titles
+    array_merge(array('full' => 'Entire Post'), $options);
+    return $options;    
   }
   
   /**
