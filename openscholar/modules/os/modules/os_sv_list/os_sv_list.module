@@ -47,17 +47,6 @@ function os_sv_list_pager_callback($box) {
 }
 
 /**
- * Implements hook_ctools_plugin_api
- */
-function os_sv_list_ctools_plugin_api($module, $api) {
-  if ($module == 'boxes' && $api == 'plugins') {
-    return array(
-      'version' => 1,
-    );
-  }
-}
-
-/**
  * Implements hook_ctools_plugin_type
  * 
  * Defines sv_list plugins that extend the basic sv list.
