@@ -1020,14 +1020,14 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
     ),
     '#weight' => -10,
     '#attached' => array(
-      'library', array(
-        array('media', 'media_browser')
-      ),
       'js' => array(
         drupal_get_path('module', 'os_files').'/theme/os_files.crop.js',
       )
     )
   );
+
+  module_load_include('inc', 'media', 'includes/media.browser');
+  media_attach_browser_js($element['selected_file']);
 
   $element['#element_validate'] = array(
     'os_files_file_validate'
