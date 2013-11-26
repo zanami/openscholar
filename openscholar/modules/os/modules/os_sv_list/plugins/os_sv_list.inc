@@ -265,6 +265,9 @@ class os_sv_list extends os_boxes_default {
     //give plguins a chance to alter the entities after loading but before rendering.  see events.
     $entities = entity_load($this->entity_type, $ids);
     $this->_plugins_invoke('entities_alter', $entities);
+    if (empty($entities)) {
+      return $block;
+    }
     
     //let a plugin do the rendering.  if they don't, use the default.
     $render = $this->_plugins_invoke('render', $entities);
@@ -293,10 +296,7 @@ class os_sv_list extends os_boxes_default {
     
     //now render to html.
     $content = drupal_render($render);      
-    
     $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'" class="'. $layout .'">' . $content . '</div>' . $pager . $more;
-    
-    
     return $block;
   }
   
