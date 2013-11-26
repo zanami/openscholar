@@ -35,7 +35,7 @@ function os_biocv_field_default_field_bases() {
     'locked' => 0,
     'module' => 'text',
     'settings' => array(),
-    'translatable' => 1,
+    'translatable' => 0,
     'type' => 'text_with_summary',
   );
 
