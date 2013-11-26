@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Code for the os sv list feature.
+ */
+
+include_once 'os_sv_list.features.inc';
 
 /**
  * Implements hook_menu()
