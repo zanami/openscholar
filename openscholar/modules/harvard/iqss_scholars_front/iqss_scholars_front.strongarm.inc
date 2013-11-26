@@ -6,6 +6,8 @@
 
 /**
  * Implements hook_strongarm().
+ * Strongarm hook for configuration variables
+ * for the os_stats block
  */
 function iqss_scholars_front_strongarm() {
   $export = array();
