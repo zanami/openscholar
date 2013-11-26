@@ -2,7 +2,7 @@ Feature:
   In order to have content at a single URL as a visitor i want to be redirected
   to a canonical URL.
 
-  @api
+  @api @wip
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I should be redirected in the following <cases>:
    #  | Request                                 | Code  | Final URL                     |
@@ -37,7 +37,7 @@ Feature:
     Given I visit "http://lincoln.local/lincoln/blog/first-blog"
      Then I should be on "john/blog/first-blog"
 
-  @api
+  @api @wip
   Scenario: Verifying redirect of sites without a share domain.
     Given I login as "admin" in "Abraham"
       And I set the Share domain name to "0"

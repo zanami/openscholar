@@ -59,49 +59,5 @@ if (!class_exists('purl_vsite_path')) {
 
       return $parsed;
     }
-
-    public function rewrite(&$path, &$options, $element) {
-
-      $plugin = ctools_get_plugins('spaces', 'plugins', 'vsite');
-      if ($plugin) {
-        $class = ctools_plugin_get_class($plugin, 'handler');
-      }
-      // Does not alter excluded paths
-      if (isset($class) && call_user_func(array($class, 'is_excluded_path'), $path)) {
-        return;
-      }
-
-      // If we are asking for the absolute url then return the correct base url
-      // for a path provider
-      if (array_key_exists('absolute', $options) && $options['absolute']) {
-        if ($element->id && $vsite = spaces_load('og', $element->id)) {
-          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name','space');
-          if(!$vsite_domain){
-            $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name','preset');
-          }
-        }
-
-        if ($vsite_domain) {
-          $options['base_url'] = "http://" . $vsite_domain;
-        }
-        // Checks for a group domain
-        else {
-          global $base_url;
-          $options['base_url'] = variable_get('purl_base_domain', $base_url);
-        }
-      }
-
-      // Disables addition of URL prefix if prefix is part of the path alias.
-      if (!empty($path) && $path != '<front>') {
-        $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
-        $alias = drupal_get_path_alias($path, $language);
-        if ($alias != $path && $alias != $this->remove($alias, $element)) {
-          // The alias now contains the prefix of the viste, no need to rewrite.
-          return;
-        }
-      }
-
-      return parent::rewrite($path, $options, $element);
-    }
   }
 }
