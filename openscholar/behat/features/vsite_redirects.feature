@@ -32,15 +32,15 @@ Feature:
       | "john"          | 301  | ""        |
       | "john/news"     | 301  | "news"    |
 
-  @api @wip
+  @api
   Scenario: Verifying redirect of sites with a share domain.
-    Given I visit "http://lincoln.local/lincoln/blog/first-blog"
+    Given I visit "http://lincoln.local/john/blog/first-blog"
      Then I should be on "john/blog/first-blog"
 
-  @api @wip
+  @api
   Scenario: Verifying redirect of sites without a share domain.
     Given I login as "admin" in "Abraham"
       And I set the Share domain name to "0"
-     When I visit "http://lincoln.local/blog/first-blog"
+     When I visit "http://lincoln.local/john/blog/first-blog"
      Then I should be on "john/blog/first-blog"
 
