@@ -41,6 +41,10 @@ function os_files_private_menu() {
   return $items;
 }
 
+function os_files_private_menu_alter(&$items) {
+  $items['file/add/private'] = $items['file/add'];
+}
+
 /**
  * Implements hook_form_FORM_ID_alter() for file_entity_add_upload.
  *
@@ -51,9 +55,11 @@ function os_files_private_menu() {
 function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
 
   $item = menu_get_item();
-  if (!($item['path'] == 'file/add' || $item['path'] == 'file/ajax') || !spaces_get_space()) {
+  if (!($item['path'] == 'file/add/private' || $item['path'] == 'file/ajax') || !spaces_get_space()) {
     return;
   }
+
+  drupal_set_title('Add Private File');
 
   // Alerts user if private file path has not been set.
   if (!variable_get('file_private_path')) {
