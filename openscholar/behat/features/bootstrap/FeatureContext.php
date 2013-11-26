@@ -28,6 +28,12 @@ class FeatureContext extends DrupalContext {
   private $box = '';
 
   /**
+   * Save for later the list of domain we need to remove after a scenario is
+   * completed.
+   */
+  private $domains = array();
+
+  /**
    * Hold the user name and password for the selenium tests for log in.
    */
   private $users;
@@ -421,19 +427,24 @@ class FeatureContext extends DrupalContext {
    * @AfterScenario
    */
   public function afterScenario($event) {
-    if (empty($this->box)) {
-      return;
+    if (!empty($this->box)) {
+      // Loop over the box we collected in the scenario, hide them and delete
+      // them.
+      foreach ($this->box as $box_handler) {
+        $data = explode(',', $box_handler);
+        foreach ($data as &$value) {
+          $value = trim($value);
+        }
+        $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
+        $this->getDriver()->drush("php-eval \"{$code}\"");
+      }
     }
 
-    // Loop over the box we collected in the scenario, hide them and delete
-    // them.
-    foreach ($this->box as $box_handler) {
-      $data = explode(',', $box_handler);
-      foreach ($data as &$value) {
-        $value = trim($value);
+    if (!empty($this->domains)) {
+      // Remove domain we added to vsite.
+      foreach ($this->domains as $domain) {
+        $this->invoke_code("os_migrate_demo_remove_vsite_domain", array("'{$domain}'"));
       }
-      $code = "os_migrate_demo_hide_box({$this->nid}, '{$data[0]}', '{$data[1]}', '{$data[2]}');";
-      $this->getDriver()->drush("php-eval \"{$code}\"");
     }
   }
 
@@ -1224,6 +1235,29 @@ class FeatureContext extends DrupalContext {
 
     if (strpos($element->getContent(), $string) === FALSE) {
       throw new Exception("the string '$string' was not found.");
+    }
+  }
+
+  /**
+   * @Given /^I define "([^"]*)" domain to "([^"]*)"$/
+   */
+  public function iDefineDomainTo($vsite, $domain) {
+    $this->domains[] = $vsite;
+
+    return array(
+      new Step\When('I visit "' . $vsite . '/cp/settings"'),
+      new Step\When('I fill in "Custom domain name" with "' . $domain .'"'),
+      new Step\When('I check the box "Share domain name"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I verify the url is "([^"]*)"$/
+   */
+  public function iVerifyTheUrlIs($url) {
+    if (strpos($this->getSession()->getCurrentUrl(), $url) === FALSE) {
+      throw new Exception(sprintf("Your are not in the url %s but in %s", $url, $this->getSession()->getCurrentUrl()));
     }
   }
 }
