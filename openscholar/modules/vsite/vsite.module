@@ -2231,7 +2231,7 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
-    if ($vsite = vsite_get_vsite() && ($vsite->purl_provider == 'vsite_domain')) {
+    if (($vsite = vsite_get_vsite()) && $vsite->purl_provider == 'vsite_domain') {
       // First generates an internal, relative path to the final destination.
       $options = array(
         'query' => array(
