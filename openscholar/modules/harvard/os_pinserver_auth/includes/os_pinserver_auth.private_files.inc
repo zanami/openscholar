@@ -113,7 +113,7 @@ function _os_pinserver_auth_file_download($uri) {
     }
     // If we are not using the 'private files by pin' feature then we should check for a pin protected site.
     // Note that this is not compatible with os_files_private
-    else if (!$private_files_by_pin && !$os_fast) {
+    else if (pinserver_get_user() && !$private_files_by_pin && !$os_fast) {
 
       if(!isset($file->fid)){
         $target = explode("/",file_uri_target($uri));
@@ -139,7 +139,7 @@ function _os_pinserver_auth_file_download($uri) {
 
       // Restricts access if no OG audience is set.
       if (isset($wrapper->{OG_AUDIENCE_FIELD}) && ($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
-        global $user;
+
         // Load Group.
         $node = node_load($gid[0]);
         // If this is a PIN intranet site return the file.

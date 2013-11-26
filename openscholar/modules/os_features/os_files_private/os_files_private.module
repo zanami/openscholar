@@ -155,8 +155,22 @@ function os_files_private_file_download($uri) {
     return file_get_content_headers($file);
   }
 
+  // If we are not in a vsite get site privacy from the file.
+  if(!$vsite){
+    $wrapper = entity_metadata_wrapper('file', $file);
+    // Restricts access if no OG audience is set.
+    if (isset($wrapper->{OG_AUDIENCE_FIELD}) && ($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
+      // Load Group.
+      $group = node_load($gid[0]);
+      // Get the group privacy.
+      if($group && ($wrapper = entity_metadata_wrapper('node', $group)) && !empty($wrapper->{VSITE_ACCESS_FIELD})){
+        $site_privacy = $wrapper->{VSITE_ACCESS_FIELD}->value();
+      }
+    }
+  }
+
   // This site is private, this is not a site member, and private file access is controlled by another module.
-  if ($vsite = vsite_get_vsite() && (module_exists('vsite_access') && $site_privacy > VSITE_ACCESS_INTRANET_PRIVATE)) {
+  if (isset($site_privacy) && (module_exists('vsite_access') && $site_privacy > VSITE_ACCESS_INTRANET_PRIVATE)) {
     return;
   }
 
