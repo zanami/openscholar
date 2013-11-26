@@ -313,6 +313,9 @@ projects[registration][version] = 1.1
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
 
+projects[redirect][subdir] = "contrib"
+projects[redirect][version] = 1.0-rc1
+
 projects[robotstxt][subdir] = "contrib"
 projects[robotstxt][version] = "1.1"
 
