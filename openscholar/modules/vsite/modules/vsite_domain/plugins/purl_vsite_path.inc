@@ -91,6 +91,16 @@ if (!class_exists('purl_vsite_path')) {
         }
       }
 
+      // Disables addition of URL prefix if prefix is part of the path alias.
+      if (!empty($path) && $path != '<front>') {
+        $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
+        $alias = drupal_get_path_alias($path, $language);
+        if ($alias != $path && $alias != $this->remove($alias, $element)) {
+          // The alias now contains the prefix of the viste, no need to rewrite.
+          return;
+        }
+      }
+
       return parent::rewrite($path, $options, $element);
     }
   }

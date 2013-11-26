@@ -1,7 +1,7 @@
 Feature:
   Testing the aliases of a node.
 
-  @api @current
+  @api
   Scenario: Check the alias own field own the correct alias.
     Given I am logging in as "john"
       And I visit "john/node/add/blog"
