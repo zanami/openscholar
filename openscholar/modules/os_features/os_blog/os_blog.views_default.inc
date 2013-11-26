@@ -118,8 +118,10 @@ function os_blog_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'node_rss';
   $handler->display->display_options['path'] = 'blog/feed';
   $handler->display->display_options['displays'] = array(
-    'default' => 'default',
-    'page' => 'page',
+    'default' => 0,
+    'page' => 0,
+    'block' => 0,
+    'page_1' => 0,
   );
   $handler->display->display_options['sitename_title'] = 1;
 

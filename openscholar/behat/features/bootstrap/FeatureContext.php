@@ -455,6 +455,20 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I create the term "([^"]*)" in vocabulary "([^"]*)"$/
+   */
+  public function iCreateTheTermInVocab($term_name, $vocab_name) {
+    $this->invoke_code('os_migrate_demo_create_term', array("'$term_name'","'$vocab_name'"));
+  }
+
+  /**
+   * @Given /^I delete the term "([^"]*)"$/
+   */
+  public function iDeleteTheTermInVocab($term_name) {
+    $this->invoke_code('os_migrate_demo_delete_term', array("'$term_name'"));
+  }
+
+  /**
    * @Given /^I should see the following <links>$/
    */
   public function iShouldNotSeeTheFollowingLinks(TableNode $table) {
@@ -594,6 +608,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I execute vsite cron$/
+   */
+  public function iExecuteVsiteCron() {
+    $this->invoke_code('vsite_cron');
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
@@ -606,7 +627,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
-    $this->invoke_code($function, array($variable, $value));
+    $this->invoke_code($function, array($variable, "'$value'"));
   }
 
   /**
@@ -675,6 +696,17 @@ class FeatureContext extends DrupalContext {
   public function iInvalidateCache() {
     $code = "cache_clear_all('*', 'cache_views_data', TRUE);";
     $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I populate in "([^"]*)" with "([^"]*)"$/
+   */
+  public function iPopulateInWith($field, $url) {
+    $url = str_replace('LOCALHOST', $this->locatePath(''), $url);
+
+    return array(
+      new Step\When('I fill in "' . $field . '" with "' . $url . '"'),
+    );
   }
 
   /**
@@ -930,7 +962,7 @@ class FeatureContext extends DrupalContext {
     return array(
       new Step\When('I am not logged in'),
       new Step\When('I am logging in as "john"'),
-      new Step\When('I visit "john/halleys-comet"'),
+      new Step\When('I visit "john/event/halleys-comet"'),
       new Step\When('I click "Manage Registrations"'),
       new Step\When('I click "Delete"'),
       new Step\When('I press "Delete"'),
@@ -975,6 +1007,40 @@ class FeatureContext extends DrupalContext {
     $error = $this->getDriver()->drush("php-eval \"{$code}\"");
     if ($error) {
       throw new Exception(sprintf("At least one box returned output outside of a vsite: %s", $key));
+    }
+  }
+
+  /**
+   * @When /^I edit the node "([^"]*)"$/
+   */
+  public function iEditTheNode($title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit"'),
+    );
+  }
+
+  /**
+   * @When /^I edit the node of type "([^"]*)" named "([^"]*)" using contextual link$/
+   */
+  public function iEditTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the "([^"]*)" value is "([^"]*)"$/
+   */
+  public function iVerifyTheValueIs($label, $value) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//label[contains(.,'{$label}')]/../input[@value='{$value}']");
+
+    if (empty($element)) {
+      throw new Exception(sprintf("The element '%s' did not has the value: %s", $label, $value));
     }
   }
 
@@ -1044,6 +1110,14 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I import "([^"]*)" feed items for "([^"]*)"$/
+   */
+  public function iImportVsiteFeedItemsForVsite($vsite_origin, $vsite_target) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite_target'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite_origin) . "'", $nid));
+  }
+
+  /**
    * @Given /^I import the feed item "([^"]*)"$/
    */
   public function iImportTheFeedItem($feed_item) {
@@ -1088,5 +1162,68 @@ class FeatureContext extends DrupalContext {
    */
   public function iDisplayWatchdog() {
     $this->invoke_code('os_migrate_demo_display_watchdogs', NULL, TRUE);
+  }
+
+  /**
+   * @When /^I login as "([^"]*)" in "([^"]*)"$/
+   */
+  public function iLoginAsIn($username, $site) {
+    $title = str_replace("'", "\'", $site);
+
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    try {
+      $password = $this->users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    return array(
+      new Step\When('I visit "node/' . $nid .'"'),
+      new Step\When('I click "Admin Login"'),
+      new Step\When('I fill in "Username" with "' . $username . '"'),
+      new Step\When('I fill in "Password" with "' . $password . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I set the Share domain name to "([^"]*)"$/
+   */
+  public function iSetTheShareDomainNameTo($value) {
+    $action = $value ? 'I checked "edit-vsite-domain-name-vsite-domain-shared"' : 'I uncheck "edit-vsite-domain-name-vsite-domain-shared"';
+    return array(
+      new Step\When('I click "Settings"'),
+      new Step\When($action),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
+   * @Given /^I import the blog for "([^"]*)"$/
+   */
+  public function iImportTheBlogFor($vsite) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$vsite'"));
+    $this->invoke_code('os_migrate_demo_import_feed_items', array("'" . $this->locatePath('os-reader/' . $vsite . '_blog') . "'", $nid, "blog"), TRUE);
+  }
+
+  /**
+   * @Given /^I bind the content type "([^"]*)" with "([^"]*)"$/
+   */
+  public function iBindTheContentTypeWithIn($bundle, $vocabulary) {
+    $this->invoke_code("os_migrate_demo_bind_content_to_vocab", array("'{$bundle}'", "'{$vocabulary}'"), TRUE);
+  }
+
+  /**
+   * @Then /^I search for "([^"]*)"$/
+   *
+   * Defining a new step because when using the step "I should see" for the iCal
+   * page the test is failing.
+   */
+  public function iSearchFor($string) {
+    $element = $this->getSession()->getPage();
+
+    if (strpos($element->getContent(), $string) === FALSE) {
+      throw new Exception("the string '$string' was not found.");
+    }
   }
 }

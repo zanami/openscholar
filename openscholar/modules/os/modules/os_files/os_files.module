@@ -47,6 +47,14 @@ function os_files_menu(){
     'type' => MENU_CALLBACK
   );
 
+  $items['admin/config/openscholar/os-files'] = array(
+    'title' => t('File Settings'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_files_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'os_files.admin.inc',
+  );
+
   return $items;
 }
 
@@ -112,9 +120,28 @@ function os_files_library_alter(&$libs, $module) {
 }
 
 /**
+ * Implements hook_fields_extra_fields_alter().
+ */
+function os_files_field_extra_fields_alter(&$info) {
+  foreach ($info['file'] as $type => $data) {
+    $info['file'][$type]['form']['preview']['weight'] = -11;
+  }
+}
+
+/*
+ * Implements hook_file_presave().
+ */
+function os_files_file_presave($file) {
+  // both of these are generic, 'we dont know what what it is' identifiers
+  if ($file->type == 'undefined' || $file->filemime == 'application/octet-stream') {
+    $file->type = os_files_get_type($file);
+  }
+}
+
+/**
  * Implements hook_file_insert().
  */
-function os_files_file_insert($file){
+function os_files_file_insert($file) {
   if ($context = og_context()) {
     $file->skip_og_membership = TRUE;
     og_group('node', $context['gid'], array(
@@ -122,6 +149,19 @@ function os_files_file_insert($file){
       'entity' => $file
     ));
   }
+}
+
+/**
+ * Gets the type of the file from its extensions
+ */
+function os_files_get_type($file) {
+  $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
+
+  $mappings = variable_get('os_files_extension_map', array());
+  if (isset($mappings[$ext])) {
+    return $mappings[$ext];
+  }
+  return $file->type;
 }
 
 /**
@@ -190,6 +230,17 @@ function os_files_clippy($url_file, $options = array()){
   return $html;
 }
 
+function os_files_menu_local_tasks_alter(&$tasks, $item, $path) {
+
+  if (!isset($_GET['destination'])) return;
+  if (strpos($path, 'file/%') === FALSE) return;
+
+  $dest = $_GET['destination'];
+  foreach ($tasks['tabs'][0]['output'] as $d => $link) {
+    $tasks['tabs'][0]['output'][$d]['#link']['localized_options']['query'] = array('destination' => $dest);
+  }
+}
+
 function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $path = drupal_get_path('module', 'os_files');
   $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
@@ -211,13 +262,17 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     $form['upload']['#upload_validators']['os_files_upload_validate_file_type'] = array($args[0]['types']);
     $form['upload']['#upload_validators']['file_validate_size'] = array(min(parse_size(variable_get('os_files_max_inline_filesize', '128 MB')), $form['upload']['#upload_validators']));
     $extensions = array();
-    $include_pps = FALSE;
+    $extras = array();
+    $mappings = variable_get('os_files_extension_map', array());
     foreach ($form['upload']['#upload_validators']['os_files_upload_validate_file_type'][0] as $type) {
-      $extensions = array_merge($extensions, _os_files_extensions_from_type($type));
+      $extensions = array_merge($extensions, _os_files_extensions_from_type($type), array_keys($mappings, $type));
+      $extras = array_merge($extras, array_keys($mappings, $type));
       if ($type == 'document') {
-        $include_pps = TRUE;
+        $extras[] = 'pps';
       }
     }
+    $extensions = array_unique($extensions);
+    $extras = array_unique($extras);
     if (empty($args[0]['override_extensions'])) {
       $form['upload']['#upload_validators']['file_validate_extensions'] = array(implode(' ', $extensions));
     }
@@ -231,7 +286,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
     }
     if (!empty($mimetypes)) {
       $form['upload']['#attributes'] = array(
-        'accept' => implode(',', $mimetypes).($include_pps?',.pps':''),
+        'accept' => implode(',', $mimetypes).(count($extras)?',.'.implode(',.', $extras):''),
       );
       $form['upload']['#pre_render'][] = 'os_files_upload_attributes';
     }
@@ -276,27 +331,20 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Title');
   $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  $form['media_title']['#access'] = FALSE;
   
-  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
-  
-  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
-  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
-  
-  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
-    $form['preview']['#access'] = FALSE;
-  }
+  $form['media_description']['#access'] = FALSE;
+
+  //$form['preview']['#weight'] = -1000;
+  $form['replace_upload']['#weight'] = -10.5;
   
   $form['user']['#access'] = FALSE;
 
-  // only display the field if the file is older than 5 minutes
-  if (isset($form['#entity'])) {
-    $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
+  $previewable = array('image', 'video');
+  if (!in_array($form['preview']['#file']->type, $previewable)) {
+    $form['preview']['#theme'] = 'file_link';
   }
-  else {
-    $form['replace_upload']['#access'] = FALSE;
-  }
-  
+
   // modify the form when we're getting it through ajax
   // this means we'll be getting it through the media browser
   if (strpos($_GET['q'], 'ajax') !== FALSE) {
@@ -383,10 +431,7 @@ function os_files_save_file_usage($form, &$form_state) {
   // schema - this is a generic way to the defined module name in the schema.
   $key = reset(array_keys($usage));
 
-  if ($key == 'file') {
-    $usage_nids = array_keys($usage['file']['node']);
-  }
-  else {
+  if ($key == 'imagefield_crop') {
     // The imagefield crop save the usage of the file in a different way in the
     // schema of the usage file. We need to get the file object which the field
     // crop is referencing to and pass the file object to the bath API.
@@ -394,6 +439,9 @@ function os_files_save_file_usage($form, &$form_state) {
     $form_state['file'] = $file;
     $usage = file_usage_list($file);
     $usage_nids = array_keys($usage['file']['node']);
+  }
+  else {
+    $usage_nids = array_keys($usage[$key]['node']);
   }
 
   $form_state['file_usage'] = $usage_nids;
@@ -448,7 +496,7 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
       $info = field_info_field($field);
 
       // Verify the field type.
-      if (!in_array($info['type'], array('file', 'imagefield_crop'))) {
+      if (!in_array($info['type'], array('file', 'imagefield_crop', 'image'))) {
         continue;
       }
 
@@ -460,6 +508,12 @@ function _os_files_delete_remove_reference_finished($nids, $file) {
           // NULL. We cannot set a NULL value.
           unset($file_field[$delta]);
         }
+      }
+
+      if (empty($file_field)) {
+        // If no deltas are left, unset the field or the LANGUAGE_NONE will be
+        // an empty array.
+        unset($node->{$field}[LANGUAGE_NONE]);
       }
     }
 
@@ -577,7 +631,16 @@ function os_files_entity_info_alter(&$info){
     'os_files_link' => array(
       'label' => t('Link with no icon'),
       'custom settings' => TRUE
-    )
+    ),
+    
+    'os_files_thumbnail' => array(
+      'label' => t('Thumbnail'),
+      'custom settings' => TRUE
+    ),
+    'os_files_preview' => array(
+      'label' => t('Preview'),
+      'custom settings' => TRUE
+    ),
   );
 
   $info['file']['bundles']['undefined'] = array(
@@ -702,15 +765,22 @@ function os_files_file_default_displays(){
       'image_style' => 'square_thumbnail',
       'alt' => '',
       'title' => ''
-    )
+    ),
   );
 
-  foreach ( file_type_get_enabled_types() + array(
-    'default' => array()
-  ) as $type => $info ) {
+  foreach ( file_type_get_enabled_types() + array('default' => array()) as $type => $info ) {
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
     $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
     $keys["{$type}__os_files_link_icon__os_link"] = array();
+
+    // For default view mode, use the default width and height from
+    // hook_file_formatter_info().
+    $keys[$type . '__default__oembed'] = array('wmode' => 'transparent');
+    $keys[$type . '__default__oembed_thumbnail'] = array();
+
+    // For the Preview view mode, match the width and height of the square
+    // thumbnail in media_image_default_styles().
+    $keys[$type . '__preview__oembed_thumbnail'] = array('width' => '180', 'height' => '180');
   }
 
   $displays = array();
@@ -875,8 +945,7 @@ function os_files_media_browser_params_alter(&$media_params){
     }
   }
   else {
-    $media_params['types'][] = 'document';
-    $media_params['types'][] = 'undefined';
+    $media_params['types'] = array_merge($media_params['types'], array('document', 'undefined'));
   }
   
   // Are we in multi-tenant? get the file path.
@@ -1323,6 +1392,21 @@ function os_files_views_data_alter(&$data){
   );
 }
 
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_files_os_entity_view_modes() {
+  return array('file' => array(
+    'image' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'video' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'audio' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'document' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
+    'executable' => array('os_files_link', 'os_files_link_icon'),
+    'html' => array('os_files_link', 'full'),
+  ));
+}
+
+
 function os_files_file_default_types() {
   $types = array();
 
@@ -1437,7 +1521,10 @@ function os_files_file_default_types_alter(&$types){
     'application/x-vnd.oasis.opendocument.presentation',
     'application/x-wtml',
     'application/x-wtt',
-    'application/x-wwtfig'
+    'application/x-wwtfig',
+    // *.cls, *.sty
+    'text/x-tex',
+    'application/x-latex',
   ));
 
   $types['document']->mimetypes = array_diff($types['document']->mimetypes, array('text/oembed'));
@@ -1675,4 +1762,111 @@ function os_files_escape_media_tags($tag) {
 function os_files_filter_media_process($text) {
   $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'os_files_escape_media_tags', $text);
   return media_filter($text);
+}
+
+function os_files_field_attach_create_bundle($entity_type, $type) {
+  os_files_add_fields($type);
+}
+
+/**
+ * Adds fields to a file entity bundle
+ */
+function os_files_add_fields($type) {
+  if (!field_info_field('os_file_description')) {
+    // os_file_description.
+    $field = array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'os_file_description',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format'
+          ),
+          'table' => 'filter_format'
+        )
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format'
+        )
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255'
+      ),
+      'translatable' => '0',
+      'type' => 'text_long'
+    );
+    $field = field_create_field($field);
+  }
+
+  if (!field_info_instance('file', 'os_file_description', $type)) {
+    $instance = array(
+      'bundle' => $type,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(
+            'trim_length' => 600,
+          ),
+          'type' => 'text_summary_or_trimmed',
+          'weight' => 0,
+        ),
+        'preview' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'type' => 'hidden',
+          'weight' => 0,
+        )
+      ),
+      'entity_type' => 'file',
+      'field_name' => 'os_file_description',
+      'label' => 'Description',
+      'required' => FALSE,
+      'settings' => array(
+        'display_summary' => 0,
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'rows' => 10,
+          'summary_rows' => 5,
+        ),
+        'type' => 'text_textarea_with_summary',
+        'weight' => '-2',
+      ),
+    );
+    field_create_instance($instance);
+  }
+
+}
+
+/**
+ * @function os_files_get_bundles
+ * 
+ * Gets a list of file bundles.
+ */
+function os_files_get_bundles() {
+  $file_info =  entity_get_info('file');
+  foreach ($file_info['bundles'] as $bundle => $info) {
+    $bundles[$bundle] = $info['label'];
+  }
+  
+  return $bundles;
 }

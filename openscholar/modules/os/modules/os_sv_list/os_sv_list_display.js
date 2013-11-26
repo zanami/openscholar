@@ -43,10 +43,12 @@
           var s = Drupal.settings, 
             page = decodeURIComponent(args.page).split(',');
             page = page[args.pager_id];
+            destination = args.destination;
           $.ajax({
             url: s.basePath + (typeof s.pathPrefix != 'undefined'?s.pathPrefix:'') + 'os_sv_list/page/'+delta,
             data: {
-              page: page
+              page: page,
+              destination: destination
             },
             beforeSend: function (xhr, settings) {
               $(e.currentTarget).append('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>')

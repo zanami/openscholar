@@ -1043,3 +1043,10 @@ function os_publications_update_7012() {
   );
   os_publications_import_type('Working Paper', $field_settings);
 }
+
+/**
+ * Set publication image style os_square_50_50.
+ */
+function os_publications_update_7013() {
+  features_revert(array('os_publications' => array('field')));
+}

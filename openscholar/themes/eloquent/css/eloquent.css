@@ -174,7 +174,7 @@ img {
 #menu-bar ul.nice-menu ul {
 	margin:-23px 0 0 -15px;
 	border:none;
-	
+	background:#353535;
 	}
 	
 #menu-bar ul.nice-menu ul ul {
@@ -198,10 +198,6 @@ img {
 }
 
 
-#menu-bar ul.nice-menu ul li a:hover {
-	color:#FFF;
-	background:#44514f;
-}
 
 
 

@@ -120,6 +120,12 @@ table caption {
   color: #1e1e1e;
 }
 
+@-moz-document url-prefix() { 
+a.biblio-abstract-link.toggle {
+    background-position: 0 -397px;
+ }
+}
+
 
 /* Block Styles */
 #content-column .block ul {
@@ -189,21 +195,30 @@ ol.search-results li.search-result:last-child {
 
 /* Calendar Pages */
 
-
+.lt-ie9 .view .date-nav-wrapper .date-prev {
+    right: 90% !important;
+}
 .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
 
-
+.lt-ie9 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 88% !important;
+}
 .two-sidebars #main-content .view .date-nav-wrapper .date-prev {
     right: 88%;
 }
 
+.lt-ie9 .no-sidebars .view .date-nav-wrapper .date-prev {
+    right: 90% !important;
+}
 .no-sidebars .view .date-nav-wrapper .date-prev {
     right: 90%;
 }
 
-
+.lt-ie9 .content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
+    right: auto !important;
+}
 .content-left.content-right.content-bottom #content-panels .date-nav-wrapper .date-prev {
     right: auto;
 }
@@ -287,9 +302,19 @@ ol.search-results li.search-result:last-child {
   text-align: center;
 }
 
+.lt-ie9 .calendar-calendar .week-view .full .calendar-agenda-hour {
+    width: 50px !important;
+}
 .calendar-calendar .week-view .full .calendar-agenda-hour {
   padding: 0;
   width: 50px;
+}
+
+.lt-ie9 .calendar-calendar td.calendar-agenda-hour .calendar-hour,
+.lt-ie9 .calendar-calendar td.calendar-agenda-hour .calendar-ampm,
+.lt-ie9 .calendar-calendar .week-view .full div.calendar-agenda-hour span,
+.lt-ie9 .calendar-calendar .day-view .full div.calendar-agenda-hour span {
+   font-size: 0.8em !important;
 }
 
 .calendar-calendar .week-view .full .days {
@@ -520,16 +545,16 @@ ol.search-results li.search-result:last-child {
   margin-top: -17px;
 }
 
- .node-type-person #content-column .node-person .pic-bio {
+.node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
-article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
-	margin-left: 6em;
+  float: left;
+  margin-left: 0;
 }
 
 #content-column article.node-teaser.node-person .field-name-field-person-photo ~ .node-header {
@@ -610,18 +635,15 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
 .sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
-
      margin-right: 0;
 }
 
-.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
-	 margin-left: 95px;
-}
-
+/* I DONT THINK THIS IS NEEDED ANYMORE,BUT LEAVING IN UNTIL TESTED
+>>>>>>> SCHOLAR-3.9
 .sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
 	margin-left: 95px;
 }
-
+*/
 /* Node FAQ */
 .node-teaser.node-faq {
   line-height: 19px;
@@ -846,5 +868,8 @@ ul.pager li.pager-item {
   float: left;
 }
 
+.two-sidebars .sidebar .node-person.node-teaser .field-name-field-email {
+  float: none;
+}
 
 

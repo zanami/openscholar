@@ -532,3 +532,156 @@ function os_files_update_7007(&$sandbox) {
 
   return t('File Types and Displays have been reverted.');
 }
+
+/**
+ * Runs through every file and fixes their spaces and file_usage information
+ */
+function os_files_update_7008(&$sb) {
+  module_load_include('inc', 'os_files', 'os_files.install_helpers');
+  $q = db_select('node', 'n')
+    ->fields('n', array('nid'));
+
+  if (!isset($sb['progress'])) {
+    $sb['count'] = $q->countQuery()->execute()->fetchField();
+    $sb['progress'] = 0;
+    $sb['limit'] = 20;
+    $sb['error'] = false;
+  }
+
+  $rs = $q->range($sb['progress'], $sb['limit'])->execute();
+
+  foreach ($rs as $obj) {
+    $nid = $obj->nid;
+    try {
+      $node = node_load($nid);
+
+      // Update file_usage
+      $eids = _os_files_install_find_files($node);
+      db_delete('file_usage')
+        ->condition('id', $nid)
+        ->condition('module', 'imagefield_crop', '<>')
+        ->condition('module', 'os_boxes', '<>')
+        ->condition('type', 'node')
+        ->execute();
+
+      foreach ($eids as $module => $ids) {
+        foreach ($ids as $id => $count) {
+          $file = file_load($id);
+          if ($file) {
+            file_usage_add($file, $module, 'node', $nid, $count);
+
+            // Update group membership if necessary
+            if (module_exists('vsite') && $space = _os_files_install_find_new_space($file, $node)) {
+              $file->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $space;
+              file_save($file);
+            }
+          }
+        }
+      }
+    }
+    catch (Exception $e) {
+      $sb['error'] = true;
+      error_log('Exception running updates: '.$e->getCode().' - '.$e->getMessage());
+    }
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'file\' AND module != \'imagefield_crop\'')->execute();
+    db_query('DELETE FROM {file_usage} WHERE type LIKE \'node\' AND id NOT IN (SELECT nid FROM node)')->execute();
+
+    $message = t('File usage has been corrected for all files');
+    if ($sb['error']) {
+      $message .= '<br />' . t('There was an error running this update. Please consult the error log for more information');
+    }
+
+    return $message;
+  }
+}
+
+/**
+ * Adds a generic description field to all file types
+ */
+function os_files_update_7009($sb) {
+  $entities = entity_get_info();
+
+  foreach ($entities['file']['bundles'] as $type => $info) {
+    os_files_add_fields($type);
+  }
+}
+
+/**
+ * Move values from Media Description to os_files_description
+ */
+function os_files_update_7010(&$sb) {
+
+  $q = db_select('field_data_media_description', 'mt')
+    ->fields('mt');
+
+  if (!isset($sb['progress'])) {
+    $sb['progress'] = 0;
+    $sb['total'] = $q->countQuery()->execute()->fetchField();
+    $sb['limit'] = 50;
+  }
+
+  $q = $q->range($sb['progress'], $sb['limit'])
+    ->execute();
+
+  foreach ($q as $r) {
+    $r->os_file_description_value = $r->media_description_value;
+    $r->os_file_description_format = $r->media_description_format;
+    drupal_write_record('field_data_os_file_description', $r);
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['total'];
+  if ($sb['#finished'] >= 1) {
+    return t('Moved data from Media description to OS Files Description.');
+  }
+}
+
+/**
+ * Migrates Media Title to filename for all files used in Image Galleries
+ */
+function os_files_update_7011(&$sb) {
+  $q = db_select('field_data_media_gallery_file', 'mgf')
+    ->fields('mgf', array('media_gallery_file_fid'));
+
+  if (!isset($sb['progress'])) {
+    $sb['progress'] = 0;
+    $sb['count'] = $q->countQuery()->execute()->fetchField();
+    $sb['limit'] = 50;
+  }
+
+  $q = $q->range($sb['progress'], $sb['limit'])
+     ->execute();
+
+  foreach ($q as $r) {
+    $title = db_select('field_data_media_title', 'mt')
+      ->fields('mt', array('media_title_value'))
+      ->condition('entity_type', 'file')
+      ->condition('entity_id', $r->media_gallery_file_fid)
+      ->execute()
+      ->fetchField();
+
+    db_update('file_managed')
+      ->fields(array('filename' => $title))
+      ->condition('fid', $r->media_gallery_file_fid)
+      ->execute();
+
+    $sb['progress']++;
+  }
+
+  $sb['#finished'] = $sb['progress']/$sb['count'];
+  if ($sb['#finished'] >= 1) {
+    return t('Migrated Media Titles.');
+  }
+}
+
+/**
+ * Revert file types and file displays to defaults.
+ */
+function os_files_update_7012($sb) {
+  return os_files_update_7007($sb);
+}

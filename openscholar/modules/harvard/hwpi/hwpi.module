@@ -1,6 +1,33 @@
 <?php
 
 /**
+ * Implements hook_init
+ */
+function hwpi_init() {
+  global $conf;
+
+  // Is securepages enabled?
+  // If we are not on a harvard domain turn it off.
+  if (variable_get('securepages_enable', 0)) {
+
+    //Turn SSL off for pages that don't match the wildcard certificate
+    $conf['securepages_enable'] = 0;
+
+    // Loop through the domains that are configured to work with our SSL certificate
+    foreach (variable_get('hwpi_ssl_domains',array()) as $domain) {
+      $offset = (strlen($domain) * -1);
+      // Check to see if the current domain matches one of our wildcard domains in the SSL cert.
+      // IF the cert has ".harvard.edu" then "foo.harvard.edu" is valid and we should enable, whild "bar.foo.harvard.edu" is not.
+      if(substr($_SERVER['HTTP_HOST'],$offset) == $domain && !strrpos($_SERVER['HTTP_HOST'],".",($offset-1))){
+        //We found a Match
+        $conf['securepages_enable'] = 1;
+        break;
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page.
  */
 function hwpi_preprocess_page(&$vars) {
@@ -15,10 +42,13 @@ function hwpi_preprocess_page(&$vars) {
  *
  * @return bool
  */
-function _is_hwpi_theme() {
+function _is_hwpi_theme($theme_name = NULL) {
+  if (is_null($theme_name)) {
+    $theme_name = $GLOBALS['theme'];
+  }
   $themes = list_themes();
-  if (isset($themes[$GLOBALS['theme']])) {
-    $t = $themes[$GLOBALS['theme']];
+  if (isset($themes[$theme_name])) {
+    $t = $themes[$theme_name];
     if (isset($t->base_themes) && isset($t->base_themes['hwpi_basetheme'])) {
       return TRUE;
     }
@@ -164,3 +194,72 @@ function hwpi_block_view_alter(&$render, $block) {
   }
 }
 
+/**
+ * Implements hook_node_insert().
+ */
+function hwpi_node_insert($node) {
+  // Only continues if the new node is an OG group type.
+  if (!og_is_group_type('node', $node->type)) {
+    return;
+  }
+
+  // Only continues to alter settings if the site's theme is HWPI.
+  $vsite = vsite_get_vsite($node->nid);
+  $theme = $vsite->controllers->variable->get('theme_default');
+  if (!_is_hwpi_theme($theme)) {
+    return;
+  }
+
+  // Sets all HWPI-theme-specific variable defaults.
+  hwpi_theme_set_defaults();
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for cp_appearance_theme_picker_form.
+ */
+function hwpi_form_cp_appearance_theme_picker_form_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'][] = 'hwpi_theme_picker_form_submit';
+}
+
+/**
+ * Submit callback for cp_appearance_theme_picker_form.
+ */
+function hwpi_theme_picker_form_submit($form, &$form_state) {
+  // Only continues if a theme value is set.
+  if (!isset($form_state['values']['theme_default'])) {
+    return;
+  }
+
+  // Only continues if the selected theme is HWPI.
+  $selected_theme = $form_state['values']['theme_default'];
+  if (!_is_hwpi_theme($selected_theme)) {
+    return;
+  }
+
+  // Sets all HWPI-theme-specific variable defaults.
+  hwpi_theme_set_defaults();
+}
+
+/**
+ * Sets all HWPI-theme-specific variable defaults.
+ *
+ * @see hwpi_form_cp_appearance_theme_picker_form_alter()
+ * @see
+ */
+function hwpi_theme_set_defaults() {
+  // Declares settings specific to HWPI themes.
+  $settings = array(
+    'os_breadcrumbs_show_breadcrumbs' => 0,
+    'enable_responsive' => 1,
+  );
+
+  // Sets all HWPI-theme-specific settings.
+  foreach ($settings as $name => $value) {
+    if ($space = spaces_get_space()) {
+      $space->controllers->variable->set($name, $value);
+    }
+    else {
+      variable_set($name, $value);
+    }
+  }
+}

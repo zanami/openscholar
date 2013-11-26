@@ -186,7 +186,6 @@ function os_biocv_strongarm() {
   $strongarm->name = 'node_options_bio';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_bio'] = $strongarm;
 
@@ -198,7 +197,6 @@ function os_biocv_strongarm() {
   $strongarm->name = 'node_options_cv';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
   );
   $export['node_options_cv'] = $strongarm;
 

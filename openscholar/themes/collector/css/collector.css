@@ -26,6 +26,12 @@ padding-bottom: 2000px;
 	border-bottom:1px solid #6d2a01;
 }
 
+#menu-bar ul.nice-menu ul {
+	background:#fbf4e2;
+	top: 1.9em;
+	border-top: none;
+}
+
 .region-sidebar-first {
     background-image: url('../images/sidebar_left.png');
     }
