@@ -111,6 +111,9 @@ class os_boxes_feedreader extends os_boxes_default {
     $field = field_info_field_by_id($instance['field_id']);
     $result = google_feedapi_field_formatter_view('node', $node, $field, $instance, 'und', $node->field_url['und'], $display);
 
+    // In case of a feed reader use a custom layout.
+    drupal_add_js(drupal_get_path('module', 'os_boxes') . '/js/feed-new-layout.js');
+
     $block['content'] = render($result);
 
     return $block;
