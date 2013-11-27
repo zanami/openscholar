@@ -266,12 +266,20 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 
   $sources = explode('|', $value);
   foreach ($sources as $source) {
-    $file = system_retrieve_file($source, 'public://', TRUE);
-    $files[] = array(
-      'fid' => $file->fid,
-      'display' => 1,
-      'description' => '',
-    );
+    if ($file = system_retrieve_file($source, 'public://', TRUE)) {
+      $files[] = array(
+        'fid' => $file->fid,
+        'display' => 1,
+        'description' => '',
+      );
+    }
+    else {
+      // The file could not be accessible. Display the error.
+      $params = array(
+        '@address' => $source,
+      );
+      drupal_set_message(t('There was a problem with downloading the file from: @address. Please check if the file address is accessible', $params), 'error');
+    }
   }
 
   $entity->{$field_name}[$entity->language] = $files;
@@ -468,10 +476,21 @@ function os_importer_verify_uploaded_file($form, $form_state) {
 
   // Load the uploaded file and parse his headers.
   $file = file_load($form_state['values']['file']);
+
+  // Replace the \r with \n.
+  $file_content = file_get_contents($file->uri);
+  $file_content = str_replace("\r", "\n", $file_content);
+  $new_file = file_save_data($file_content, $file->uri);
+  $form_state['values']['file'] = $new_file->fid;
+
+  // Delete the old file.
+  file_delete($file);
+
+  // Parse file's headers.
   feeds_include_library('ParserCSV.inc', 'ParserCSV');
   $parser = new ParserCSV();
   $parser->setDelimiter(',');
-  $iterator = new ParserCSVIterator($file->uri);
+  $iterator = new ParserCSVIterator($new_file->uri);
   $header = _os_importer_parse_header($parser, $iterator);
 
   // Check what missing in the uploaded CSV file and display message if needed.
@@ -530,6 +549,20 @@ function os_importer_import_submit($form, &$form_state) {
     $wrapper->field_rss_url->set($values['url']);
     $wrapper->save();
   }
+}
+
+/**
+ * Implements hook_feeds_after_import().
+ *
+ * After we import data from the file we can delete him.
+ */
+function os_importer_feeds_after_import(FeedsSource $source) {
+  if (!in_array('FeedsFileFetcher', array_keys($source->config))) {
+    return;
+  }
+
+  $file = file_load($source->config['FeedsFileFetcher']['fid']);
+  file_delete($file);
 }
 
 /**
