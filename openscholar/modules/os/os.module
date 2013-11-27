@@ -1762,7 +1762,7 @@ function os_views_query_alter(&$view, &$query) {
 
   // Alter the query only if there are node types to be excluded.
   if (!empty($exclude)) {
-    $query->add_where(key($query->where), 'node.type', $exclude, 'not in');
+    $query->add_where(key($query->where), 'node.type', $exclude, 'NOT IN');
   }
 }
 
