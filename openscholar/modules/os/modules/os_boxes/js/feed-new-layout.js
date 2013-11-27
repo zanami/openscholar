@@ -10,7 +10,6 @@
    */
   Drupal.behaviors.googleFeedAPI = {
     attach: function (context, settings) {
-      console.log(1);
       if (typeof google == 'undefined'){
         return;
       }
@@ -30,27 +29,30 @@
                 var entry = result.feed.entries[i];
 
                 var date = "";
-                if(typeof entry.publishedDate != 'undefined' && entry.publishedDate != ''){
+                if (typeof entry.publishedDate != 'undefined' && entry.publishedDate != ''){
                   //@todo find a good way to do FuzzyTime in js
                   date = googleFeedAPIFuzzyDate(entry.publishedDate);
-                  if(typeof date == 'undefined'){
+                  if (typeof date == 'undefined'){
                     date = "";
-                  }else{
+                  }
+                  else {
                     date = "<div class='date'>" + date + "</div>";
                   }
                 }
 
                 var content = entry.content;
 
-                if(feed_setting.content_summary && typeof entry.contentSnippet != 'undefined'){
+                if (feed_setting.content_summary && typeof entry.contentSnippet != 'undefined'){
                   content = entry.contentSnippet;
                 }
 
+                // Don't show the date in case of a title view.
                 var feed_markup = "<div class='feed_item'>" +
 
                   "<a class='title' href='" + entry.link + "'>" + entry.title + "</a>";
 
-                if(feed_setting.show_content){
+                // If teaser view is used, add the date and the feed content.
+                if (feed_setting.show_content){
                   feed_markup = feed_markup + date + "<span class='description'>" +
                     content +
                     "<span/>";
