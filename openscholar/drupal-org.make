@@ -295,7 +295,7 @@ projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
 projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
-projects[pinserver][download][tag] = 7.x-3.4.3
+projects[pinserver][download][tag] = 7.x-3.4.4
 
 projects[purl][subdir] = "contrib"
 ;: projects[purl][version] = 1.0-beta1+11-dev
@@ -311,6 +311,9 @@ projects[registration][version] = 1.1
 
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
+
+projects[redirect][subdir] = "contrib"
+projects[redirect][version] = 1.0-rc1
 
 projects[robotstxt][subdir] = "contrib"
 projects[robotstxt][version] = "1.1"

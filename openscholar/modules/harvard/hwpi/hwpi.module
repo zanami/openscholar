@@ -184,6 +184,36 @@ function _hwpi_branding_footer() {
 }
 
 /**
+ * Implements hook_cp_settings().
+ */
+function hwpi_cp_settings() {
+  // For non-user-1, only adds the responsive setting for HWPI-themed sites.
+  $theme = variable_get('theme_default');
+  if (!_is_hwpi_theme($theme) && !user_acces('administer site configuration')) {
+    return;
+  }
+
+  $settings = array(
+    'enable_responsive' => array(
+      'group' => array(
+        '#title' => t('Responsive'),
+        '#id' => 'responsive',
+      ),
+      'form' => array(
+        '#type' => 'checkbox',
+        '#default_value' => variable_get('enable_responsive', FALSE),
+        '#title' => t('Enable responsive behaviors'),
+        '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
+          as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
+          on smaller devices.'),
+      ),
+    ),
+  );
+
+  return $settings;
+}
+
+/**
  * Implements hook_block_view_alter().
  *
  * Hides the search bar title display.
