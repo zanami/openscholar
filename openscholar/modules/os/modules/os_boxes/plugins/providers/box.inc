@@ -32,17 +32,12 @@ function os_boxes_box_provider($plugin, $url, $matches, $parameters) {
       $box = boxes_box::factory($box->plugin_key, $box);
     }
     if ($box) {
-      module_load_include('module', 'block', 'block');
-      $block = new stdClass();
-      $block->bid = "boxes-{$box->delta}";
-      $block->delta = $box->delta;
-      $block->info = $box->description;
-      $block->cache = DRUPAL_CACHE_CUSTOM;
-      $block->module = 'boxes';
+
+      $block = $box->render();
 
       $result = array(
         'type' => 'rich',
-        'html' => $box->render(),
+        'html' => $block['content'],
         'title' => $box->title,
         'widget_type' => $box->plugin_key
       );
