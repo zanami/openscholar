@@ -183,6 +183,19 @@ function os_importer_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * When importing a biblio we need to original biblio page callback and
+ * arguments.
+ */
+function os_importer_menu_alter(&$items) {
+  $items['cp/os-importer/biblio']['page callback'] = $items['publications/import']['page callback'];
+  $items['cp/os-importer/biblio']['page arguments'] = $items['publications/import']['page arguments'];
+  $items['cp/os-importer/biblio']['file'] = 'biblio.import.export.inc';
+  $items['cp/os-importer/biblio']['file path'] = drupal_get_path('module', 'biblio') . '/includes';
+}
+
+/**
  * Generate callback for CSV importer page.
  *
  * @param $type
@@ -194,7 +207,10 @@ function os_importer_menu() {
 function os_importer_importer_title($type) {
   $types = node_type_get_types($type);
 
-  return t('@type', array('@type' => $types[$type]->name));
+  // Display a custom name for publication.
+  $title = $type == 'biblio' ? 'Publication' : $types[$type]->name;
+
+  return t('@type', array('@type' => $title));
 }
 
 /**
@@ -704,4 +720,22 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
     'vid' => $vocabulary->vid,
     'tids' => $tids,
   );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adding a submit handler for redirect after import publication.
+ */
+function os_importer_form_biblio_import_form_alter(&$form, $form_state) {
+  dpm('a');
+  $form['#submit'][] = 'os_importer_biblio_redirect';
+}
+
+/**
+ * Submit handler;Keep the user in the same page after importing publication.
+ */
+function os_importer_biblio_redirect($form, &$form_state) {
+  // TODO: Fix.
+  $_GET['destination'] = 'john/cp/os-importer/biblio';
 }
