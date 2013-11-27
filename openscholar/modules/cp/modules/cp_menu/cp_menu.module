@@ -93,6 +93,7 @@ function cp_menu_menu() {
 function cp_menu_admin_paths() {
   $paths = array(
     'cp/menu/*' => TRUE,
+    'cp/redirect/add' => TRUE,
   );
   return $paths;
 }
