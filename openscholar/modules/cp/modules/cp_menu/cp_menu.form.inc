@@ -115,6 +115,22 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
     '#markup' => ctools_modal_text_button('Add New Menu', 'cp/build/menu/nojs/add', 'Add New Menu'),
   );
 
+  // Adds the 'Manage redirects' section to the form.
+  $path = drupal_get_path('module', 'cp_menu');
+  $form['advanced'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced'),
+    '#weight' => 5,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#after_build' => array('_cp_menu_build_form_redirects_build'),
+    '#attached' => array(
+      'css' => array(
+        "{$path}/cp_menu.redirect.css",
+      ),
+    ),
+  );
+
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
