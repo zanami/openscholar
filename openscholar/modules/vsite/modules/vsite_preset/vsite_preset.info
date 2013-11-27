@@ -12,4 +12,5 @@ features[features_api][] = api:1
 features[spaces_presets][] = hwp_administrative
 features[spaces_presets][] = hwp_lab_research_group
 features[spaces_presets][] = hwp_project
+features[spaces_presets][] = hwp_personal
 files[] = includes/vsite_task.inc
