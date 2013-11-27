@@ -105,7 +105,7 @@ function os_menu_alter(&$items) {
   }
 
   // Check if the site is in read-only mode which means login is disabled.
-  $items['user/login']['access callback'] = 'os_in_read_mode_login';
+  $items['user/login']['page callback'] = 'os_in_read_mode_login';
   $items['user/register']['access callback'] = 'os_in_read_mode_register';
 
   // Displays 404 Not Found instead of default /node page.
@@ -133,7 +133,13 @@ function os_in_read_mode() {
  * Access callback; Returns FALSE if login is disabled.
  */
 function os_in_read_mode_login() {
-  return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', '');
+  }
+
+  if (user_is_anonymous()) {
+    return drupal_get_form('user_login');
+  }
 }
 
 /**
@@ -856,7 +862,9 @@ function os_settings_form($form_state) {
     '#weight' => 0,
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
+    '#validate' => 'os_settings_form_validate',
   );
+
   $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use dropdowns'),
@@ -884,7 +892,28 @@ function os_settings_form($form_state) {
     '#description' => t('Disable users from logging into the site. '),
   );
 
+  $form['os_read_only']['os_readonly_mode_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#default_value' => variable_get('os_readonly_mode_message', ''),
+    '#description' => t('Message to be displayed to the users in the login page when site is in read-only mode.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="os_readonly_mode"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
   return system_settings_form($form);
+}
+
+/**
+ *  Validation handler for os_settings form.
+ */
+function os_settings_form_validate($form, &$form_state) {
+  if (!$form_state['values']['os_readonly_mode_message']) {
+    form_set_error('os_readonly_mode_message', t('You must provide a message to display to users when site is in read-only mode.'));
+  }
 }
 
 /**
