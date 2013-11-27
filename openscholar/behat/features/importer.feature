@@ -1,6 +1,6 @@
 Feature: Testing the importer.
 
-  @api @foo
+  @api
   Scenario Outline: Testing the csv importing for blog.
     Given I am logging in as "admin"
      When I visit <import-address>
