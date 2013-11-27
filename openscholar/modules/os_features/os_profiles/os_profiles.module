@@ -24,13 +24,23 @@ function os_profiles_os_app_info() {
     ),
     'importers' => array(
       'person' => array(
-        'csv' => 'os_reader',
+        'csv' => 'os_people',
       ),
     ),
   );
 
   return $apps;
 }
+
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_profiles_os_entity_view_modes() {
+  return array('node' => array(
+    'person' => array('sidebar_teaser')
+  ));
+}
+
 
 /**
  * Implements hook_process_hook() for node.
@@ -76,7 +86,7 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
+  if (!$vars['teaser'] && !in_array($vars['view_mode'], array('sidebar_teaser', 'title'))) {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 

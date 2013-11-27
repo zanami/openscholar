@@ -442,8 +442,8 @@ function os_importer_import_validate($form, $form_state) {
  * Validate handler - verify that the uploaded CSV file has a validate columns
  * structure.
  */
-function os_importer_verify_uploaded_file($form, &$form_state) {
-  if ($form_state['values']['format'] == 'ical') {
+function os_importer_verify_uploaded_file($form, $form_state) {
+  if (in_array($form_state['values']['format'], array('ical', 'rss'))) {
     // Don't validate iCal files.
     return;
   }

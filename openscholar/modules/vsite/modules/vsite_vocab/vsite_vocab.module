@@ -140,22 +140,27 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $form['name']['#description'] = t('The vocabulary name. E.g. "Research interests"');
 
   // Get enabled bundles.
-  $bundles = os_get_bundles(array(1,2));
-
+  $all_bundles = array(
+    'node' => os_get_bundles(array(1,2)),
+    'file' => os_files_get_bundles(),
+  );
+  
   // Loop through all of the content types and build their checkboxe's.
   $form['bundles'] = array();
   $default_bundles = array();
-  foreach ($bundles as $bundle => $bundle_label) {
-    $vid = !empty($form['vid']['#value']) ? $form['vid']['#value'] : 0;
-    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, NULL, TRUE);
-    $options[$bundle] = check_plain($bundle_label);
-    if (empty($og_vocab->is_new)) {
-      $default_bundles[$bundle] = TRUE;
+  foreach ($all_bundles as $entity_type => $bundles) { 
+    foreach ($bundles as $bundle => $bundle_label) {
+      $vid = !empty($form['vid']['#value']) ? $form['vid']['#value'] : 0;
+      $og_vocab = og_vocab_load_og_vocab($vid, $entity_type, $bundle, NULL, TRUE);
+      $options[$bundle] = check_plain($bundle_label);
+      if (empty($og_vocab->is_new)) {
+        $default_bundles[$bundle] = TRUE;
+      }
+  
+      $required = !$required ? $og_vocab->settings['required'] : $required;
+      $widget = $widget == 'options_select' ? $widget = $og_vocab->settings['widget_type'] : $widget;
+      $cardinality = $cardinality == FIELD_CARDINALITY_UNLIMITED ? $cardinality = $og_vocab->settings['cardinality'] : $cardinality;
     }
-
-    $required = !$required ? $og_vocab->settings['required'] : $required;
-    $widget = $widget == 'options_select' ? $widget = $og_vocab->settings['widget_type'] : $widget;
-    $cardinality = $cardinality == FIELD_CARDINALITY_UNLIMITED ? $cardinality = $og_vocab->settings['cardinality'] : $cardinality;
   }
 
   $form['bundles'] = array(
@@ -295,27 +300,33 @@ function vsite_vocab_og_vocab_is_admin_context() {
  */
 function vsite_vocab_form_taxonomy_form_vocabulary_submit(&$form, &$form_state) {
   $vid = empty($form_state['vocabulary']->vid) ? 0 : $form_state['vocabulary']->vid;
-  $bundles = os_get_bundles(array(1,2));
   $values = $form_state['values'];
+  
+  $all_bundles = array(
+    'node' => os_get_bundles(array(1,2)),
+    'file' => os_files_get_bundles(),
+  );
 
-  foreach ($bundles as $bundle => $bundle_label) {
-    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle);
-
-    if (empty($og_vocab)) {
-      $og_vocab = og_vocab_create_og_vocab($vid, 'node', $bundle);
-    }
-
-    if (!$form_state['values']['bundles'][$bundle] && empty($og_vocab->is_new)) {
-      $og_vocab->delete();
-      continue;
-    }
-
-    if ($form_state['values']['bundles'][$bundle]) {
-      $og_vocab->settings['required'] = $values['required'];
-      $og_vocab->settings['cardinality'] = $values['cardinality'];
-      $values['widget_type'] = $values['widget_type_autocomplete'] == 'entityreference_autocomplete' ? $values['widget_type'] : $values['widget_type_autocomplete'];
-      $og_vocab->settings['widget_type'] = $values['widget_type'];
-      $og_vocab->save();
+  foreach ($all_bundles as $entity_type => $bundles) {
+    foreach ($bundles as $bundle => $bundle_label) {
+      $og_vocab = og_vocab_load_og_vocab($vid, $entity_type, $bundle);
+  
+      if (empty($og_vocab)) {
+        $og_vocab = og_vocab_create_og_vocab($vid, $entity_type, $bundle);
+      }
+  
+      if (!$values['bundles'][$bundle] && empty($og_vocab->is_new)) {
+        $og_vocab->delete();
+        continue;
+      }
+  
+      if ($values['bundles'][$bundle]) {
+        $og_vocab->settings['required'] = $values['required'];
+        $og_vocab->settings['cardinality'] = $values['cardinality'];
+        $values['widget_type'] = $values['widget_type_autocomplete'] == 'entityreference_autocomplete' ? $values['widget_type'] : $values['widget_type_autocomplete'];
+        $og_vocab->settings['widget_type'] = $values['widget_type'];
+        $og_vocab->save();
+      }
     }
   }
 
@@ -417,9 +428,13 @@ function vsite_vocab_field_formatter_view($entity_type, $entity, $field, $instan
   // terms from the vocab.
   $hide_terms = array();
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  foreach ($wrapper->{OG_VOCAB_FIELD} as $term) {
-    if (!og_vocab_load_og_vocab($term->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
-      $hide_terms[] = $term->getIdentifier();
+  foreach ($wrapper->{OG_VOCAB_FIELD} as $term_wrapper) {
+    if (!$term_wrapper->value()) {
+      // Term was deleted.
+      continue;
+    }
+    if (!og_vocab_load_og_vocab($term_wrapper->vocabulary->getIdentifier(), $wrapper->type(), $wrapper->getBundle())) {
+      $hide_terms[] = $term_wrapper->getIdentifier();
     }
   }
 

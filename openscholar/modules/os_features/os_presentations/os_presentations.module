@@ -23,6 +23,11 @@ function os_presentations_os_app_info() {
     'views tabs' => array(
       'os_presentations' => array('page'),
     ),
+    'importers' => array(
+      'presentation' => array(
+        'csv' => 'os_presentation',
+      ),
+    ),
   );
 
   return $apps;

@@ -12,12 +12,35 @@ function os_boxes_ctools_plugin_api($module, $api) {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function os_boxes_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'oembed' && $plugin == 'providers') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
  * Passthrough function so box plugin definitions are only loaded when they're needed
  * We don't need to include and process the file on every page
  */
 function os_boxes_boxes_plugins() {
   require_once ('os_boxes.plugins.inc');
   return _os_boxes_boxes_plugins();
+}
+
+/**
+ * Impements hook_oembedprovider().
+ *
+ * The provider established by this module will attempt to resolve every URL it can.
+ */
+function os_boxes_oembedprovider() {
+  $base_url = url('', array('absolute' => TRUE)) . 'box/*';
+  return array(
+    $base_url => array(
+      'callback' => 'os_boxes_box_provider',
+    ),
+  );
 }
 
 /**

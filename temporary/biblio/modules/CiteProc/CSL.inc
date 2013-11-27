@@ -1208,7 +1208,23 @@ class csl_label extends csl_format {
     if (empty($text)) {
     foreach ($variables as $variable) {
       $t = (array)$data;
-      if (isset($t[$this->citeproc->map_field($variable)]) && trim($t[$this->citeproc->map_field($variable)]) != FALSE && ($term = $this->citeproc->get_locale('term', $variable, $form, $plural))) {
+      if (empty($t['nid'])) {
+        // Data is a Biblio contributor.
+        $show_term = TRUE;
+      }
+      else {
+        // Data is a Biblio node, so check if the field is not empty.
+        $show_term = isset($t[$this->citeproc->map_field($variable)]) && trim($t[$this->citeproc->map_field($variable)]) != FALSE;
+      }
+
+      // If we print a range of pages change plural to multiple.
+      if ($variable == 'page') {
+        if (!is_int($data->biblio_pages)) {
+          $plural = 'multiple';
+        }
+      }
+      
+      if ($show_term && $term = $this->citeproc->get_locale('term', $variable, $form, $plural)) {
         $text = $term;
         break;
       }
