@@ -9,10 +9,18 @@ Feature: Testing the importer.
       And I should see <body>
 
   Examples:
-    | import-address                  | address                                   | title                   | body                            |
-    | "john/os-importer-demo/blog"    | "john/blog"                               | "Blog from csv"         | "This is a blog from csv file"  |
-    | "john/os-importer-demo/news"    | "john/news"                               | "Testing import news"   | "Testing the import of news"    |
-    | "john/os-importer-demo/event"   | "john/calendar?type=day&day=2013-10-17"   | "Testing importing"     | ""                              |
+    | import-address                            | address                                   | title                   | body                            |
+    | "john/os-importer-demo/blog"              | "john/blog"                               | "Blog from csv"         | "This is a blog from csv file"  |
+    | "john/os-importer-demo/news"              | "john/news"                               | "Testing import news"   | "Testing the import of news"    |
+    | "john/os-importer-demo/event"             | "john/calendar?type=day&day=2013-10-17"   | "Testing importing"     | ""                              |
+    | "john/os-importer-demo/page"              | "john/page-csv"                           | "Page from csv"         | "This is a page from csv file"  |
+    | "john/os-importer-demo/class"             | "john/classes"                            | "Testing importing"     | "Testing importing of class"    |
+    | "john/os-importer-demo/faq"               | "john/faq"                                | "FAQ from csv"          | ""                              |
+    | "john/os-importer-demo/presentation"      | "john/presentations"                      | "Presentation from csv" | ""                              |
+    | "john/os-importer-demo/software_project"  | "john/software"                           | "Software from csv"     | "Testing import software"       |
+    | "john/os-importer-demo/link"              | "john/links"                              | "Link from csv"         | "Testing import link"           |
+    | "john/os-importer-demo/person"            | "john/people"                             | "Homer J Simpson"       | "Doh!"                          |
+    | "john/os-importer-demo/media_gallery"     | "john/galleries"                          | "Gallery from csv"      | "Testing import gallery"        |
 
   @api
     Scenario: Verify that the vocabularies and terms from the CSV created
