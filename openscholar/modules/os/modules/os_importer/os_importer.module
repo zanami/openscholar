@@ -728,13 +728,5 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
  * Adding a submit handler for redirect after import publication.
  */
 function os_importer_form_biblio_import_form_alter(&$form, $form_state) {
-  $form['#submit'][] = 'os_importer_biblio_redirect';
-}
-
-/**
- * Submit handler;Keep the user in the same page after importing publication.
- */
-function os_importer_biblio_redirect($form, &$form_state) {
-  // TODO: Fix.
-  $_GET['destination'] = 'john/cp/os-importer/biblio';
+  $_GET['destination'] = 'cp/os-importer/biblio';
 }
