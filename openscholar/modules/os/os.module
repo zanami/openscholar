@@ -105,7 +105,7 @@ function os_menu_alter(&$items) {
 
   // Check if the site is in read-only mode which means login is disabled.
   $items['user/login']['page callback'] = 'os_in_read_mode_login';
-  $items['user/register']['access callback'] = 'os_in_read_mode_register';
+  $items['user/register']['page callback'] = 'os_in_read_mode_register';
   $items['user/password']['access callback'] = 'os_in_read_mode_password';
 
   // Displays 404 Not Found instead of default /node page.
@@ -130,11 +130,11 @@ function os_in_read_mode_password() {
 }
 
 /**
- * Page callback for `user/login'.
+ * Page callback for user/login.
  */
 function os_in_read_mode_login() {
   if (variable_get('os_readonly_mode', FALSE)) {
-    return variable_get('os_readonly_mode_message', '');
+    return variable_get('os_readonly_mode_message', 'Site is under maintenance, login and registration is currently disabled.');
   }
 
   if (user_is_anonymous()) {
@@ -143,10 +143,16 @@ function os_in_read_mode_login() {
 }
 
 /**
- * Access callback; Returns FALSE if login is disabled.
+ * Page callback for user/register.
  */
 function os_in_read_mode_register() {
-  return user_register_access() && !variable_get('os_readonly_mode', FALSE);
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', 'Site is under maintenance, login and registration is currently disabled.');
+  }
+
+  if (user_register_access()) {
+    return drupal_get_form('user_register_form');
+  }
 }
 
 /**
@@ -895,7 +901,7 @@ function os_settings_form($form_state) {
   $form['os_read_only']['os_readonly_mode_message'] = array(
     '#type' => 'textarea',
     '#title' => t('Message'),
-    '#default_value' => variable_get('os_readonly_mode_message', ''),
+    '#default_value' => variable_get('os_readonly_mode_message', 'Site is under maintenance, login and registration is currently disabled.'),
     '#description' => t('Message to be displayed to the users in the login page when site is in read-only mode.'),
     '#states' => array(
       'visible' => array(
