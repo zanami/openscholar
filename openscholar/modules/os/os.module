@@ -101,12 +101,12 @@ function os_menu_alter(&$items) {
     $items['user']['page callback'] = 'os_user_page';
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
-    $items['user']['access callback'] = 'os_in_read_mode';
   }
 
   // Check if the site is in read-only mode which means login is disabled.
   $items['user/login']['page callback'] = 'os_in_read_mode_login';
   $items['user/register']['access callback'] = 'os_in_read_mode_register';
+  $items['user/password']['access callback'] = 'os_in_read_mode_password';
 
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
@@ -125,12 +125,12 @@ function os_menu_alter(&$items) {
 /**
  * Access callback; Returns FALSE if login is disabled.
  */
-function os_in_read_mode() {
+function os_in_read_mode_password() {
   return !variable_get('os_readonly_mode', FALSE);
 }
 
 /**
- * Access callback; Returns FALSE if login is disabled.
+ * Page callback for `user/login'.
  */
 function os_in_read_mode_login() {
   if (variable_get('os_readonly_mode', FALSE)) {
