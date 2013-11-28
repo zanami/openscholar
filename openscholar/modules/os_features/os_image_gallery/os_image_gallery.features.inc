@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_image_gallery.features.inc
@@ -11,6 +9,10 @@
  */
 function os_image_gallery_ctools_plugin_api() {
   list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
+  list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
   }
@@ -19,10 +21,11 @@ function os_image_gallery_ctools_plugin_api() {
     return array("version" => "1");
   }
   list($module, $api) = func_get_args();
-  if ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => "1");
+  if ($module == "feeds_tamper" && $api == "feeds_tamper_default") {
+    return array("version" => "2");
   }
-  if ($module == "boxes" && $api == "box") {
+  list($module, $api) = func_get_args();
+  if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
 }
@@ -40,7 +43,7 @@ function os_image_gallery_views_api() {
 function os_image_gallery_image_default_styles() {
   $styles = array();
 
-  // Exported image style: slideshow_480
+  // Exported image style: slideshow_480.
   $styles['slideshow_480'] = array(
     'name' => 'slideshow_480',
     'effects' => array(
@@ -60,9 +63,10 @@ function os_image_gallery_image_default_styles() {
         'weight' => '1',
       ),
     ),
+    'label' => 'slideshow_480',
   );
 
-  // Exported image style: slideshow_640
+  // Exported image style: slideshow_640.
   $styles['slideshow_640'] = array(
     'name' => 'slideshow_640',
     'effects' => array(
@@ -82,9 +86,10 @@ function os_image_gallery_image_default_styles() {
         'weight' => '1',
       ),
     ),
+    'label' => 'slideshow_640',
   );
 
-  // Exported image style: slideshow_800
+  // Exported image style: slideshow_800.
   $styles['slideshow_800'] = array(
     'name' => 'slideshow_800',
     'effects' => array(
@@ -104,9 +109,10 @@ function os_image_gallery_image_default_styles() {
         'weight' => '1',
       ),
     ),
+    'label' => 'slideshow_800',
   );
 
-  // Exported image style: slideshow_960
+  // Exported image style: slideshow_960.
   $styles['slideshow_960'] = array(
     'name' => 'slideshow_960',
     'effects' => array(
@@ -126,6 +132,7 @@ function os_image_gallery_image_default_styles() {
         'weight' => '1',
       ),
     ),
+    'label' => 'slideshow_960',
   );
 
   return $styles;
@@ -147,4 +154,3 @@ function os_image_gallery_node_info() {
   );
   return $items;
 }
-
