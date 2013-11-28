@@ -35,6 +35,15 @@ function os_importer_feeds_plugins() {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function os_importer_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'feeds_tamper') {
+    return 'plugins';
+  }
+}
+
+/**
  * Implements hook_node_insert().
  *
  * Import feed item when the user add the feed importer for the first time.
@@ -510,6 +519,7 @@ function os_importer_verify_uploaded_file($form, $form_state) {
   // Replace the \r with \n.
   $file_content = file_get_contents($file->uri);
   $file_content = str_replace("\r", "\n", $file_content);
+  $file_content = utf8_encode($file_content);
   $new_file = file_save_data($file_content, $file->uri);
   $form_state['values']['file'] = $new_file->fid;
 

@@ -95,6 +95,11 @@ function cp_content_views_default_views_alter(&$views) {
  * we need to remove entities that don't belong to the current vsite.
  */
 function cp_content_batch_alter(&$batch) {
+  // Return early when the batch did no finished the work properly.
+  if (!isset($batch['sets'][0]['finished'])) {
+    return;
+  }
+
   if ($batch['sets'][0]['finished'] != '_views_bulk_operations_execute_finished') {
     // Not a VBO action we need to alter.
     return;
