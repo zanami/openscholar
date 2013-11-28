@@ -451,6 +451,59 @@ function os_migrate_demo_delete_node($title) {
 }
 
 /**
+ * Create a term in a given vocabulary.
+ *
+ * @param $term_name
+ *  The name for the new term.
+ *
+ * @param $vocab_name
+ *  The name of the vocabulary.
+ *
+ * @throws Exception
+ *  When vocab not found or not mapped correctly.
+ */
+function os_migrate_demo_create_term($term_name, $vocab_name) {
+  // A mapping for existing vocabularies.
+  $vocabs = array(
+    'authors' => 'authors_personal1',
+    'biology' => 'biology_personal1',
+    'math' => 'math_personal1',
+    'science' => 'science_personal1',
+  );
+
+  $params = array(
+    '@vocab-name' => $vocab_name,
+  );
+
+  if (!array_key_exists($vocab_name, $vocabs)) {
+    throw new Exception(t('The vocabulary "@vocab-name" is not mapped to any existing vocabularies.', $params));
+  }
+
+  // Load the vocabulary.
+  $machine_name = $vocabs[$vocab_name];
+  if (!$vocab = taxonomy_vocabulary_machine_name_load($machine_name)) {
+    throw new Exception(t('No vocabulary with the name "@vocab-name" was found.', $params));
+  }
+
+  // Create and save the new term.
+  $term = new stdClass();
+  $term->name = $term_name;
+  $term->vid = $vocab->vid;
+  taxonomy_term_save($term);
+}
+
+/**
+ * Delete a term in a given vocabulary.
+ *
+ * @param $term_name
+ *  The name of the term.
+ */
+function os_migrate_demo_delete_term($term_name) {
+  $term = reset(taxonomy_get_term_by_name($term_name));
+  taxonomy_term_delete($term->tid);
+}
+
+/**
  * Adding a subtheme to a site.
  *
  * @param $subtheme
@@ -544,6 +597,14 @@ function os_migrate_demo_import_csv($type) {
     'blog' => 'os_blog_csv',
     'news' => 'os_news',
     'event' => 'os_ical',
+    'page' => 'os_pages',
+    'class' => 'os_classes',
+    'faq' => 'os_faq',
+    'presentation' => 'os_presentation',
+    'software_project' => 'os_software',
+    'person' => 'os_people',
+    'link' => 'os_links',
+    'media_gallery' => 'os_gallery',
   );
 
   $ending = $type == 'event' ? 'ics' : 'csv';
