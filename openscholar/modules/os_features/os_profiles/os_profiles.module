@@ -24,7 +24,7 @@ function os_profiles_os_app_info() {
     ),
     'importers' => array(
       'person' => array(
-        'csv' => 'os_reader',
+        'csv' => 'os_people',
       ),
     ),
   );

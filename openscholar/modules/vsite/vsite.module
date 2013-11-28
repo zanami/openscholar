@@ -2415,7 +2415,7 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
-    if ($vsite = vsite_get_vsite() && ($vsite->purl_provider == 'vsite_domain')) {
+    if (($vsite = vsite_get_vsite()) && $vsite->purl_provider == 'vsite_domain') {
       // First generates an internal, relative path to the final destination.
       $options = array(
         'query' => array(
@@ -2532,4 +2532,44 @@ function vsite_cp_settings() {
   );
 
   return $settings;
+}
+
+/**
+ * Implements hook_HOOK_alter() for redirect_load_by_source.
+ *
+ * Alter the redirect candidates before selecting the top one.
+ *
+ * @see redirect.module
+ * @see redirect_load_by_source()
+ */
+function vsite_redirect_load_by_source_alter(&$redirects, $source, $context) {
+  // Only continues if redirects exist for this path.
+  if (empty($redirects)) {
+    return;
+  }
+
+  // Attempts to remove any redirects that don't apply to this vsite.
+  foreach ($redirects as $key => $redirect) {
+    // Assumes no vsite group ID for this redirect, then looks for purl value.
+    $gid = FALSE;
+    if (isset($redirect->redirect_options['purl']['add'][0]['id'])) {
+      $gid = $redirect->redirect_options['purl']['add'][0]['id'];
+    }
+
+    // Assumes there is no vsite mismatch, then looks for mismatch conditions.
+    $vsite_mismatch = FALSE;
+    // If we're inside a vsite, a mismatch is when the group ID(s) is different.
+    if ($vsite = vsite_get_vsite() && $vsite->id != $gid) {
+        $vsite_mismatch = TRUE;
+    }
+    // Otherwise, outside a vsite, any group ID value means it's a mismatch.
+    else if ($gid !== FALSE) {
+      $vsite_mismatch = TRUE;
+    }
+
+    // Removes this redirect if it's mismatched (prevents the redirect).
+    if ($vsite_mismatch) {
+      unset($redirects[$key]);
+    }
+  }
 }

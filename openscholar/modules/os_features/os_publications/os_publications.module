@@ -19,6 +19,11 @@ function os_publications_os_app_info() {
   	'nodetypes' => array(
   	  'biblio',
     ),
+    'importers' => array(
+      'biblio' => array(
+        'csv' => 'os_publication',
+      ),
+    ),
   );
 
   return $apps;
@@ -649,20 +654,6 @@ function os_publications_node_view_alter(&$build, $type) {
         }
       }
     }
-  }
-}
-
-/**
- * Adds a page contextual link for importing biblio nodes.
- */
-function os_publications_os_add_new_links_alter(&$links) {
-  if (isset($links['biblio'])) {
-    $links['biblio-import'] = array(
-      'title' => t('Import Publications'),
-      'href' => 'publications/import',
-      'html' => TRUE,
-    );
-    $links['biblio']['title'] = 'Publication';
   }
 }
 
