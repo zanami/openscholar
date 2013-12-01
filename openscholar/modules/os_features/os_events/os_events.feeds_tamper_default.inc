@@ -13,14 +13,14 @@ function os_events_feeds_tamper_default() {
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
   $feeds_tamper->api_version = 2;
-  $feeds_tamper->id = 'os_events_csv-body-urf8_convert';
+  $feeds_tamper->id = 'os_events_csv-body-utf8_convert';
   $feeds_tamper->importer = 'os_events_csv';
   $feeds_tamper->source = 'Body';
-  $feeds_tamper->plugin_id = 'urf8_convert';
+  $feeds_tamper->plugin_id = 'utf8_convert';
   $feeds_tamper->settings = array();
   $feeds_tamper->weight = 0;
   $feeds_tamper->description = 'Convert to UTF-8';
-  $export['os_events_csv-body-urf8_convert'] = $feeds_tamper;
+  $export['os_events_csv-body-utf8_convert'] = $feeds_tamper;
 
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
@@ -37,26 +37,26 @@ function os_events_feeds_tamper_default() {
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
   $feeds_tamper->api_version = 2;
-  $feeds_tamper->id = 'os_events_csv-location-urf8_convert';
+  $feeds_tamper->id = 'os_events_csv-location-utf8_convert';
   $feeds_tamper->importer = 'os_events_csv';
   $feeds_tamper->source = 'Location';
-  $feeds_tamper->plugin_id = 'urf8_convert';
+  $feeds_tamper->plugin_id = 'utf8_convert';
   $feeds_tamper->settings = array();
   $feeds_tamper->weight = 0;
   $feeds_tamper->description = 'Convert to UTF-8';
-  $export['os_events_csv-location-urf8_convert'] = $feeds_tamper;
+  $export['os_events_csv-location-utf8_convert'] = $feeds_tamper;
 
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
   $feeds_tamper->api_version = 2;
-  $feeds_tamper->id = 'os_events_csv-registration-urf8_convert';
+  $feeds_tamper->id = 'os_events_csv-registration-utf8_convert';
   $feeds_tamper->importer = 'os_events_csv';
   $feeds_tamper->source = 'Registration';
-  $feeds_tamper->plugin_id = 'urf8_convert';
+  $feeds_tamper->plugin_id = 'utf8_convert';
   $feeds_tamper->settings = array();
   $feeds_tamper->weight = 0;
   $feeds_tamper->description = 'Convert to UTF-8';
-  $export['os_events_csv-registration-urf8_convert'] = $feeds_tamper;
+  $export['os_events_csv-registration-utf8_convert'] = $feeds_tamper;
 
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
@@ -73,14 +73,14 @@ function os_events_feeds_tamper_default() {
   $feeds_tamper = new stdClass();
   $feeds_tamper->disabled = FALSE; /* Edit this to true to make a default feeds_tamper disabled initially */
   $feeds_tamper->api_version = 2;
-  $feeds_tamper->id = 'os_events_csv-title-urf8_convert';
+  $feeds_tamper->id = 'os_events_csv-title-utf8_convert';
   $feeds_tamper->importer = 'os_events_csv';
   $feeds_tamper->source = 'Title';
-  $feeds_tamper->plugin_id = 'urf8_convert';
+  $feeds_tamper->plugin_id = 'utf8_convert';
   $feeds_tamper->settings = array();
   $feeds_tamper->weight = 0;
   $feeds_tamper->description = 'Convert to UTF-8';
-  $export['os_events_csv-title-urf8_convert'] = $feeds_tamper;
+  $export['os_events_csv-title-utf8_convert'] = $feeds_tamper;
 
   return $export;
 }
