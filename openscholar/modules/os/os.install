@@ -8,6 +8,8 @@
 
 function os_install() {
   _os_date_formats();
+  // Omit OG related fields from exported features, as those are added programatically.
+  variable_set('og_features_ignore_og_fields', TRUE);
 }
 
 /**
