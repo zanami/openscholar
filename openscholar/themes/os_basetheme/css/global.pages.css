@@ -752,6 +752,12 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     border-radius: 0;
     border:0;
 } 
+
+
+
+.ui-dialog.ui-front.media-wrapper {
+	z-index:500;
+}
  
  #media-browser-tabset .media-browser-tab {
     border: none;
@@ -942,11 +948,11 @@ ul.recent-images-list li a:hover img {
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xxlarge, 
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-small, 
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-medium,
-span[style*="float: right;"] .file-os-files-large, 
-span[style*="float: right;"] .file-os-files-xlarge, 
-span[style*="float: right;"] .file-os-files-xxlarge, 
-span[style*="float: right;"] .file-os-files-small, 
-span[style*="float: right;"] .file-os-files-medium {
+span[style*="float:	right;"] .file-os-files-large, 
+span[style*="float:	right;"] .file-os-files-xlarge, 
+span[style*="float:	right;"] .file-os-files-xxlarge, 
+span[style*="float:	right;"] .file-os-files-small, 
+span[style*="float:	right;"] .file-os-files-medium {
 	padding-left:10px;
 	padding-right:0;
 	}	

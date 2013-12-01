@@ -125,6 +125,44 @@ function vsite_get_purl($vsite = FALSE){
 }
 
 /**
+ * Implements hook_library_alter().
+ */
+function vsite_library_alter(&$libraries, $module) {
+  if ($module != 'overlay') {
+    return;
+  }
+
+  $path = drupal_get_path('module', 'vsite') . '/js/overlay-parent.js';
+  $libraries['parent']['js'][$path] = array();
+}
+
+
+/**
+ * Implements hook_js_alter().
+ *
+ * Prefix Overlay's Ajax callback with our PURL.
+ */
+function vsite_js_alter(&$javascript) {
+  if (!module_exists('overlay') || empty($javascript['settings']['data'])) {
+    // No overlay, or no javascript settings.
+    return;
+  }
+
+  if (!$vsite = vsite_get_vsite()) {
+    // No VSite context.
+    return;
+  }
+
+  foreach ($javascript['settings']['data'] as $key => $value) {
+    if (!empty($value['overlay']['ajaxCallback'])) {
+      // PURLify the ajax callback URL.
+      $value['overlay']['ajaxCallback'] = url($value['overlay']['ajaxCallback'], array('absolute' => TRUE));
+      $javascript['settings']['data'][$key] = $value;
+    }
+  }
+}
+
+/**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
  * Hides the comment settings form from the VSites.
@@ -175,13 +213,16 @@ function vsite_node_form_after_build($form) {
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
     if ($original = $form['path']['alias']['#value']) {
+      // For sites without custom domains, aliases will include the purl.
       // Removes the purl from the editable field value
       // in order to match user expectations: the purl must in the alias,
       // so the user should not appear to have the option to remove it.
       // Even if the purl is not part of the field value, it will be added.
       // @see _vsite_alter_node_path_settings()
-      $new = substr($original, strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+      if (strpos($original, "{$purl}/") == 0) {
+        $new = substr($original, strlen($purl) + 1);
+        $form['path']['alias']['#value'] = $new;
+      }
     }
   }
   return $form;
@@ -365,7 +406,7 @@ function vsite_spaces_presets_alter(&$presets) {
   // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ($presets as $name => &$preset) {
-    if (substr($name, 0, 3) == "os_") {
+    if (in_array($name, variable_get('os_enabled_spaces_presets',array()))) {
       $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
     }
   }
@@ -993,7 +1034,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
-  
+
   // Ensures that "field_subsite_domains" field is created.
   if (!field_info_field('field_subsite_domains')) {
     $field = array(
@@ -1025,7 +1066,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     $field = field_create_field($field);
   }
-  
+
   if (!field_info_instance('node', 'field_subsite_domains', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
@@ -1072,7 +1113,7 @@ function vsite_attach_fields_to_group($bundle){
       ),
     );
     field_create_instance($instance);
-  }  
+  }
 }
 
 function vsite_attach_fields_to_subsite($bundle){
@@ -2190,6 +2231,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if (($vsite = vsite_get_vsite()) && $vsite->purl_provider == 'vsite_domain') {
+      // First generates an internal, relative path to the final destination.
+      $options = array(
+        'query' => array(
+          'parent' => $parent,
+        ),
+      );
+      $destination = url('site/register', $options);
+
+      // Then creates an absolute, external link to the base domain's login
+      // page with the final path URL-encoded as the destination query
+      // parameter.
+      $options = array(
+        'absolute' => TRUE,
+        'base_url' => $purl_base_domain,
+        'query' => array(
+          'destination' => $destination,
+        ),
+      );
+      $href = url('user/login', $options);
+      $build['href'] = $href;
+      $build['path'] = $href;
+    }
   }
 
   if (isset($options['attributes']['class'])) {
@@ -2284,4 +2348,44 @@ function vsite_cp_settings() {
   );
 
   return $settings;
+}
+
+/**
+ * Implements hook_HOOK_alter() for redirect_load_by_source.
+ *
+ * Alter the redirect candidates before selecting the top one.
+ *
+ * @see redirect.module
+ * @see redirect_load_by_source()
+ */
+function vsite_redirect_load_by_source_alter(&$redirects, $source, $context) {
+  // Only continues if redirects exist for this path.
+  if (empty($redirects)) {
+    return;
+  }
+
+  // Attempts to remove any redirects that don't apply to this vsite.
+  foreach ($redirects as $key => $redirect) {
+    // Assumes no vsite group ID for this redirect, then looks for purl value.
+    $gid = FALSE;
+    if (isset($redirect->redirect_options['purl']['add'][0]['id'])) {
+      $gid = $redirect->redirect_options['purl']['add'][0]['id'];
+    }
+
+    // Assumes there is no vsite mismatch, then looks for mismatch conditions.
+    $vsite_mismatch = FALSE;
+    // If we're inside a vsite, a mismatch is when the group ID(s) is different.
+    if ($vsite = vsite_get_vsite() && $vsite->id != $gid) {
+        $vsite_mismatch = TRUE;
+    }
+    // Otherwise, outside a vsite, any group ID value means it's a mismatch.
+    else if ($gid !== FALSE) {
+      $vsite_mismatch = TRUE;
+    }
+
+    // Removes this redirect if it's mismatched (prevents the redirect).
+    if ($vsite_mismatch) {
+      unset($redirects[$key]);
+    }
+  }
 }

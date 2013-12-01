@@ -136,6 +136,15 @@ function hwpi_basetheme_process_node(&$vars) {
 }
 
 /**
+ * Implements hook_field_display_ENTITY_TYPE_alter().
+ */
+function hwpi_basetheme_field_display_node_alter(&$display, $context) {
+  if ($context['entity']->type == 'event' && $context['instance']['field_name'] == 'field_date') {
+    $display['settings']['format_type'] = 'os_time';
+  }
+}
+
+/**
  * Alter the results of node_view().
  */
 function hwpi_basetheme_node_view_alter(&$build) {
@@ -547,6 +556,12 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
 
   // only display the start time for this particular instance of a repeat event
   $entity->view = views_get_current_view();
+
+  // Don't remove the field date when exporting the calendar. This the unique
+  // identifier of Google calendar.
+  if ($entity->view->plugin_name == 'date_ical') {
+    return;
+  }
 
   if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
     $result = $entity->view->result[$entity->view->row_index];

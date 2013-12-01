@@ -111,21 +111,26 @@ function vsite_register_form($form, &$state) {
   // Sorts presets with Minimal as default, and others alphabetical.
   if (count($enabled_presets) > 1) {
     $unsorted_presets = $enabled_presets;
-    $enabled_presets = array();
+    $sorted_presets = array();
+    $sorted = FALSE;
     $minimal_title = ucfirst($selected_bundle) . ' Minimal';
     foreach ($unsorted_presets as $key => $value) {
       // Only makes any order changes if a "Bundle Minimal" preset exists.
       if ($value == $minimal_title) {
+        $sorted = TRUE;
         // Adds the minimal value as the first option.
-        $enabled_presets[$key] = t('Minimal');
+        $sorted_presets[$key] = t('Minimal');
         unset($unsorted_presets[$key]);
         // Sorts and adds the remaining preset options.
         asort($unsorted_presets);
         foreach ($unsorted_presets as $key => $value) {
-          $enabled_presets[$key] = $value;
+          $sorted_presets[$key] = $value;
         }
         break;
       }
+    }
+    if ($sorted) {
+      $enabled_presets = $sorted_presets;
     }
   }
 
@@ -283,11 +288,6 @@ function _vsite_register_user_form() {
     '#type' => 'password_confirm',
     '#size' => 35,
   );
-//  $form['notify'] = array(
-//    '#type' => 'checkbox',
-//    '#title' => t('Send email notification of this account.'),
-//  );
-
   return $form;
 }
 
@@ -581,6 +581,17 @@ function _vsite_register_validate($element, &$values) {
         }
         else {
           $msg[] = t('The password field is required.');
+        }
+        
+        if (module_exists('password_policy')) {
+          //borrowed from `password_policy_user_profile_form_validate()`
+          $account = user_load(0);
+          $policies = PasswordPolicy::matched_policies($account);
+          $errors = array();
+          foreach ($policies as $policy) {
+            $errors = $errors + $policy->check($pass1, $account);
+          }
+          $msg = array_merge($msg, $errors);
         }
       }
 
