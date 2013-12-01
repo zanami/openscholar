@@ -1,0 +1,4 @@
+/* Hide the node header to avoid title duplication. */
+section.block-boxes-os_sv_list_box div.boxes-box-content article h2 {
+  display: none;
+}
