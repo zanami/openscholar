@@ -756,7 +756,7 @@ function os_image_gallery_field_default_fields() {
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'avi gif jpeg jpg ico png m4v mov mp4 mpeg ogg ogv wmv',
+        'file_extensions' => 'avi doc docx exe gif gz ico jpeg jpg m4a m4v mov mp3 mp4 mpeg odp ods odt oga ogg ogv pdf png pps ppsx tar tex tgz txt wmv wtml wtt wwtfig xls xlsx xml zip',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -788,12 +788,12 @@ function os_image_gallery_field_default_fields() {
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 0,
-            'document' => 0,
-            'executable' => 0,
-            'html' => 0,
+            'audio' => 'audio',
+            'default' => 'default',
+            'document' => 'document',
+            'executable' => 'executable',
+            'html' => 'html',
             'image' => 'image',
-            'undefined' => 0,
             'video' => 'video',
           ),
           'browser_plugins' => array(
