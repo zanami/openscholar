@@ -1843,8 +1843,15 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
   }
 
   // Handle special characters correctly.
-  foreach ($element['#options'] as $key => $option) {
-    $element['#options'][$key] = html_entity_decode($option, ENT_QUOTES);
+  foreach ($element['#options'] as &$option) {
+    if (is_array($option)) {
+      foreach ($option as &$child_option) {
+        $child_option = html_entity_decode($child_option, ENT_QUOTES);
+      }
+    }
+    else {
+      $option = html_entity_decode($option, ENT_QUOTES);
+    }
   }
 
   if ($element['#cardinality'] != 1) {
