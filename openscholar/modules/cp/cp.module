@@ -555,3 +555,129 @@ function cp_form_redirect_edit_form_alter(&$form, &$form_state, $form_id) {
   $description = t('Enter any existing destination URL (like http://example.com/) to redirect to.');
   $form['redirect']['#description'] = $description;
 }
+
+/**
+ * Returns a render array for listing all of this site's redirects.
+ */
+function _cp_settings_form_redirects_build($form) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'redirect');
+  if (module_exists('vsite')) {
+    $vsite = vsite_get_vsite();
+    $gid = $vsite->id;
+    $len = strlen((string) $gid);
+    // Matches a serialized array key/value pair like `array('id' => $gid)`.
+    $match = '%' . db_like(";s:2:\"id\";s:{$len}:\"{$gid}\";") . '%';
+    $query->propertyCondition('redirect_options', $match, 'LIKE');
+  }
+  $result = $query->execute();
+  $rids = $result['redirect'];
+  $redirects = redirect_load_multiple(array_keys($rids));
+  $build = _cp_settings_redirect_build_element($redirects);
+
+  $form['redirects']['redirects'] += $build;
+  dpm($form);
+  return $form;
+}
+
+/**
+ * Returns a build array containing "Add new" and list of existing redirects.
+ */
+function _cp_settings_redirect_build_element($redirects) {
+  $title = t('URL Redirects');
+  // @todo make this display dependent on max # of redirects allowed.
+  $link = l(t('+ Add new redirect'), 'cp/redirect/add');
+  $path = drupal_get_path('module', 'cp');
+  $build = array(
+    'add_new' => array(
+      '#markup' => "<div id=\"cp-menu-add-new-redirect\">{$link}</div>",
+    ),
+    'redirects' => array(
+      '#theme' => 'item_list',
+      '#attributes' => array(
+        'class' => array(
+          'redirect-item-list',
+        ),
+        'id' => 'cp-menu-redirects-list',
+      ),
+      '#items' => array(),
+    ),
+    '#attached' => array(
+      'css' => array(
+        "{$path}/theme/cp.redirect.css",
+      ),
+    ),
+  );
+
+  foreach ($redirects as $redirect) {
+    if (!is_object($redirect) || !isset($redirect->rid)) {
+      continue;
+    }
+
+    $source = _cp_redirect_format_link($redirect->source);
+    $destination = _cp_redirect_format_link($redirect->redirect);
+    $item = array(
+      'class' => array('redirect-item', "redirect-{$redirect->rid}"),
+      'children' => array(
+        0 => array(
+          'data' => $source,
+          'class' => array('redirect-property', 'redirect-source'),
+        ),
+        1 => array(
+          'data' => '&nbsp;',
+          'class' => array('redirect-property', 'redirect-icon'),
+        ),
+        2 => array(
+          'data' => $destination,
+          'class' => array('redirect-property', 'redirect-destination'),
+        ),
+        3 => array(
+          // @todo implement delete callback.
+          'data' => l(t('delete'), "/cp/redirect/{$redirect->rid}/delete"),
+          'class' => array('redirect-property', 'redirect-delete'),
+        ),
+      ),
+    );
+
+    $build['redirects']['#items'][$redirect->rid] = $item;
+  }
+
+  return $build;
+}
+
+/**
+ * Takes an external or internal path and returns an absolute, trimmed link.
+ *
+ * @param string $path
+ *   A path like http://example.com or an internal path like "pages/mypage".
+ * @param int $trim
+ *   A number of characters to trim the display to.
+ *
+ * @return string $link
+ *   An HTML snippet like <a href="$path" title="$path">$trimmed</a>
+ */
+function _cp_redirect_format_link($path, $trim = 48) {
+  // Formats the path into an absolute URL.
+  $options = array(
+    'absolute' => TRUE,
+  );
+  $path = url($path, $options);
+
+  // Trims the displayed value to the maximum length.
+  if (strlen($path) < $trim) {
+    $text = $path;
+  }
+  else {
+    $text = substr($path, 0, $trim) . '...';
+  }
+
+  // Builds the link HTML snippet.
+  $options = array(
+    'attributes' => array(
+      'title' => $path,
+    ),
+  );
+  $link = l($text, $path, $options);
+
+  return $link;
+}
