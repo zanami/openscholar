@@ -36,7 +36,7 @@ function os_front_default_box() {
   $box->description = 'Create A Site';
   $box->options = array(
     'text' => array(
-      'value' => '<img src="/profiles/openscholar/themes/os_default/images/osfrontpg_createsite.gif" class="os-title-image" alt="OpenScholar">',
+      'value' => '<a href="/site/register"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_createsite.gif" class="os-title-image" alt="OpenScholar"></a>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
@@ -86,13 +86,13 @@ function os_front_default_box() {
     'text' => array(
       'value' => 'Sample Websites <ul>
         <li>
-          <a src=""><img src=""></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite1.png"></a>
         </li>
         <li>
-          <a src=""><img src=""></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite2.png"></a>
         </li>
         <li>
-          <a src=""><img src=""></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite3.png"></a>
         </li>
       </ul>',
       'format' => 'filtered_html',
