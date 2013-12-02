@@ -1930,3 +1930,12 @@ function os_confirm_logout_users_submit($form, &$form_state) {
   drupal_set_message(t('All non-admin users have been logged out.'));
   $form_state['redirect'] = 'admin/config/openscholar/openscholar';
 }
+
+/**
+ * implementation of hook_context_default_contexts_alter
+ */
+function os_context_default_contexts_alter(&$contexts){
+  if (module_exists('olark') && isset($contexts['os_public'])) {
+    $contexts['os_public']->reactions['olark_add'] = array('add' => 1);
+  }
+}

@@ -170,11 +170,7 @@ function os_context_default_contexts(){
           )
       )
   );
-  
-  if (module_exists('olark')) {
-    $context->reactions['olark_add'] = array('add' => 1);
-  }
-  
+
   $context->condition_mode = 1;
 
   // Translatables
