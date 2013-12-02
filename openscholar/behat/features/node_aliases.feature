@@ -4,7 +4,7 @@ Feature:
   @api @nofar
   Scenario: Verify that the pathauto alias is properly created in nodes.
     Given I am logging in as "john"
-      And I visit "node/add/blog"
+      And I visit "john/node/add/blog"
       And I fill in "Title" with "Unique Title"
      When I press "edit-submit"
      Then I verify the alias of node "Unique Title" is "john/blog/unique-title"
@@ -12,7 +12,7 @@ Feature:
   @api @nofar
   Scenario: Verify that the custom alias is properly created in nodes.
     Given I am logging in as "john"
-      And I visit "node/add/blog"
+      And I visit "john/node/add/blog"
       And I fill in "Title" with "Another Unique Title"
       And I uncheck the box "Generate automatic URL alias"
       And I fill in "edit-path-alias" with "unique-custom-alias"
@@ -28,7 +28,7 @@ Feature:
   @api @nofar
   Scenario: Verify it is possible to use a duplicate purl as a node custom path.
     Given I am logging in as "john"
-      And I visit "node/add/blog"
+      And I visit "john/node/add/blog"
       And I fill in "Title" with "John Custom Alias"
       And I uncheck the box "Generate automatic URL alias"
       And I fill in "edit-path-alias" with "john"

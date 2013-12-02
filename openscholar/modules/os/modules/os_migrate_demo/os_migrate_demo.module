@@ -423,8 +423,16 @@ function os_migrate_demo_get_term_vsite_purl($tid) {
   $term = taxonomy_term_load($tid);
   $vid = $term->vid;
 
-  // Get vsite.
+  // Get og_vocab relation.
   $relation = og_vocab_relation_get($vid);
+
+  if (empty($relation)) {
+    // Vocabulary is not related to a group.
+    print('');
+    return;
+  }
+
+  // Get vsite.
   $vsite = node_load($relation->gid);
 
   print($vsite->purl);
@@ -473,6 +481,22 @@ function os_migrate_demo_get_node_alias($nid) {
     ->fetchAssoc();
 
   print($result['alias']);
+}
+
+/**
+ * Get the node vsite purl.
+ */
+function os_migrate_demo_get_node_vsite_purl($nid) {
+  $wrapper = entity_metadata_wrapper('node', $nid);
+
+  if (empty($wrapper->{OG_AUDIENCE_FIELD})) {
+    // Not group content.
+    print('');
+    return;
+  }
+  $vsite = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->value();
+
+  print($vsite->purl);
 }
 
 /**

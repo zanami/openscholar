@@ -1037,8 +1037,12 @@ class FeatureContext extends DrupalContext {
   public function iEditTheNode($title) {
     $title = str_replace("'", "\'", $title);
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+
+    $purl = $this->invoke_code('os_migrate_demo_get_node_vsite_purl', array("'$nid'"));
+    $purl = !empty($purl) ? $purl . '/' : '';
+
     return array(
-      new Step\When('I visit "node/' . $nid . '/edit"'),
+      new Step\When('I visit "' . $purl . 'node/' . $nid . '/edit"'),
     );
   }
 
@@ -1265,9 +1269,12 @@ class FeatureContext extends DrupalContext {
    */
   public function iEditTheTerm($name) {
     $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+
     $purl = $this->invoke_code('os_migrate_demo_get_term_vsite_purl', array("'$tid'"));
+    $purl = !empty($purl) ? $purl . '/' : '';
+
     return array(
-      new Step\When('I visit "' . $purl . '/taxonomy/term/' . $tid . '/edit"'),
+      new Step\When('I visit "' . $purl . 'taxonomy/term/' . $tid . '/edit"'),
     );
   }
 
