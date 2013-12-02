@@ -10,6 +10,20 @@
  */
 class os_boxes_tabs extends os_boxes_widget_collection {
 
+  // for backwards compatibility
+  public function options_defaults() {
+    $options = parent::options_defaults();
+    $options['tabs'] = array();
+    return $options;
+  }
+
+  public function options_form(&$form_state) {
+    if (!empty($this->options['tabs'])) {
+      $this->options['widgets'] = $this->options['tabs'];
+    }
+    return parent::options_form($form_state);
+  }
+
   /**
    * Implements render().
    */
@@ -32,6 +46,10 @@ class os_boxes_tabs extends os_boxes_widget_collection {
         ),
       ),
     );
+
+    if (!empty($this->options['tabs'])) {
+      $this->options['widgets'] = $this->options['tabs'];
+    }
 
     module_load_include('module', 'block', 'block');
     foreach ($this->options['widgets'] as $k => & $tab) {
