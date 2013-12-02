@@ -797,6 +797,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I search for "([^"]*)"$/
+   */
+  public function iSearchFor($item) {
+    return array(
+      new Step\When('I visit "john"'),
+      new Step\When('I fill in "search_block_form" with "'. $item . '"'),
+      new Step\When('I press "Search"'),
+    );
+  }
+
+  /**
    * @Then /^I verify the "([^"]*)" term link redirect to the original page$/
    */
   public function iVerifyTheTermLinkRedirectToTheOriginalPage($term) {
@@ -955,6 +966,16 @@ class FeatureContext extends DrupalContext {
     $element->press();
   }
 
+  /**
+   * @Given /^I click on "([^"]*)" under facet "([^"]*)"$/
+   */
+  public function iClickOnLinkInFacet($option, $facet) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//h2[contains(., '{$facet}')]/following-sibling::div//a[contains(., '{$option}')]");
+    $element->press();
+  }
+
+  
   /**
    * @Then /^I delete "([^"]*)" registration$/
    */
@@ -1214,12 +1235,12 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Then /^I search for "([^"]*)"$/
+   * @Then /^I look for "([^"]*)"$/
    *
    * Defining a new step because when using the step "I should see" for the iCal
    * page the test is failing.
    */
-  public function iSearchFor($string) {
+  public function iLookFor($string) {
     $element = $this->getSession()->getPage();
 
     if (strpos($element->getContent(), $string) === FALSE) {

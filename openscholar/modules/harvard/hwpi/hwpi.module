@@ -189,7 +189,7 @@ function _hwpi_branding_footer() {
 function hwpi_cp_settings() {
   // For non-user-1, only adds the responsive setting for HWPI-themed sites.
   $theme = variable_get('theme_default');
-  if (!_is_hwpi_theme($theme) && !user_acces('administer site configuration')) {
+  if (!_is_hwpi_theme($theme) && !user_access('administer site configuration')) {
     return;
   }
 
