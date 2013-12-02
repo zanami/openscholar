@@ -554,6 +554,9 @@ function cp_form_redirect_edit_form_alter(&$form, &$form_state, $form_id) {
   $form['source']['#description'] = $description;
   $description = t('Enter any existing destination URL (like http://example.com/) to redirect to.');
   $form['redirect']['#description'] = $description;
+
+  // Adds redirect behavior to return to CP > Settings.
+  $form['#submit'][] = 'cp_form_redirect';
 }
 
 /**
@@ -679,4 +682,32 @@ function _cp_redirect_format_link($path, $trim = 48) {
   $link = l($text, $path, $options);
 
   return $link;
+}
+
+/**
+ * Submit callback; sends user back to CP > Settings page.
+ *
+ * @see cp_form_redirect_edit_form_alter()
+ */
+function cp_form_redirect($form, &$form_state) {
+  switch ($form['#form_id']) {
+    case 'redirect_edit_form':
+      $form_state['redirect'] = 'cp/settings';
+      break;
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function cp_module_implements_alter(&$implementations, $hook) {
+  switch ($hook) {
+    // Ensures that cp_form_redirect() occurs after redirect_edit_form_submit().
+    case 'form_alter':
+      $module = 'cp';
+      $group = $implementations[$module];
+      unset($implementations[$module]);
+      $implementations[$module] = $group;
+      break;
+  }
 }
