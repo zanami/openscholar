@@ -1,6 +1,11 @@
 <?php
 /**
- * Defines a form to display the various settings that have nowhere else to go
+ * @file
+ * cp.form.inc
+ */
+
+/**
+ * Form builder; merges various site settings into a single "Settings" form.
  */
 function cp_settings_form($form_state) {
   $form = array();
