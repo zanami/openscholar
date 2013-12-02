@@ -8,8 +8,6 @@
 
 function os_install() {
   _os_date_formats();
-  // Omit OG related fields from exported features, as those are added programatically.
-  variable_set('og_features_ignore_og_fields', TRUE);
 }
 
 /**
@@ -388,11 +386,4 @@ function os_update_7022() {
  */
 function os_update_7023() {
   features_revert(array('os' => array('spaces_presets')));
-}
-
-/**
-* Omit OG related fields from exported features, as those are added programatically.
- */
-function os_update_7024() {
-  variable_set('og_features_ignore_og_fields', TRUE);
 }
