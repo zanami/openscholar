@@ -398,8 +398,8 @@ function cp_get_setting_forms() {
  * Allows user to switch between full and mini cp menus on the front view
  */
 function cp_cp_settings() {
-  $setting = array();
-  $setting['cp_admin_menu'] = array(
+  $settings = array();
+  $settings['cp_admin_menu'] = array(
     'group' => array(
       '#title' => t('Admin Menu'),
       '#id' => 'admin-menu',
@@ -413,7 +413,18 @@ function cp_cp_settings() {
     ),
   );
 
-  return $setting;
+  $settings['redirects'] = array(
+    'group' => array(
+      '#title' => t('URL Redirects'),
+      '#id' => 'redirects',
+    ),
+    'form' => array(
+      '#title' => t('Manage redirects'),
+    ),
+    'after_build' => array('_cp_settings_form_redirects_build'),
+  );
+
+  return $settings;
 }
 
 /**
