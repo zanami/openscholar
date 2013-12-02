@@ -108,6 +108,14 @@ function os_menu_alter(&$items) {
   $items['user/register']['page callback'] = 'os_in_read_mode_register';
   $items['user/password']['access callback'] = 'os_in_read_mode_password';
 
+  // Check if Pinserver should take over registration menu entries.
+  if (variable_get('os_pinserver_registration', FALSE)){
+    $items['site/register']['page callback'] = 'os_in_read_mode_site_register_pinserver';
+  }
+  else {
+    $items['site/register']['page callback'] = 'os_in_read_mode_site_register';
+  }
+
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
     unset($items['node']);
@@ -152,6 +160,32 @@ function os_in_read_mode_register() {
 
   if (user_register_access()) {
     return drupal_get_form('user_register_form');
+  }
+}
+
+/**
+ * Page callback for site/register, pinserver authentication.
+ */
+function os_in_read_mode_site_register_pinserver() {
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', 'Site is under maintenance, login and registration is currently disabled.');
+  }
+
+  if (os_pinserver_auth_register_access()) {
+    return os_pinserver_auth_vsite_register_form_page();
+  }
+}
+
+/**
+ * Page callback for site/register.
+ */
+function os_in_read_mode_site_register() {
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', 'Site is under maintenance, login and registration is currently disabled.');
+  }
+
+  if (vsite_vsite_exists_access()) {
+    return drupal_get_form('vsite_register_form');
   }
 }
 
