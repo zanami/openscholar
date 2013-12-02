@@ -1843,16 +1843,16 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
   }
 
   // Handle special characters correctly.
-  foreach ($element['#options'] as $key => $option) {
+  foreach ($element['#options'] as &$option) {
     if (!is_array($option)) {
       // Single option.
-      $element['#options'][$key] = html_entity_decode($option, ENT_QUOTES);
+      $option = html_entity_decode($option, ENT_QUOTES);
       continue;
     }
 
     // Array of options.
-    foreach ($option as $option_key => $option_value) {
-      $element['#options'][$key][$option_key] = html_entity_decode($option_value, ENT_QUOTES);
+    foreach ($option as &$option_value) {
+      $option_value = html_entity_decode($option_value, ENT_QUOTES);
     }
   }
 
