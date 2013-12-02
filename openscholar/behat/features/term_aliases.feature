@@ -1,7 +1,7 @@
 Feature:
   Testing the aliases of a node.
 
-  @api
+  @api @nofar
   Scenario: Verify that the pathauto alias is properly created in terms.
     Given I am logging in as "john"
       And I visit "cp/build/taxonomy/science_personal1/add"
@@ -9,7 +9,7 @@ Feature:
      When I press "edit-submit"
      Then I verify the alias of term "Energy" is "john/science/energy"
 
-  @api
+  @api @nofar
   Scenario: Verify that the custom alias is properly created in nodes.
     Given I am logging in as "john"
       And I visit "cp/build/taxonomy/science_personal1/add"
@@ -19,13 +19,13 @@ Feature:
      When I press "edit-submit"
      Then I verify the alias of term "Atom" is "john/atom-custom-path"
 
-  @api
+  @api @nofar
   Scenario: Verify that aliases are displayed without purl in node edit form.
     Given I am logging in as "john"
      When I edit the term "Energy"
      Then I verify the "URL alias" value is "science/energy"
 
-  @api
+  @api @nofar
   Scenario: Verify it is possible to use a duplicate purl as a term custom path.
     Given I am logging in as "john"
       And I visit "cp/build/taxonomy/science_personal1/add"
