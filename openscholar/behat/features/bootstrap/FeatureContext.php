@@ -1265,8 +1265,9 @@ class FeatureContext extends DrupalContext {
    */
   public function iEditTheTerm($name) {
     $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+    $purl = $this->invoke_code('os_migrate_demo_get_term_vsite_purl', array("'$tid'"));
     return array(
-      new Step\When('I visit "taxonomy/term/' . $tid . '/edit"'),
+      new Step\When('I visit "' . $purl . '/taxonomy/term/' . $tid . '/edit"'),
     );
   }
 
