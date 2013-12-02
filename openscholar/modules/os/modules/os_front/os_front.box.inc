@@ -19,7 +19,7 @@ function os_front_default_box() {
   $box->description = 'Front Page Header Text';
   $box->options = array(
     'text' => array(
-      'value' => '<img src="" class="os-title-image" alt="OpenScholar"> <strong>Welcome!</strong> Lorem ipsum dolor sit amet, consectetuer
+      'value' => '<div align="center"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_logo.gif" class="os-title-image" alt="OpenScholar"></div><br> <strong>Welcome!</strong> Lorem ipsum dolor sit amet, consectetuer
           adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
       'format' => 'filtered_html',
     ),
@@ -36,7 +36,7 @@ function os_front_default_box() {
   $box->description = 'Create A Site';
   $box->options = array(
     'text' => array(
-      'value' => 'Create a Site',
+      'value' => '<img src="/profiles/openscholar/themes/os_default/images/osfrontpg_createsite.gif" class="os-title-image" alt="OpenScholar">',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
@@ -52,7 +52,7 @@ function os_front_default_box() {
   $box->description = 'Support';
   $box->options = array(
     'text' => array(
-      'value' => 'We have a very active community-style support site where questions, ideas, and problems can be searched for, posted, and replied to. <a href="">Visit the Community</a>',
+      'value' => '<div align="center"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_support.gif" class="os-title-image" alt="OpenScholar"></div><br>We have a very active community-style support site where questions, ideas, and problems can be searched for, posted, and replied to. <a href="">Visit the Community</a>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
@@ -64,11 +64,11 @@ function os_front_default_box() {
   $box->api_version = 1;
   $box->delta = 'os_front_main_configure';
   $box->plugin_key = 'os_boxes_html';
-  $box->title = '';
+  $box->title = 'Configure this Page';
   $box->description = 'Create A Site';
   $box->options = array(
     'text' => array(
-      'value' => 'Want to change the design/theme of this page or change the content that appears? <a href="">Find out how.</a>',
+      'value' => '<div align="center"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_configure.gif" class="os-title-image" alt="OpenScholar"></div><br>Want to change the design/theme of this page or change the content that appears? <a href="">Find out how.</a>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
@@ -80,11 +80,11 @@ function os_front_default_box() {
   $box->api_version = 1;
   $box->delta = 'os_front_sample';
   $box->plugin_key = 'os_boxes_html';
-  $box->title = '';
+  $box->title = 'Sample Websites';
   $box->description = 'Create A Site';
   $box->options = array(
     'text' => array(
-      'value' => 'Same Websites <ul>
+      'value' => 'Sample Websites <ul>
         <li>
           <a src=""><img src=""></a>
         </li>

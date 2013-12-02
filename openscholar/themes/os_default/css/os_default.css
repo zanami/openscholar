@@ -437,3 +437,91 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 	border-radius: 3px;
      padding: 5px 7px;
 }
+
+/* OS FRONTPAGE STYLES */
+body {
+	background:#FFF;
+	font-size:16px;
+	color:#666;
+	line-height:19px;
+}
+
+a {
+	text-decoration:underline;
+	color:#007aff;
+
+}
+
+#header-container {
+    padding: 0;
+}
+
+.content-left.content-right .at-panel .region.region-content-second {
+    width: 290px;
+    float:right;
+}
+
+.content-left.content-right .at-panel .region.region-content-first {
+    border-right: none;
+ 
+}
+
+#page.container,
+#header,
+#columns
+ {
+    width: 775px;
+}
+
+
+#block-boxes-os-front-header {
+	font-size:22px;
+	line-height:26px;
+}
+
+#block-boxes-os-front-main-support,
+#block-boxes-os-front-main-configure {
+	border:1px solid #ff9500;
+	width:290px;
+	height: 300px;
+}
+
+
+.os-title-image {margin-top:10px;}
+
+#block-boxes-os-front-main-support .block-inner,
+#block-boxes-os-front-main-configure .block-inner {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#block-boxes-os-front-main-support .boxes-box-content,
+#block-boxes-os-front-main-configure .boxes-box-content {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+
+
+#block-boxes-os-front-main-support h2,
+#block-boxes-os-front-main-configure h2 {
+	background:#ff9500;
+	padding:8px;
+	color:#FFF;
+	text-align:center;
+}
+
+
+.block-os-search-db {
+	float:left;
+}
+
+#block-boxes-os-front-create
+ {
+	float:right;;
+}
+
+
+
+
+
