@@ -683,6 +683,14 @@ function vsite_preset_spaces_presets() {
             'status' => 0,
             'title' => '',
           ),
+          'boxes-site_logo' => array(
+            'module' => 'boxes',
+            'delta' => 'site_logo',
+            'region' => 'header_first',
+            'weight' => '-10',
+            'status' => 0,
+            'title' => '',
+          ),
           'boxes-site_info' => array(
             'module' => 'boxes',
             'delta' => 'site_info',
