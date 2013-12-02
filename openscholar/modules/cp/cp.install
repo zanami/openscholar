@@ -95,3 +95,15 @@ function cp_update_7001() {
   	}
   }
 }
+
+/**
+ * Add permissions to allow vsite admins to access Redirects in CP > Settings.
+ */
+function cp_update_7002() {
+  $revert = array(
+    'cp' => array(
+      'user_permission',
+    ),
+  );
+  features_revert($revert);
+}
