@@ -576,7 +576,6 @@ function _cp_settings_form_redirects_build($form) {
   $build = _cp_settings_redirect_build_element($redirects);
 
   $form['redirects']['redirects'] += $build;
-  dpm($form);
   return $form;
 }
 
