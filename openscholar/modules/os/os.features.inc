@@ -7,32 +7,25 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function os_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function os_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "boxes" && $api == "box") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
   }
-  list($module, $api) = func_get_args();
   if ($module == "elysia_cron" && $api == "default_elysia_cron_rules") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "page_manager" && $api == "pages_default") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "password_policy" && $api == "default_password_policy") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "spaces" && $api == "spaces") {
     return array("version" => "3");
   }
-  list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -41,8 +34,8 @@ function os_ctools_plugin_api() {
 /**
  * Implements hook_views_api().
  */
-function os_views_api() {
-  return array("version" => "3.0");
+function os_views_api($module = NULL, $api = NULL) {
+  return array("api" => "3.0");
 }
 
 /**
@@ -65,12 +58,13 @@ function os_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '100',
-          'height' => '100',
+          'width' => 100,
+          'height' => 100,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'os_square_100_100',
   );
 
   // Exported image style: os_square_50_50.
@@ -87,12 +81,13 @@ function os_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '50',
-          'height' => '50',
+          'width' => 50,
+          'height' => 50,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'os_square_50_50',
   );
 
   return $styles;
