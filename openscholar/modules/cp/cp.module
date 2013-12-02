@@ -199,6 +199,15 @@ function cp_menu() {
       'file' => 'redirect.admin.inc',
       'file path' => $path,
     );
+    $items['cp/redirect/delete/%redirect'] = array(
+      'title' => 'Delete redirect',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('redirect_delete_form', 3),
+      'access callback' => 'redirect_access',
+      'access arguments' => array('delete', 3),
+      'file' => 'redirect.admin.inc',
+      'file path' => $path,
+    );
   }
 
   return $items;
@@ -302,7 +311,8 @@ function cp_admin_paths() {
   $items = array(
     'cp/build/features/*' => TRUE,
     'cp/support' => TRUE,
-    'cp/redirect/*' => TRUE,
+    'cp/redirect/add' => TRUE,
+    'cp/redirect/delete/*'
   );
 
   return $items;
@@ -618,6 +628,7 @@ function _cp_settings_redirect_build_element($redirects) {
 
     $source = _cp_redirect_format_link($redirect->source);
     $destination = _cp_redirect_format_link($redirect->redirect);
+    $options = array('query' => array('destination' => 'cp/settings'));
     $item = array(
       'class' => array('redirect-item', "redirect-{$redirect->rid}"),
       'children' => array(
@@ -635,7 +646,7 @@ function _cp_settings_redirect_build_element($redirects) {
         ),
         3 => array(
           // @todo implement delete callback.
-          'data' => l(t('delete'), "/cp/redirect/{$redirect->rid}/delete"),
+          'data' => l(t('delete'), "cp/redirect/delete/{$redirect->rid}", $options),
           'class' => array('redirect-property', 'redirect-delete'),
         ),
       ),
