@@ -217,7 +217,7 @@ function cp_menu() {
  * Implements hook_menu_alter().
  */
 function cp_menu_alter(&$items) {
-  // make them all part of 'cp' menu
+  // Makes all menu items with path like "cp*" part of the same "cp" menu.
   foreach ($items as $path => $item) {
     if (strpos($path, 'cp') === 0) {
       if (!array_key_exists('menu_name', $item)) {
@@ -228,6 +228,22 @@ function cp_menu_alter(&$items) {
       if (!array_key_exists('access callback', $item)) $items[$path]['access arguments'] = array(
         'access control panel',
       );
+    }
+  }
+
+  // Prevents vsite admins from accessing all sitewide redirects.
+  $restricted = array(
+    'admin/config/search/redirect',
+    'admin/config/search/redirect/list',
+    'admin/config/search/redirect/add',
+    'admin/config/search/redirect/edit/%redirect',
+    'admin/config/search/redirect/delete/%redirect',
+    'admin/config/search/redirect/settings',
+  );
+  foreach ($restricted as $path) {
+    if (isset($items[$path])) {
+      $items[$path]['access callback'] = 'user_access';
+      $items[$path]['access arguments'] = 'administer site settings';
     }
   }
 }
