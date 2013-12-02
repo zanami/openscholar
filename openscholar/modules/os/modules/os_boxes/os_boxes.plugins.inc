@@ -13,6 +13,15 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_widget_collection'] = array(
+    'handler' => array(
+      'class' => 'os_boxes_widget_collection',
+      'file' => 'os_boxes_widget_collection.inc',
+      'path' => $path.'/os_boxes_widget_collection',
+      'parent' => 'os_boxes_default',
+    )
+  );
+
   $info['os_boxes_addthis'] = array(
     'title' => 'AddThis',
     'description' => 'Social networking links',
@@ -195,7 +204,7 @@ function _os_boxes_boxes_plugins() {
       'class' => 'os_boxes_tabs',
       'file' => 'os_boxes_tabs.inc',
       'path' => $path .'/os_boxes_tabs',
-      'parent' => 'os_boxes_default',
+      'parent' => 'os_boxes_widget_collection',
     ),
   );
 
