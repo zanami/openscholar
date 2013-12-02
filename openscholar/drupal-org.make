@@ -50,6 +50,7 @@ projects[ctools][download][branch] = 7.x-1.x
 projects[ctools][download][revision] = be2607142ce97d093acce9417833640680330efe
 projects[ctools][patch][] = "http://drupal.org/files/1707810-ctools-fields-mock-field-7.patch"
 projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-1623044-1.patch"
+projects[ctools][patch][] = "https://drupal.org/files/issues/2147905-allow-alter-with-more-context-1.patch"
 
 projects[date][subdir] = "contrib"
 projects[date][version] = 2.6
