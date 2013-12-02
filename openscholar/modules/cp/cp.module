@@ -3,6 +3,8 @@
 /**
  * @file
  * Code for OpenScholar Control Panel.
+ *
+ * @todo fix form redirect (should go to CP > Menu, not default redirect path).
  */
 
 include_once ('cp.features.inc');
@@ -510,8 +512,6 @@ function _cp_app_settings_page_title($feature_name) {
  *
  * Stores the vsite's purl modifier as a hidden field, updates the "From" field
  * prefix and makes additional UI modifications.
- *
- * @todo fix form redirect (should go to CP > Menu, not default redirect path).
  *
  * @see purl.admin.inc
  * @see purl_redirect_edit_validate()
