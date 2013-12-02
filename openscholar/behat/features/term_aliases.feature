@@ -26,7 +26,7 @@ Feature:
      Then I verify the "URL alias" value is "blog/unique-title"
 
   @api
-  Scenario: Verify it is possible to use a duplicate purl as a node custom path.
+  Scenario: Verify that it is possible to use a duplicate purl as a custom path.
     Given I am logging in as "john"
       And I visit "node/add/blog"
       And I fill in "Title" with "John Custom Alias"

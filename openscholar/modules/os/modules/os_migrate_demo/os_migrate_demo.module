@@ -451,6 +451,32 @@ function os_migrate_demo_delete_node($title) {
 }
 
 /**
+ * Get the node alias.
+ */
+function os_migrate_demo_get_node_alias($nid) {
+  $result = db_select('url_alias')
+    ->fields('url_alias', array('alias'))
+    ->condition('source', 'node/' . $nid)
+    ->execute()
+    ->fetchAssoc();
+
+  print($result['alias']);
+}
+
+/**
+ * Get the term alias.
+ */
+function os_migrate_demo_get_term_alias($tid) {
+  $result = db_select('url_alias')
+    ->fields('url_alias', array('alias'))
+    ->condition('source', 'taxonomy/term/' . $tid)
+    ->execute()
+    ->fetchAssoc();
+
+  print($result['alias']);
+}
+
+/**
  * Create a term in a given vocabulary.
  *
  * @param $term_name

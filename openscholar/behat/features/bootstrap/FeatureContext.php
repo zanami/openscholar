@@ -1247,4 +1247,41 @@ class FeatureContext extends DrupalContext {
       throw new Exception("the string '$string' was not found.");
     }
   }
+
+  /**
+   * @Then /^I verify the alias of node "([^"]*)" is "([^"]*)"$/
+   */
+  public function iVerifyTheAliasOfNodeIs($title, $alias) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$title'"));
+    $actual_alias = $this->invoke_code('os_migrate_demo_get_node_alias', array("'$nid'"));
+
+    if ($actual_alias != $alias) {
+      throw new Exception("The alias of the node '$title' should be '$alias', but is '$actual_alias' instead.");
+    }
+  }
+
+  /**
+   * @When /^I edit the term "([^"]*)"$/
+   */
+  public function iEditTheTerm($name) {
+    $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+    return array(
+      new Step\When('I visit "taxonomy/term/' . $tid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the alias of term "([^"]*)" is "([^"]*)"$/
+   */
+  public function iVerifyTheAliasOfTermIs($name, $alias) {
+    $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+    $actual_alias = $this->invoke_code('os_migrate_demo_get_term_alias', array("'$tid'"));
+
+    if ($actual_alias != $alias) {
+      throw new Exception("The alias of the term '$name' should be '$alias', but is '$actual_alias' instead.");
+    }
+  }
+
+
+
 }
