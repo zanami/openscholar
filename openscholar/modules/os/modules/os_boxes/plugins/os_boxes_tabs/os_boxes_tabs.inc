@@ -57,9 +57,6 @@ class os_boxes_tabs extends os_boxes_widget_collection {
         $block_tab->region = $this->delta;
         if ($block_arr = _block_render_blocks(array($block_tab))) {
           if (!empty($block_arr["{$block_tab->module}_{$block_tab->delta}"]->content)) {
-            if (!isset($block_arr["{$block_tab->module}_{$block_tab->delta}"]->title)) {
-              dpm($block_arr["{$block_tab->module}_{$block_tab->delta}"]);
-            }
 
             $render['links']['#links'][$tab['weight']] = array(
               'title' => $tab['title'],
