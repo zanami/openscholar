@@ -178,7 +178,7 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ * Implements hook_form_FORM_ID_alter() for taxonomy form.
  *
  * Hides the comment settings form from the VSites.
  */
@@ -218,8 +218,8 @@ function vsite_node_term_form_after_build($form, &$form_state) {
 
   if (!empty($node)) {
     // Removes part of the default description provided by pathauto.
-    // Originally it advises users to "use relative paths",
-    // but the field prefix makes that clear.
+    // Originally it says "use relative paths", but the field prefix makes
+    // that clear.
     // Also, it originally says "don't use trailing slash or it won't work",
     // but this type of input is automatically removed via javascript.
     // @see vsite.pathauto.js
@@ -228,20 +228,19 @@ function vsite_node_term_form_after_build($form, &$form_state) {
 
   // If this is a vsite...
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
-    // And if this node form contains an existing alias value,
-    // And if this is the first loading of the form i.e not loaded again because
-    // of form errors (The following code should only happen once)...
-    if ($form['path']['alias']['#value'] && empty($form_state['_purl_prefix_removed'])) {
-      // Removes the purl from the editable field value
-      // in order to match user expectations: the purl must in the alias,
-      // so the user should not appear to have the option to remove it.
-      // Even if the purl is not part of the field value, it will be added.
-      // @see _vsite_alter_node_path_settings()
-      $new = substr($form['path']['alias']['#value'], strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+    // And if this node form contains an existing alias value...
+    if ($current_alias = &$form['path']['alias']['#value']) {
+      // VSites that use og_spaces must have the purl at the beginning of all
+      // their aliases. The purl is added automatically to every alias.
+      // @see _vsite_alter_term_path_settings().
+      // In the UI, the alias field is prefixed with the purl to show that it
+      // cannot be removed, so the input element itself should not include the
+      // purl. This means that we must remove the purl from the field's value.
+
+      while (strpos($current_alias, "$purl/$purl/") === 0) {
+        $current_alias = substr($current_alias, strlen($purl) + 1);
+      }
     }
-    // Prevent removing the purl prefix more than once.
-    $form_state['_purl_prefix_removed'] = TRUE;
   }
 
   // Our validation handler comes first because we need to alter the alias and
@@ -249,6 +248,59 @@ function vsite_node_term_form_after_build($form, &$form_state) {
   array_unshift($form['#validate'], 'vsite_form_alias_validate');
 
   return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_form_path_admin_form_alter(&$form, $form_state) {
+  $form['#validate'][] = 'vsite_path_admin_validate';
+}
+
+/**
+ * Validate handler - verify the path is not already taken.
+ */
+function vsite_path_admin_validate($form, $form_state) {
+  // verify that the user first enter a purl address.
+  $alias = explode('/', $form_state['values']['alias']);
+  $purl = reset($alias);
+
+  if (!vsite_alias_has_purl_at_start($purl)) {
+    form_set_error('alias', t('The url of the vsite is missing.'));
+  }
+
+  // Check that the alias is not taken in the vsite.
+  $source = explode('/', $form_state['values']['source']);
+  $entity_type = strpos('node/', $form_state['values']['source']) === 0 ? 'node' : 'taxonomy_term';
+  $entity_id = end($source);
+
+  if (!$entity = entity_load_single($entity_type, $entity_id)) {
+    // The entity is not exists.
+    return;
+  }
+
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['alias'])) {
+    form_set_error('alias', t('Already in use.'));
+  }
+}
+
+/**
+ * Check if the alias has a purl at the start.
+ *
+ * @param $alias
+ *  The alias of the node/taxonomy term,
+ * @return bool
+ *  True or false if the alias has PURL at the beginning.
+ */
+function vsite_alias_has_purl_at_start($alias) {
+  $alias = explode('/', $alias);
+  $purl = reset($alias);
+
+  $query = db_select('purl')
+    ->fields('purl')
+    ->condition('value', $purl);
+
+  return $query->execute()->rowCount();
 }
 
 /**
@@ -2301,19 +2353,43 @@ function vsite_taxonomy_term_presave($term) {
 function vsite_form_alias_validate($form, &$form_state) {
   $entity_type = $form['#entity_type'];
 
-  if ($entity_type == 'node') {
-    // Nodes must have an audience field in order to generate their alias.
-    $entity = $form_state['node'];
-    $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
-  }
-  else {
-    // Terms must have a vid in order to generate their alias.
-    $entity = $form_state['term'];
-    $entity->vid = $form_state['values']['vid'];
+  switch ($entity_type) {
+    case 'node':
+      // Nodes must have an audience field in order to generate their alias.
+      $entity = $form_state['node'];
+      $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
+      break;
+
+    default:
+    case 'taxonomy_term':
+      // Terms must have a vid in order to generate their alias.
+      $entity = $form_state['term'];
+      $entity->vid = $form_state['values']['vid'];
+      break;
   }
 
+  // Verify the path is not in use.
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['path'])) {
+    form_set_error('path', t('The alias is already in use.'));
+  }
+}
+
+/**
+ * Helper function for validate the if the alias is already exists.
+ *
+ * @param $entity_type
+ *  The entity type: node, taxonomy ter,
+ * @param $entity
+ *  The entity type.
+ * @param $path
+ *  The path of the entity.
+ *
+ * @return bool
+ *  True or false if the alias is already in use.
+ */
+function _vsite_form_alias_validate($entity_type, $entity, $path) {
   // Entities must have a path in order to generate their alias.
-  $entity->path = $form_state['values']['path'];
+  $entity->path = $path;
 
   list($id) = entity_extract_ids($entity_type, $entity);
   if ($id) {
@@ -2327,6 +2403,7 @@ function vsite_form_alias_validate($form, &$form_state) {
 
   // Ensure that the alias does not exist yet.
   $query = db_select('url_alias')
+    ->fields('url_alias')
     ->condition('alias', $alias)
     ->condition('language', $entity->path['language']);
 
@@ -2335,15 +2412,9 @@ function vsite_form_alias_validate($form, &$form_state) {
     $query->condition('source', $source, '<>');
   }
 
-  $query->addExpression('1');
   $query->range(0, 1);
 
- if (!$query->execute()->fetchField()) {
-   // No duplicate aliases.
-   return;
- }
-
-  form_set_error('path', t('The alias is already in use.'));
+  return !$query->execute()->fetchField();
 }
 
 /**
@@ -2378,10 +2449,10 @@ function vsite_pathauto_alias_alter(&$alias, $context) {
  * @param $entity
  *  The entity object.
  * @param $alias
- *   Optional; The alias to set, in case it isn't present on the the entity.
+ *  Optional; The alias to set, in case it isn't present on the the entity.
  *
- * @return
- *   The alias of the entity.
+ * @return null|string
+ *  The alias of the entity.
  */
 function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
   if (empty($alias) && empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
@@ -2391,7 +2462,7 @@ function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
 
   if (empty($alias)) {
     // No alias.
-    return;
+    return NULL;
   }
 
   if (!in_array($entity_type, array('taxonomy_term', 'node'))) {

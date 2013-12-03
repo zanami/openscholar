@@ -44,3 +44,16 @@ Feature:
       And I fill in "edit-path-alias" with "john/jfk-duplicate-terms"
      When I press "edit-submit"
      Then I verify the alias of term "John Second Custom Alias" is "jfk-duplicate-terms"
+
+  @api
+  Scenario: Testing shared domain with two different vsite and the same node
+            title are working properly.
+    Given I am logging in as "admin"
+      And I define "john" domain to "lincoln.local"
+      And I define "lincoln" domain to "lincoln.local"
+      And I visit "http://lincoln.local/john/about"
+      And I should see "Page about john"
+      And I verify the url is "lincoln.local"
+     When I visit "http://lincoln.local/lincoln/about"
+     Then I should see "Page about lincoln"
+      And I verify the url is "lincoln.local"

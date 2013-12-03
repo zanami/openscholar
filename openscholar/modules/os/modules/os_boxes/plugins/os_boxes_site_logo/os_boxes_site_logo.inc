@@ -226,6 +226,7 @@ function os_boxes_site_logo_submit($form, $form_state) {
 
 function _os_boxes_site_logo_process($element, $form_state, $form) {
   $element = file_managed_file_process($element, $form_state, $form);
+  $element = os_files_imagefield_crop_process($element, $form_state, $form);
   $element['remove_button']['#submit'][] = '_os_boxes_site_logo_remove_handler';
 
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
