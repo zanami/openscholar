@@ -1844,14 +1844,15 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
 
   // Handle special characters correctly.
   foreach ($element['#options'] as &$option) {
-    if (is_array($option)) {
-      // If we have an option group go through each sub option.
-      foreach ($option as &$child_option) {
-        $child_option = html_entity_decode($child_option, ENT_QUOTES);
-      }
-    }
-    else {
+    if (!is_array($option)) {
+      // Single option.
       $option = html_entity_decode($option, ENT_QUOTES);
+      continue;
+    }
+
+    // Array of options.
+    foreach ($option as &$option_value) {
+      $option_value = html_entity_decode($option_value, ENT_QUOTES);
     }
   }
 
