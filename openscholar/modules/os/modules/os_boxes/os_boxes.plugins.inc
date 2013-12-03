@@ -220,6 +220,18 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_rand_widget'] = array(
+    'title' => 'Random Widget',
+    'description' => 'Randomly show one widget from a list.',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_rand_widget',
+      'file' => 'os_boxes_rand_widget.inc',
+      'path' => $path .'/os_boxes_rand_widget',
+      'parent' => 'os_boxes_widget_collection',
+    ),
+  );
+
   $info['os_boxes_html'] = array(
     'title' => 'Custom Text/HTML',
     'description' => 'A blank slate to fill with what',

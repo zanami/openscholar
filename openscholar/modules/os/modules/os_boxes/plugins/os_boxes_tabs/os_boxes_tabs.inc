@@ -54,10 +54,12 @@ class os_boxes_tabs extends os_boxes_widget_collection {
     module_load_include('module', 'block', 'block');
     foreach ($this->options['widgets'] as $k => & $tab) {
       if ($block_tab = $blocks[$tab['bid']]) {
+        $block_tab->region = $this->delta;
         if ($block_arr = _block_render_blocks(array($block_tab))) {
           if (!empty($block_arr["{$block_tab->module}_{$block_tab->delta}"]->content)) {
-            $block_obj = &$block_arr[$block_tab->module . '_' . $block_tab->delta];
-            $block_obj->region = $this->delta;
+            if (!isset($block_arr["{$block_tab->module}_{$block_tab->delta}"]->title)) {
+              dpm($block_arr["{$block_tab->module}_{$block_tab->delta}"]);
+            }
 
             $render['links']['#links'][$tab['weight']] = array(
               'title' => $tab['title'],
