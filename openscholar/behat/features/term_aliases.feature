@@ -26,11 +26,21 @@ Feature:
      Then I verify the "URL alias" value is "science/energy"
 
   @api @nofar
-  Scenario: Verify it is possible to use a duplicate purl as a term custom path.
+  Scenario: Verify it is possible to use the purl as a term custom path.
     Given I am logging in as "john"
-      And I visit "cp/build/taxonomy/science_personal1/add"
-      And I fill in "Name" with "John Custom Alias Term"
+      And I visit "obama/cp/build/taxonomy/science_personal1/add"
+      And I fill in "Name" with "Obama Custom Alias Term"
       And I uncheck the box "Generate automatic URL alias"
-      And I fill in "edit-path-alias" with "john"
+      And I fill in "edit-path-alias" with "obama"
      When I press "edit-submit"
-     Then I verify the alias of term "John Custom Alias Term" is "john/john"
+     Then I verify the alias of term "Obama Custom Alias Term" is "john/obama"
+
+  @api @nofar
+  Scenario: Verify it is impossible to use a duplicate purl as term custom path.
+    Given I am logging in as "john"
+      And I visit "obama/cp/build/taxonomy/science_personal1/add"
+      And I fill in "Name" with "Obama Second Custom Alias Term"
+      And I uncheck the box "Generate automatic URL alias"
+      And I fill in "edit-path-alias" with "obama/four-more-duplicate-terms"
+     When I press "edit-submit"
+     Then I verify the alias of term "Obama Second Custom Alias Term" is "four-more-duplicate-terms"

@@ -26,7 +26,7 @@ Feature:
      Then I verify the "URL alias" value is "blog/unique-title"
 
   @api @nofar
-  Scenario: Verify it is possible to use a duplicate purl as a node custom path.
+  Scenario: Verify it is possible to use the purl as a node custom path.
     Given I am logging in as "john"
       And I visit "john/node/add/blog"
       And I fill in "Title" with "John Custom Alias"
@@ -34,3 +34,13 @@ Feature:
       And I fill in "edit-path-alias" with "john"
      When I press "edit-submit"
      Then I verify the alias of node "John Custom Alias" is "john/john"
+
+  @api @nofar
+  Scenario: Verify it is impossible to use a duplicate purl as node custom path.
+    Given I am logging in as "john"
+      And I visit "john/cp/build/taxonomy/science_personal1/add"
+      And I fill in "Name" with "John Second Custom Alias"
+      And I uncheck the box "Generate automatic URL alias"
+      And I fill in "edit-path-alias" with "john/jfk-duplicate-terms"
+     When I press "edit-submit"
+     Then I verify the alias of term "John Second Custom Alias" is "jfk-duplicate-terms"
