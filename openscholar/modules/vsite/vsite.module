@@ -237,7 +237,7 @@ function vsite_node_term_form_after_build($form, &$form_state) {
       // cannot be removed, so the input element itself should not include the
       // purl. This means that we must remove the purl from the field's value.
 
-      while (strpos($current_alias, "$purl/$purl/") === 0) {
+      while (strpos($current_alias, "$purl/") === 0) {
         $current_alias = substr($current_alias, strlen($purl) + 1);
       }
     }
