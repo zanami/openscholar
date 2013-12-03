@@ -730,9 +730,9 @@ function _os_pages_make_alias($gid, $type, $title, $purl = '') {
     if (module_exists('vsite') && $purl) {
       // We can have a string which can contain "[purl]/[purl]/title". Check if
       // the alias contain twice the purl and verify the purl is in the start.
-      if (strpos($alias, "$purl/$purl/") === 0) {
+      while (strpos($alias, "$purl/$purl/") === 0) {
         // The purl appear twice, remove the first occurrence.
-        $alias = substr("$alias", strlen($purl) + 1);
+        $alias = substr($alias, strlen($purl) + 1);
       }
     }
     pathauto_alias_uniquify($alias, $source, $node->language);
