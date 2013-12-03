@@ -419,6 +419,26 @@ function os_migrate_demo_get_term_id($term) {
   print(reset($result['taxonomy_term'])->tid);
 }
 
+function os_migrate_demo_get_term_vsite_purl($tid) {
+  // Get vid.
+  $term = taxonomy_term_load($tid);
+  $vid = $term->vid;
+
+  // Get og_vocab relation.
+  $relation = og_vocab_relation_get($vid);
+
+  if (empty($relation)) {
+    // Vocabulary is not related to a group.
+    print('');
+    return;
+  }
+
+  // Get vsite.
+  $vsite = node_load($relation->gid);
+
+  print($vsite->purl);
+}
+
 /**
  * Get the node ID.
  */
@@ -456,6 +476,48 @@ function os_migrate_demo_delete_node($title) {
     node_delete_multiple(array_keys($result['node']));
   }
 
+}
+
+/**
+ * Get the node alias.
+ */
+function os_migrate_demo_get_node_alias($nid) {
+  $result = db_select('url_alias')
+    ->fields('url_alias', array('alias'))
+    ->condition('source', 'node/' . $nid)
+    ->execute()
+    ->fetchAssoc();
+
+  print($result['alias']);
+}
+
+/**
+ * Get the node vsite purl.
+ */
+function os_migrate_demo_get_node_vsite_purl($nid) {
+  $wrapper = entity_metadata_wrapper('node', $nid);
+
+  if (empty($wrapper->{OG_AUDIENCE_FIELD})) {
+    // Not group content.
+    print('');
+    return;
+  }
+  $vsite = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->value();
+
+  print($vsite->purl);
+}
+
+/**
+ * Get the term alias.
+ */
+function os_migrate_demo_get_term_alias($tid) {
+  $result = db_select('url_alias')
+    ->fields('url_alias', array('alias'))
+    ->condition('source', 'taxonomy/term/' . $tid)
+    ->execute()
+    ->fetchAssoc();
+
+  print($result['alias']);
 }
 
 /**

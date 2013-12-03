@@ -1048,8 +1048,12 @@ class FeatureContext extends DrupalContext {
   public function iEditTheNode($title) {
     $title = str_replace("'", "\'", $title);
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+
+    $purl = $this->invoke_code('os_migrate_demo_get_node_vsite_purl', array("'$nid'"));
+    $purl = !empty($purl) ? $purl . '/' : '';
+
     return array(
-      new Step\When('I visit "node/' . $nid . '/edit"'),
+      new Step\When('I visit "' . $purl . 'node/' . $nid . '/edit"'),
     );
   }
 
@@ -1260,6 +1264,44 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I edit the term "([^"]*)"$/
+   */
+  public function iEditTheTerm($name) {
+    $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+
+    $purl = $this->invoke_code('os_migrate_demo_get_term_vsite_purl', array("'$tid'"));
+    $purl = !empty($purl) ? $purl . '/' : '';
+
+    return array(
+      new Step\When('I visit "' . $purl . 'taxonomy/term/' . $tid . '/edit"'),
+    );
+  }
+
+  /**
+   * @Then /^I verify the alias of node "([^"]*)" is "([^"]*)"$/
+   */
+  public function iVerifyTheAliasOfNodeIs($title, $alias) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$title'"));
+    $actual_alias = $this->invoke_code('os_migrate_demo_get_node_alias', array("'$nid'"));
+
+    if ($actual_alias != $alias) {
+      throw new Exception("The alias of the node '$title' should be '$alias', but is '$actual_alias' instead.");
+    }
+  }
+
+  /**
+   * @Then /^I verify the alias of term "([^"]*)" is "([^"]*)"$/
+   */
+  public function iVerifyTheAliasOfTermIs($name, $alias) {
+    $tid = $this->invoke_code('os_migrate_demo_get_term_id', array("'$name'"));
+    $actual_alias = $this->invoke_code('os_migrate_demo_get_term_alias', array("'$tid'"));
+
+    if ($actual_alias != $alias) {
+      throw new Exception("The alias of the term '$name' should be '$alias', but is '$actual_alias' instead.");
+    }
+  }
+
+  /**
    * @Given /^I define "([^"]*)" domain to "([^"]*)"$/
    */
   public function iDefineDomainTo($vsite, $domain) {
@@ -1273,6 +1315,7 @@ class FeatureContext extends DrupalContext {
     );
   }
 
+
   /**
    * @Given /^I verify the url is "([^"]*)"$/
    */
@@ -1281,4 +1324,5 @@ class FeatureContext extends DrupalContext {
       throw new Exception(sprintf("Your are not in the url %s but in %s", $url, $this->getSession()->getCurrentUrl()));
     }
   }
+
 }
