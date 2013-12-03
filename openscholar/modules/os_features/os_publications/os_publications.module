@@ -175,6 +175,20 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     $order['biblio_date'] = 'DESC';
     $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
   }
+  elseif (variable_get('biblio_sort', 'year') == 'type') {
+    // Sort by type, and after that create another sorting by creation date of
+    // the node.
+    $order = &$query->getOrderBy();
+    $new_order = array();
+    foreach ($order as $key => $value) {
+      $new_order[$key] = $value;
+      if ($key == 'biblio_type_name') {
+        $new_order['n.created'] = 'DESC';
+      }
+    }
+
+    $order = $new_order;
+  }
 }
 
 /**
