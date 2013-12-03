@@ -27,5 +27,12 @@ function os_importer_utf_8_form($importer, $element_key, $settings) {
  * Tamper callback.
  */
 function os_importer_utf_8_convert($result, $item_key, $element_key, &$field, $settings, $source) {
-  $field = utf8_encode($field);
+  if (is_array($field)) {
+    foreach ($field as $key => $value) {
+      $field[$key] = utf8_encode($value);
+    }
+  }
+  else {
+    $field = utf8_encode($field);
+  }
 }
