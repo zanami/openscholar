@@ -52,7 +52,7 @@ function os_front_default_box() {
   $box->description = 'Support';
   $box->options = array(
     'text' => array(
-      'value' => '<div align="center"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_support.gif" class="os-title-image" alt="OpenScholar"></div><br>We have a very active community-style support site where questions, ideas, and problems can be searched for, posted, and replied to. <a href="">Visit the Community</a>',
+      'value' => '<div align="center"><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_support.gif" class="os-title-image" alt="OpenScholar"></div><br>We have a very active community-style support site where questions, ideas, and problems can be searched for, posted, and replied to. <a href="http://community.openscholar.harvard.edu/openscholar">Visit the Community</a>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
@@ -80,19 +80,19 @@ function os_front_default_box() {
   $box->api_version = 1;
   $box->delta = 'os_front_sample';
   $box->plugin_key = 'os_boxes_html';
-  $box->title = 'Sample Websites';
+  $box->title = '';
   $box->description = 'Create A Site';
   $box->options = array(
     'text' => array(
       'value' => 'Sample Websites <ul>
         <li>
-          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite1.png"></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite1.gif"></a>
         </li>
         <li>
-          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite2.png"></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite2.gif"></a>
         </li>
         <li>
-          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite3.png"></a>
+          <a href=""><img src="/profiles/openscholar/themes/os_default/images/osfrontpg_samplesite3.gif"></a>
         </li>
       </ul>',
       'format' => 'filtered_html',

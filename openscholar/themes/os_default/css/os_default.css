@@ -461,8 +461,9 @@ body.sitewide-front {
 
 
 .sitewide-front #columns {
-    height:600px;
-    background:url('../images/osfrontpg_headerbg.gif') center top no-repeat;
+    height:400px;
+    background:url('../images/osfrontpg_headerbg.gif') center 30px no-repeat;
+     margin-bottom: 25px;
 }
 
 
@@ -556,4 +557,38 @@ body.sitewide-front {
     height: 30px;
     width: 30px;
 }
+
+
+#boxes-box-os_front_sample {
+	text-align:center;
+}
+
+
+#boxes-box-os_front_sample ul {
+	margin-top:20px;
+	text-align:center;
+}
+
+#boxes-box-os_front_sample ul li {
+	float:left;
+	list-style:none;
+	margin-left: 52px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
