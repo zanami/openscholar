@@ -1218,10 +1218,8 @@ class csl_label extends csl_format {
       }
 
       // If we print a range of pages change plural to multiple.
-      if ($variable == 'page') {
-        if (!is_int($data->biblio_pages)) {
-          $plural = 'multiple';
-        }
+      if ($variable == 'page' && !is_int($data->biblio_pages)) {
+        $plural = 'multiple';
       }
       
       if ($show_term && $term = $this->citeproc->get_locale('term', $variable, $form, $plural)) {

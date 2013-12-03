@@ -14,6 +14,11 @@ function os_pages_os_app_info() {
   	'nodetypes' => array(
   	  'page',
     ),
+    'importers' => array(
+      'page' => array(
+        'csv' => 'os_pages',
+      ),
+    ),
   );
 
   return $apps;

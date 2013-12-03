@@ -161,36 +161,77 @@ function os_tour_preprocess_toolbar(&$vars) {
 }
 
 /**
- * Implements hook_form_FORM_ID_form_alter() for cp_layout_full_form.
+ * Implements hook_implements_alter()
  */
-function os_tour_form_cp_layout_full_form_alter(&$form, &$form_state, $form_id) {
-  if (isset($form['context_selection'])) {
-    $path = drupal_get_path('module', 'os_tour');
-    $form['context_selection']['#attached']['css'] = array(
-      "$path/theme/os_tour.cp_build_layout.css",
-    );
-    $form['context_selection']['#attached']['library'] = array(
+function os_tour_module_implements_alter(&$implementations, $hook) {
+  switch ($hook) {
+    case 'process_page':
+      $group = $implementations['os_tour'];
+      unset($implementations['os_tour']);
+      $implementations['os_tour'] = $group;
+      break;
+  }
+}
+
+/**
+ * Implements hook_process_HOOK() for page.tpl.php.
+ */
+function os_tour_process_page(&$variables) {
+  $tour_info = _os_tour_help();
+  if (empty($tour_info)) {
+    return;
+  }
+
+  $attached = isset($tour_info['attached']) ? $tour_info['attached'] : array();
+  $attached += array(
+    'library' => array(
       array('os_tour', 'hopscotch'),
-    );
-    $form['context_selection']['#attached']['js'] = array(
-      "$path/theme/os_tour.cp_build_layout.js",
-    );
-    $original = '';
-    if (isset($form['context_selection']['#prefix'])) {
-      $original = $form['context_selection']['#prefix'];
-    }
-    $build = array(
-      '#title' => t('Take a tour'),
-      '#type' => 'link',
-      '#href' => '',
-      '#options' => array(
-        'attributes' => array(
-          'id' => 'os-tour-cp-build-layout',
-          'class' => array('os-green-button'),
+    ),
+  );
+
+  $original = '';
+  if (isset($variables['page']['help']) && is_string($variables['page']['help'])) {
+    $original = $variables['page']['help'];
+  }
+
+  $build = array(
+    '#title' => t($tour_info['title']),
+    '#type' => 'link',
+    '#href' => '',
+    '#options' => array(
+      'attributes' => array(
+        'id' => $tour_info['id'],
+        'class' => array('os-green-button'),
+      ),
+    ),
+    '#attached' => $attached,
+  );
+  $markup = drupal_render($build);
+
+  $variables['page']['help'] = "{$original}{$markup}";
+}
+
+/**
+ * Provides tour settings depending on Drupal menu path.
+ */
+function _os_tour_help() {
+  $tour_info = FALSE;
+
+  if (arg(0) == 'cp' && arg(1) == 'build' && arg(2) == 'layout') {
+    $path = drupal_get_path('module', 'os_tour');
+    $tour_info = array(
+      'id' => 'os-tour-cp-build-layout',
+      'title' => 'Take a tour',
+      'attached' => array(
+        'css' => array(
+          "$path/theme/os_tour.cp_build_layout.css",
+        ),
+        'js' => array(
+          "$path/theme/os_tour.cp_build_layout.js",
         ),
       ),
     );
-    $markup = drupal_render($build);
-    $form['context_selection']['#prefix'] = $markup . $original;
   }
+
+  return $tour_info;
 }
