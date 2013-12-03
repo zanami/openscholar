@@ -7,4 +7,4 @@ features[box][] = os_front_header
 features[box][] = os_front_create
 features[box][] = os_front_main_support
 features[box][] = os_front_main_configure
-features[box][] = os_front_samples
+features[box][] = os_front_sample
