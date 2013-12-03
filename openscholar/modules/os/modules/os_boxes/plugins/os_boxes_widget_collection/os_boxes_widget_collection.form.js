@@ -6,7 +6,7 @@ Drupal.behaviors.tabs = {
 
     var $form = $('#boxes-add-form, #boxes-box-form'),
       template = '<tr class="draggable">'+$('input[name="widgets[widget-new][bid]"]', $form).parents('tr').hide().html()+'</tr>',
-      tableDrag = Drupal.tableDrag['widgets-list'],
+      tableDrag = Drupal.tableDrag['widget-list'],
       new_id = parseInt($('#edit-count').val());
 
     // add a new row to the table, set all its form elements to the right values and make it draggable
@@ -38,15 +38,15 @@ Drupal.behaviors.tabs = {
       $('span', new_row).text(title);
       $('input[name="widgets['+id+'][title]"]', new_row).val(title);
       $('input[name="widgets['+id+'][weight]"]', new_row).addClass('field-weight').val(weight+1);
-      $('input[name="widgets['+id+'][weight]"]', new_row).parents('td').css('display', 'none');
-      //$('.tabledrag-handle', new_row).remove();
+      $('.tabledrag-handle', new_row).remove();
       $('table tbody', $form).append(new_row);
-      new_row = $('input[name="widgetss['+id+'][bid]"]', $form).parents('tr');
+      new_row = $('input[name="widgets['+id+'][bid]"]', $form).parents('tr');
       $('#edit-new', $form).val('');
 
       setup_remove(new_row);
 
       tableDrag.makeDraggable(new_row[0]);
+      tableDrag.restripeTable();
     });
 
     // set up remove links.
@@ -54,6 +54,7 @@ Drupal.behaviors.tabs = {
       $('.remove', ctx).click(function () {
         var $this = $(this);
         $this.parents('tr').remove();
+        tableDrag.restripeTable();
 
         // decrement counter
         var count = $('#edit-count');

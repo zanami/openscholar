@@ -40,8 +40,9 @@ abstract class os_boxes_widget_collection extends os_boxes_default {
     $options = array();
     ctools_include('layout', 'os');
     foreach ($widgets as $wgt => $info) {
-      if (isset($info['info'])) {
+      if (isset($info['info']) && $info['delta'] != $this->delta) {
         // not everything we get back from hook_os_widget has an info field.
+        // also, don't list yourself because infinite loops are bad
         $options[$wgt] = $info['info'];
       }
     }
@@ -132,6 +133,29 @@ abstract class os_boxes_widget_collection extends os_boxes_default {
     );
 
     return $form;
+  }
+
+  function render_widget($key) {
+    module_load_include('module', 'block', 'block');
+    $plugin = context_get_plugin('reaction', 'block');
+    $blocks = $plugin->get_blocks();
+
+    $widget = $this->options['widgets'][$key];
+
+    if ($b = $blocks[$widget['bid']]) {
+      $b->region = $this->delta;
+      if ($b_out = _block_render_blocks(array($b))) {
+        if (!empty($b_out[$b->module.'_'.$b->delta]->content)) {
+
+          $block_output = _block_get_renderable_array($b_out);
+
+          return $block_output[$b->module.'_'.$b->delta];
+        }
+
+      }
+    }
+
+    return array();
   }
 }
 
