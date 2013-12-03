@@ -559,17 +559,17 @@ body.sitewide-front {
 }
 
 
-#boxes-box-os_front_sample {
+.sitewide-front #boxes-box-os_front_sample {
 	text-align:center;
 }
 
 
-#boxes-box-os_front_sample ul {
+.sitewide-front #boxes-box-os_front_sample ul {
 	margin-top:20px;
 	text-align:center;
 }
 
-#boxes-box-os_front_sample ul li {
+.sitewide-front #boxes-box-os_front_sample ul li {
 	float:left;
 	list-style:none;
 	margin-left: 52px;
