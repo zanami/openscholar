@@ -385,5 +385,50 @@ function os_update_7022() {
  * Reverts `os` module's presets to use new HWPI theme defaults.
  */
 function os_update_7023() {
-  features_revert(array('os' => array('spaces_presets')));
+  // Removed in favor of os_update_7024().
+  //features_revert(array('os' => array('spaces_presets')));
+  return t('Nothing changed. Be sure to run os_update_7024().');
+}
+
+/**
+ * Reverts `os` module's preset taking into account theme changes.
+ */
+function os_update_7024() {
+  // These were the previous values for variable `default_theme` in presets:
+  $variable = 'theme_default';
+  $preset_themes_original = array(
+    'os_scholar' => 'cleanblue',
+    'os_project' => 'cleanblue',
+    'os_department_minimal' => 'ballard',
+  );
+  // This is the new theme that all 3 presets now use:
+  $new_default = 'hwpi_classic';
+
+  // Saves a new spaces_override variable value on all affected sites.
+  foreach ($preset_themes_original as $preset => $old_default) {
+    $affected_entities = _os_update_7024_query($preset, 'variable', $variable, $old_default, $new_default);
+    foreach ($affected_entities as $gid) {
+      $vsite = vsite_get_vsite($gid);
+      if ($vsite) {
+        $vsite->controllers->variable->set($variable, $old_default);
+      }
+    }
+  }
+
+  // Safely reverts the spaces_presets feature component without any change.
+  $revert = array(
+    'os' => array(
+      'spaces_presets',
+    ),
+  );
+  features_revert($revert);
+}
+
+/**
+ * Returns site IDs for all sites which would be affected by a preset change.
+ *
+ * @see os_update_7024()
+ */
+function _os_update_7024_query($preset, $object_type, $object_id, $old, $new) {
+  return array();
 }
