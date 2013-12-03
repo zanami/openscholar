@@ -208,6 +208,18 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_accordion'] = array(
+    'title' => 'Accordion',
+    'description' => 'Place several widgets into a tabbed container',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_accordion',
+      'file' => 'os_boxes_accordion.inc',
+      'path' => $path .'/os_boxes_accordion',
+      'parent' => 'os_boxes_widget_collection',
+    ),
+  );
+
   $info['os_boxes_html'] = array(
     'title' => 'Custom Text/HTML',
     'description' => 'A blank slate to fill with what',
