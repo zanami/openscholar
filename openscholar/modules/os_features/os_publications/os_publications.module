@@ -168,8 +168,10 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
       $order = array();
     }
 
-    // Sort by year, and after that create another sorting by creation date of
-    // the node, the Biblio date, and the Biblio title.
+    // Sort by year, and after that create another sorting by the node's
+    // "sticky" property, the creation date of the node, the Biblio date, and
+    // the Biblio title.
+    $order['n.sticky'] = 'DESC';
     $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
     $order['n.created'] = 'DESC';
     $order['biblio_date'] = 'DESC';
@@ -180,6 +182,10 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     // the node.
     $order = &$query->getOrderBy();
     $new_order = array();
+
+    // Sticky publications will appear first on each "section".
+    $new_order['n.sticky'] = 'DESC';
+
     foreach ($order as $key => $value) {
       $new_order[$key] = $value;
       if ($key == 'biblio_type_name') {
@@ -460,9 +466,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   // Add in a new validation for patents
   $form['#validate'][] = 'os_publications_biblio_form_patent_validate';
-
-  // remove the sticky content option
-  unset($form['options']['sticky']);
 
   unset($form['biblio_tabs']);
 }
