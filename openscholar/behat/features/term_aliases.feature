@@ -41,6 +41,6 @@ Feature:
       And I visit "obama/cp/build/taxonomy/family_personal2/add"
       And I fill in "Name" with "Obama Second Custom Alias Term"
       And I uncheck the box "Generate automatic URL alias"
-      And I fill in "edit-path-alias" with "obama/four-more-duplicate-terms"
+      And I fill in "edit-path-alias" with "obama/obama/four-more-duplicate-terms"
      When I press "edit-submit"
      Then I verify the alias of term "Obama Second Custom Alias Term" is "four-more-duplicate-terms"
