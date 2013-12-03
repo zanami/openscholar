@@ -86,7 +86,7 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser'] && !in_array($vars['view_mode'], array('sidebar_teaser', 'title'))) {
+  if (!$vars['teaser'] && !in_array($vars['view_mode'], array('sidebar_teaser', 'title', 'full'))) {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 
@@ -180,7 +180,7 @@ function _os_profiles_person_node_title($node) {
 function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
   if ($entity_type == 'node') {
     foreach ($entities as $e_id => $e) {
-      if ($e->type != 'person') continue;
+      if ($e->type != 'person' || !isset($e->title)) continue;
 
       if (!empty($e->field_person_photo)) {
         $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = entity_label('node', $e) ? entity_label('node', $e) : '';
