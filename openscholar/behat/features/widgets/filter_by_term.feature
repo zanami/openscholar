@@ -84,14 +84,14 @@ Feature:
         | Show term descriptions | check     | checkbox    |
      When I visit "john/publications"
      Then I should get:
-    """
-    Antoine de Saint-Exupéry
-    Wrote The little prince
-    Stephen William Hawking
-    Wrote A Brief History of Time
-    Douglas Noël Adams
-    Wrote The Hitchhiker's Guide to the Galaxy
-    """
+          """
+          Antoine de Saint-Exupéry
+          Wrote The little prince
+          Stephen William Hawking
+          Wrote A Brief History of Time
+          Douglas Noël Adams
+          Wrote The Hitchhiker's Guide to the Galaxy
+          """
 
   @api
   Scenario: Verify the terms links direct us to the correct path.
