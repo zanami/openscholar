@@ -2495,6 +2495,11 @@ function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
   // Get purl.
   $purl = vsite_get_purl($vsite);
 
+  // Prevent purl duplication in alias - remove all purls prefixes.
+  while (strpos($alias, "$purl/") === 0) {
+    $alias = substr($alias, strlen($purl) + 1);
+  }
+
   // Add purl to alias.
   $alias = $purl . '/' . $alias;
 
