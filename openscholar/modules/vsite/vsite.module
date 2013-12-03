@@ -232,7 +232,7 @@ function vsite_node_term_form_after_build($form, &$form_state) {
     if ($current_alias = &$form['path']['alias']['#value']) {
       // VSites that use og_spaces must have the purl at the beginning of all
       // their aliases. The purl is added automatically to every alias.
-      // @see _vsite_alter_term_path_settings().
+      // @see vsite_get_entity_alias().
       // In the UI, the alias field is prefixed with the purl to show that it
       // cannot be removed, so the input element itself should not include the
       // purl. This means that we must remove the purl from the field's value.
