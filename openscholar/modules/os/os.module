@@ -918,11 +918,17 @@ function os_settings_form($form_state) {
     '#weight' => 99,
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'os') . '/js/readonly-mode.js',
+      ),
+    ),
   );
 
   $form['os_read_only']['os_logout_users'] = array(
     '#type' => 'item',
-    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/force-logout'),
+    '#markup' => '<div id="readonly-dialog" title="Read-Only Mode">'. t('Notice: When activating read-only mode all non-admin users will be logged out.') .'</div>',
+    '#weight' => 99,
   );
 
   $form['os_read_only']['os_readonly_mode'] = array(
