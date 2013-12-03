@@ -23,10 +23,10 @@ Feature: Testing the importer.
     | "john/os-importer-demo/media_gallery"     | "john/galleries"                          | "Gallery from csv"      | "Testing import of gallery"   |
 
   @api
-    Scenario: Verify that the vocabularies and terms from the CSV created
-              successfully.
-      Given I visit "john/blog/blog-csv"
-       Then I should see "Johnny B good"
-        And I should see "Californication"
-        And I should see "Chuck Berry"
-        And I should see "Red hot chili peppers"
+  Scenario: Verify that the vocabularies and terms from the CSV created
+  successfully.
+    Given I visit "john/blog/blog-csv"
+     Then I should see "Johnny B good"
+      And I should see "Californication"
+      And I should see "Chuck Berry"
+      And I should see "Red hot chili peppers"
