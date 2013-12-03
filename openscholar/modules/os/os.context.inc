@@ -18,27 +18,7 @@ function os_context_default_contexts() {
   $context->tag = 'OpenScholar';
   $context->conditions = array(
     'node' => array(
-      'values' => array(
-        0 => 'biblio',
-        1 => 'bio',
-        2 => 'blog',
-        3 => 'book',
-        4 => 'cv',
-        5 => 'class',
-        6 => 'class_material',
-        7 => 'event',
-        8 => 'faq',
-        9 => 'feed',
-        10 => 'feed_importer',
-        11 => 'link',
-        12 => 'media_gallery',
-        13 => 'news',
-        14 => 'page',
-        15 => 'person',
-        16 => 'presentation',
-        17 => 'software_project',
-        18 => 'software_release',
-      ),
+      'values' => array_keys(os_get_bundles(true)),  // All OS Nodes
       'options' => array(
         'node_form' => '2',
       ),

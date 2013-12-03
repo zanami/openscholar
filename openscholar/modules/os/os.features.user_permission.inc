@@ -77,6 +77,7 @@ function os_user_default_permissions() {
     'roles' => array(
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
+      'web services' => 'web services',
     ),
     'module' => 'restws',
   );
@@ -84,7 +85,9 @@ function os_user_default_permissions() {
   // Exported permission: 'access resource user'.
   $permissions['access resource user'] = array(
     'name' => 'access resource user',
-    'roles' => array(),
+    'roles' => array(
+      'web services' => 'web services',
+    ),
     'module' => 'restws',
   );
 
@@ -482,7 +485,13 @@ function os_user_default_permissions() {
   // Exported permission: 'insert link into wysiwyg'.
   $permissions['insert link into wysiwyg'] = array(
     'name' => 'insert link into wysiwyg',
-    'roles' => array(),
+    'roles' => array(
+      'administrator' => 'administrator',
+      'content editor' => 'content editor',
+      'manager' => 'manager',
+      'vsite admin' => 'vsite admin',
+      'vsite user' => 'vsite user',
+    ),
     'module' => 'os_wysiwyg_link',
   );
 
