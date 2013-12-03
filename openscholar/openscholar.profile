@@ -155,8 +155,6 @@ function openscholar_install_type_submit($form, &$form_state) {
   }
 }
 
-
-
 function openscholar_vsite_modules_batch(&$install_state){
   //@todo this should be in an .inc file or something.
   $modules = array();
