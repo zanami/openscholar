@@ -75,7 +75,7 @@ function os_basetheme_preprocess_page(&$vars) {
   }
 
   //hide useless tabs - drupal uses $vars['tabs'], but adaptive loads primary and secondary menu local tasks.
-  $vars['primary_local_tasks'] = $vars['tabs']['#primary'];
+  $vars['primary_local_tasks'] = !empty($vars['tabs']['#primary']) ? $vars['tabs']['#primary'] : '';
   $vars['secondary_local_tasks'] = $vars['tabs']['#secondary'];
 
   $theme_name = $GLOBALS['theme_key'];
