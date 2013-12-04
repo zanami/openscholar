@@ -1247,4 +1247,17 @@ class FeatureContext extends DrupalContext {
       throw new Exception("the string '$string' was not found.");
     }
   }
+
+  /**
+   * @Then /^I should see "([^"]*)" comes before "([^"]*)"$/
+   */
+  public function iShouldSeeComesBefore($first, $second) {
+    $page = $this->getSession()->getPage();
+    print $page->getContent();
+    $element = 1;//$page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
+
+    if (!$element) {
+      throw new Exception('NOT FOUND');
+    }
+  }
 }
