@@ -1,32 +1,28 @@
 Feature:
   Testing vsite related permissions.
 
+# Authenticated user
   @api
-  Scenario: Testing normal user can't access the control panel
+  Scenario: Testing authenticated user can't access the control panel
     Given I am logging in as "demo"
      When I go to "cp/build/features"
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing vsite user can add node outside of the vsite context.
+  Scenario: Testing authenticated user can't access unpublished content
+    Given I am logging in as "michelle"
+     When I go to "john/blog/unpublish-blog"
+     Then I should get a "403" HTTP response
+
+# Vsite Member
+  @api
+  Scenario: Testing vsite member can't create a node outside of the vsite context.
     Given I am logging in as "michelle"
      When I go to "node/add"
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing normal user can't see unpublished content
-    Given I am logging in as "michelle"
-     When I go to "john/blog/unpublish-blog"
-     Then I should get a "403" HTTP response
-
-  @api
-  Scenario: Testing admin can view unpublished content.
-    Given I am logging in as "john"
-     When I go to "john/blog/unpublish-blog"
-     Then I should get a "200" HTTP response
-
-  @api
-  Scenario: Testing vsite user can add node only in the vsite he is a member.
+  Scenario: Testing vsite member can create content only in the vsite he is a member of.
     Given I am logging in as "alexander"
      When I go to "edison/node/add/blog"
       And I should get a "200" HTTP response
@@ -34,13 +30,28 @@ Feature:
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Test edit ability for a vsite admin on won site.
+  Scenario: Testing vsite member can delete only his own content.
+    Given I am logging in as "michelle"
+     When I delete the node of type "blog" named "Michelle's Blog"
+      And I visit "obama/blog"
+     Then I should not see "Welcome to Michelle's blog"
+
+# Vsite admin
+  @api
+  Scenario: Testing admin can view unpublished content.
+    Given I am logging in as "john"
+     When I go to "john/blog/unpublish-blog"
+     Then I should get a "200" HTTP response
+
+  @api
+  Scenario: Testing edit ability for a vsite admin on won site.
     Given I am logging in as "alexander"
      When I visit "edison/publications"
      Then I should see the link "Links" under "ctools-dropdown-link-wrapper"
 
   @api
-  Scenario: Test edit inability for vsite admin on a different vsite.
+  Scenario: Testing edit inability for vsite admin on a different vsite.
     Given I am logging in as "alexander"
      When I visit "john/publications"
      Then I should not see the link "Links" under "ctools-dropdown-link-wrapper"
+

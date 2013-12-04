@@ -886,7 +886,6 @@ class FeatureContext extends DrupalContext {
   private function searchForTextUnderElement($text, $container) {
     $page = $this->getSession()->getPage();
     $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//*[contains(., '{$text}')]");
-
     return $element;
   }
 
@@ -909,7 +908,7 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * Searching text under an element with class
+   * Searching a link under an element with class
    */
   private function searchForLinkUnderElement($text, $container) {
     $page = $this->getSession()->getPage();
@@ -1050,6 +1049,18 @@ class FeatureContext extends DrupalContext {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
     return array(
       new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
+   * @When /^I delete the node of type "([^"]*)" named "([^"]*)"$/
+   */
+  public function iDeleteTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/delete?destination=' . $type . '"'),
+      new Step\When('I press "Delete"'),
     );
   }
 
