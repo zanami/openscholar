@@ -30,7 +30,7 @@ Feature:
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing vsite member can delete only his own content.
+  Scenario: Testing vsite member can delete his own content.
     Given I am logging in as "michelle"
      When I delete the node of type "blog" named "Michelle's Blog"
       And I visit "obama/blog"
@@ -38,8 +38,15 @@ Feature:
 
 # Vsite admin
   @api
-  Scenario: Testing admin can view unpublished content.
+  Scenario: Testing vsite owner can assign a "vsite admin" role to a user.
     Given I am logging in as "john"
+     When I give the user "bruce" the role "vsite-admin" in the group "john"
+      And I visit "john/cp/users"
+     Then I should verify that the user "bruce" has a role of "vsite admin" in the group "john"
+
+  @api
+  Scenario: Testing vsite admin can view unpublished content.
+    Given I am logging in as "bruce"
      When I go to "john/blog/unpublish-blog"
      Then I should get a "200" HTTP response
 

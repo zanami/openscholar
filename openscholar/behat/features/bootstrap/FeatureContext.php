@@ -918,6 +918,32 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I give the user "([^"]*)" the role "([^"]*)" in the group "([^"]*)"$/
+   */
+  public function iGiveTheUserTheRoleInTheGroup($name, $role, $group) {
+    $user = user_load_by_name($name);
+
+    return array(
+      new Step\When('I visit "' . $group . '/john/cp/users/add'),
+      new Step\When('I fill in "edit-name" with "' . $name . '"'),
+      new Step\When('I press "Add users"'),
+      new Step\When('I visit "' . $group . '/john/cp/users/edit-membership/' . $user->uid),
+      new Step\When('I select the radio button "edit_role" with the id "edit-edit-role-' . $role . '"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Then /^I should verify that the user "([^"]*)" has a role of "([^"]*)" in the group "([^"]*)"$/
+   */
+  public function iShouldVerifyThatTheUserHasRole($name, $role, $group) {
+    $user_role = $this->invoke_code('os_migrate_demo_get_user_role_in_group', array("'{$name}'", "'{$group}'"));
+    if ($user_role != $role) {
+      throw new Exception("The text {$name} doesn't have the role {$role} in the group {$group}");
+    }
+  }
+
+  /**
    * @When /^I visit the original page for the term "([^"]*)"$/
    */
   public function iVisitTheOriginalPageForTheTerm($term) {
