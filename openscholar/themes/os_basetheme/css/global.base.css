@@ -501,7 +501,7 @@ ul ul ul ul {
 }
 
 .register {
-  background:url('../images/calendar_icon.gif') no-repeat !important;
+  background:url('../images/register_icon.gif') no-repeat !important;
   padding:3px 0 3px 25px !important;
   border-bottom:none !important;
 }
@@ -513,15 +513,20 @@ padding:3px 0 3px 25px !important;
 
 }
 
-.os_events_export_links .first,
+.os_events_export_links .first {
+  margin-top: 7px;
+  float: left;
+}
+
 .os_events_export_links .last {
-  display: inline-block;
+  margin-top: 7px;
+  float: right;
 }
 
 .page-node.node-type-event .rss,
 .page-node.node-type-event .subscribe {
   display: inline-block;
-  margin-top: 7px;
+
 }
 
 .page-node.node-type-event .field-type-registration {

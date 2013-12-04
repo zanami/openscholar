@@ -59,7 +59,8 @@ function os_events_menu() {
   $items = array();
 
   $items['os_events/registration/%node'] = array(
-    'title' => 'Register to events',
+    'title callback' => 'os_events_register_form_title',
+    'title arguments' => array('node', 2),
     'page callback' => 'registration_register_page',
     'page arguments' => array('node', 2),
 
@@ -68,6 +69,23 @@ function os_events_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Title callback for the event registration menu item.
+ *  The entity type.
+ *
+ * @param $entity_type
+ *  The entity type.
+ * @param $entity_id
+ *  The entity ID.
+ *
+ * @return string
+ *  The title of the menu item.
+ */
+function os_events_register_form_title($entity_type, $entity_id) {
+  $wrapper = entity_metadata_Wrapper($entity_type, $entity_id);
+  return t('Register to @title', array('@title' => $wrapper->label()));
 }
 
 /**
@@ -188,7 +206,12 @@ function os_events_process_node(&$variables) {
     $subscribe = str_replace('http://', 'webcal://', $subscribe);
 
     $ical = l(t('iCal'), 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
-    $register = l(t('Register'), 'os_events/registration/' . $variables['node']->nid, array('attributes' => array('class' => array('register'))));
+    if ($variables['node']->field_event_registration[LANGUAGE_NONE][0]['registration_type']) {
+      $register = l(t('Register'), 'os_events/registration/' . $variables['node']->nid, array('attributes' => array('class' => array('register'))));
+    }
+    else {
+      $register = '';
+    }
 
     $params = array(
       'register' => $register,
