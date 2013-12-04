@@ -36,6 +36,23 @@ function os_events_os_app_info() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function os_events_theme() {
+  return array(
+    'os_events_export_links' => array(
+      'variables' => array(
+        'register' => NULL,
+        'ical' => NULL,
+        'subscribe' => NULL,
+      ),
+      'template' => 'os-events-export-links',
+      'path' => drupal_get_path('module', 'os_events') . '/template',
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function os_events_menu() {
@@ -171,10 +188,15 @@ function os_events_process_node(&$variables) {
     $subscribe = str_replace('http://', 'webcal://', $subscribe);
 
     $ical = l(t('iCal'), 'calendar/export.ics/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
-    $register = l(t('Register'), 'os_events/registration/' . $variables['node']->nid, array('attributes' => array('class' => array('ical'))));
+    $register = l(t('Register'), 'os_events/registration/' . $variables['node']->nid, array('attributes' => array('class' => array('register'))));
 
+    $params = array(
+      'register' => $register,
+      'ical' => $ical,
+      'subscribe' => $subscribe,
+    );
     $variables['content']['export'] = array(
-      '#markup' => $subscribe . ' ' . $ical . ' ' . $register,
+      '#markup' => theme('os_events_export_links', $params),
       '#weight' => 10,
     );
   }
