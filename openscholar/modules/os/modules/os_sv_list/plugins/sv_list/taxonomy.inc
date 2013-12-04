@@ -24,9 +24,10 @@ class sv_list_taxonomy extends sv_list_plugin {
   }
   
   public function options_form($options) {
-    // Get all relevant vocabularies.
-    $vocabs = os_sv_list_get_content_type_vocabs($options['content_type'], $this->entity_type); //@TODO does this func work with files terms too?
-
+     // Get all relevant vocabularies.
+    //$vocabs = os_sv_list_get_content_type_vocabs($options['content_type'], $this->entity_type); //@TODO does this func work with files terms too?
+    $vocabs = $this->_os_sv_list_vid_by_bundle();
+    
     if (empty($vocabs)) {
       return;
     }
@@ -39,10 +40,17 @@ class sv_list_taxonomy extends sv_list_plugin {
       '#title' => t('Filter by vocabulary'),
       '#description' => t('Only include posts tagged with terms from the following vocabularies.'),
       '#tree' => TRUE,
+      '#attached' => array(
+        'js' => array(
+          array('type' => 'setting', 'data' => array('sv_list_vocab_bundles' => $vocabs)),
+        )
+      )
     );  
     
     // Create a select field for each vocabulary, with the vocabulary's terms as the field's options.
-    foreach ($vocabs as $vid => $vocab) {
+    foreach (array_keys($vocabs) as $vid) {
+      $vocabulary = taxonomy_vocabulary_load($vid);
+      
       // Get the vocabulary's terms.
       $terms = array();      
       foreach (taxonomy_get_tree($vid) as $item) {
@@ -57,7 +65,7 @@ class sv_list_taxonomy extends sv_list_plugin {
       $form['vocabs'][$element] = array(
         '#type' => 'select',
         '#options' => $terms,
-        '#title' => $vocab,
+        '#title' => $vocabulary->name,
         '#multiple' => TRUE,
         '#default_value' => $vocab_default_value,
         '#element_validate' => array('os_sv_list_terms_element_validate'), //group selected terms from all vocab fields
@@ -123,5 +131,33 @@ class sv_list_taxonomy extends sv_list_plugin {
 
     $result = $query->execute();
     return ($result->rowCount()) ? $result->fetchCol() : array(0); //needs a nonempty array or we get db errors
+  }
+  
+  /*
+   * @function _os_sv_list_vid_by_bundle()
+   * 
+   * Gets all vocab vids in this vsite and the bundles that use them
+   */
+  private function _os_sv_list_vid_by_bundle() {
+    $query = db_select('og_vocab_relation', 'ogr')
+      ->fields('ogr', array('vid'));
+    
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $query->condition('gid', $space->id);
+    }
+    
+    $query->join('og_vocab', 'ogv', 'ogr.vid = ogv.vid');
+    $query->condition('ogv.entity_type', $this->entity_type);
+
+    $query->groupBy('ogv.vid');
+    $query->addExpression('GROUP_CONCAT(ogv.bundle)', 'bundles');    
+    $result = $query->execute();
+    
+    $ret = array();
+    while ($row = $result->fetchObject()) {
+      $ret[$row->vid] = explode(',', $row->bundles);
+    }
+    
+    return $ret;
   }
 }
