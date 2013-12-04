@@ -84,7 +84,6 @@ function os_books_user_default_permissions() {
     'name' => 'edit any book content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );

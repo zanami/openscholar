@@ -75,7 +75,6 @@ function os_biocv_user_default_permissions() {
     'name' => 'edit any bio content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );

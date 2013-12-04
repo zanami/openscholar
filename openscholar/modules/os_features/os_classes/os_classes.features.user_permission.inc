@@ -75,7 +75,6 @@ function os_classes_user_default_permissions() {
     'name' => 'edit any class content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -85,7 +84,6 @@ function os_classes_user_default_permissions() {
     'name' => 'edit any class_material content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );
