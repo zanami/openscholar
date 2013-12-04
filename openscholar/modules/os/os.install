@@ -406,11 +406,17 @@ function os_update_7024() {
 
   // Saves a new spaces_override variable value on all affected sites.
   foreach ($preset_themes_original as $preset => $old_default) {
-    $affected_entities = _os_update_7024_query($preset, 'variable', $variable, $old_default, $new_default);
-    foreach ($affected_entities as $gid) {
+    list($need_override, $can_revert) = _os_update_preset_modify_query($preset, 'variable', $variable, $old_default, $new_default);
+    foreach ($need_override as $gid) {
       $vsite = vsite_get_vsite($gid);
       if ($vsite) {
-        $vsite->controllers->variable->set($variable, $old_default);
+        //$vsite->controllers->variable->set($variable, $old_default);
+      }
+    }
+    foreach ($can_revert as $gid) {
+      $vsite = vsite_get_vsite($gid);
+      if ($vsite) {
+        //$vsite->controllers->variable->set($variable, NULL);
       }
     }
   }
@@ -421,7 +427,7 @@ function os_update_7024() {
       'spaces_presets',
     ),
   );
-  features_revert($revert);
+  //features_revert($revert);
 }
 
 /**
@@ -429,6 +435,26 @@ function os_update_7024() {
  *
  * @see os_update_7024()
  */
-function _os_update_7024_query($preset, $object_type, $object_id, $old, $new) {
-  return array();
+function _os_update_preset_modify_query($preset, $object_type, $object_id, $old, $new) {
+  // First finds all vsites with this spaces preset type.
+  $all_gids = array();
+
+  // Then finds all unique site IDs with an an override of the specific object.
+  $query = db_select('spaces_overrides', 'so');
+  $query->fields('so', array('id'));
+  $query->condition('object_type', $object_type);
+  $query->condition('object_id', $object_id);
+  $query->condition('value', $new, '!=');
+  $unaffected_gids = array();
+
+  $need_override = array_diff($all_gids, $unaffected_gids);
+
+  $query = db_select('spaces_overrides', 'so');
+  $query->fields('so', array('id'));
+  $query->condition('object_type', $object_type);
+  $query->condition('object_id', $object_id);
+  $query->condition('value', $new, '=');
+  $can_revert = array();
+
+  return array($need_override, $can_revert);
 }
