@@ -1193,13 +1193,13 @@ function os_files_file_view($file, $view_mode, $langcode) {
           '#theme' => 'link',
           '#path' => 'file/' . $file->fid,
           '#text' => $file->filename,
-          '#options' => array('attributes' => array('class' => array('entity-link')), 'html' => NULL),
+          '#options' => array('attributes' => array('class' => array('entity-link')), 'html' => FALSE),
         ),
         'download' => array(
           '#theme' => 'link',
           '#path' => file_create_url($file->uri),
           '#text' => 'Download',
-          '#options' => array('attributes' => array('class' => array('download-link'))),
+          '#options' => array('attributes' => array('class' => array('download-link')), 'html' => FALSE),
         ),
       ),
     );
