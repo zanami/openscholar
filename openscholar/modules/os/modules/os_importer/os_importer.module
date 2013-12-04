@@ -510,11 +510,8 @@ function os_importer_verify_uploaded_file($form, $form_state) {
   // Replace the \r with \n.
   $file_content = file_get_contents($file->uri);
   $file_content = str_replace("\r", "\n", $file_content);
-  $new_file = file_save_data($file_content, $file->uri);
+  $new_file = file_save_data($file_content, $file->uri, FILE_EXISTS_REPLACE);
   $form_state['values']['file'] = $new_file->fid;
-
-  // Delete the old file.
-  file_delete($file);
 
   // Parse file's headers.
   feeds_include_library('ParserCSV.inc', 'ParserCSV');
