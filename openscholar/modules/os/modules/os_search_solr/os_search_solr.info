@@ -4,6 +4,7 @@ core = 7.x
 package = OpenScholar
 php = 5.2.4
 dependencies[] = apachesolr_search
+dependencies[] = apachesolr_files
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = current_search

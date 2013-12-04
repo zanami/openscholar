@@ -54,7 +54,13 @@ function os_search_solr_install(){
       }
     }
   }
+}
 
+/**
+ * Installing the Apache solr file module.
+ */
+function os_search_solr_update_7001() {
+  module_enable(array('apachesolr_files'));
 }
 
 /**

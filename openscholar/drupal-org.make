@@ -10,10 +10,13 @@ projects[advanced_help][version] = 1.0
 projects[advanced_help][patch][] = "http://drupal.org/files/advanced_help-removing_help_popup_theme_css-1803488-1.patch"
 
 projects[apachesolr][subdir] = "contrib"
-projects[apachesolr][version] = 1.1
+projects[apachesolr][version] = 1.6
 
 projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.2
+
+projects[apachesolr_files][subdir] = "contrib"
+projects[apachesolr_files][version] = 1.x-dev
 
 projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][revision] = 5fda19fc208bd62713be99a839aed0528d9d3db7
