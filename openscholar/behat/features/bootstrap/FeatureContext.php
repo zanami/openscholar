@@ -1301,6 +1301,18 @@ class FeatureContext extends DrupalContext {
     }
   }
 
+  /*
+   * @Then /^I should see the publication "([^"]*)" comes before "([^"]*)"$/
+   */
+  public function iShouldSeeThePublicationComesBefore($first, $second) {
+    $page = $this->getSession()->getPage()->getContent();
+
+    $pattern = '/<div class="biblio-category-section">[\s\S]*' . $first . '[\s\S]*' . $second . '[\s\S]*<\/div><div class="biblio-category-section">/';
+    if (!preg_match($pattern, $page)) {
+      throw new Exception("The publication '$first' does not come before the publication '$second'.");
+    }
+  }
+
   /**
    * @Given /^I define "([^"]*)" domain to "([^"]*)"$/
    */
@@ -1325,4 +1337,11 @@ class FeatureContext extends DrupalContext {
     }
   }
 
+  /*
+   * @Given /^I make the node "([^"]*)" sticky$/
+   */
+  public function iMakeTheNodeSticky($title) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$title'"));
+    $this->invoke_code('os_migrate_demo_make_node_sticky', array("'$nid'"));
+  }
 }

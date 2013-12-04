@@ -167,8 +167,8 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     // Sort by year, and after that create another sorting by the node's
     // "sticky" property, the creation date of the node, the Biblio date, and
     // the Biblio title.
-    $order['n.sticky'] = 'DESC';
     $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
+    $order['n.sticky'] = 'DESC';
     $order['n.created'] = 'DESC';
     $order['biblio_date'] = 'DESC';
     $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
@@ -179,12 +179,10 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     $order = &$query->getOrderBy();
     $new_order = array();
 
-    // Sticky publications will appear first on each "section".
-    $new_order['n.sticky'] = 'DESC';
-
     foreach ($order as $key => $value) {
       $new_order[$key] = $value;
       if ($key == 'biblio_type_name') {
+        $new_order['n.sticky'] = 'DESC';
         $new_order['n.created'] = 'DESC';
       }
     }
