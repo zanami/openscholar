@@ -447,7 +447,18 @@ function os_migrate_demo_delete_node($title) {
   if (!empty($result['node'])) {
     node_delete_multiple(array_keys($result['node']));
   }
+}
 
+/**
+ * Make a node sticky.
+ */
+function os_migrate_demo_make_node_sticky($nid) {
+  db_update('node')
+    ->fields(array(
+      'sticky' => 1,
+    ))
+    ->condition('nid', $nid)
+    ->execute();
 }
 
 /**
