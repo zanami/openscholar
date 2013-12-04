@@ -14,6 +14,11 @@ function os_pages_os_app_info() {
   	'nodetypes' => array(
   	  'page',
     ),
+    'importers' => array(
+      'page' => array(
+        'csv' => 'os_pages',
+      ),
+    ),
   );
 
   return $apps;
@@ -723,8 +728,11 @@ function _os_pages_make_alias($gid, $type, $title, $purl = '') {
     module_load_include('inc', 'pathauto');
     $alias = pathauto_create_alias('node', 'return', $source, array('node' => $node), $node->type, $node->language);
     if (module_exists('vsite') && $purl) {
-      if (strpos($alias, "$purl/") !== 0) {
-        $alias = "$purl/$alias";
+      // We can have a string which can contain "[purl]/[purl]/title". Check if
+      // the alias contain twice the purl and verify the purl is in the start.
+      while (strpos($alias, "$purl/$purl/") === 0) {
+        // The purl appear twice, remove the first occurrence.
+        $alias = substr($alias, strlen($purl) + 1);
       }
     }
     pathauto_alias_uniquify($alias, $source, $node->language);
