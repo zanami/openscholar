@@ -863,45 +863,30 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_set_og_permissions($bundle) {
   $og_roles = og_roles('node', $bundle);
-
-
   $group_contents = og_get_all_group_content_bundle();
-  foreach ($group_contents['node'] as $type) {
 
-    if ($type == 'feed importer') {
+  // Don't set permissions for these node types.
+  $exclude_types = array(
+    'feed_importer',
+    'blog_import,'
+  );
+
+  // Go through the group contents of type node.
+  foreach ($group_contents['node'] as $type => $value) {
+    if (in_array($type, $exclude_types)) {
       continue;
     }
 
-    /*
-    "create $type content" => array(
-      'title' => t('Create %type_name content', array('%type_name' => $info->name)),
-
-    ),
-      "update own $type content" => array(
-      'title' => t('Edit own %type_name content', array('%type_name' => $info->name)),
-    ),
-      "update any $type content" => array(
-      'title' => t('Edit any %type_name content', array('%type_name' => $info->name)),
-    ),
-      "delete own $type content" => array(
-      'title' => t('Delete own %type_name content', array('%type_name' => $info->name)),
-    ),
-      "delete any $type content" => array(
-      'title' => t('Delete any %type_name content', array('%type_name' => $info->name)),
-    ),
-    */
-
+    // The roles with the permissons that will be given.
     $permissions_info = array(
-      'vsite admin' => array(
-      ),
       'content editor' => array(
-        "update any $type content" => TRUE,
+        "update any $type content",
       ),
     );
 
+    // Go through the roles and set the appropriate permissions.
     foreach ($og_roles as $rid => $name) {
-
-      if (!in_array($name, $permissions_info)) {
+      if (!array_key_exists($name, $permissions_info)) {
         continue;
       }
 
