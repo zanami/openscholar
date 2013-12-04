@@ -1182,7 +1182,6 @@ function os_files_file_view($file, $view_mode, $langcode) {
           '#options' => array('attributes' => array(), 'html' => NULL),
         ),
       ),
-      'file' => $file->content['file'], //include embedded video
     );
   } else {
     $content = array(
@@ -1210,10 +1209,31 @@ function os_files_file_view($file, $view_mode, $langcode) {
   if (isset($file->sv_list_of_images) && $file->sv_list_of_images) {
     TRUE;
   }  
+  if ($file->type == 'image') {
+    switch ($view_mode) {
+      case 'full':
+        $content['file-info']['file'] = $file->content['file']; //include embedded image
+        break;
+  
+      case 'teaser':
+        $content['file-info']['file'] = $file->content['file']; //include embedded image
+        $content['file-info']['file']['#style_name'] = 'os_files_small';
+        break;
+    }
+  }
   
   //add video thumb/colorbox for list of video
-  if (@$file->sv_list_of_videos && $view_mode == 'teaser') {    
-    $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
+  //if (@$file->sv_list_of_videos) {
+  if ($file->type == 'video') {
+    switch ($view_mode) {
+      case 'full':    
+        $content['file-info']['file'] = $file->content['file']; //include embedded video
+        break;
+    
+      case 'teaser':
+        $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
+        break;
+    }
   }
   
   $file->content['file'] = $content;
@@ -1884,7 +1904,7 @@ function os_files_add_fields($type) {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 600,
+            'trim_length' => 160,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => 0,

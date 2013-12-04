@@ -56,7 +56,7 @@ class os_sv_list_file extends os_sv_list {
       'sort_oldest' => t('Oldest'),
       'sort_alpha' => t('Alphabetical'),
       'sort_filesize' => t('Filesize'),
-      //usage?
+      'sort_random' => t('Random'),
     );
   }
   
