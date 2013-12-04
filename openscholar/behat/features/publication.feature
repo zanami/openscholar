@@ -27,16 +27,14 @@ Feature:
   Scenario: Verify publications are sorted by the creation date of the node.
     Given I am logging in as "john"
      When I visit "john/publications"
-     Then I should see "Goblet of Fire" comes before "Prisoner of Azkaban"
-      And I should see "Prisoner of Azkaban" comes before "Chamber of Secrets"
-      And I should see "Chamber of Secrets" comes before "Philosopher's Stone"
+     Then I should see the publication "Goblet of Fire" comes before "Prisoner of Azkaban"
+      And I should see the publication "Prisoner of Azkaban" comes before "Chamber of Secrets"
+      And I should see the publication "Chamber of Secrets" comes before "Philosophers Stone"
 
   @api @nofar
   Scenario: Verify sticky publications appear first on each section.
     Given I am logging in as "john"
-      And I edit the node "Philosopher's Stone"
-      And I check the box "edit-sticky"
-      And I press "Save"
+      And I make the node "Philosophers Stone" sticky
      When I visit "john/publications"
-      And I should see "Philosopher's Stone" comes before "Goblet of Fire"
+      And I should see the publication "Philosophers Stone" comes before "Goblet of Fire"
 

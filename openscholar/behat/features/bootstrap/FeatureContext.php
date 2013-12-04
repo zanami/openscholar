@@ -1249,15 +1249,22 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Then /^I should see "([^"]*)" comes before "([^"]*)"$/
+   * @Then /^I should see the publication "([^"]*)" comes before "([^"]*)"$/
    */
-  public function iShouldSeeComesBefore($first, $second) {
-    $page = $this->getSession()->getPage();
-    print $page->getContent();
-    $element = 1;//$page->find('xpath', "//td[contains(., '{$feed_item}')]//..//td//a[contains(., 'Edit')]");
+  public function iShouldSeeThePublicationComesBefore($first, $second) {
+    $page = $this->getSession()->getPage()->getContent();
 
-    if (!$element) {
-      throw new Exception('NOT FOUND');
+    $pattern = '/<div class="biblio-category-section">[\s\S]*' . $first . '[\s\S]*' . $second . '[\s\S]*<\/div><div class="biblio-category-section">/';
+    if (!preg_match($pattern, $page)) {
+      throw new Exception("The publication '$first' does not come before the publication '$second'.");
     }
+  }
+
+  /**
+   * @Given /^I make the node "([^"]*)" sticky$/
+   */
+  public function iMakeTheNodeSticky($title) {
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'$title'"));
+    $this->invoke_code('os_migrate_demo_make_node_sticky', array("'$nid'"));
   }
 }
