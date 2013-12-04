@@ -15,7 +15,6 @@ function os_reader_user_default_permissions() {
     'name' => 'create feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
     ),
     'module' => 'node',
@@ -35,7 +34,6 @@ function os_reader_user_default_permissions() {
     'name' => 'delete own feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
     ),
     'module' => 'node',
@@ -46,7 +44,6 @@ function os_reader_user_default_permissions() {
     'name' => 'edit any feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -56,7 +53,6 @@ function os_reader_user_default_permissions() {
     'name' => 'edit own feed content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
     ),
     'module' => 'node',

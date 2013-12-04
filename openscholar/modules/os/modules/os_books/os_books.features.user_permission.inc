@@ -26,7 +26,6 @@ function os_books_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'book',
   );
@@ -37,7 +36,6 @@ function os_books_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'book',
   );
@@ -48,7 +46,6 @@ function os_books_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -59,7 +56,6 @@ function os_books_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'book',
   );
@@ -79,7 +75,6 @@ function os_books_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'node',
   );

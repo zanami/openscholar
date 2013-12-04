@@ -16,7 +16,6 @@ function os_presentations_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -36,7 +35,6 @@ function os_presentations_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -46,7 +44,6 @@ function os_presentations_user_default_permissions() {
     'name' => 'edit any presentation content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -57,7 +54,6 @@ function os_presentations_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
-      4 => 'content editor',
     ),
     'module' => 'node',
   );
