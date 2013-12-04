@@ -337,10 +337,15 @@ function os_events_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'registration',
           'settings' => array(),
-          'type' => 'registration_form',
-          'weight' => '10',
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
+        'links' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
         ),
         'sidebar_teaser' => array(
           'label' => 'above',

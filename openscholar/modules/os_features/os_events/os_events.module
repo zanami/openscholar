@@ -603,10 +603,8 @@ function os_events_form_registration_form_alter(&$form, &$form_state) {
   $form['actions']['submit']['#value'] = t('Signup');
 
   $form['event_register'] = array(
-    '#type' => 'fieldset',
+    '#type' => 'container',
     '#title' => t('Sign up for this event'),
-    '#collapsible' => TRUE,
-    '#collapsed' => empty($form_state['input']),
 
     'field_full_name' => $form['field_full_name'],
     'field_department' => $form['field_department'],
