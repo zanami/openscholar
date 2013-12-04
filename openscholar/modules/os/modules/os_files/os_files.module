@@ -1071,7 +1071,7 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
   media_attach_browser_js($element['selected_file']);
 
   $element['#element_validate'] = array(
-    'os_files_file_validate'
+    'os_files_file_element_validate',
   );
 
   return $element;
@@ -1111,7 +1111,7 @@ function os_files_preprocess_media_views_view_media_browser(&$vars) {
  * It prevents a file from being referenced if it's not used anywhere else
  * This is dumb, so we ditch it.
  */
-function os_files_file_validate(&$element, &$form_state) {
+function os_files_file_element_validate(&$element, &$form_state) {
 
   $clicked_button = end($form_state['triggering_element']['#parents']);
   if ($clicked_button != 'remove_button' && !empty($element['fid']['#value'])) {
