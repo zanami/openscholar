@@ -7,6 +7,7 @@ class os_sv_list extends os_boxes_default {
   protected $bundle;
   
   public function __construct() {
+    parent::__construct();
     $this->entity_type = $this->bundle = NULL;
   }
   
@@ -51,8 +52,7 @@ class os_sv_list extends os_boxes_default {
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
     $this->options = ($this->options) ? array_merge($this->options_defaults(), $this->options) : $this->options_defaults();
-    drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting'); //why am I here? @TODO
-  
+    
     $form['#submit'] = array('os_sv_list_form_submit');
     $form['#attached'] = array(
       'js' => array(libraries_get_path('select2') . '/select2.js'),
