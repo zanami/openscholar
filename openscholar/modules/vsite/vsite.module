@@ -2600,8 +2600,8 @@ function vsite_redirect_load_by_source_alter(&$redirects, $source, $context) {
     // Assumes there is no vsite mismatch, then looks for mismatch conditions.
     $vsite_mismatch = FALSE;
     // If we're inside a vsite, a mismatch is when the group ID(s) is different.
-    if ($vsite = vsite_get_vsite() && $vsite->id != $gid) {
-        $vsite_mismatch = TRUE;
+    if (($vsite = vsite_get_vsite()) && $vsite->id != $gid) {
+      $vsite_mismatch = TRUE;
     }
     // Otherwise, outside a vsite, any group ID value means it's a mismatch.
     else if ($gid !== FALSE) {

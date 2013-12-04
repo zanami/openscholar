@@ -98,6 +98,17 @@ class os_boxes_media extends os_boxes_default {
       }
 
       $render = file_view($file, 'full');
+      if (isset($file->oembed) && $file->oembed['provider'] == 'box') {
+        $render['file']['#attached']['js'][] = drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_media/os_boxes_media.box_oembed.js';
+        $render['file']['#attached']['js'][] = array(
+          'type' => 'setting',
+          'data' => array(
+            'osBoxesOembedMedia' => array(
+              $this->delta => $file->oembed['widget_type']
+            )
+          )
+        );
+      }
       $block['content'] = drupal_render($render);
     }
     else {
