@@ -46,6 +46,13 @@ function os_menu() {
     'access arguments' => array('administer content'),
   );
 
+  $items['admin/config/openscholar/force-logout'] = array(
+    'title' => 'logout',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_confirm_logout_users'),
+    'access arguments' => array('administer site configuration'),
+  );
+
   $items['page_not_found'] = array(
     'type' => MENU_CALLBACK,
     'file' => 'os.pages.inc',
@@ -94,7 +101,13 @@ function os_menu_alter(&$items) {
     $items['user']['page callback'] = 'os_user_page';
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
+    $items['user']['access callback'] = 'os_in_read_mode';
   }
+
+  // Check if the site is in read-only mode which means login is disabled.
+  $items['user/login']['access callback'] = 'os_in_read_mode_login';
+  $items['user/register']['access callback'] = 'os_in_read_mode_register';
+
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
     unset($items['node']);
@@ -110,13 +123,38 @@ function os_menu_alter(&$items) {
 }
 
 /**
+ * Access callback; Returns FALSE if login is disabled.
+ */
+function os_in_read_mode() {
+  return !variable_get('os_readonly_mode', FALSE);
+}
+
+/**
+ * Access callback; Returns FALSE if login is disabled.
+ */
+function os_in_read_mode_login() {
+  return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
+}
+
+/**
+ * Access callback; Returns FALSE if login is disabled.
+ */
+function os_in_read_mode_register() {
+  return user_register_access() && !variable_get('os_readonly_mode', FALSE);
+}
+
+/**
  * Implements hook_entity_info_alter().
  *
  * Adds a view mode to nodes for use in sidebar widgets
  */
 function os_entity_info_alter(&$info) {
   $info['node']['view modes']['sidebar_teaser'] = array(
-    'label' => 'Sidebar Teaser',
+    'label' => t('Sidebar Teaser'),
+    'custom settings' => TRUE,
+  );
+  $info['node']['view modes']['title'] = array(
+    'label' => t('Title'),
     'custom settings' => TRUE,
   );
 }
@@ -763,7 +801,7 @@ function os_form_alter(&$form, &$form_state, $form_id) {
       }
     }
     $form['actions']['cancel'] = array(
-      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel' ))),
+      '#markup'   => l(t('Cancel'), $destination, array('attributes' => array('class' => 'form-cancel'))),
       '#weight' => 99,
     );
   }
@@ -824,6 +862,26 @@ function os_settings_form($form_state) {
     '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
+  );
+
+  $form['os_read_only'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Read-only mode'),
+    '#weight' => 99,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['os_read_only']['os_logout_users'] = array(
+    '#type' => 'item',
+    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/force-logout'),
+  );
+
+  $form['os_read_only']['os_readonly_mode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable user login page'),
+    '#default_value' => variable_get('os_readonly_mode', FALSE),
+    '#description' => t('Disable users from logging into the site. '),
   );
 
   return system_settings_form($form);
@@ -1473,6 +1531,56 @@ function _os_get_install_status() {
 }
 
 /**
+ * @function os_entity_view_modes
+ * 
+ * Gets white list of view modes for entities by bundle
+ *
+ * @param string $entity_type
+ *   (Optional) Only return view modes for entities of this type.
+ *
+ * @param string $bundle
+ *   (Optional) Only return view modes for entities of this type and bundle (requires entity_type)
+ *
+ * @return array $info
+ *   Associative array, keyed by entity type, then bundle.  Lists view 
+ *   modes available to that bundle.  
+ */
+function os_entity_view_modes($entity_type = NULL, $bundle = NULL) {
+  $info = &drupal_static(__FUNCTION__, array());
+  
+  if (empty($info)) {
+    foreach (module_implements(__FUNCTION__) as $module) {
+      if ($entity_view_modes = module_invoke($module, __FUNCTION__)) {
+        $info = array_merge_recursive($info, $entity_view_modes);
+      }
+    }
+    drupal_alter(__FUNCTION__, $info);
+  }
+  
+  if (!$entity_type) {
+    return $info;
+  }  
+  
+  if (!$bundle) {
+    return $info[$entity_type];
+  }
+  
+  return (isset($info[$entity_type][$bundle])) ? $info[$entity_type][$bundle] : NULL;
+}
+
+/**
+ * Implements os_entity_view_modes_alter
+ * 
+ * Adds full and teaser display to all os content types, except feed_importer.
+ */
+function os_os_entity_view_modes_alter(&$info) {
+  $bundles = array_keys(os_get_bundles(TRUE));
+  $bundles = array_diff($bundles, array('feed_importer'));
+  $bundle_views = array_fill_keys($bundles, array('full', 'teaser', 'title'));
+  $info['node'] = array_merge_recursive($info['node'], $bundle_views);
+}
+
+/**
  * Gets all app information from installed OpenScholar apps.
  *
  * An OpenScholar "app" is a features module that invokes hook_os_app_info().
@@ -1652,7 +1760,10 @@ function os_views_query_alter(&$view, &$query) {
     $exclude = array_merge($exclude, $info['nodetypes']);
   }
 
-  $query->add_where(key($query->where), 'node.type', $exclude, 'not in');
+  // Alter the query only if there are node types to be excluded.
+  if (!empty($exclude)) {
+    $query->add_where(key($query->where), 'node.type', $exclude, 'NOT IN');
+  }
 }
 
 /**
@@ -1726,6 +1837,30 @@ function os_field_widget_options_select_form_alter(&$element, &$form_state, $con
     ),
   );
 
+  // Hide the select list if a vocabulary is empty.
+  if ($element['#field_name'] == 'og_vocabulary' && count($element['#options']) == 1) {
+    $element['#access'] = FALSE;
+  }
+
+  // Handle special characters correctly.
+  foreach ($element['#options'] as &$option) {
+    if (!is_array($option)) {
+      // Single option.
+      $option = html_entity_decode($option, ENT_QUOTES);
+      continue;
+    }
+
+    // Array of options.
+    foreach ($option as &$option_value) {
+      $option_value = html_entity_decode($option_value, ENT_QUOTES);
+    }
+  }
+
+  if ($element['#cardinality'] != 1) {
+    // Multiple select, remove the "None" option.
+    unset($element['#options']['_none']);
+  }
+
   return $element;
 }
 
@@ -1751,7 +1886,6 @@ function os_select2_widget_after_build($element, &$form_state) {
   return $element;
 }
 
-
 /**
  * Clear the internal page_cache when a cache clear is executed before any other external cache is cleared
  *
@@ -1767,4 +1901,58 @@ function os_expire_cache($urls, $wildcards, $object_type, $object) {
 	  // Clear cached page data.
 	  cache_clear_all($absolute_url, 'cache_page', $wildcard);
   }
+}
+
+/**
+ * Logging out all non-admin logged-in users.
+ *
+ * Keep admin and all users with "administer site configuration" logged.
+ */
+function os_logout_logged_users() {
+  // Get all user ids for users with "administer site configuration"
+  // permission.
+  $query = db_select('users', 'u')->fields('u');
+  $query->join('users_roles', 'ur', 'u.uid = ur.uid');
+  $query->join('role_permission', 'rp', 'ur.rid = rp.rid');
+  $user_result = $query->condition('rp.permission','administer site configuration')
+    ->execute()
+    ->fetchAllAssoc('uid');
+
+  if (empty($user_result)) {
+    return;
+  }
+
+  // Get a list of no-admin logged users with no "administer site configuration"
+  // permission.
+  $result = db_select('sessions', 's')
+    ->fields('s')
+    ->condition('uid', 1, '<>')
+    ->condition('uid', array(array_keys($user_result)), 'NOT IN')
+    ->execute()
+    ->fetchAllAssoc('uid');
+
+  if (empty($result)) {
+    return;
+  }
+
+  // Logout all logged users.
+  db_delete('sessions')
+    ->condition('uid', array_keys($result), 'IN')
+    ->execute();
+}
+
+/**
+ * Page argument; passed to drupal_get_form() in os_menu().
+ */
+function os_confirm_logout_users($form, $form_state) {
+  return confirm_form($form, t('Logout all non-admin users'), 'admin/config/openscholar/openscholar', t('Are you sure you want to logout all non-admin users?'));
+}
+
+/**
+ * Submit handler; For logging out users.
+ */
+function os_confirm_logout_users_submit($form, &$form_state) {
+  os_logout_logged_users();
+  drupal_set_message(t('All non-admin users have been logged out.'));
+  $form_state['redirect'] = 'admin/config/openscholar/openscholar';
 }

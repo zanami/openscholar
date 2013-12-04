@@ -136,6 +136,17 @@ function hwpi_basetheme_process_node(&$vars) {
 }
 
 /**
+ * Implements hook_field_display_ENTITY_TYPE_alter().
+ */
+function hwpi_basetheme_field_display_node_alter(&$display, $context) {
+  if ($context['entity']->type == 'event' && $context['instance']['field_name'] == 'field_date') {
+    if (($context['view_mode'] != 'full') || (isset($context['entity']->os_sv_list_box) && $context['entity']->os_sv_list_box)) {
+      $display['settings']['format_type'] = 'os_time';
+    }
+  }
+}
+
+/**
  * Alter the results of node_view().
  */
 function hwpi_basetheme_node_view_alter(&$build) {

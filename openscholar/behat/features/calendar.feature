@@ -36,5 +36,5 @@ Feature: Testing OpenScholar calendar page.
   @api
   Scenario: Testing the events export in iCal format.
     Given I visit "john/calendar/export.ics"
-     Then I search for ".field_date.0@"
-
+     Then I look for ".field_date.0@"
+    
