@@ -10,14 +10,13 @@
 function os_dataverse_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu_data:data
-  $menu_links['primary-menu_data:data'] = array(
+  // Exported menu link: primary-menu:data
+  $menu_links['primary-menu:data'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'data',
     'router_path' => 'data',
     'link_title' => 'Data',
     'options' => array(
-      'identifier' => 'primary-menu_data:data',
     ),
     'module' => 'system',
     'hidden' => 0,

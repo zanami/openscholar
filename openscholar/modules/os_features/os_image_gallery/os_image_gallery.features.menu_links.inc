@@ -10,14 +10,13 @@
 function os_image_gallery_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu_galleries:galleries
-  $menu_links['primary-menu_galleries:galleries'] = array(
+  // Exported menu link: primary-menu:galleries
+  $menu_links['primary-menu:galleries'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'galleries',
     'router_path' => 'galleries',
     'link_title' => 'Galleries',
     'options' => array(
-      'identifier' => 'primary-menu_galleries:galleries',
     ),
     'module' => 'system',
     'hidden' => 0,

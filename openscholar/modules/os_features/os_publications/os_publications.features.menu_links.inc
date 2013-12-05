@@ -11,7 +11,7 @@ function os_publications_menu_default_menu_links() {
   $menu_links = array();
 
   // Exported menu link: primary-menu_publications:publications
-  $menu_links['primary-menu_publications:publications'] = array(
+  $menu_links['primary-menu:publications'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'publications',
     'router_path' => 'publications',
@@ -20,7 +20,6 @@ function os_publications_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
-      'identifier' => 'primary-menu_publications:publications',
     ),
     'module' => 'menu',
     'hidden' => 0,

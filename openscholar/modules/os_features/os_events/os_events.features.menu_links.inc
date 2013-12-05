@@ -10,8 +10,8 @@
 function os_events_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu_calendar:calendar
-  $menu_links['primary-menu_calendar:calendar'] = array(
+  // Exported menu link: primary-menu:calendar
+  $menu_links['primary-menu:calendar'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'calendar',
     'router_path' => 'calendar',
@@ -20,7 +20,6 @@ function os_events_menu_default_menu_links() {
       'attributes' => array(
         'title' => 'Calendar of events',
       ),
-      'identifier' => 'primary-menu_calendar:calendar',
     ),
     'module' => 'menu',
     'hidden' => 0,

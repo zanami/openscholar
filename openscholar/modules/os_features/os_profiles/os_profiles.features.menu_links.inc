@@ -10,8 +10,8 @@
 function os_profiles_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu_people:people
-  $menu_links['primary-menu_people:people'] = array(
+  // Exported menu link: primary-menu:people
+  $menu_links['primary-menu:people'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'people',
     'router_path' => 'people',
@@ -20,7 +20,6 @@ function os_profiles_menu_default_menu_links() {
       'attributes' => array(
         'title' => 'List of people',
       ),
-      'identifier' => 'primary-menu_people:people',
     ),
     'module' => 'system',
     'hidden' => 0,
