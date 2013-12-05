@@ -394,6 +394,8 @@ function os_update_7023() {
  * Reverts `os` module's preset taking into account theme changes.
  */
 function os_update_7024() {
+  $output = "Updating spaces_overrides for sites using presets with modified default themes.\n\n";
+
   // These were the previous values for variable `default_theme` in presets:
   $variable = 'theme_default';
   $preset_themes_original = array(
@@ -404,57 +406,142 @@ function os_update_7024() {
   // This is the new theme that all 3 presets now use:
   $new_default = 'hwpi_classic';
 
-  // Saves a new spaces_override variable value on all affected sites.
-  foreach ($preset_themes_original as $preset => $old_default) {
-    list($need_override, $can_revert) = _os_update_preset_modify_query($preset, 'variable', $variable, $old_default, $new_default);
-    foreach ($need_override as $gid) {
-      $vsite = vsite_get_vsite($gid);
-      if ($vsite) {
-        //$vsite->controllers->variable->set($variable, $old_default);
-      }
-    }
-    foreach ($can_revert as $gid) {
-      $vsite = vsite_get_vsite($gid);
-      if ($vsite) {
-        //$vsite->controllers->variable->set($variable, NULL);
-      }
-    }
-  }
-
-  // Safely reverts the spaces_presets feature component without any change.
+  // Reverts spaces_presets -- things are temporarily broken!
   $revert = array(
     'os' => array(
       'spaces_presets',
     ),
   );
-  //features_revert($revert);
+  features_revert($revert);
+
+  // Saves a new spaces_override variable values on all affected sites.
+  foreach ($preset_themes_original as $preset => $old_default) {
+    $output .= "Preset: {$preset}: ";
+    $add_override = _os_update_7024_add_override($preset, 'variable', $variable, $old_default);
+    foreach ($add_override as $gid) {
+      $vsite = vsite_get_vsite($gid);
+      if ($vsite) {
+        $vsite->controllers->variable->set($variable, $old_default);
+      }
+    }
+    $count = count($add_override);
+    $output .= "{$count} overrides added, ";
+
+    $remove_override = _os_update_7024_remove_override($preset, 'variable', $variable, $new_default);
+    foreach ($remove_override as $gid) {
+      $vsite = vsite_get_vsite($gid);
+      if ($vsite) {
+        // Since this matches defaults, this will delete the override.
+        // @see spaces_controller::set()
+        $vsite->controllers->variable->set($variable, $new_default);
+      }
+    }
+    $count = count($remove_override);
+    $output .= "{$count} removed.\n";
+    $output .= ' + (' . (empty($add_override) ? '' : implode(',', $add_override)) . ")\n";
+    $output .= ' - (' . (empty($remove_override) ? '' : implode(',', $remove_override)) . ")\n";
+    unset($add_override);
+    unset($remove_override);
+  }
+
+  return $output;
 }
 
 /**
- * Returns site IDs for all sites which would be affected by a preset change.
+ * Returns site IDs for all sites which require a new override record.
  *
  * @see os_update_7024()
  */
-function _os_update_preset_modify_query($preset, $object_type, $object_id, $old, $new) {
+function _os_update_7024_add_override($preset, $object_type, $object_id, $old) {
   // First finds all vsites with this spaces preset type.
-  $all_gids = array();
+  $all_preset_gids = _query_so_ids('variable', 'spaces_preset_og', $preset);
 
-  // Then finds all unique site IDs with an an override of the specific object.
+  // Finds all unique site IDs with an override of the specific object.
+  // Excludes overrides that match the old value.
+  $overridden_non_old_default = _query_so_ids($object_type, $object_id, $old, '!=', $all_preset_gids);
+
+  // Candidates for sites that will need a new override record.
+  // Considers sites such that:
+  // - They have this spaces_preset (from $all_preset_gids above)
+  // - They have an overridden value for 'theme_default'
+  // - Their overridden value != $old
+  $uses_old_default_theme = array_diff($all_preset_gids, $overridden_non_old_default);
+
+  // Removes sites such that:
+  // - There is an overridden value for 'os_appearance_{$old}_flavor'
+  // - The value of 'os_appearance_{$old}_flavor' != "default".
+  $flavor_object_id = "os_appearance_{$old}_flavor";
+  $uses_non_old_default_flavor = _query_so_ids($object_type, $flavor_object_id, 'default', '!=');
+
+  // Determines which sites need a new override record.
+  // Sites such that:
+  // - They use the old default theme (from $uses_old_default_theme above)
+  // - They use the old default theme flavor.
+  $add_override = array_diff($uses_old_default_theme, $uses_non_old_default_flavor);
+
+  return $add_override;
+}
+
+/**
+ * Returns site IDs for all sites whose existing override can be deleted.
+ *
+ * @see os_update_7024()
+ */
+function _os_update_7024_remove_override($preset, $object_type, $object_id, $new) {
+  // First finds all vsites with this spaces preset type.
+  $all_preset_gids = _query_so_ids('variable', 'spaces_preset_og', $preset);
+
+  // Finds all unique site IDs with an override that will no longer be needed.
+  // Only includes overrides that match the new default value.
+  $uses_new_default_theme = _query_so_ids($object_type, $object_id, $new, '=', $all_preset_gids);
+
+  // Removes sites that use a non-default theme value.
+  $flavor_object_id = "os_appearance_{$new}_flavor";
+  $uses_non_new_default_flavor = _query_so_ids($object_type, $flavor_object_id, 'default', '!=');
+  $remove_override = array_diff($uses_new_default_theme, $uses_non_new_default_flavor);
+
+  return $remove_override;
+}
+
+/**
+ * Helper function; returns a spaces overrides db_select $query.
+ *
+ * @param $object_type
+ * @param $object_id
+ * @param bool $value
+ * @param string $compare
+ * @param mixed $within
+ */
+function _query_so_ids($object_type, $object_id, $value = FALSE, $compare = '=', $within = FALSE) {
+  $ids = array();
+  if ($within !== FALSE && is_array($within)) {
+    if (empty($within)) {
+      return array();
+    }
+  }
+
+  // Initialize a new spaces_overrides query for this object type and id.
   $query = db_select('spaces_overrides', 'so');
   $query->fields('so', array('id'));
   $query->condition('object_type', $object_type);
   $query->condition('object_id', $object_id);
-  $query->condition('value', $new, '!=');
-  $unaffected_gids = array();
 
-  $need_override = array_diff($all_gids, $unaffected_gids);
+  // Applies optional value condition.
+  if ($value && in_array($compare, array('=', '!='))) {
+    $length = strlen($value);
+    $value = "s:{$length}:\"{$value}\";";
+    $query->condition('value', $value, $compare);
+  }
 
-  $query = db_select('spaces_overrides', 'so');
-  $query->fields('so', array('id'));
-  $query->condition('object_type', $object_type);
-  $query->condition('object_id', $object_id);
-  $query->condition('value', $new, '=');
-  $can_revert = array();
+  // Applies "within" id array condition.
+  if ($within) {
+    $query->condition('id', $within, 'IN');
+  }
 
-  return array($need_override, $can_revert);
+  $result = $query->execute();
+  while ($record = $result->fetchAssoc()) {
+    $ids[] = $record['id'];
+  }
+
+  return $ids;
 }
