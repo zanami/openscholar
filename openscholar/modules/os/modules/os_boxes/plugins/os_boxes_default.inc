@@ -25,7 +25,9 @@ abstract class os_boxes_default extends boxes_box {
    * Implementation of boxes_content::options_defaults().
    */
   public function options_defaults() {
-    return array();
+    return array(
+      'make_embedable' => false,
+    );
   }
 
   /**
@@ -33,6 +35,13 @@ abstract class os_boxes_default extends boxes_box {
    */
   public function options_form(&$form_state) {
     $form = array();
+
+    $form['make_embedable'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Make Embedable'),
+      '#description' => t('Allow this widget to be embedded on other websites.'),
+      '#default_value' => $this->options['make_embedable'],
+    );
 
     $form['advanced'] = array(
       '#type' => 'fieldset',
@@ -55,6 +64,9 @@ abstract class os_boxes_default extends boxes_box {
     $block['title'] = $title;
     $block['delta'] = $this->delta;
     $block['content'] = '';
+    if (!empty($this->options['make_embedable'])) {
+      $block['embed_link'] = true;
+    }
     return $block;
   }
 }
