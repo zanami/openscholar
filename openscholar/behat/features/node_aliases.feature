@@ -38,12 +38,12 @@ Feature:
   @api
   Scenario: Verify it is impossible to use a duplicate purl in node custom path.
     Given I am logging in as "john"
-      And I visit "john/cp/build/taxonomy/science_personal1/add"
-      And I fill in "Name" with "John Second Custom Alias"
+      And I visit "john/node/add/blog"
+      And I fill in "Title" with "John Second Custom Alias"
       And I uncheck the box "Generate automatic URL alias"
-      And I fill in "edit-path-alias" with "john/john/john/jfk-duplicate-terms"
+      And I fill in "edit-path-alias" with "john/john/john/jfk-duplicate-purl"
      When I press "edit-submit"
-     Then I verify the alias of term "John Second Custom Alias" is "john/jfk-duplicate-terms"
+     Then I verify the alias of node "John Second Custom Alias" is "john/jfk-duplicate-purl"
 
   @api
   Scenario: Testing shared domain with two different vsite and the same node
@@ -57,3 +57,16 @@ Feature:
      When I visit "http://lincoln.local/lincoln/about"
      Then I should see "Page about lincoln"
       And I verify the url is "lincoln.local"
+
+  @api
+  Scenario: Verify it is impossible to use aliases if they exist without the purl.
+    Given I am logging in as "john"
+      And I visit "john/node/add/blog"
+      And I fill in "Title" with "This Node Should Not Exist"
+      And I uncheck the box "Generate automatic URL alias"
+      And I fill in "edit-path-alias" with "user"
+      And I press "edit-submit"
+      And I should see "The alias is already in use."
+     When I fill in "edit-path-alias" with "blog"
+      And I press "edit-submit"
+     Then I should see "The alias is already in use."

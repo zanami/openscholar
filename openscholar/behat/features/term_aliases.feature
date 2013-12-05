@@ -44,3 +44,16 @@ Feature:
       And I fill in "edit-path-alias" with "obama/obama/obama/four-more-duplicate-terms"
      When I press "edit-submit"
      Then I verify the alias of term "Obama Second Custom Alias Term" is "obama/four-more-duplicate-terms"
+
+  @api
+  Scenario: Verify it is impossible to use aliases if they exist without the purl.
+    Given I am logging in as "john"
+      And I visit "john/cp/build/taxonomy/science_personal1/add"
+      And I fill in "Name" with "This Term Should Not Exist"
+      And I uncheck the box "Generate automatic URL alias"
+      And I fill in "edit-path-alias" with "user/login"
+      And I press "edit-submit"
+      And I should see "The alias is already in use."
+     When I fill in "edit-path-alias" with "classes"
+      And I press "edit-submit"
+     Then I should see "The alias is already in use."

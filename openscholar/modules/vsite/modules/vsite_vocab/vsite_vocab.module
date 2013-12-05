@@ -251,9 +251,13 @@ function vsite_vocab_redirect_to_group_vocabularies($form, &$form_state) {
  */
 function vsite_vocab_form_taxonomy_form_vocabulary_validate($element, &$form_state) {
   // Manually create the machine name.
-  $machine_name = strtolower($form_state['values']['name']);
-  $machine_name = substr(preg_replace('@[^a-z0-9_]+@', '', $machine_name), 0, 32);
-
+  $machine_name = $form_state['values']['name'];
+  if(module_exists('transliteration')) {
+	  $machine_name = transliteration_get($machine_name);
+  }
+  $machine_name = substr(preg_replace('@[^a-z0-9_]+@', '', strtolower($machine_name)), 0, 32);
+  // Avoid empty machine name when transliteration not enabled or fails
+  $machine_name = empty($machine_name) ? variable_get('vsite_vocab_name_default', 'vocab') : $machine_name;
   // Start iterating over machine names until we hit one that doesn't
   // exist yet.
   $i = 1;
@@ -263,7 +267,6 @@ function vsite_vocab_form_taxonomy_form_vocabulary_validate($element, &$form_sta
   }
   form_set_value($element, $machine_name, $form_state);
 }
-
 /**
  * Implements hook_field_attach_view_alter().
  */
