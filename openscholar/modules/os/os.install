@@ -387,3 +387,20 @@ function os_update_7022() {
 function os_update_7023() {
   features_revert(array('os' => array('spaces_presets')));
 }
+
+/**
+ * Enable expire module
+ */
+function os_update_7024() {
+  module_enable(array('expire'));
+  //Setup defaults
+  variable_set('expire_debug', '0');
+  variable_set('expire_file_actions', array(1 => '1', 2 => '2'));
+  variable_set('expire_file_file', '1');
+  variable_set('expire_handler_file', 'OSExpireFile');
+  variable_set('expire_handler_node', 'OSExpireNode');
+  variable_set('expire_node_actions', array(1 => '1', 2 => '2', 3 => '3'));
+  variable_set('expire_node_node_page', '1');
+  variable_set('expire_status', '1');
+}
+
