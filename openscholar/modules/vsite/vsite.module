@@ -2414,7 +2414,21 @@ function _vsite_form_alias_validate($entity_type, $entity, $path) {
 
   $query->range(0, 1);
 
-  return !$query->execute()->fetchField();
+  if ($query->execute()->fetchField()) {
+    // Alias already in use.
+    return FALSE;
+  }
+
+  // Although the alias was not found in alias table, it might still be taken
+  // by something more global. For example, paths like 'PURL/user/login' should
+  // not be valid. We must make sure that the requested path is not in use
+  // with and without the purl prefix.
+  $alias_without_purl = substr($alias, (strpos($alias, '/') + 1));
+  if (menu_get_item($alias) || menu_get_item($alias_without_purl)) {
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 /**
