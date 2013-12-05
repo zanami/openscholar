@@ -10,6 +10,7 @@
  */
 function os_files_install() {
   _os_files_clean_up_fields();
+  _os_files_update_add_description_field();
 }
 
 /**
@@ -604,6 +605,13 @@ function os_files_update_7008(&$sb) {
  * Adds a generic description field to all file types
  */
 function os_files_update_7009($sb) {
+  _os_files_update_add_description_field();
+}
+
+/**
+ * Adds a generic description field to all file types
+ */
+function _os_files_update_add_description_field() {
   $entities = entity_get_info();
 
   foreach ($entities['file']['bundles'] as $type => $info) {

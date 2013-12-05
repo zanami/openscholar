@@ -22,3 +22,19 @@ Feature:
      When I edit the node "The Little Prince"
      Then I should see "Authors"
       And I should see "Enter a single name per line"
+
+  @api
+  Scenario: Verify publications are sorted by the creation date of the node.
+    Given I am logging in as "john"
+     When I visit "john/publications"
+     Then I should see the publication "Goblet of Fire" comes before "Prisoner of Azkaban"
+      And I should see the publication "Prisoner of Azkaban" comes before "Chamber of Secrets"
+      And I should see the publication "Chamber of Secrets" comes before "Philosophers Stone"
+
+  @api
+  Scenario: Verify sticky publications appear first on each section.
+    Given I am logging in as "john"
+      And I make the node "Philosophers Stone" sticky
+     When I visit "john/publications"
+      And I should see the publication "Philosophers Stone" comes before "Goblet of Fire"
+

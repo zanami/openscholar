@@ -261,7 +261,17 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
   // Prepares the node form for alias preview with some markup customizations.
-  $form['#after_build'][] = 'vsite_node_form_after_build';
+  $form['#after_build'][] = 'vsite_node_term_form_after_build';
+  drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for taxonomy form.
+ *
+ * Hides the comment settings form from the VSites.
+ */
+function vsite_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id){
+  $form['#after_build'][] = 'vsite_node_term_form_after_build';
   drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
 }
 
@@ -272,48 +282,113 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
  *
  * @see vsite_form_node_form_alter()
  */
-function vsite_node_form_after_build($form) {
+function vsite_node_term_form_after_build($form, &$form_state) {
   if (!module_exists('vsite_domain')) {
     return $form;
   }
-  // Only continues if we have a node object.
-  if (!isset($form['#node'])) {
+  // Only continues if we have the entity object.
+  if (empty($form['#node']) && empty($form['#term'])) {
     return $form;
   }
   // Only continues to modify the node form for group content, not group types.
   // We don't want to modify alias values on vsite nodes.
-  $node = $form['#node'];
-  if (!og_is_group_content_type('node', $node->type) || og_is_group_type('node', $node->type)) {
-    return $form;
+  if (!empty($form['#node'])) {
+    $node = $form['#node'];
+    if (!og_is_group_content_type('node', $node->type) || og_is_group_type('node', $node->type)) {
+      return $form;
+    }
   }
+
   // Prepares a field prefix to store this site's path.
   $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
   // Adds the prefix to the custom alias field on the node form.
   $form['path']['alias']['#field_prefix'] = "$field_prefix/";
-  // Removes part of the default description provided by pathauto.
-  // Originally it advises users to "use relative paths",
-  // but the field prefix makes that clear.
-  // Also, it originally says "don't use trailing slash or it won't work",
-  // but this type of input is automatically removed via javascript.
-  // @see vsite.pathauto.js
-  $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
+
+  if (!empty($node)) {
+    // Removes part of the default description provided by pathauto.
+    // Originally it says "use relative paths", but the field prefix makes
+    // that clear.
+    // Also, it originally says "don't use trailing slash or it won't work",
+    // but this type of input is automatically removed via javascript.
+    // @see vsite.pathauto.js
+    $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
+  }
+
   // If this is a vsite...
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
-    if ($original = $form['path']['alias']['#value']) {
-      // For sites without custom domains, aliases will include the purl.
-      // Removes the purl from the editable field value
-      // in order to match user expectations: the purl must in the alias,
-      // so the user should not appear to have the option to remove it.
-      // Even if the purl is not part of the field value, it will be added.
-      // @see _vsite_alter_node_path_settings()
-      if (strpos($original, "{$purl}/") == 0) {
-        $new = substr($original, strlen($purl) + 1);
-        $form['path']['alias']['#value'] = $new;
+    if ($current_alias = &$form['path']['alias']['#value']) {
+      // VSites that use og_spaces must have the purl at the beginning of all
+      // their aliases. The purl is added automatically to every alias.
+      // @see vsite_get_entity_alias().
+      // In the UI, the alias field is prefixed with the purl to show that it
+      // cannot be removed, so the input element itself should not include the
+      // purl. This means that we must remove the purl from the field's value.
+
+      while (strpos($current_alias, "$purl/") === 0) {
+        $current_alias = substr($current_alias, strlen($purl) + 1);
       }
     }
   }
+
+  // Our validation handler comes first because we need to alter the alias and
+  // add the purl prefix before the alias is validated to prevent collisions.
+  array_unshift($form['#validate'], 'vsite_form_alias_validate');
+
   return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_form_path_admin_form_alter(&$form, $form_state) {
+  $form['#validate'][] = 'vsite_path_admin_validate';
+}
+
+/**
+ * Validate handler - verify the path is not already taken.
+ */
+function vsite_path_admin_validate($form, $form_state) {
+  // verify that the user first enter a purl address.
+  $alias = explode('/', $form_state['values']['alias']);
+  $purl = reset($alias);
+
+  if (!vsite_alias_has_purl_at_start($purl)) {
+    form_set_error('alias', t('The url of the vsite is missing.'));
+  }
+
+  // Check that the alias is not taken in the vsite.
+  $source = explode('/', $form_state['values']['source']);
+  $entity_type = strpos('node/', $form_state['values']['source']) === 0 ? 'node' : 'taxonomy_term';
+  $entity_id = end($source);
+
+  if (!$entity = entity_load_single($entity_type, $entity_id)) {
+    // The entity is not exists.
+    return;
+  }
+
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['alias'])) {
+    form_set_error('alias', t('Already in use.'));
+  }
+}
+
+/**
+ * Check if the alias has a purl at the start.
+ *
+ * @param $alias
+ *  The alias of the node/taxonomy term,
+ * @return bool
+ *  True or false if the alias has PURL at the beginning.
+ */
+function vsite_alias_has_purl_at_start($alias) {
+  $alias = explode('/', $alias);
+  $purl = reset($alias);
+
+  $query = db_select('purl')
+    ->fields('purl')
+    ->condition('value', $purl);
+
+  return $query->execute()->rowCount();
 }
 
 /**
@@ -1806,23 +1881,7 @@ function vsite_mail_alter(&$message){
 }
 
 /**
- * Implements hook_node_presave().
- */
-function vsite_node_presave($node) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_node_path_settings($node);
-}
-
-/**
- * Implements hook_taxonomy_term_presave().
- */
-function vsite_taxonomy_term_presave($term) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_term_path_settings($term);
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_BASE_FORM_ID_alter() for user_profile_form.
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
   if (!empty($form['account']['roles']['#options'])) {
@@ -2490,54 +2549,186 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
 }
 
 /**
+ * Implements hook_node_presave().
+ */
+function vsite_node_presave($node) {
+  if (!empty($node->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
+
+  $node->path['alias'] = vsite_get_entity_alias('node', $node);
+}
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ */
+function vsite_taxonomy_term_presave($term) {
+  if (!empty($term->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
+
+  $term->path['alias'] = vsite_get_entity_alias('taxonomy_term', $term);
+}
+
+/**
+ * Validate handler; Prevent duplicate aliases.
+ */
+function vsite_form_alias_validate($form, &$form_state) {
+  $entity_type = $form['#entity_type'];
+
+  switch ($entity_type) {
+    case 'node':
+      // Nodes must have an audience field in order to generate their alias.
+      $entity = $form_state['node'];
+      $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
+      break;
+
+    default:
+    case 'taxonomy_term':
+      // Terms must have a vid in order to generate their alias.
+      $entity = $form_state['term'];
+      $entity->vid = $form_state['values']['vid'];
+      break;
+  }
+
+  // Verify the path is not in use.
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['path'])) {
+    form_set_error('path', t('The alias is already in use.'));
+  }
+}
+
+/**
+ * Helper function for validate the if the alias is already exists.
+ *
+ * @param $entity_type
+ *  The entity type: node, taxonomy ter,
+ * @param $entity
+ *  The entity type.
+ * @param $path
+ *  The path of the entity.
+ *
+ * @return bool
+ *  True or false if the alias is already in use.
+ */
+function _vsite_form_alias_validate($entity_type, $entity, $path) {
+  // Entities must have a path in order to generate their alias.
+  $entity->path = $path;
+
+  list($id) = entity_extract_ids($entity_type, $entity);
+  if ($id) {
+    // Get entity source path, e.g 'node/23'.
+    $uri = entity_uri($entity_type, $entity);
+    $source = $uri['path'];
+  }
+
+  // Get alias.
+  $alias = vsite_get_entity_alias($entity_type, $entity);
+
+  // Ensure that the alias does not exist yet.
+  $query = db_select('url_alias')
+    ->fields('url_alias')
+    ->condition('alias', $alias)
+    ->condition('language', $entity->path['language']);
+
+  if ($id) {
+    // Prevent checking self.
+    $query->condition('source', $source, '<>');
+  }
+
+  $query->range(0, 1);
+
+  return !$query->execute()->fetchField();
+}
+
+/**
  * Implements hook_pathauto_alias_alter().
  */
 function vsite_pathauto_alias_alter(&$alias, $context) {
-  // Only continues if we are outside of a vsite.
-  if ($vsite = vsite_get_vsite()) {
+  // Get entity type.
+  $entity_type = FALSE;
+  if (!empty($context['data']['node'])) {
+    $entity_type = 'node';
+    $entity = $context['data']['node'];
+  }
+  elseif (!empty($context['data']['term'])) {
+    $entity_type = 'taxonomy_term';
+    $entity = $context['data']['term'];
+  }
+
+  if (!$entity_type) {
+    // Not node or term, no need to prefix.
     return;
   }
 
-  // Only continues if we have a valid group content and alias to modify.
-  $node = $context['data']['node'];
-  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
-    return;
+  // Prefix alias with purl.
+  $alias = vsite_get_entity_alias($entity_type, $entity, $alias);
+}
+
+/**
+ * Set the alias of group content entities (e.g. nodes, terms, etc'.).
+ *
+ * @param $entity_type
+ *  The entity type.
+ * @param $entity
+ *  The entity object.
+ * @param $alias
+ *  Optional; The alias to set, in case it isn't present on the the entity.
+ *
+ * @return null|string
+ *  The alias of the entity.
+ */
+function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
+  if (empty($alias) && empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
+    // Get custom alias.
+    $alias = $entity->path['alias'];
   }
-  if (og_is_group_type('node', $node->type)) {
-    return;
-  }
+
   if (empty($alias)) {
-    return;
+    // No alias.
+    return NULL;
   }
 
-  // Only continues if we can get a vsite group ID.
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
-  $gid = isset($gids[0]) ? $gids[0] : NULL;
-  if ($gid === NULL) {
-    return;
+  if (!in_array($entity_type, array('taxonomy_term', 'node'))) {
+    return $alias;
   }
 
-  // Only continues if we can get a non-empty purl value from the vsite.
-  // Note: We don't need to set $reset = TRUE here because it was already reset.
-  // @see vsite_add_node()
-  $vsite = vsite_get_vsite($gid);
+  if ($entity_type == 'node') {
+    list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+    if (!og_is_group_content_type($entity_type, $bundle)) {
+      // Not a group content.
+      return $alias;
+    }
+
+    // Get vsite from node.
+    $wrapper = entity_metadata_wrapper($entity_type, $entity);
+    $gid = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier();
+    $vsite = vsite_get_vsite($gid);
+  }
+  else {
+    // Taxonomy term. Get vsite from its vocabulary.
+    $vid = $entity->vid;
+    if (!$og_vocab_relation = og_vocab_relation_get($vid)) {
+      // Not a group content.
+      return $alias;
+    }
+    $gid = $og_vocab_relation->gid;
+    $vsite = vsite_get_vsite($gid);
+  }
+
+  // Get purl.
   $purl = vsite_get_purl($vsite);
 
-  // Only continues if we were able to find a purl value.
-  if (empty($purl)) {
-    return;
+  // Prevent purl duplication in alias - remove all purls prefixes.
+  while (strpos($alias, "$purl/") === 0) {
+    $alias = substr($alias, strlen($purl) + 1);
   }
 
-  // Only continues if the purl isn't yet present as a prefix.
-  $purl_present = (bool) (strpos($alias, "$purl/") === 0);
-  if ($purl_present) {
-    return;
-  }
+  // Add purl to alias.
+  $alias = $purl . '/' . $alias;
 
-  // Prefixes the alias with the purl.
-  // Note: This occurs BEFORE pathauto_alias_uniquify().
-  $alias = "$purl/$alias";
+  return $alias;
 }
 
 /**
