@@ -54,7 +54,23 @@ function cp_user_menu() {
     'file' => 'cp_user.pages.inc',
   );
 
+  $items['cp/users/permissions'] = array(
+    'title' => 'Permissions',
+    'page callback' => 'cp_user_vsite_permissions',
+    'access callback' => 'cp_user_admin_access',
+  );
+
   return $items;
+}
+
+/**
+ * Show limited options for VSite permissions.
+ */
+function cp_user_vsite_permissions() {
+  $vsite = vsite_get_vsite();
+
+  module_load_include('inc', 'og_ui', 'og_ui.admin');
+  return drupal_get_form('og_ui_admin_permissions', 'node', $vsite->id, $vsite->group->type);
 }
 
 /**
