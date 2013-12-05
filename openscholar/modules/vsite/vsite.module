@@ -125,6 +125,93 @@ function vsite_get_purl($vsite = FALSE){
 }
 
 /**
+ * Implements hook_theme_registry_alter().
+ */
+function vsite_theme_registry_alter(&$theme_registry) {
+  $theme_registry['user_admin_roles']['function'] = 'vsite_user_admin_roles';
+}
+
+/**
+ * Don't allow deleting system roles from Roles UI.
+ *
+ * @see theme_user_admin_roles().
+ */
+function vsite_user_admin_roles($variables) {
+  $form = $variables['form'];
+
+  $header = array(t('Name'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
+  foreach (element_children($form['roles']) as $rid) {
+    $name = $form['roles'][$rid]['#role']->name;
+    $row = array();
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+
+    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || in_array($name, $role_names)) {
+      $row[] = t('@name <em>(locked)</em>', array('@name' => $name));
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = '';
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    else {
+      $row[] = check_plain($name);
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = l(t('edit role'), 'admin/people/permissions/roles/edit/' . $rid);
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    $rows[] = array('data' => $row, 'class' => array('draggable'));
+  }
+  $rows[] = array(array('data' => drupal_render($form['name']) . drupal_render($form['add']), 'colspan' => 4, 'class' => 'edit-name'));
+
+  drupal_add_tabledrag('user-roles', 'order', 'sibling', 'role-weight');
+
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'user-roles')));
+  $output .= drupal_render_children($form);
+
+  return $output;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Allow overrding the global roles and permissions.
+ */
+function vsite_form_spaces_features_form_alter(&$form, $form_state) {
+  if (!user_access('administer group') || !$vsite = vsite_get_vsite()) {
+    // Not in a VSite, or user doesn't have access.
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $vsite->id);
+  $form[OG_DEFAULT_ACCESS_FIELD] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Get full access on VSite roles and permissions'),
+    '#default_value' => $wrapper->{OG_DEFAULT_ACCESS_FIELD}->value(),
+    '#vsite_id' => $vsite->id,
+  );
+
+  $form['#submit'][] = 'vsite_form_spaces_features_form_submit';
+}
+
+/**
+ * Submit handler; Set the "OG roles and permissions" field.
+ */
+function vsite_form_spaces_features_form_submit($form, &$form_state) {
+  $vsite_id = $form[OG_DEFAULT_ACCESS_FIELD]['#vsite_id'];
+  $wrapper = entity_metadata_wrapper('node', $vsite_id);
+
+  $value = $form_state['values'][OG_DEFAULT_ACCESS_FIELD];
+  if ($wrapper->{OG_DEFAULT_ACCESS_FIELD}->value() == $value) {
+    return;
+  }
+
+  $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set($value);
+  $wrapper->save();
+}
+
+/**
  * Implements hook_library_alter().
  */
 function vsite_library_alter(&$libraries, $module) {
@@ -456,16 +543,95 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ * Deny access to create node outside of a VSite for non-privileged user. Also
+ * deny access to creating groups from within a VSite (e.g.
+ * john/node/add/personal) as they are handled via site/register.
+ */
+function vsite_node_access($node, $op, $account) {
+  if ($op != 'create' || user_access('administer group')) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // @todo: Just remove from the permissions list?
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (in_array($node,  $group_types)) {
+    // Deny direct access to creating groups.
+    return NODE_ACCESS_DENY;
+  }
+
+  if (!vsite_get_vsite()) {
+    // Deny access when outside of VSite.
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
  * Implements hook_custom_theme().
+ *
+ * - Make sure the themes are properly initialized.
+ * - Make sure that a user with the site-wide "vsite admin" role, isn't granted
+ *   related permissions if outside of their own VSite.
  */
 function vsite_custom_theme(){
   _vsite_purl_init();
 
-  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
-    //If the space is enabled correctly then set the custom theme
-    ctools_include('themes', 'os');
-    $theme = os_theme_get();
-    return $theme;
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  if (module_exists('cp') && cp_use_cp_theme()) {
+    // Use CP's own theme.
+    return;
+  }
+
+  // The VSite is enabled correctly so set the custom theme.
+  ctools_include('themes', 'os');
+  $theme = os_theme_get();
+  return $theme;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove site-wide system roles from the "People" page.
+ */
+function vsite_form_user_admin_account_alter(&$form, $form_state) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $keys = array(
+      t('Add a role to the selected users') => 'add',
+      t('Remove a role from the selected users') => 'remove',
+    );
+
+    foreach ($keys as $key => $value) {
+      unset($form['options']['operation']['#options'][$key][$value . '_role-' . $role->rid]);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_presave().
+ *
+ * Safe guard against saving a user with the "vsite admin" site-wide role.
+ */
+function vsite_user_presave(&$edit, $account, $category) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    if (!empty($edit['roles'][$role->rid])) {
+      throw new Exception('User object cannot be saved with "vsite admin" role.');
+    }
   }
 }
 
@@ -748,6 +914,7 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
 
       if ($type == 'group') {
         vsite_attach_fields_to_group($bundle);
+        vsite_set_og_permissions($bundle);
       }
       else {
         // Group content.
@@ -763,6 +930,46 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
 }
 
 /**
+ * Set permissions for vsite user, vsite admin and content editor.
+ *
+ * @param $bundle
+ *   The node type of the group.
+ */
+function vsite_set_og_permissions($bundle) {
+  $og_roles = og_roles('node', $bundle);
+  $group_contents = og_get_all_group_content_bundle();
+
+  // Don't set permissions for these node types.
+  $exclude_types = array(
+    'feed_importer',
+    'blog_import,'
+  );
+
+  // Go through the group contents of type node.
+  foreach ($group_contents['node'] as $type => $value) {
+    if (in_array($type, $exclude_types)) {
+      continue;
+    }
+
+    // The roles with the permissons that will be given.
+    $permissions_info = array(
+      'content editor' => array(
+        "update any $type content",
+      ),
+    );
+
+    // Go through the roles and set the appropriate permissions.
+    foreach ($og_roles as $rid => $name) {
+      if (!array_key_exists($name, $permissions_info)) {
+        continue;
+      }
+
+      og_role_grant_permissions($rid, $permissions_info[$name]);
+    }
+  }
+}
+
+/**
  * Adds group content fields to bundle.
  *
  * @param $entity_type
@@ -773,6 +980,9 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  // OG-Audience field should be required, so node_access() will take VSites
+  // into account.
+  $og_field['instance']['required'] = TRUE;
   $og_field['instance']['display'] = array(
     'default' => array(
       'type' => 'hidden'
@@ -802,6 +1012,7 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
 function vsite_attach_fields_to_group($bundle){
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
   og_create_field(VSITE_ACCESS_FIELD, 'node', $bundle);
+  og_create_field(OG_DEFAULT_ACCESS_FIELD, 'node', $bundle);
 
   if (! field_info_field('field_site_address')) {
     // field_site_address.
@@ -1672,6 +1883,19 @@ function vsite_mail_alter(&$message){
  * Implements hook_form_BASE_FORM_ID_alter() for user_profile_form.
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
+  if (!empty($form['account']['roles']['#options'])) {
+    // Remove site-wide system roles.
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+    foreach ($role_names  as $role_name) {
+      $role = user_role_load_by_name($role_name);
+      unset($form['account']['roles']['#options'][$role->rid]);
+    }
+  }
+
   if (! array_key_exists('redirect_from_reset', $form)) {
     $form['redirect_from_reset'] = array(
       '#type' => 'hidden',

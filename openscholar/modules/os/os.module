@@ -620,7 +620,17 @@ function os_preprocess_page(&$vars) {
         }
       }
     }
-    if ($printed && node_access('create', $type)) {
+
+    // Determine node create access.
+    if (module_exists('vsite')) {
+      $vsite = vsite_get_vsite();
+      $create_access = $vsite ? og_user_access('node', $vsite->id, "create $type content") : FALSE;
+    }
+    else {
+      $create_access = node_access('create', $type);
+    }
+
+    if ($printed && $create_access) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => $_node_types->names[$type],
