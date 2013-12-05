@@ -10,6 +10,7 @@
         $('#os_sv_list_content_type').change(function() {
           var $sortby = $('#edit-sort-by');
           var $display_style = $('#edit-display');
+          var $vocabs = $('#edit-vocabs');
   
           var content_type = $('#os_sv_list_content_type').val();
           var more_link = $('#more_link_div input[name="more_link"]');
@@ -26,7 +27,7 @@
           });
           
           //uncheck if selected option is no longer valid.
-          $sortby.children('option:checked:hidden').attr('selected', false);
+          $sortby.children('option:checked').filter(':disabled').attr('selected', false);
   
           
           //apply content_type appropriate sorts when ct changes
@@ -37,10 +38,31 @@
           });
           
           //uncheck if selected option is no longer valid.
-          $display_style.children('option:checked:hidden').attr('selected', false);
-  
+          $display_style.children('option:checked').filter(':disabled').attr('selected', false);
+
           // swap out the more link url.
           more_link.val(defaults[content_type]);
+          
+          
+          
+          //apply content type to available vocabs
+          var hidden = true;
+          for (var vid in Drupal.settings.sv_list_vocab_bundles) {
+            var $div = $vocabs.find('.form-item-vocabs-vocab-' + vid);
+            if ((content_type == 'all') || $.inArray(content_type, Drupal.settings.sv_list_vocab_bundles[vid]) != -1) {
+              $div.show();
+              hidden = false
+            } else {
+              $div.hide();
+            }
+          }
+
+          //show/hide the vocab label if there are any remaining vocabs
+          if (hidden) {
+            $vocabs.hide();
+          } else {
+            $vocabs.show();
+          }
         });
   
         // perform the change callback once now.

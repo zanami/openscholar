@@ -68,10 +68,10 @@ class os_sv_list extends os_boxes_default {
           array('type' => 'setting', 'data' => array('entity_view_modes' => $this->entity_view_modes())),
         ),
       ),
-      '#ajax' => array(
-        'callback' => 'os_sv_list_vocabs_content_type',
-        'wrapper' => 'vocabs',
-      ),
+//       '#ajax' => array(
+//         'callback' => 'os_sv_list_vocabs_content_type',
+//         'wrapper' => 'vocabs',
+//       ),
     );
     
     $form['display'] = array(
