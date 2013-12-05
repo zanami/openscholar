@@ -460,6 +460,39 @@ function os_migrate_demo_get_node_id($title, $return = FALSE) {
 }
 
 /**
+ * Get the role of a user in a group.
+ *
+ *  @return
+ *    0 - if user is not a member of the group.
+ *    1 - user has a role which is not the role given.
+ *    2 - user has the role given
+ */
+function os_migrate_demo_check_user_role_in_group($name, $role, $group) {
+  $gid = os_migrate_demo_get_node_id($group, TRUE);
+  $user = user_load_by_name($name);
+
+  if (!og_is_member('node', $gid, 'user', $user)) {
+     print(0);
+  }
+
+  $user_roles = og_get_user_roles('node', $gid, $user->uid);
+
+  if (!in_array($role, $user_roles)) {
+    print(1);
+  }
+
+  print(2);
+}
+
+/**
+ * Get a user id.
+ */
+function os_migrate_demo_get_user_by_name($name) {
+  $user = user_load_by_name($name);
+  print($user->uid);
+}
+
+/**
  * Delete a node with a specific title.
  *
  * @param $title

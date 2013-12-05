@@ -17,7 +17,6 @@ include_once ('includes/vsite.inc');
  */
 define('VSITE_PER_USER_DEFAULT', 1);
 
-
 /**
  * Returns the current vsite (space).
  */

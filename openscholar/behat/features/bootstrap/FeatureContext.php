@@ -897,7 +897,6 @@ class FeatureContext extends DrupalContext {
   private function searchForTextUnderElement($text, $container) {
     $page = $this->getSession()->getPage();
     $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//*[contains(., '{$text}')]");
-
     return $element;
   }
 
@@ -920,13 +919,54 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * Searching text under an element with class
+   * Searching a link under an element with class
    */
   private function searchForLinkUnderElement($text, $container) {
     $page = $this->getSession()->getPage();
     $element = $page->find('xpath', "//*[contains(@class, '{$container}')]//a[.='{$text}']");
 
     return $element;
+  }
+
+  /**
+   * @Given /^I give the user "([^"]*)" the role "([^"]*)" in the group "([^"]*)"$/
+   */
+  public function iGiveTheUserTheRoleInTheGroup($name, $role, $group) {
+    $uid = $this->invoke_code('os_migrate_demo_get_user_by_name', array("'{$name}'"));
+
+    return array(
+      new Step\When('I visit "' . $group . '/cp/users/add"'),
+      new Step\When('I fill in "edit-name" with "' . $name . '"'),
+      new Step\When('I press "Add users"'),
+      new Step\When('I visit "' . $group . '/cp/users/edit_membership/' . $uid . '"'),
+      new Step\When('I select the radio button named "edit_role" with value "' . $role . '"'),
+      new Step\When('I press "Save"'),
+    );
+  }
+
+  /**
+   * @Then /^I should verify that the user "([^"]*)" has a role of "([^"]*)" in the group "([^"]*)"$/
+   */
+  public function iShouldVerifyThatTheUserHasRole($name, $role, $group) {
+    $user_has_role = $this->invoke_code('os_migrate_demo_check_user_role_in_group', array("'{$name}'", "'{$role}'","'{$group}'"));
+    if ($user_has_role == 0) {
+      throw new Exception("The user {$name} is not a member in the group {$group}");
+    }
+    elseif ($user_has_role == 1) {
+      throw new Exception("The user {$name} doesn't have the role {$role} in the group {$group}");
+    }
+  }
+
+  /**
+   * @When /^I select the radio button named "([^"]*)" with value "([^"]*)"$/
+   */
+  public function iSelectRadioNamedWithValue($name, $value) {
+    $page = $this->getSession()->getPage();
+    $radiobutton = $page->find('xpath', "//*[@name='{$name}'][@value='{$value}']");
+    if (!$radiobutton) {
+      throw new Exception("A radio button with the name {$name} and value {$value} was not found on the page");
+    }
+    $radiobutton->selectOption($value, FALSE);
   }
 
   /**
@@ -1065,6 +1105,18 @@ class FeatureContext extends DrupalContext {
     $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
     return array(
       new Step\When('I visit "node/' . $nid . '/edit?destination=' . $type . '"'),
+    );
+  }
+
+  /**
+   * @When /^I delete the node of type "([^"]*)" named "([^"]*)"$/
+   */
+  public function iDeleteTheNodeOfTypeNamedUsingContextualLink($type, $title) {
+    $title = str_replace("'", "\'", $title);
+    $nid = $this->invoke_code('os_migrate_demo_get_node_id', array("'{$title}'"));
+    return array(
+      new Step\When('I visit "node/' . $nid . '/delete?destination=' . $type . '"'),
+      new Step\When('I press "Delete"'),
     );
   }
 
