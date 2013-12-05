@@ -51,7 +51,7 @@ function cp_menu() {
     'file' => 'cp.admin.inc',
     'access arguments' => array('administer site configuration'),
   );
-  
+
   $items["cp/build"] = array(
     'title' => 'Apps',
     'page callback' => 'drupal_get_form',
@@ -184,6 +184,22 @@ function cp_menu() {
     ),
   );
 
+  // Allow user to add URL redirects.
+  if (module_exists('redirect')) {
+    $path = drupal_get_path('module', 'redirect');
+    $items['cp/redirect/add'] = array(
+      'type' => MENU_LOCAL_ACTION,
+      'title' => 'Add URL redirect',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('redirect_edit_form'),
+      'access callback' => TRUE,
+      'access callback' => 'redirect_access',
+      'access arguments' => array('create', 'redirect'),
+      'file' => 'redirect.admin.inc',
+      'file path' => $path,
+    );
+  }
+
   return $items;
 }
 
@@ -265,7 +281,7 @@ function cp_custom_theme() {
 
 /**
  * @function cp_use_cp_theme()
- * 
+ *
  * Returns TRUE/FALSE, whether or not to use cp theme.
  */
 function cp_use_cp_theme() {
@@ -377,8 +393,8 @@ function cp_get_setting_forms() {
  * Allows user to switch between full and mini cp menus on the front view
  */
 function cp_cp_settings() {
-  $setting = array();
-  $setting['cp_admin_menu'] = array(
+  $settings = array();
+  $settings['cp_admin_menu'] = array(
     'group' => array(
       '#title' => t('Admin Menu'),
       '#id' => 'admin-menu',
@@ -392,12 +408,50 @@ function cp_cp_settings() {
     ),
   );
 
-  return $setting;
+  if(module_exists('vsite') && module_exists('expire')){
+
+    $settings['cp_clear_cache'] = array(
+      'group' => array(
+        '#title' => t('Maintenance'),
+        '#id' => 'os-maintenance',
+      ),
+      'form' => array(
+        '#type' => 'submit',
+        '#value' => t('Clear site cache'),
+        '#suffix' => "<div class=\"description\">".t('Clear the cache to so anonymous users see the most recent updates. This removes the normal ~15 minute delay for new/updated posts to show up in lists but can slow the site down for your visitors.')."</div>",
+        '#submit' => array('cp_clear_site_cache'),
+      ),
+    );
+  }
+
+  return $settings;
 }
 
 /**
- * @function cp_site_sitewide_contact() 
- * 
+ * Submit handler; Clear a vsite's page cache.
+ */
+function cp_clear_site_cache() {
+  $vsite = vsite_get_vsite();
+  if (!$vsite) {
+    return FALSE;
+  }
+  ctools_include('cache','os');
+
+  //Internal URL's are all that work with wildcards, use <front> for the sites front page
+  //The expire module uses "|wildcard" for wildcards, go figure
+  $wildcard = "<front>|wildcard";
+
+  // Clear the cache at the front page of this vsite
+  // Ex. http://host/site1/
+  //     http://mysite.com/
+  os_remove_cache($wildcard);
+
+  drupal_set_message(t('Site cache is clearing.'));
+}
+
+/**
+ * @function cp_site_sitewide_contact()
+ *
  * Menu callback page for cp/support.
  */
 function cp_site_sitewide_contact() {
@@ -408,17 +462,17 @@ function cp_site_sitewide_contact() {
     $loading = drupal_get_path('theme', 'os_basetheme') . '/images/throbber.gif';
     $image = theme('image', array('path' => $loading));
     $description =<<<EOF
-<p>Every question you ask adds to the power of our OpenScholar Community. Type 
-  your question below and click the Continue button. You will need to login or 
+<p>Every question you ask adds to the power of our OpenScholar Community. Type
+  your question below and click the Continue button. You will need to login or
   create an account to finish posting.</p>
-<p>If you don't want to post publicly to the community, click Send Privately</p>     
+<p>If you don't want to post publicly to the community, click Send Privately</p>
 EOF;
     return array(
       'div' => array(
         '#type' => 'markup',
         '#markup' => '<div class="getsat-widget" id="getsat-widget-'.$id.'"><span class="description">'. $description . '</span><span class="gsfn-loading">Loading...'.$image.'</span></div>',
 
-      
+
       ),
       '#attached' => array(
         'js' => array(
@@ -431,9 +485,9 @@ EOF;
       )
     );
   }
-  
+
   //no getsatisfaction form, so use the original one.
-  
+
   module_load_include('inc', 'contact', 'contact.pages');
   // Check to make sure the site email address are set.
   $results = db_query('SELECT cid, recipients FROM {contact} WHERE category = :category',array(':category'=>'Website feedback'))->fetchAssoc();
@@ -469,4 +523,55 @@ function _cp_app_settings_page_title($feature_name) {
 
   $title = t('@app Settings', array('@app' => $feature_title));
   return $title;
+}
+
+/**
+ * Implements hook_form_alter() for redirect_edit_form.
+ *
+ * Modifies purl values if the form is being loaded inside a vsite.
+ *
+ * Stores the vsite's purl modifier as a hidden field, updates the "From" field
+ * prefix and makes additional UI modifications.
+ *
+ * @see purl.admin.inc
+ * @see purl_redirect_edit_validate()
+ */
+function cp_form_redirect_edit_form_alter(&$form, &$form_state, $form_id) {
+  // Only alters the form if we are on a vsite.
+  $vsite = vsite_get_vsite();
+  if (empty($vsite)) {
+    return;
+  }
+
+  // Determines this vsite's purl modifier value.
+  if (empty($form['purl']['modifier']['#default_value'])) {
+    $default_value = "{$vsite->purl_provider}:{$vsite->id}";
+  }
+  else {
+    $default_value = $form['purl']['modifier']['#default_value'];
+  }
+
+  // Prevents form from loading if the purl modifier is not an available choice.
+  if (!array_key_exists($default_value, $form['purl']['modifier']['#options'])) {
+    drupal_set_message(t('Sorry, no redirects may be added at this time.'), 'error');
+    $form = array();
+    return;
+  }
+
+  // Stores this vsite's purl modifier as a hidden value.
+  $form['purl']['modifier']['#value'] = $default_value;
+  $form['purl']['#type'] = 'hidden';
+
+  // Prefixes the "From" field with this vsite's front page full path.
+  $vsite_base_url = rtrim(url('<front>', array('absolute' => TRUE)), '/');
+  $form['source']['#field_prefix'] = "{$vsite_base_url}/";
+
+  // Hides the default fieldset that provides settings like 3xx status code.
+  $form['advanced']['#type'] = 'hidden';
+
+  // Updates field descriptions to replace Drupal-specific wording.
+  $description = t('Enter any non-existing path from your site to trigger a redirect on. Fragment anchors (e.g. #anchor) are not allowed');
+  $form['source']['#description'] = $description;
+  $description = t('Enter any existing destination URL (like http://example.com/) to redirect to.');
+  $form['redirect']['#description'] = $description;
 }
