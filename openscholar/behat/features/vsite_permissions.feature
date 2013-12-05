@@ -2,26 +2,26 @@ Feature:
   Testing vsite related permissions.
 
 # Authenticated user
-  @api
+  @api @foo
   Scenario: Testing authenticated user can't access the control panel
     Given I am logging in as "demo"
      When I go to "cp/build/features"
      Then I should get a "403" HTTP response
 
-  @api
+  @api @foo
   Scenario: Testing authenticated user can't access unpublished content
     Given I am logging in as "michelle"
      When I go to "john/blog/unpublish-blog"
      Then I should get a "403" HTTP response
 
 # Vsite Member
-  @api
+  @api @foo
   Scenario: Testing vsite member can't create a node outside of the vsite context.
     Given I am logging in as "michelle"
      When I go to "node/add"
      Then I should get a "403" HTTP response
 
-  @api
+  @api @foo
   Scenario: Testing vsite member can create content only in the vsite he is a member of.
     Given I am logging in as "alexander"
      When I go to "edison/node/add/blog"
@@ -62,3 +62,12 @@ Feature:
      When I visit "john/publications"
      Then I should not see the link "Links" under "ctools-dropdown-link-wrapper"
 
+# content editor
+  @api
+  Scenario: Testing content editor can edit any content on his group.
+    Given I am logging in as "john"
+     When I give the user "klark" the role "content editor" in the group "john"
+      And I click "Log out"
+      And I am logging in as "klark"
+      And I edit the node "First blog"
+     Then I should get a "200" HTTP response
