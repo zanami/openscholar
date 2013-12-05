@@ -63,9 +63,7 @@ function os_events_menu() {
     'title arguments' => array('node', 2),
     'page callback' => 'registration_register_page',
     'page arguments' => array('node', 2),
-
-    /// TODO: Should we keep the access callback?
-    'access callback' => TRUE,
+    'access arguments' => array('create event_signup_simple registration'),
   );
 
   return $items;
