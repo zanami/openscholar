@@ -404,3 +404,17 @@ function os_update_7024() {
   variable_set('expire_status', '1');
 }
 
+/**
+ * Reverts feature module `vsite_preset` component: spaces_presets.
+ *
+ * Note: although this might "belong" in vsite_preset.install, it needs to run
+ * AFTER os_update_7025().
+ */
+function os_update_7026() {
+  $revert = array(
+    'vsite_preset' => array(
+      'spaces_presets',
+    ),
+  );
+  features_revert($revert);
+}
