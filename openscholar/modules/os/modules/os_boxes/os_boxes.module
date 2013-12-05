@@ -321,8 +321,40 @@ function os_boxes_block_view_alter(&$array, &$block) {
  * Removes default boxes controls; we use our own.
  */
 function os_boxes_preprocess_boxes_box(&$variables) {
-  if(isset($variables['block']) && isset($variables['block']['controls'])){
+  if (isset($variables['block']) && isset($variables['block']['controls'])){
     unset($variables['block']['controls']);
+  }
+
+  if (!empty($variables['block']['make_embedable'])) {
+    $output = array(
+      '#attached' => array(
+        'library' => array(
+          'system', 'ui.tabs',
+        )
+      ),
+      'embed-links-button' => array(
+        '#markup' => l('&lt;embed&gt;>', '', array('external' => true, 'attributes' => array('class' => array('os-embed-link')))),
+      ),
+      'embed-links' => array(
+        '#theme' => 'links',
+        'links' => array(
+          'inline' => array(),
+          'iframe' => array(),
+          'oembed' => array(),
+        ),
+        'inline' => array(
+
+        ),
+        'iframe' => array(
+
+        ),
+        'oembed' => array(
+
+        ),
+      )
+    );
+
+    $variables['block']['content'] .= drupal_render($output);
   }
 }
 
