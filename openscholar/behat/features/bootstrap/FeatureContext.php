@@ -949,7 +949,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldVerifyThatTheUserHasRole($name, $role, $group) {
     $user_has_role = $this->invoke_code('os_migrate_demo_check_user_role_in_group', array("'{$name}'", "'{$role}'","'{$group}'"));
-    if ($user_has_role == 1) {
+    if ($user_has_role == 0) {
       throw new Exception("The user {$name} is not a member in the group {$group}");
     }
     elseif ($user_has_role == 1) {
@@ -964,7 +964,7 @@ class FeatureContext extends DrupalContext {
     $page = $this->getSession()->getPage();
     $radiobutton = $page->find('xpath', "//*[@name='{$name}'][@value='{$value}']");
     if (!$radiobutton) {
-      throw new Exception("foo");
+      throw new Exception("A radio button with the name {$name} and value {$value} was not found on the page");
     }
     $radiobutton->selectOption($value, FALSE);
   }

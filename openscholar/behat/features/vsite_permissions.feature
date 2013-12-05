@@ -22,7 +22,7 @@ Feature:
      Then I should get a "403" HTTP response
 
   @api
-  Scenario: Testing vsite member can create content only in the vsite he is a member of.
+  Scenario: Testing vsite member can create content only in the vsite they are member of.
     Given I am logging in as "alexander"
      When I go to "edison/node/add/blog"
       And I should get a "200" HTTP response
