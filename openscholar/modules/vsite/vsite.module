@@ -2423,9 +2423,13 @@ function _vsite_form_alias_validate($entity_type, $entity, $path) {
   // by something more global. For example, paths like 'PURL/user/login' should
   // not be valid. We must make sure that the requested path is not in use
   // with and without the purl prefix.
-  $alias_without_purl = substr($alias, (strpos($alias, '/') + 1));
-  if (menu_get_item($alias) || menu_get_item($alias_without_purl)) {
-    return FALSE;
+  if (!empty($alias)) {
+    // When creating a node/term and the user did not fill the alias field then
+    // the alias is empty and if statement will fail.
+    $alias_without_purl = substr($alias, (strpos($alias, '/') + 1));
+    if (menu_get_item($alias) || menu_get_item($alias_without_purl)) {
+      return FALSE;
+    }
   }
 
   return TRUE;
