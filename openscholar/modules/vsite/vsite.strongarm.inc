@@ -166,7 +166,7 @@ function vsite_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_node_access_strict';
-  $strongarm->value = FALSE;
+  $strongarm->value = TRUE;
   $export['og_node_access_strict'] = $strongarm;
 
   $strongarm = new stdClass();

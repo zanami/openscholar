@@ -23,27 +23,9 @@ class os_sv_list_node extends os_sv_list {
     $form = parent::options_form($form_state);
     $defaults = $this->options_defaults();
     
-    $content_types = array(
-      'all' => t('All'),
-    ) + os_get_bundles(array(1));
-    
-    if (isset($content_types['media_gallery'])) {
-      $content_types['image'] = t('Images');
-    }
-    
+    $content_types = array('all' => t('All')) + os_get_bundles(array(1));
+    $form['content']['content_type']['#options'] = $content_types;
 
-    //$content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
-    
-  //  $form['content_type']['#default_value'] = $content_types_value;
-    $form['content_type']['#options'] = $content_types;
-
-    
-    // Defines which display types are content type specific.
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
-      'display_sidebar_teaser' => array('news', 'event', 'person'),
-      'display_links' => array('link'),
-    ))));
-    
     return $form;
   }
   
@@ -67,15 +49,6 @@ class os_sv_list_node extends os_sv_list {
       'sort_oldest' => t('Oldest Post'),
       'sort_alpha' => t('Alphabetical'),
       'sort_random' => t('Random'),
-      
-     
-      // Content type sensitive sorts.  // in the future get these from sv render plugins
-//       'sort_event' => t('Event Date'),
-//       'sort_presentation' => t('Recently Presented'),
-//       'sort_biblio' => t('Year of Publication'),
-//       'sort_news' => t('News Date'),
-  
-      
     );
     
     

@@ -120,8 +120,8 @@ class os_taxonomy_fbt extends os_boxes_default {
 
     $form['offset'] = array(
       '#type' => 'textfield',
-      '#title' => t('Offset'),
-      '#description' => t("The term location that the query start from."),      
+      '#title' => t('Start at'),
+      '#description' => t("By default the list of terms will start at the first one, if you specify (3) for example it will skip the first 3 terms and start the list at the fourth."),
     );
 
     $form['show_empty_terms'] = array(
