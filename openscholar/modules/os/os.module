@@ -217,6 +217,7 @@ function os_block_view($delta = '') {
       ctools_include('menu', 'os');
       $os_menus = os_get_menus();
       if (isset($os_menus[$delta])) {
+        $block['subject'] = NULL;
         $block['content'] = os_menu_tree($delta);
         return $block;
       }
