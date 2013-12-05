@@ -991,7 +991,6 @@ class FeatureContext extends DrupalContext {
     $element->press();
   }
 
-  
   /**
    * @Then /^I delete "([^"]*)" registration$/
    */
