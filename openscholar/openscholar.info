@@ -45,6 +45,7 @@ dependencies[] = pathauto
 dependencies[] = biblio
 dependencies[] = advanced_help
 dependencies[] = jquery_update
+dependencies[] = redirect
 
 ; media / files / wysiwyg
 dependencies[] = imagefield_crop
