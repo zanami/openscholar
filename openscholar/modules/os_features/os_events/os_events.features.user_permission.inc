@@ -71,10 +71,7 @@ function os_events_user_default_permissions() {
     'name' => 'create event content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -141,10 +138,7 @@ function os_events_user_default_permissions() {
     'name' => 'delete own event content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );
@@ -167,7 +161,6 @@ function os_events_user_default_permissions() {
     'name' => 'edit any event content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
     ),
     'module' => 'node',
   );
@@ -189,10 +182,7 @@ function os_events_user_default_permissions() {
     'name' => 'edit own event content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'content editor',
       2 => 'manager',
-      3 => 'vsite admin',
-      4 => 'vsite user',
     ),
     'module' => 'node',
   );

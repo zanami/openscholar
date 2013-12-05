@@ -437,3 +437,158 @@ box-shadow:         0px 1px 1px rgba(50, 50, 50, 0.5);
 	border-radius: 3px;
      padding: 5px 7px;
 }
+
+/* OS FRONTPAGE STYLES */
+body.sitewide-front {
+	background:#FFF;
+	font-size:16px;
+	color:#555;
+	line-height:19px;
+}
+
+.sitewide-front a {
+	text-decoration:underline;
+	color:#007aff;
+
+}
+
+.sitewide-front #header-container {
+    padding: 0;
+    margin-bottom:20px;
+    height:330px;
+    background:url('../images/osfrontpg_headerbg.gif') center bottom no-repeat;
+}
+
+
+.sitewide-front #columns {
+    height:400px;
+    background:url('../images/osfrontpg_headerbg.gif') center 30px no-repeat;
+     margin-bottom: 25px;
+}
+
+
+.sitewide-front .content-left.content-right .at-panel .region.region-content-second {
+    width: 290px;
+    float:right;
+}
+
+.sitewide-front .content-left.content-right .at-panel .region.region-content-first {
+    border-right: none;
+ 
+}
+
+.sitewide-front #page.container,
+.sitewide-front #header,
+.sitewide-front #columns
+ {
+    width: 775px;
+}
+
+
+.sitewide-front #block-boxes-os-front-header {
+	font-size:22px;
+	line-height:26px;
+}
+
+.sitewide-front #block-boxes-os-front-main-support,
+.sitewide-front #block-boxes-os-front-main-configure {
+	border:1px solid #ff9500;
+	width:290px;
+	height: 300px;
+}
+
+
+.sitewide-front .os-title-image {margin-top:10px;}
+
+.sitewide-front #block-boxes-os-front-main-support .block-inner,
+.sitewide-front #block-boxes-os-front-main-configure .block-inner {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.sitewide-front #block-boxes-os-front-main-support .boxes-box-content,
+.sitewide-front #block-boxes-os-front-main-configure .boxes-box-content {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+
+
+.sitewide-front #block-boxes-os-front-main-support h2,
+.sitewide-front #block-boxes-os-front-main-configure h2 {
+	background:#ff9500;
+	padding:8px;
+	color:#FFF;
+	text-align:center;
+}
+
+
+.sitewide-front .block-os-search-db {
+	float:left;
+	margin-top:17px;
+}
+
+.sitewide-front #block-boxes-os-front-create
+ {
+	float:right;;
+}
+
+.sitewide-front #search-block-form .container-inline .form-item .form-text {
+    -moz-border-bottom-colors: #CCCCCC;
+    -moz-border-left-colors: #CCCCCC;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: #CCCCCC;
+    background: #FFFFFF;
+    border-color: #CCCCCC;
+    border-image: none;
+    border-radius: 0;
+    border-style: solid none solid solid;
+    border-width: 1px medium 1px 1px;
+    height: 26px;
+    margin: 0;
+    padding: 1px !important;
+    width: 300px;
+}
+
+
+.sitewide-front #search-block-form #edit-submit
+ {
+    background: url("../images/osfrontpg_searchicon.gif") no-repeat 0 0;
+    height: 30px;
+    width: 30px;
+}
+
+
+.sitewide-front #boxes-box-os_front_sample {
+	text-align:center;
+}
+
+
+.sitewide-front #boxes-box-os_front_sample ul {
+	margin-top:20px;
+	text-align:center;
+}
+
+.sitewide-front #boxes-box-os_front_sample ul li {
+	float:left;
+	list-style:none;
+	margin-left: 52px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
