@@ -10,7 +10,7 @@
 function os_publications_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: primary-menu_publications:publications
+  // Exported menu link: primary-menu:publications
   $menu_links['primary-menu:publications'] = array(
     'menu_name' => 'primary-menu',
     'link_path' => 'publications',

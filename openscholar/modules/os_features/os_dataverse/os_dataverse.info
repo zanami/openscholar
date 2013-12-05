@@ -8,6 +8,6 @@ dependencies[] = os
 features[context][] = dataverse_dataverse
 features[ctools][] = context:context:3
 features[features_api][] = api:2
-features[menu_links][] = primary-menu_data:data
+features[menu_links][] = primary-menu:data
 spaces[types][] = og
 spaces[types][] = site
