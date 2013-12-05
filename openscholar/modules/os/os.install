@@ -387,13 +387,29 @@ function os_update_7022() {
 function os_update_7023() {
   // Removed in favor of os_update_7024().
   //features_revert(array('os' => array('spaces_presets')));
-  return t('Nothing changed. Be sure to run os_update_7024().');
+  return t('Nothing changed. Be sure to run os_update_7025().');
+}
+
+/**
+ * Enable expire module
+ */
+function os_update_7024() {
+  module_enable(array('expire'));
+  //Setup defaults
+  variable_set('expire_debug', '0');
+  variable_set('expire_file_actions', array(1 => '1', 2 => '2'));
+  variable_set('expire_file_file', '1');
+  variable_set('expire_handler_file', 'OSExpireFile');
+  variable_set('expire_handler_node', 'OSExpireNode');
+  variable_set('expire_node_actions', array(1 => '1', 2 => '2', 3 => '3'));
+  variable_set('expire_node_node_page', '1');
+  variable_set('expire_status', '1');
 }
 
 /**
  * Reverts `os` module's preset taking into account theme changes.
  */
-function os_update_7024() {
+function os_update_7025() {
   $output = "Updating spaces_overrides for sites using presets with modified default themes.\n\n";
 
   // These were the previous values for variable `default_theme` in presets:
@@ -417,7 +433,7 @@ function os_update_7024() {
   // Saves a new spaces_override variable values on all affected sites.
   foreach ($preset_themes_original as $preset => $old_default) {
     $output .= "Preset: {$preset}: ";
-    $add_override = _os_update_7024_add_override($preset, 'variable', $variable, $old_default);
+    $add_override = _os_update_7025_add_override($preset, 'variable', $variable, $old_default);
     foreach ($add_override as $gid) {
       $vsite = vsite_get_vsite($gid);
       if ($vsite) {
@@ -427,7 +443,7 @@ function os_update_7024() {
     $count = count($add_override);
     $output .= "{$count} overrides added, ";
 
-    $remove_override = _os_update_7024_remove_override($preset, 'variable', $variable, $new_default);
+    $remove_override = _os_update_7025_remove_override($preset, 'variable', $variable, $new_default);
     foreach ($remove_override as $gid) {
       $vsite = vsite_get_vsite($gid);
       if ($vsite) {
@@ -450,9 +466,9 @@ function os_update_7024() {
 /**
  * Returns site IDs for all sites which require a new override record.
  *
- * @see os_update_7024()
+ * @see os_update_7025()
  */
-function _os_update_7024_add_override($preset, $object_type, $object_id, $old) {
+function _os_update_7025_add_override($preset, $object_type, $object_id, $old) {
   // First finds all vsites with this spaces preset type.
   $all_preset_gids = _query_so_ids('variable', 'spaces_preset_og', $preset);
 
@@ -485,9 +501,9 @@ function _os_update_7024_add_override($preset, $object_type, $object_id, $old) {
 /**
  * Returns site IDs for all sites whose existing override can be deleted.
  *
- * @see os_update_7024()
+ * @see os_update_7025()
  */
-function _os_update_7024_remove_override($preset, $object_type, $object_id, $new) {
+function _os_update_7025_remove_override($preset, $object_type, $object_id, $new) {
   // First finds all vsites with this spaces preset type.
   $all_preset_gids = _query_so_ids('variable', 'spaces_preset_og', $preset);
 
@@ -504,19 +520,28 @@ function _os_update_7024_remove_override($preset, $object_type, $object_id, $new
 }
 
 /**
- * Helper function; returns a spaces overrides db_select $query.
+ * Helper function; returns an array of OG Group IDs.
  *
  * @param $object_type
+ *   i.e. 'variable'
  * @param $object_id
+ *   i.e. 'theme_default'
  * @param bool $value
+ *   i.e. 'hwpi_classic'
  * @param string $compare
+ *   one of '=' or '!='
  * @param mixed $within
+ *   An array of OG group IDs to check against.
+ *
+ * @return array $ids
+ *   An array of int IDs matching the parameter constraints.
  */
 function _query_so_ids($object_type, $object_id, $value = FALSE, $compare = '=', $within = FALSE) {
+  // Returns an empty array if an empty $within array was passed.
   $ids = array();
   if ($within !== FALSE && is_array($within)) {
     if (empty($within)) {
-      return array();
+      return $ids;
     }
   }
 
@@ -545,3 +570,4 @@ function _query_so_ids($object_type, $object_id, $value = FALSE, $compare = '=',
 
   return $ids;
 }
+
