@@ -43,7 +43,7 @@ Feature:
       And I uncheck the box "Generate automatic URL alias"
       And I fill in "edit-path-alias" with "john/john/john/jfk-duplicate-purl"
      When I press "edit-submit"
-     Then I verify the alias of term "John Second Custom Alias" is "john/jfk-duplicate-purl"
+     Then I verify the alias of node "John Second Custom Alias" is "john/jfk-duplicate-purl"
 
   @api
   Scenario: Testing shared domain with two different vsite and the same node
