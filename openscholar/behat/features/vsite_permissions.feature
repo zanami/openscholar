@@ -2,26 +2,26 @@ Feature:
   Testing vsite related permissions.
 
 # Authenticated user
-  @api @foo
+  @api
   Scenario: Testing authenticated user can't access the control panel
     Given I am logging in as "demo"
      When I go to "cp/build/features"
      Then I should get a "403" HTTP response
 
-  @api @foo
+  @api
   Scenario: Testing authenticated user can't access unpublished content
     Given I am logging in as "michelle"
      When I go to "john/blog/unpublish-blog"
      Then I should get a "403" HTTP response
 
 # Vsite Member
-  @api @foo
+  @api
   Scenario: Testing vsite member can't create a node outside of the vsite context.
     Given I am logging in as "michelle"
      When I go to "node/add"
      Then I should get a "403" HTTP response
 
-  @api @foo
+  @api
   Scenario: Testing vsite member can create content only in the vsite he is a member of.
     Given I am logging in as "alexander"
      When I go to "edison/node/add/blog"
