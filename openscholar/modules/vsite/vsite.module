@@ -17,7 +17,6 @@ include_once ('includes/vsite.inc');
  */
 define('VSITE_PER_USER_DEFAULT', 1);
 
-
 /**
  * Returns the current vsite (space).
  */
@@ -1881,22 +1880,6 @@ function vsite_mail_alter(&$message){
 }
 
 /**
- * Implements hook_node_presave().
- */
-function vsite_node_presave($node) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_node_path_settings($node);
-}
-
-/**
- * Implements hook_taxonomy_term_presave().
- */
-function vsite_taxonomy_term_presave($term) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_term_path_settings($term);
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
@@ -2564,7 +2547,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
   return $build;
 }
 
+/**
+ * Implements hook_node_presave().
+ */
+function vsite_node_presave($node) {
+  if (!empty($node->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
 
+  $node->path['alias'] = vsite_get_entity_alias('node', $node);
+}
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ */
+function vsite_taxonomy_term_presave($term) {
+  if (!empty($term->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
+
+  $term->path['alias'] = vsite_get_entity_alias('taxonomy_term', $term);
+}
 
 /**
  * Validate handler; Prevent duplicate aliases.
