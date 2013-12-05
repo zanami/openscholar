@@ -309,11 +309,19 @@ table.spaces td.option, table.spaces td.storage {
     border-top: 2px solid #C4C2C2;
     height: 25px;
     text-transform:uppercase;
-    }
-    
+}
+
+#edit-menu-table .section-heading a {
+    text-transform: none;
+    margin-left: 1em;
+}
+
+#edit-menu-table .section-heading .add-new-link {
+    margin-left: 0;
+}
 
 #edit-menu-table td:first-child {
-    width: 70%;
+    width: 40%;
 }
  
  
@@ -486,4 +494,11 @@ fieldset#edit-biblio-authors .fieldset-legend {
 	padding-left: 0;
 	margin-top: 0;
 	text-transform: none;
+}
+
+/**
+ * Media Browser tweaks
+ */
+.ui-front {
+  z-index: 1000;
 }
