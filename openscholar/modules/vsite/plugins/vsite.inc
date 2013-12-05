@@ -387,24 +387,48 @@ class vsite extends space_og {
   }
 
   /**
-   * Activates user and modify roles based on the space.
+   * Modify permissions on the fly, based on the VSite.
+   *
+   * Maintain a corrolation between the VSite level roles, and the site-wide
+   * roles.
+   *
+   * The site-wide "vsite user", "vsite admin", and "content editor" roles are
+   * granted on the fly, when the user is on their VSite context. By modifying
+   * the "user_access" static varaible we are able to trick Drupal to think that
+   * user has a certain permission on a certain condition.
    */
   protected function activate_user_roles() {
     global $user;
 
-    $og_roles = og_get_user_roles($this->group_type, $this->id, $user->uid, FALSE);
-    $drupal_roles = user_roles(TRUE);
+    $roles = $user->roles;
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
 
-    // Gets drupal core roles with the same name
-    $common_roles = array_intersect($drupal_roles, $og_roles);
+    $og_roles = og_get_user_roles('node', $this->id);
 
-    foreach ($common_roles as $role) {
-      $rid = array_search($role, $drupal_roles);
-      $user->roles[$rid] = $role;
+    if (!$add_role_names = array_intersect($role_names, $og_roles)) {
+      // No site-wide roles to add.
+      return;
     }
 
-    // Clears any staticly cached permissions
-    drupal_static('user_access', NULL, TRUE);
+    // Re-populate "user_access" static.
+    $perm = &drupal_static('user_access');
+
+    foreach ($add_role_names as $role_name) {
+      // Add site-wide roles, based on the VSite roles.
+      $role = user_role_load_by_name($role_name);
+      $roles[$role->rid] = $role->name;
+    }
+
+    $role_permissions = user_role_permissions($roles);
+    $perms = array();
+    foreach ($role_permissions as $one_role) {
+      $perms += $one_role;
+    }
+    $perm[$user->uid] = $perms;
   }
 
   /**
@@ -412,6 +436,14 @@ class vsite extends space_og {
    */
   function access_space($account = NULL) {
     return parent::access_space($account) && node_access('view', $this->group, $account);
+  }
+
+  /**
+   * Check if the user is a group administator.
+   */
+  function og_is_group_admin($group, $account){
+    list($nid) = entity_extract_ids($this->group_type, $group);
+    return og_user_access('node', $nid, 'administer group', $account);
   }
 }
 

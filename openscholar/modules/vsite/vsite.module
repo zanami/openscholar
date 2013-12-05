@@ -125,6 +125,93 @@ function vsite_get_purl($vsite = FALSE){
 }
 
 /**
+ * Implements hook_theme_registry_alter().
+ */
+function vsite_theme_registry_alter(&$theme_registry) {
+  $theme_registry['user_admin_roles']['function'] = 'vsite_user_admin_roles';
+}
+
+/**
+ * Don't allow deleting system roles from Roles UI.
+ *
+ * @see theme_user_admin_roles().
+ */
+function vsite_user_admin_roles($variables) {
+  $form = $variables['form'];
+
+  $header = array(t('Name'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
+  foreach (element_children($form['roles']) as $rid) {
+    $name = $form['roles'][$rid]['#role']->name;
+    $row = array();
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+
+    if (in_array($rid, array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID)) || in_array($name, $role_names)) {
+      $row[] = t('@name <em>(locked)</em>', array('@name' => $name));
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = '';
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    else {
+      $row[] = check_plain($name);
+      $row[] = drupal_render($form['roles'][$rid]['weight']);
+      $row[] = l(t('edit role'), 'admin/people/permissions/roles/edit/' . $rid);
+      $row[] = l(t('edit permissions'), 'admin/people/permissions/' . $rid);
+    }
+    $rows[] = array('data' => $row, 'class' => array('draggable'));
+  }
+  $rows[] = array(array('data' => drupal_render($form['name']) . drupal_render($form['add']), 'colspan' => 4, 'class' => 'edit-name'));
+
+  drupal_add_tabledrag('user-roles', 'order', 'sibling', 'role-weight');
+
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'user-roles')));
+  $output .= drupal_render_children($form);
+
+  return $output;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Allow overrding the global roles and permissions.
+ */
+function vsite_form_spaces_features_form_alter(&$form, $form_state) {
+  if (!user_access('administer group') || !$vsite = vsite_get_vsite()) {
+    // Not in a VSite, or user doesn't have access.
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $vsite->id);
+  $form[OG_DEFAULT_ACCESS_FIELD] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Get full access on VSite roles and permissions'),
+    '#default_value' => $wrapper->{OG_DEFAULT_ACCESS_FIELD}->value(),
+    '#vsite_id' => $vsite->id,
+  );
+
+  $form['#submit'][] = 'vsite_form_spaces_features_form_submit';
+}
+
+/**
+ * Submit handler; Set the "OG roles and permissions" field.
+ */
+function vsite_form_spaces_features_form_submit($form, &$form_state) {
+  $vsite_id = $form[OG_DEFAULT_ACCESS_FIELD]['#vsite_id'];
+  $wrapper = entity_metadata_wrapper('node', $vsite_id);
+
+  $value = $form_state['values'][OG_DEFAULT_ACCESS_FIELD];
+  if ($wrapper->{OG_DEFAULT_ACCESS_FIELD}->value() == $value) {
+    return;
+  }
+
+  $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set($value);
+  $wrapper->save();
+}
+
+/**
  * Implements hook_library_alter().
  */
 function vsite_library_alter(&$libraries, $module) {
@@ -173,7 +260,17 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
   // Prepares the node form for alias preview with some markup customizations.
-  $form['#after_build'][] = 'vsite_node_form_after_build';
+  $form['#after_build'][] = 'vsite_node_term_form_after_build';
+  drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for taxonomy form.
+ *
+ * Hides the comment settings form from the VSites.
+ */
+function vsite_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id){
+  $form['#after_build'][] = 'vsite_node_term_form_after_build';
   drupal_add_js(drupal_get_path('module', 'vsite') . '/vsite.pathauto.js');
 }
 
@@ -184,45 +281,113 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
  *
  * @see vsite_form_node_form_alter()
  */
-function vsite_node_form_after_build($form) {
+function vsite_node_term_form_after_build($form, &$form_state) {
   if (!module_exists('vsite_domain')) {
     return $form;
   }
-  // Only continues if we have a node object.
-  if (!isset($form['#node'])) {
+  // Only continues if we have the entity object.
+  if (empty($form['#node']) && empty($form['#term'])) {
     return $form;
   }
   // Only continues to modify the node form for group content, not group types.
   // We don't want to modify alias values on vsite nodes.
-  $node = $form['#node'];
-  if (!og_is_group_content_type('node', $node->type) || og_is_group_type('node', $node->type)) {
-    return $form;
+  if (!empty($form['#node'])) {
+    $node = $form['#node'];
+    if (!og_is_group_content_type('node', $node->type) || og_is_group_type('node', $node->type)) {
+      return $form;
+    }
   }
+
   // Prepares a field prefix to store this site's path.
   $field_prefix = rtrim(url('<front>', array('absolute' => TRUE)), '/');
   // Adds the prefix to the custom alias field on the node form.
   $form['path']['alias']['#field_prefix'] = "$field_prefix/";
-  // Removes part of the default description provided by pathauto.
-  // Originally it advises users to "use relative paths",
-  // but the field prefix makes that clear.
-  // Also, it originally says "don't use trailing slash or it won't work",
-  // but this type of input is automatically removed via javascript.
-  // @see vsite.pathauto.js
-  $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
+
+  if (!empty($node)) {
+    // Removes part of the default description provided by pathauto.
+    // Originally it says "use relative paths", but the field prefix makes
+    // that clear.
+    // Also, it originally says "don't use trailing slash or it won't work",
+    // but this type of input is automatically removed via javascript.
+    // @see vsite.pathauto.js
+    $form['path']['alias']['#description'] = t('Optionally specify an alternative URL by which this content can be accessed. For example, type "about" when writing an about page.');
+  }
+
   // If this is a vsite...
   if (module_exists('vsite') && $purl = vsite_get_purl()) {
     // And if this node form contains an existing alias value...
-    if ($original = $form['path']['alias']['#value']) {
-      // Removes the purl from the editable field value
-      // in order to match user expectations: the purl must in the alias,
-      // so the user should not appear to have the option to remove it.
-      // Even if the purl is not part of the field value, it will be added.
-      // @see _vsite_alter_node_path_settings()
-      $new = substr($original, strlen($purl) + 1);
-      $form['path']['alias']['#value'] = $new;
+    if ($current_alias = &$form['path']['alias']['#value']) {
+      // VSites that use og_spaces must have the purl at the beginning of all
+      // their aliases. The purl is added automatically to every alias.
+      // @see vsite_get_entity_alias().
+      // In the UI, the alias field is prefixed with the purl to show that it
+      // cannot be removed, so the input element itself should not include the
+      // purl. This means that we must remove the purl from the field's value.
+
+      while (strpos($current_alias, "$purl/") === 0) {
+        $current_alias = substr($current_alias, strlen($purl) + 1);
+      }
     }
   }
+
+  // Our validation handler comes first because we need to alter the alias and
+  // add the purl prefix before the alias is validated to prevent collisions.
+  array_unshift($form['#validate'], 'vsite_form_alias_validate');
+
   return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vsite_form_path_admin_form_alter(&$form, $form_state) {
+  $form['#validate'][] = 'vsite_path_admin_validate';
+}
+
+/**
+ * Validate handler - verify the path is not already taken.
+ */
+function vsite_path_admin_validate($form, $form_state) {
+  // verify that the user first enter a purl address.
+  $alias = explode('/', $form_state['values']['alias']);
+  $purl = reset($alias);
+
+  if (!vsite_alias_has_purl_at_start($purl)) {
+    form_set_error('alias', t('The url of the vsite is missing.'));
+  }
+
+  // Check that the alias is not taken in the vsite.
+  $source = explode('/', $form_state['values']['source']);
+  $entity_type = strpos('node/', $form_state['values']['source']) === 0 ? 'node' : 'taxonomy_term';
+  $entity_id = end($source);
+
+  if (!$entity = entity_load_single($entity_type, $entity_id)) {
+    // The entity is not exists.
+    return;
+  }
+
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['alias'])) {
+    form_set_error('alias', t('Already in use.'));
+  }
+}
+
+/**
+ * Check if the alias has a purl at the start.
+ *
+ * @param $alias
+ *  The alias of the node/taxonomy term,
+ * @return bool
+ *  True or false if the alias has PURL at the beginning.
+ */
+function vsite_alias_has_purl_at_start($alias) {
+  $alias = explode('/', $alias);
+  $purl = reset($alias);
+
+  $query = db_select('purl')
+    ->fields('purl')
+    ->condition('value', $purl);
+
+  return $query->execute()->rowCount();
 }
 
 /**
@@ -378,16 +543,95 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ * Deny access to create node outside of a VSite for non-privileged user. Also
+ * deny access to creating groups from within a VSite (e.g.
+ * john/node/add/personal) as they are handled via site/register.
+ */
+function vsite_node_access($node, $op, $account) {
+  if ($op != 'create' || user_access('administer group')) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // @todo: Just remove from the permissions list?
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  if (in_array($node,  $group_types)) {
+    // Deny direct access to creating groups.
+    return NODE_ACCESS_DENY;
+  }
+
+  if (!vsite_get_vsite()) {
+    // Deny access when outside of VSite.
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
  * Implements hook_custom_theme().
+ *
+ * - Make sure the themes are properly initialized.
+ * - Make sure that a user with the site-wide "vsite admin" role, isn't granted
+ *   related permissions if outside of their own VSite.
  */
 function vsite_custom_theme(){
   _vsite_purl_init();
 
-  if (($space = spaces_get_space()) && (! module_exists('cp') || ! cp_use_cp_theme())) {
-    //If the space is enabled correctly then set the custom theme
-    ctools_include('themes', 'os');
-    $theme = os_theme_get();
-    return $theme;
+  if (!$vsite = vsite_get_vsite()) {
+    return;
+  }
+
+  if (module_exists('cp') && cp_use_cp_theme()) {
+    // Use CP's own theme.
+    return;
+  }
+
+  // The VSite is enabled correctly so set the custom theme.
+  ctools_include('themes', 'os');
+  $theme = os_theme_get();
+  return $theme;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove site-wide system roles from the "People" page.
+ */
+function vsite_form_user_admin_account_alter(&$form, $form_state) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $keys = array(
+      t('Add a role to the selected users') => 'add',
+      t('Remove a role from the selected users') => 'remove',
+    );
+
+    foreach ($keys as $key => $value) {
+      unset($form['options']['operation']['#options'][$key][$value . '_role-' . $role->rid]);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_presave().
+ *
+ * Safe guard against saving a user with the "vsite admin" site-wide role.
+ */
+function vsite_user_presave(&$edit, $account, $category) {
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    if (!empty($edit['roles'][$role->rid])) {
+      throw new Exception('User object cannot be saved with "vsite admin" role.');
+    }
   }
 }
 
@@ -670,6 +914,7 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
 
       if ($type == 'group') {
         vsite_attach_fields_to_group($bundle);
+        vsite_set_og_permissions($bundle);
       }
       else {
         // Group content.
@@ -685,6 +930,46 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
 }
 
 /**
+ * Set permissions for vsite user, vsite admin and content editor.
+ *
+ * @param $bundle
+ *   The node type of the group.
+ */
+function vsite_set_og_permissions($bundle) {
+  $og_roles = og_roles('node', $bundle);
+  $group_contents = og_get_all_group_content_bundle();
+
+  // Don't set permissions for these node types.
+  $exclude_types = array(
+    'feed_importer',
+    'blog_import,'
+  );
+
+  // Go through the group contents of type node.
+  foreach ($group_contents['node'] as $type => $value) {
+    if (in_array($type, $exclude_types)) {
+      continue;
+    }
+
+    // The roles with the permissons that will be given.
+    $permissions_info = array(
+      'content editor' => array(
+        "update any $type content",
+      ),
+    );
+
+    // Go through the roles and set the appropriate permissions.
+    foreach ($og_roles as $rid => $name) {
+      if (!array_key_exists($name, $permissions_info)) {
+        continue;
+      }
+
+      og_role_grant_permissions($rid, $permissions_info[$name]);
+    }
+  }
+}
+
+/**
  * Adds group content fields to bundle.
  *
  * @param $entity_type
@@ -695,6 +980,9 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  // OG-Audience field should be required, so node_access() will take VSites
+  // into account.
+  $og_field['instance']['required'] = TRUE;
   $og_field['instance']['display'] = array(
     'default' => array(
       'type' => 'hidden'
@@ -724,6 +1012,7 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
 function vsite_attach_fields_to_group($bundle){
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
   og_create_field(VSITE_ACCESS_FIELD, 'node', $bundle);
+  og_create_field(OG_DEFAULT_ACCESS_FIELD, 'node', $bundle);
 
   if (! field_info_field('field_site_address')) {
     // field_site_address.
@@ -1591,25 +1880,22 @@ function vsite_mail_alter(&$message){
 }
 
 /**
- * Implements hook_node_presave().
- */
-function vsite_node_presave($node) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_node_path_settings($node);
-}
-
-/**
- * Implements hook_taxonomy_term_presave().
- */
-function vsite_taxonomy_term_presave($term) {
-  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
-  _vsite_alter_term_path_settings($term);
-}
-
-/**
  * Implements hook_form_BASE_FORM_ID_alter() for user_profile_form.
  */
 function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id){
+  if (!empty($form['account']['roles']['#options'])) {
+    // Remove site-wide system roles.
+    $role_names = array(
+      'content editor',
+      'vsite admin',
+      'vsite user',
+    );
+    foreach ($role_names  as $role_name) {
+      $role = user_role_load_by_name($role_name);
+      unset($form['account']['roles']['#options'][$role->rid]);
+    }
+  }
+
   if (! array_key_exists('redirect_from_reset', $form)) {
     $form['redirect_from_reset'] = array(
       '#type' => 'hidden',
@@ -2228,6 +2514,29 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
     $build['options']['query'] = array(
       'parent' => $parent,
     );
+    if (($vsite = vsite_get_vsite()) && $vsite->purl_provider == 'vsite_domain') {
+      // First generates an internal, relative path to the final destination.
+      $options = array(
+        'query' => array(
+          'parent' => $parent,
+        ),
+      );
+      $destination = url('site/register', $options);
+
+      // Then creates an absolute, external link to the base domain's login
+      // page with the final path URL-encoded as the destination query
+      // parameter.
+      $options = array(
+        'absolute' => TRUE,
+        'base_url' => $purl_base_domain,
+        'query' => array(
+          'destination' => $destination,
+        ),
+      );
+      $href = url('user/login', $options);
+      $build['href'] = $href;
+      $build['path'] = $href;
+    }
   }
 
   if (isset($options['attributes']['class'])) {
@@ -2239,54 +2548,186 @@ function _vsite_add_site_link($title, $description, $parent = NULL, $options = a
 }
 
 /**
+ * Implements hook_node_presave().
+ */
+function vsite_node_presave($node) {
+  if (!empty($node->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
+
+  $node->path['alias'] = vsite_get_entity_alias('node', $node);
+}
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ */
+function vsite_taxonomy_term_presave($term) {
+  if (!empty($term->path['pathauto'])) {
+    // Path auto will take care of the alias.
+    return;
+  }
+
+  $term->path['alias'] = vsite_get_entity_alias('taxonomy_term', $term);
+}
+
+/**
+ * Validate handler; Prevent duplicate aliases.
+ */
+function vsite_form_alias_validate($form, &$form_state) {
+  $entity_type = $form['#entity_type'];
+
+  switch ($entity_type) {
+    case 'node':
+      // Nodes must have an audience field in order to generate their alias.
+      $entity = $form_state['node'];
+      $entity->{OG_AUDIENCE_FIELD} = $form_state['values'][OG_AUDIENCE_FIELD];
+      break;
+
+    default:
+    case 'taxonomy_term':
+      // Terms must have a vid in order to generate their alias.
+      $entity = $form_state['term'];
+      $entity->vid = $form_state['values']['vid'];
+      break;
+  }
+
+  // Verify the path is not in use.
+  if (!_vsite_form_alias_validate($entity_type, $entity, $form_state['values']['path'])) {
+    form_set_error('path', t('The alias is already in use.'));
+  }
+}
+
+/**
+ * Helper function for validate the if the alias is already exists.
+ *
+ * @param $entity_type
+ *  The entity type: node, taxonomy ter,
+ * @param $entity
+ *  The entity type.
+ * @param $path
+ *  The path of the entity.
+ *
+ * @return bool
+ *  True or false if the alias is already in use.
+ */
+function _vsite_form_alias_validate($entity_type, $entity, $path) {
+  // Entities must have a path in order to generate their alias.
+  $entity->path = $path;
+
+  list($id) = entity_extract_ids($entity_type, $entity);
+  if ($id) {
+    // Get entity source path, e.g 'node/23'.
+    $uri = entity_uri($entity_type, $entity);
+    $source = $uri['path'];
+  }
+
+  // Get alias.
+  $alias = vsite_get_entity_alias($entity_type, $entity);
+
+  // Ensure that the alias does not exist yet.
+  $query = db_select('url_alias')
+    ->fields('url_alias')
+    ->condition('alias', $alias)
+    ->condition('language', $entity->path['language']);
+
+  if ($id) {
+    // Prevent checking self.
+    $query->condition('source', $source, '<>');
+  }
+
+  $query->range(0, 1);
+
+  return !$query->execute()->fetchField();
+}
+
+/**
  * Implements hook_pathauto_alias_alter().
  */
 function vsite_pathauto_alias_alter(&$alias, $context) {
-  // Only continues if we are outside of a vsite.
-  if ($vsite = vsite_get_vsite()) {
+  // Get entity type.
+  $entity_type = FALSE;
+  if (!empty($context['data']['node'])) {
+    $entity_type = 'node';
+    $entity = $context['data']['node'];
+  }
+  elseif (!empty($context['data']['term'])) {
+    $entity_type = 'taxonomy_term';
+    $entity = $context['data']['term'];
+  }
+
+  if (!$entity_type) {
+    // Not node or term, no need to prefix.
     return;
   }
 
-  // Only continues if we have a valid group content and alias to modify.
-  $node = $context['data']['node'];
-  if (!isset($node->vsite_pathauto_alias_alter) || empty($node->vsite_pathauto_alias_alter)) {
-    return;
+  // Prefix alias with purl.
+  $alias = vsite_get_entity_alias($entity_type, $entity, $alias);
+}
+
+/**
+ * Set the alias of group content entities (e.g. nodes, terms, etc'.).
+ *
+ * @param $entity_type
+ *  The entity type.
+ * @param $entity
+ *  The entity object.
+ * @param $alias
+ *  Optional; The alias to set, in case it isn't present on the the entity.
+ *
+ * @return null|string
+ *  The alias of the entity.
+ */
+function vsite_get_entity_alias($entity_type, $entity, $alias = NULL) {
+  if (empty($alias) && empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
+    // Get custom alias.
+    $alias = $entity->path['alias'];
   }
-  if (og_is_group_type('node', $node->type)) {
-    return;
-  }
+
   if (empty($alias)) {
-    return;
+    // No alias.
+    return NULL;
   }
 
-  // Only continues if we can get a vsite group ID.
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $gids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
-  $gid = isset($gids[0]) ? $gids[0] : NULL;
-  if ($gid === NULL) {
-    return;
+  if (!in_array($entity_type, array('taxonomy_term', 'node'))) {
+    return $alias;
   }
 
-  // Only continues if we can get a non-empty purl value from the vsite.
-  // Note: We don't need to set $reset = TRUE here because it was already reset.
-  // @see vsite_add_node()
-  $vsite = vsite_get_vsite($gid);
+  if ($entity_type == 'node') {
+    list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+    if (!og_is_group_content_type($entity_type, $bundle)) {
+      // Not a group content.
+      return $alias;
+    }
+
+    // Get vsite from node.
+    $wrapper = entity_metadata_wrapper($entity_type, $entity);
+    $gid = $wrapper->{OG_AUDIENCE_FIELD}->get(0)->getIdentifier();
+    $vsite = vsite_get_vsite($gid);
+  }
+  else {
+    // Taxonomy term. Get vsite from its vocabulary.
+    $vid = $entity->vid;
+    if (!$og_vocab_relation = og_vocab_relation_get($vid)) {
+      // Not a group content.
+      return $alias;
+    }
+    $gid = $og_vocab_relation->gid;
+    $vsite = vsite_get_vsite($gid);
+  }
+
+  // Get purl.
   $purl = vsite_get_purl($vsite);
 
-  // Only continues if we were able to find a purl value.
-  if (empty($purl)) {
-    return;
+  // Prevent purl duplication in alias - remove all purls prefixes.
+  while (strpos($alias, "$purl/") === 0) {
+    $alias = substr($alias, strlen($purl) + 1);
   }
 
-  // Only continues if the purl isn't yet present as a prefix.
-  $purl_present = (bool) (strpos($alias, "$purl/") === 0);
-  if ($purl_present) {
-    return;
-  }
+  // Add purl to alias.
+  $alias = $purl . '/' . $alias;
 
-  // Prefixes the alias with the purl.
-  // Note: This occurs BEFORE pathauto_alias_uniquify().
-  $alias = "$purl/$alias";
+  return $alias;
 }
 
 /**
@@ -2322,4 +2763,44 @@ function vsite_cp_settings() {
   );
 
   return $settings;
+}
+
+/**
+ * Implements hook_HOOK_alter() for redirect_load_by_source.
+ *
+ * Alter the redirect candidates before selecting the top one.
+ *
+ * @see redirect.module
+ * @see redirect_load_by_source()
+ */
+function vsite_redirect_load_by_source_alter(&$redirects, $source, $context) {
+  // Only continues if redirects exist for this path.
+  if (empty($redirects)) {
+    return;
+  }
+
+  // Attempts to remove any redirects that don't apply to this vsite.
+  foreach ($redirects as $key => $redirect) {
+    // Assumes no vsite group ID for this redirect, then looks for purl value.
+    $gid = FALSE;
+    if (isset($redirect->redirect_options['purl']['add'][0]['id'])) {
+      $gid = $redirect->redirect_options['purl']['add'][0]['id'];
+    }
+
+    // Assumes there is no vsite mismatch, then looks for mismatch conditions.
+    $vsite_mismatch = FALSE;
+    // If we're inside a vsite, a mismatch is when the group ID(s) is different.
+    if (($vsite = vsite_get_vsite()) && $vsite->id != $gid) {
+      $vsite_mismatch = TRUE;
+    }
+    // Otherwise, outside a vsite, any group ID value means it's a mismatch.
+    else if ($gid !== FALSE) {
+      $vsite_mismatch = TRUE;
+    }
+
+    // Removes this redirect if it's mismatched (prevents the redirect).
+    if ($vsite_mismatch) {
+      unset($redirects[$key]);
+    }
+  }
 }

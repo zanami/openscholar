@@ -19,6 +19,11 @@ function os_publications_os_app_info() {
   	'nodetypes' => array(
   	  'biblio',
     ),
+    'importers' => array(
+      'biblio' => array(
+        'csv' => 'os_publication',
+      ),
+    ),
   );
 
   return $apps;
@@ -136,7 +141,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
   // Check the sort order for biblio.
   // If we're sorting by year, we want to sort by date as well to replicate D6
   // sorting.
-  if ($space->controllers->variable->get('biblio_sort','space') == 'year') {
+  if (variable_get('biblio_sort', 'year') == 'year') {
     // Get their sort order.
     $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
     $order = &$query->getOrderBy();
@@ -151,10 +156,6 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
       $s = current(array_keys($order));
       $o = current($order);
 
-      if ($s == 'biblio_sort_year') {
-        $biblio_sort_year = $o;
-      }
-
       if ($s = 'biblio_sort_title') {
         $biblio_sort_title = $o;
       }
@@ -163,9 +164,30 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
       $order = array();
     }
 
+    // Sort by year, and after that create another sorting by the node's
+    // "sticky" property, the creation date of the node, the Biblio date, and
+    // the Biblio title.
     $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
+    $order['n.sticky'] = 'DESC';
+    $order['n.created'] = 'DESC';
     $order['biblio_date'] = 'DESC';
     $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
+  }
+  elseif (variable_get('biblio_sort', 'year') == 'type') {
+    // Sort by type, and after that create another sorting by creation date of
+    // the node.
+    $order = &$query->getOrderBy();
+    $new_order = array();
+
+    foreach ($order as $key => $value) {
+      $new_order[$key] = $value;
+      if ($key == 'biblio_type_name') {
+        $new_order['n.sticky'] = 'DESC';
+        $new_order['n.created'] = 'DESC';
+      }
+    }
+
+    $order = $new_order;
   }
 }
 
@@ -439,9 +461,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // Add in a new validation for patents
   $form['#validate'][] = 'os_publications_biblio_form_patent_validate';
 
-  // remove the sticky content option
-  unset($form['options']['sticky']);
-
   unset($form['biblio_tabs']);
 }
 
@@ -649,20 +668,6 @@ function os_publications_node_view_alter(&$build, $type) {
         }
       }
     }
-  }
-}
-
-/**
- * Adds a page contextual link for importing biblio nodes.
- */
-function os_publications_os_add_new_links_alter(&$links) {
-  if (isset($links['biblio'])) {
-    $links['biblio-import'] = array(
-      'title' => t('Import Publications'),
-      'href' => 'publications/import',
-      'html' => TRUE,
-    );
-    $links['biblio']['title'] = 'Publication';
   }
 }
 

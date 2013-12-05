@@ -130,7 +130,7 @@ h2.block-title {
 
  
 article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
-margin-left: 5.7em;
+ margin-left: 0;
 }
 
 .sidebar article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {

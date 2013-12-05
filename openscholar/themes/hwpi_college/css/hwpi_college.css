@@ -628,10 +628,9 @@ padding: 20px 0;
 }
 
 #footer .at-panel {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: #f4f4f4;
     border-left: 1px solid #CCCCCC;
     border-right: 1px solid #CCCCCC;
-    border-top: 1px solid #CCCCCC;
     padding: 30px 15px 0;
     width: 950px;
 }
@@ -719,7 +718,7 @@ background-color: none !important;
 }
 
 #powerby-login {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: #f4f4f4;
     border-left: 1px solid #CCCCCC;
     border-right: 1px solid #CCCCCC;
     height: 30px;

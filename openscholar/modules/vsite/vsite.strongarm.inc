@@ -158,8 +158,15 @@ function vsite_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'og_features_ignore_og_fields';
+  $strongarm->value = 1;
+  $export['og_features_ignore_og_fields'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'og_node_access_strict';
-  $strongarm->value = FALSE;
+  $strongarm->value = TRUE;
   $export['og_node_access_strict'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -174,6 +181,7 @@ function vsite_strongarm() {
     'hwp_administrative' => 'hwp_administrative',
     'hwp_lab_research_group' => 'hwp_lab_research_group',
     'hwp_project' => 'hwp_project',
+    'hwp_personal' => 'hwp_personal',
   );
   $export['os_enabled_spaces_presets'] = $strongarm;
 

@@ -33,8 +33,8 @@ class sv_list_node_biblio extends sv_list_plugin {
     return array('sort_biblio' => t('Year of Publication'));
   }
   
-  public function options_form($box_options) {
-    $form['biblio_whitelist'] = array(
+  public function options_form($box_options, &$form) {
+    $form['content']['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select publication types to display'),
       '#default_value' => $box_options['biblio_whitelist'], //isset($this->options['biblio_whitelist']) ? $this->options['biblio_whitelist'] : $defaults['biblio_whitelist'],
@@ -55,8 +55,6 @@ class sv_list_node_biblio extends sv_list_plugin {
         ),
       )
     );
-    
-    return $form;
   }
   
   
