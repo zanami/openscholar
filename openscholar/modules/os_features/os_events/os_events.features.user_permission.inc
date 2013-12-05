@@ -83,6 +83,8 @@ function os_events_user_default_permissions() {
       0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -94,6 +96,8 @@ function os_events_user_default_permissions() {
       0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -146,6 +150,8 @@ function os_events_user_default_permissions() {
       0 => 'anonymous user',
       1 => 'content editor',
       2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -165,6 +171,8 @@ function os_events_user_default_permissions() {
     'roles' => array(
       1 => 'content editor',
       2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
@@ -196,6 +204,8 @@ function os_events_user_default_permissions() {
     'roles' => array(
       1 => 'content editor',
       2 => 'manager',
+      3 => 'vsite admin',
+      4 => 'vsite user',
     ),
     'module' => 'registration',
   );
