@@ -34,16 +34,22 @@ class sv_list_node_biblio extends sv_list_plugin {
   }
   
   public function options_form($box_options, &$form) {
-    $form['content']['biblio_whitelist'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Select publication types to display'),
-      '#default_value' => $box_options['biblio_whitelist'], //isset($this->options['biblio_whitelist']) ? $this->options['biblio_whitelist'] : $defaults['biblio_whitelist'],
-      '#options' => $this->biblio_types,
-      '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
-      '#suffix' => '</div>',
-      '#attached' => array(
-        'js' => array(
-          drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
+    $form['content']['biblio_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Publication Types'),
+      '#collapsed' => TRUE, 
+      '#collapsible' => TRUE,
+      'biblio_whitelist' => array(
+        '#type' => 'checkboxes',
+        '#title' => t('Select publication types to display'),
+        '#default_value' => $box_options['biblio_whitelist'], //isset($this->options['biblio_whitelist']) ? $this->options['biblio_whitelist'] : $defaults['biblio_whitelist'],
+        '#options' => $this->biblio_types,
+        '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
+        '#suffix' => '</div>',
+        '#attached' => array(
+          'js' => array(
+            drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
+          ),
         ),
       ),
       '#states' => array(
