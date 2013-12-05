@@ -1,6 +1,6 @@
 <?php 
 
-/*
+/**
  * Updates box displays to view modes, moves image box to file box of type image
  */
 function os_sv_list_update_7001() {

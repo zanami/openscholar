@@ -1337,10 +1337,8 @@ function os_files_file_view($file, $view_mode, $langcode) {
   }
   
   //add thumbnail for list of images
-  if (isset($file->sv_list_of_images) && $file->sv_list_of_images) {
-    TRUE;
-  }  
-  if ($file->type == 'image') {
+  if (@$file->sv_list_of_images) {
+    unset ($content['file-info']['icon']);
     switch ($view_mode) {
       case 'full':
         $content['file-info']['file'] = $file->content['file']; //include embedded image
@@ -1355,7 +1353,8 @@ function os_files_file_view($file, $view_mode, $langcode) {
   
   //add video thumb/colorbox for list of video
   //if (@$file->sv_list_of_videos) {
-  if ($file->type == 'video') {
+  if (@$file->sv_list_of_videos) {
+    unset ($content['file-info']['icon']);
     switch ($view_mode) {
       case 'full':    
         $content['file-info']['file'] = $file->content['file']; //include embedded video
