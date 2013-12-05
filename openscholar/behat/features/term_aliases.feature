@@ -4,7 +4,7 @@ Feature:
   @api
   Scenario: Verify that the pathauto alias is properly created in terms.
     Given I am logging in as "john"
-      And I visit "cp/build/taxonomy/science_personal1/add"
+      And I visit "john/cp/build/taxonomy/science_personal1/add"
       And I fill in "Name" with "Energy"
      When I press "edit-submit"
      Then I verify the alias of term "Energy" is "john/science/energy"
@@ -12,7 +12,7 @@ Feature:
   @api
   Scenario: Verify that the custom alias is properly created in nodes.
     Given I am logging in as "john"
-      And I visit "cp/build/taxonomy/science_personal1/add"
+      And I visit "john/cp/build/taxonomy/science_personal1/add"
       And I fill in "Name" with "Atom"
       And I uncheck the box "Generate automatic URL alias"
       And I fill in "edit-path-alias" with "atom-custom-path"
