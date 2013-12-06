@@ -336,11 +336,18 @@ function os_boxes_preprocess_boxes_box(&$variables) {
   }
 
   if (!empty($variables['block']['embed_link'])) {
-    $base = url('os/widget/embed/'.$variables['block']['delta']);
+    $delta = $variables['block']['delta'];
+    $base = url('os/widget/embed/'.$delta);
     $output = array(
       '#attached' => array(
         'library' => array(
           'system', 'ui.tabs',
+        ),
+        'css' => array(
+          drupal_get_path('module', 'os_boxes').'/misc/os_boxes.embed.css',
+        ),
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/misc/os_boxes.embed.js',
         )
       ),
       'embed-links-button' => array(
@@ -350,22 +357,45 @@ function os_boxes_preprocess_boxes_box(&$variables) {
         '#prefix' => '<div class="embed-popup">',
         '#suffix' => '</div>',
         'links' => array(
-          '#type' => 'links',
-          'inline' => array(),
-          'iframe' => array(),
-          'oembed' => array(),
+          '#theme' => 'links',
+          '#links' => array(
+            'inline' => array(
+              'title' => 'HTML5',
+              'href' => '',
+              'absolute' => true,
+              'fragment' => $delta.'-inline',
+            ),
+            'iframe' => array(
+              'title' => 'Iframe',
+              'href' => '',
+              'absolute' => true,
+              'fragment' => $delta.'-iframe',
+            ),
+            'oembed' => array(
+              'title' => 'URL',
+              'href' => '',
+              'absolute' => true,
+              'fragment' => $delta.'-oembed',
+            ),
+          )
         ),
         'inline' => array(
+          '#prefix' => '<div id="'.$delta.'-inline">',
+          '#suffix' => '</div>',
           '#markup' => web_widgets_render_embed_code('inline', array(
             'path' => $base.'/inline',
           )),
         ),
         'iframe' => array(
+          '#prefix' => '<div id="'.$delta.'-iframe">',
+          '#suffix' => '</div>',
           '#markup' => web_widgets_render_embed_code('iframe', array(
             'path' => $base.'/iframe',
           )),
         ),
         'oembed' => array(
+          '#prefix' => '<div id="'.$delta.'-oembed">',
+          '#suffix' => '</div>',
           '#markup' => theme('web_widgets_embed_code', array(
             'code' => url('box/'.$variables['block']['delta'], array('purl_disable' => TRUE, 'absolute' => TRUE)),
             'style' => 'inline',
