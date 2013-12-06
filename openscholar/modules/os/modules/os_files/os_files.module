@@ -1296,6 +1296,7 @@ function os_files_file_view($file, $view_mode, $langcode) {
   $icon = array(
     '#theme' => 'file_icon',
     '#file' => $file,
+    '#icon_directory' => drupal_get_path('module', 'os_files') . '/icons',
   );
   
   //icon, title, download
