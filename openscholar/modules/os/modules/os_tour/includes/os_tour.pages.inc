@@ -11,6 +11,7 @@ function os_tour_user_edit_ajax($user, $key) {
 
   // Gets the current time to update 'notifications_read' value.
   switch ($key) {
+    case 'site_welcome':
     case 'notifications_read':
       $value = time();
       break;

@@ -177,6 +177,9 @@ function os_tour_module_implements_alter(&$implementations, $hook) {
  * Implements hook_process_HOOK() for page.tpl.php.
  */
 function os_tour_process_page(&$variables) {
+  // Adds the "Site Welcome" info box on the first pageload of the site only.
+  // os_tour_process_page_site_welcome($variables);
+  dpm($variables['page']['content_top']);
   $tour_info = _os_tour_help();
   if (empty($tour_info)) {
     return;
@@ -235,3 +238,25 @@ function _os_tour_help() {
 
   return $tour_info;
 }
+
+/**
+ * Adds the "Site Welcome" info box on the first pageload of the site only.
+ *
+function os_tour_process_page_site_welcome(&$variables) {
+  // Prepares settings array to pass as javascript.
+  global $user;
+  $vsite = vsite_get_vsite();
+  if (isset($user->data['os_tour']['site_welcome_read'][$vsite->id])) {
+    return;
+  }
+
+  // Adds the site welcome message as the first render array element in region.
+  $variables['page']['content_top'] = array_reverse($variables['page']['content_top']);
+  $variables['page']['content_top']['os_tour'] = array(
+    'site_welcome' => array(
+      '#markup' => '<p>Hello world</p>',
+    ),
+    '#weight' => -10,
+  );
+  $variables['page']['content_top'] = array_reverse($variables['page']['content_top']);
+}*/
