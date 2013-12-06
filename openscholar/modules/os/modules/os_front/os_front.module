@@ -54,6 +54,5 @@ function os_front_context_default_contexts_alter($contexts) {
 function os_front_preprocess_html(&$vars) {
   if ($vars['is_front'] && !(module_exists('vsite') && vsite_get_vsite())) {
     $vars['classes_array'][] = 'sitewide-front';
-    dpm($vars);
   }
 }
