@@ -81,6 +81,16 @@ function os_boxes_menu() {
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
   );
+
+  $items['os/widget/embed/%os_boxes/%'] = array(
+    'title' => 'Embed Widget',
+    'page callback' => 'os_boxes_embed_code',
+    'page arguments' => array(3, 4),
+    'access' => true,
+    'type' => MENU_CALLBACK,
+    'file' => 'os_boxes.admin.inc',
+  );
+
   return $items;
 }
 

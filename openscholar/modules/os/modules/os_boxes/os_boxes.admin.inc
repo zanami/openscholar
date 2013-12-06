@@ -226,3 +226,16 @@ function os_boxes_remove_widget($module, $delta, $target = FALSE) {
   return '';
 }
 
+/**
+ * Returns an embedable version of a box
+ * @param $box - a full box object
+ * @param $embed_style - how the box should be embedded in the client
+ *    can be inline or iframe
+ */
+function os_boxes_embed_code($box, $embed_style) {
+  if ($box) {
+    $block = $box->render();
+    return web_widgets_render_widget($embed_style, $block['content'], $block['subject']);
+  }
+  return '';
+}
