@@ -24,8 +24,8 @@
         steps: [
           {
             title: 'Welcome!',
-            content: 'In this short tour, you\'ll learn all about layout and widgets.',
-            target: document.querySelector('#content'),
+            content: 'In this short tour, you\'ll learn all about OpenScholar.',
+            target: document.querySelector('#columns'),
             placement: "left"
           }
         ]
