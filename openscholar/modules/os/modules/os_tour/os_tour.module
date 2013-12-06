@@ -96,6 +96,37 @@ function os_tour_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
  * Implements hook_preprocess_toolbar().
  */
 function os_tour_preprocess_toolbar(&$vars) {
+  // First checks if this user hasn't seen the "Site welcome" tour yet.
+  $vsite = vsite_get_vsite();
+  global $user;
+  $key = "site_welcome_{$vsite->id}";
+  if (isset($user->data['os_tour'][$key])) {
+    if ($user->data['os_tour'][$key]) {
+      $path = drupal_get_path('module', 'os_tour');
+      $vars['toolbar']['toolbar_right']['os_tour_site_welcome'] = array(
+        '#attached' => array(
+          'js' => array(
+            0 => array(
+              'type' => 'file',
+              'data' => "$path/theme/os_tour.site_welcome.js",
+            ),
+          ),
+          'library' => array(
+            0 => array('os_tour', 'hopscotch'),
+          ),
+        ),
+      );
+      $edit = array(
+        'data' => array(
+          'os_tour' => array(
+            $key => FALSE,
+          ),
+        ),
+      );
+      user_save($user, $edit);
+    }
+  }
+
   // Only continues if there are feeds to attempt to display from.
   $feeds = variable_get('os_tour_notifications_feeds', '');
   if (empty($feeds)) {
@@ -103,7 +134,6 @@ function os_tour_preprocess_toolbar(&$vars) {
   }
 
   // Prepares settings array to pass as javascript.
-  global $user;
   if (isset($user->data['os_tour']['notifications_read'])) {
     $last_read = $user->data['os_tour']['notifications_read'];
   }
@@ -234,4 +264,25 @@ function _os_tour_help() {
   }
 
   return $tour_info;
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function os_tour_node_insert($node) {
+  if (og_is_group_type('node', $node->type)) {
+    drupal_set_message(t('Are you new here? <a id="os-tour-site-welcome" href="#">Take a tour!</a>'));
+  }
+
+  // Stores this site node ID in user data to add JS to next page load.
+  // @see os_tour_preprocess_toolbar()
+  global $user;
+  $edit = array(
+    'data' => array(
+      'os_tour' => array(
+        "site_welcome_$node->nid" => TRUE,
+      ),
+    ),
+  );
+  user_save($user, $edit);
 }
