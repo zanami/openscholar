@@ -95,25 +95,6 @@ class os_sv_list extends os_boxes_default {
       ),
     );
     
-    $form['content']['layout'] = array(
-      '#type' => 'select',
-      '#title' => t('Layout'),
-      '#default_value' => $this->options['layout'],
-      '#options' => array('list' => t('List'), 'grid' => t('Grid')), //table, slideshow, anything else?
-    );
-    
-    $form['content']['grid_size'] = array(
-      '#type' => 'select',
-      '#title' => t('Grid Size'),
-      '#description' => t('How many items should appear in each row of the grid?'),
-      '#default_value' => $this->options['grid_size'],
-      '#options' => drupal_map_assoc(range(1, 5)),
-      '#states' => array(
-        'visible' => array(
-          'select[name="layout"]' => array('value' => 'grid'),
-        )
-      ),
-    );
 
     $form['content']['sort_by'] = array(
       '#type' => 'select',
@@ -381,7 +362,7 @@ class os_sv_list extends os_boxes_default {
   protected function _display_options() {
     $defaults = array(  //Display modes will be shown in this order.  If no order is provided, it'll be determined by how the hooks load them.
       'node' => array('title', 'teaser', 'full'),
-      'file' => array('os_files_link', 'os_files_link_icon', 'teaser', 'os_files_thumbnail', 'os_files_preview', 'full'),
+      'file' => array('os_files_link', 'os_files_link_icon', 'os_files_title', 'teaser', 'full'),
     );
     $defaults = (isset($defaults[$this->entity_type])) ? $defaults[$this->entity_type] : array();
     

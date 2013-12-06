@@ -254,6 +254,10 @@ function os_boxes_get_factories() {
         'block_config_path' => "os/widget/add/{$p}",
         'factory' => TRUE,
       );
+
+      if (isset($info['weight'])) {
+        $items[$tag]["boxes-boxes_add__$p"]['weight'] = $info['weight'];
+      }
     }
   }
   ksort($items);
@@ -262,7 +266,24 @@ function os_boxes_get_factories() {
   unset($items['Misc']);
   $items['Misc'] = $misc;
 
+  foreach ($items as $tag => $facts) {
+    uasort($items[$tag], '_os_boxes_sort_factories');
+  }
+
   return $items;
+}
+
+function _os_boxes_sort_factories($a, $b) {
+  $aw = isset($a['weight'])?$a['weight']:0;
+  $bw = isset($b['weight'])?$b['weight']:0;
+
+  if ($aw < $bw) {
+    return -1;
+  }
+  elseif ($aw > $bw) {
+    return 1;
+  }
+  return 0;
 }
 
 /**

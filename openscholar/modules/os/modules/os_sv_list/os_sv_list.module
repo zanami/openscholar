@@ -108,6 +108,7 @@ function os_sv_list_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
     'factory' => TRUE,
+    'weight' => -3
   );
 
   //load the base class for node and file lists
