@@ -101,9 +101,4 @@ class sv_list_node_biblio extends sv_list_plugin {
   public function sort_biblio($options, $efq) {
     $efq->addTag('sv_list_biblio');
   }
-  
-  public function re_sort($options, $efq) {
-    //if we can't figure out how to make the efq sort, maybe do a sort afterwards?  
-    //not as ugly as it sounds, since we could just query for the 1-20 pubs we have to display on this page.
-  }
 }
