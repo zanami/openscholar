@@ -335,7 +335,8 @@ function os_boxes_preprocess_boxes_box(&$variables) {
     unset($variables['block']['controls']);
   }
 
-  if (!empty($variables['block']['make_embedable'])) {
+  if (!empty($variables['block']['embed_link'])) {
+    $base = url('os/widget/embed/'.$variables['block']['delta']);
     $output = array(
       '#attached' => array(
         'library' => array(
@@ -343,23 +344,32 @@ function os_boxes_preprocess_boxes_box(&$variables) {
         )
       ),
       'embed-links-button' => array(
-        '#markup' => l('&lt;embed&gt;>', '', array('external' => true, 'attributes' => array('class' => array('os-embed-link')))),
+        '#markup' => l('<embed>', '', array('external' => true, 'attributes' => array('class' => array('os-embed-link')))),
       ),
       'embed-links' => array(
-        '#theme' => 'links',
+        '#prefix' => '<div class="embed-popup">',
+        '#suffix' => '</div>',
         'links' => array(
+          '#type' => 'links',
           'inline' => array(),
           'iframe' => array(),
           'oembed' => array(),
         ),
         'inline' => array(
-
+          '#markup' => web_widgets_render_embed_code('inline', array(
+            'path' => $base.'/inline',
+          )),
         ),
         'iframe' => array(
-
+          '#markup' => web_widgets_render_embed_code('iframe', array(
+            'path' => $base.'/iframe',
+          )),
         ),
         'oembed' => array(
-
+          '#markup' => theme('web_widgets_embed_code', array(
+            'code' => url('box/'.$variables['block']['delta'], array('purl_disable' => TRUE, 'absolute' => TRUE)),
+            'style' => 'inline',
+          ))
         ),
       )
     );
