@@ -377,6 +377,10 @@ class os_sv_list extends os_boxes_default {
     
     // Use blank path for unknown paths.
     $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),' ');
+    
+    //Keep user saved more link for this content type
+    $content_map[$this->options['content_type']] = $this->options['more_link'];
+    
     return $content_map;     
   }
   
