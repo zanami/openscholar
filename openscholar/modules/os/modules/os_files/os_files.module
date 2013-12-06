@@ -658,13 +658,8 @@ function os_files_entity_info_alter(&$info){
       'label' => t('Link with no icon'),
       'custom settings' => TRUE
     ),
-    
-    'os_files_thumbnail' => array(
-      'label' => t('Thumbnail'),
-      'custom settings' => TRUE
-    ),
-    'os_files_preview' => array(
-      'label' => t('Preview'),
+    'os_files_title' => array(
+      'label' => t('Title'),
       'custom settings' => TRUE
     ),
   );
@@ -1072,7 +1067,7 @@ function os_files_imagefield_crop_process($element, $form_state, $form) {
   media_attach_browser_js($element['selected_file']);
 
   $element['#element_validate'] = array(
-    'os_files_file_validate'
+    'os_files_file_element_validate',
   );
 
   return $element;
@@ -1112,7 +1107,7 @@ function os_files_preprocess_media_views_view_media_browser(&$vars) {
  * It prevents a file from being referenced if it's not used anywhere else
  * This is dumb, so we ditch it.
  */
-function os_files_file_validate(&$element, &$form_state) {
+function os_files_file_element_validate(&$element, &$form_state) {
 
   $clicked_button = end($form_state['triggering_element']['#parents']);
   if ($clicked_button != 'remove_button' && !empty($element['fid']['#value'])) {
@@ -1285,6 +1280,94 @@ function os_files_file_download($uri){
 
     return file_get_content_headers($file);
   }
+}
+
+/**
+ * Implements hook_file_view
+ * 
+ * Prepares file view.  
+ * @see http://community.openscholar.harvard.edu/openscholar/topics/better_files_media_management_and_display
+ */
+function os_files_file_view($file, $view_mode, $langcode) {
+  if (!in_array($view_mode, array('os_files_title', 'teaser', 'full'))) {
+    return;
+  }
+
+  $icon = array(
+    '#theme' => 'file_icon',
+    '#file' => $file,
+  );
+  
+  //icon, title, download
+  if ($view_mode == 'full') {
+    //full mode never needs to link to the file view.  link to the file instead and omit the download link
+    $content = array(
+      'file-info' => array(  
+        '#prefix' => '<div class="file-info">',
+        '#suffix' => '</div>',
+        'icon' => $icon,
+        'title' => array(
+          '#theme' => 'link',
+          '#path' => file_create_url($file->uri),
+          '#text' => $file->filename,
+          '#options' => array('attributes' => array(), 'html' => NULL),
+        ),
+      ),
+    );
+  } else {
+    $content = array(
+      'file-info' => array(
+        '#prefix' => '<div class="file-info">',
+        '#suffix' => '</div>',
+        'icon' => $icon,
+        'title' => array(
+          '#theme' => 'link',
+          '#path' => 'file/' . $file->fid,
+          '#text' => $file->filename,
+          '#options' => array('attributes' => array('class' => array('entity-link')), 'html' => FALSE),
+        ),
+        'download' => array(
+          '#theme' => 'link',
+          '#path' => file_create_url($file->uri),
+          '#text' => 'Download',
+          '#options' => array('attributes' => array('class' => array('download-link')), 'html' => FALSE),
+        ),
+      ),
+    );
+  }
+  
+  //add thumbnail for list of images
+  if (isset($file->sv_list_of_images) && $file->sv_list_of_images) {
+    TRUE;
+  }  
+  if ($file->type == 'image') {
+    switch ($view_mode) {
+      case 'full':
+        $content['file-info']['file'] = $file->content['file']; //include embedded image
+        break;
+  
+      case 'teaser':
+        $content['file-info']['file'] = $file->content['file']; //include embedded image
+        $content['file-info']['file']['#style_name'] = 'os_files_small';
+        break;
+    }
+  }
+  
+  //add video thumb/colorbox for list of video
+  //if (@$file->sv_list_of_videos) {
+  if ($file->type == 'video') {
+    switch ($view_mode) {
+      case 'full':    
+        $content['file-info']['file'] = $file->content['file']; //include embedded video
+        break;
+    
+      case 'teaser':
+        $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
+        break;
+    }
+  }
+  
+  $file->content['file'] = $content;
 }
 
 /**
@@ -1530,13 +1613,9 @@ function os_files_views_data_alter(&$data){
  * Implements hook_os_entity_view_modes()
  */
 function os_files_os_entity_view_modes() {
-  return array('file' => array(
-    'image' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
-    'video' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
-    'audio' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
-    'document' => array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_preview', 'os_files_thumbnail'),
-    'executable' => array('os_files_link', 'os_files_link_icon'),
-    'html' => array('os_files_link', 'full'),
+  return array('file' => array_fill_keys(
+    array('image', 'video', 'audio', 'document', 'executable', 'html'),
+    array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_title')
   ));
 }
 
@@ -1688,6 +1767,10 @@ function os_files_stream_wrappers_alter(&$wrappers){
 function _os_files_video_thumb($file) {
   if (!module_exists('colorbox')) {
     return FALSE;
+  }
+  
+  if (!is_array($file)) {
+    $file = (array) $file;
   }
 
   $url = urldecode(file_uri_target($file['uri']));
@@ -1928,9 +2011,7 @@ function os_files_add_fields($type) {
         )
       ),
       'module' => 'text',
-      'settings' => array(
-        'max_length' => '255'
-      ),
+      'settings' => array(),
       'translatable' => '0',
       'type' => 'text_long'
     );
@@ -1955,7 +2036,7 @@ function os_files_add_fields($type) {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 600,
+            'trim_length' => 160,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => 0,

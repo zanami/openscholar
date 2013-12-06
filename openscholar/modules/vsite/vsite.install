@@ -458,10 +458,10 @@ function vsite_update_7012() {
 function vsite_update_7013() {
   //subsite domains field
   features_revert(array('vsite' => array('field')));
-  
+
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
   $group_types = array_intersect($group_types, variable_get('subsite_parents', array('department')));
-  
+
   foreach ($group_types as $type) {
     vsite_attach_fields_to_group($type);
   }
@@ -471,4 +471,68 @@ function vsite_update_7013() {
   $og_field['instance']['label'] = 'Support expire';
   $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
   og_create_field('vsite_support_expire', 'user', 'user', $og_field);
+}
+
+/**
+ * Add "Override roles and permissions" functionality to VSites.
+ */
+function vsite_update_7014() {
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  foreach ($group_types as $type) {
+    vsite_attach_fields_to_group($type);
+  }
+
+  variable_set('og_node_access_strict', TRUE);
+
+  // Delete the "vsite user" site-wide role.
+  if ($role = user_role_load_by_name('vsite user')) {
+    user_role_delete('vsite user');
+  }
+
+  // Remove the "vsite admin" site-wide role from users in case it was
+  // accidentally assigned to them.
+  $role_names = array(
+    'content editor',
+    'vsite admin',
+    'vsite user',
+  );
+  $rids = array();
+  foreach ($role_names  as $role_name) {
+    $role = user_role_load_by_name($role_name);
+    $rids[] = $role->rid;
+  }
+
+  db_delete('users_roles')
+    ->condition('rid', $rids, 'IN')
+    ->execute();
+
+  features_revert(array('os' => array('user_role')));
+  features_revert(array('os' => array('user_permission')));
+  $features = array(
+    'biocv',
+    'book',
+    'blog',
+    'classes',
+    'events',
+    'faq',
+    'image_gallery',
+    'links',
+    'news',
+    'pages',
+    'presentations',
+    'profiles',
+    'publications',
+    'reader',
+    'software',
+  );
+
+  foreach ($features as $feature) {
+    features_revert(array('os_' . $feature => array('user_permission')));
+  }
+
+  // Set og permissions for VSite roles.
+  $bundles = og_get_all_group_bundle();
+  foreach (array_keys($bundles['node']) as $bundle) {
+    vsite_set_og_permissions($bundle);
+  }
 }

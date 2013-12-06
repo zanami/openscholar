@@ -18,7 +18,7 @@ class sv_list_subsites extends sv_list_plugin  {
     return array('query_scope' => 'current');
   }
   
-  public function options_form($options) {
+  public function options_form($options, &$form) {
     if (!module_exists('vsite') || ($vsite = spaces_get_space()) == FALSE) {
       return;
     }
@@ -28,7 +28,7 @@ class sv_list_subsites extends sv_list_plugin  {
     }
     
     ctools_include('subsite','vsite');
-    $form['query_scope'] = array(
+    $form['filters']['query_scope'] = array(
       '#title' => 'Include results from',
       '#type' => 'checkboxes',
       '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),

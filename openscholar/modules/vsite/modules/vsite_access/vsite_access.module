@@ -99,24 +99,7 @@ function vsite_access_robotstxt() {
 function vsite_access_node_access($node, $op, $account) {
   $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
-  // Handle access to Group Content
-  if (og_is_group_content_type('node', $type)) {
-
-    if ($op != 'view' || !($vsite = spaces_get_space())) {
-      // If we are trying to create content outside a group and do not have permission to do so
-      if ($op == 'create' && og_is_group_content_type('node', $type) && !user_access('create ' . $type . ' content', $account)) {
-        return NODE_ACCESS_DENY;
-      }
-
-      // Do nothing
-      return NODE_ACCESS_IGNORE;
-    }
-
-    // When trying to view group content, check the privacy of the site.
-    if (is_object($vsite->group) && !og_is_group_content_type('node', $vsite->group->type) && !node_access('view', $vsite->group, $account)) {
-      return NODE_ACCESS_DENY;
-    }
-
+  if (!$vsite = vsite_get_vsite()) {
     return NODE_ACCESS_IGNORE;
   }
 
