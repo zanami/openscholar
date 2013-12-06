@@ -662,6 +662,11 @@ function os_files_entity_info_alter(&$info){
       'label' => t('Title'),
       'custom settings' => TRUE
     ),
+    
+    'os_files_thumbnail' => array(
+      'label' => t('Thumbnail'),
+      'custom settings' => TRUE
+    ),
   );
 
   $info['file']['bundles']['undefined'] = array(
@@ -1289,7 +1294,7 @@ function os_files_file_download($uri){
  * @see http://community.openscholar.harvard.edu/openscholar/topics/better_files_media_management_and_display
  */
 function os_files_file_view($file, $view_mode, $langcode) {
-  if (!in_array($view_mode, array('os_files_title', 'teaser', 'full'))) {
+  if (!in_array($view_mode, array('os_files_title', 'teaser', 'full', 'os_files_thumbnail'))) {
     return;
   }
 
@@ -1343,11 +1348,18 @@ function os_files_file_view($file, $view_mode, $langcode) {
     switch ($view_mode) {
       case 'full':
         $content['file-info']['file'] = $file->content['file']; //include embedded image
+        $content['file-info']['file']['#style_name'] = 'os_files_small';
         break;
   
       case 'teaser':
         $content['file-info']['file'] = $file->content['file']; //include embedded image
         $content['file-info']['file']['#style_name'] = 'os_files_small';
+        break;
+      
+      case 'os_files_thumbnail':
+        $content['file-info'] = $file->content['file']; //just use the image
+        $content['file-info']['#style_name'] = 'os_square_50_50';
+        $content['file-info']['#attributes']['class'] = array('recent-images-list');
         break;
     }
   }
@@ -1613,10 +1625,14 @@ function os_files_views_data_alter(&$data){
  * Implements hook_os_entity_view_modes()
  */
 function os_files_os_entity_view_modes() {
-  return array('file' => array_fill_keys(
+  $modes = array('file' => array_fill_keys(
     array('image', 'video', 'audio', 'document', 'executable', 'html'),
     array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_title')
   ));
+  
+  $modes['file']['image'][] = 'os_files_thumbnail';
+  
+  return $modes;
 }
 
 

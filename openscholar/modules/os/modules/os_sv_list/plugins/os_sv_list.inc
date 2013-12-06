@@ -354,7 +354,7 @@ class os_sv_list extends os_boxes_default {
     $options = array_reduce($view_modes, function($ret, $mode) use ($info) {$ret[$mode] = $info['view modes'][$mode]['label']; return $ret;});
     
     //rename some options to friendlier titles
-    array_merge(array('full' => 'Entire Post'), $options);
+    $options = array_merge(array('full' => 'Entire Post'), $options);
     return $options;    
   }
   

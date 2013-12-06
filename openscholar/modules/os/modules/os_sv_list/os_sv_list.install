@@ -20,14 +20,7 @@ function os_sv_list_update_7001() {
     //images -> file 
     if ($box->options['content_type'] == 'image') {
       $box->plugin_key = 'os_sv_list_file';
-      $view_modes = array(
-        'display_title' => 'os_files_title',
-        'display_sidebar_teaser' => 'teaser',
-        'display_teaser' => 'teaser',
-        'display_body' => 'full',
-        'display_image' => 'teaser', //used to be 50x50 thumbnails w/ link
-      );
-      $box->options['display'] = (isset($view_modes[$box->options['display']])) ? $view_modes[$box->options['display']] : $view_modes['display_body'];
+      $box->options['display'] = 'os_files_thumbnail';
     } else {
       //$box->plugin_key = 'os_sv_list_node'; //necessary now.  are we going to keep the original key later tho? //TODO
       
