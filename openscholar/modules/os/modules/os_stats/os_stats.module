@@ -44,7 +44,7 @@ function os_stats_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#type' => 'checkboxes',
     '#title' => t('Enabled stats'),
   	'#weight' => 0,
-    '#options' => drupal_map_assoc(array('filesize', 'users', 'websites', 'posts', 'publications', 'files'), 'ucfirst'),
+    '#options' => drupal_map_assoc(array('filesize', 'filesize_bytes', 'users', 'websites', 'posts', 'publications', 'files'), 'ucfirst'),
     '#default_value' => variable_get('os_stats_enabled', ''),
     '#description' => t('Enables specific statistics to visitors on the <a href="/stats">Stats page</a>.'),
   );
@@ -138,7 +138,7 @@ function os_stats_content() {
 function os_stats_page($style = 'default') {
   // Sets defaults for possible query parameters.
   $version_default = OS_STATS_API_VERSION_DEFAULT;
-  $type_default    = 'websites';
+  $type_default    = 'all';
   $format_default  = 'json'; // One day: xml?
   // Fetches query parameters and sets defaults.
   $version = isset($_GET['version']) ? $_GET['version'] : $version_default;
@@ -202,6 +202,9 @@ function _os_stats_v1_json($type, $style) {
       case 'websites':
         $enabled = array('websites');
         break;
+      case 'all';
+        $enabled = variable_get('os_stats_enabled',array('websites'));
+        break;
     }
 
     foreach ($queries as $query => $info) {
@@ -260,10 +263,10 @@ function _os_stats_v1_json($type, $style) {
  */
 function _os_stats_v1_json_init($type, $style) {
   $errors = array();
-  $types = array('websites');
+  $types = variable_get('os_stats_enabled',array('websites'));
   $styles = array('default', 'geckoboard');
 
-  if (!in_array($type, $types)) {
+  if ($type != 'all' && !in_array($type, $types)) {
     $errors[] = "Unknown type parameter: $type";
   }
   if (!in_array($style, $styles)) {
@@ -294,6 +297,12 @@ function _os_stats_queries() {
     'description' => t('Size of all files uploaded by users'),
     'query' => 'SELECT SUM(filesize) FROM {file_managed}',
     'callback' => 'format_size',
+    'weight' => -10,
+  );
+  $queries['filesize_bytes'] = array(
+    'title' => t('Total uploaded bytes'),
+    'description' => t('Size of all files uploaded by users'),
+    'query' => 'SELECT SUM(filesize) FROM {file_managed}',
     'weight' => -10,
   );
   $queries['users'] = array(
