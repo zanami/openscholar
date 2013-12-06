@@ -5,44 +5,42 @@
   top: 0;
   color: #999999;
   font-size: smaller;
-}
-
-.block-boxes .embed-popup.ui-widget {
   display: none;
-  position: absolute;
-  width: 250px;
-  float: right; /** auto resize **/
-  right: 60px;
-  top: 0;
-  background-color: white !important;
-  border: 1px solid #CCCCCC;
-  border-radius: 3px;
-  z-index: 100;
-  margin: 0;
 }
 
-.block-boxes .os-embed-link:hover + .embed-popup,
-.block-boxes .embed-popup:hover {
+.block-boxes:hover .os-embed-link {
   display: block;
 }
 
-.block-boxes .embed-popup.ui-widget ul.ui-tabs-nav li {
-  text-align: center;
+/**
+ * Embed-link within another block
+ */
+.block-boxes:hover .block .os-embed-link {
+  display: none;
 }
 
-.block-boxes .embed-popup.ui-widget ul.ui-tabs-nav li a {
+.ui-dialog {
+  z-index: 500;
+}
+
+.embed-popup.ui-widget ul.ui-tabs-nav li {
+  text-align: center;
+  background: white;
+}
+
+.embed-popup.ui-widget ul.ui-tabs-nav li a {
   padding: 5px 0;
   border-bottom: 3px solid white !important;
   background-color: white;
   margin: 0 15px;
 }
 
-.block-boxes .embed-popup.ui-widget ul.ui-tabs-nav li.ui-tabs-active a {
+.embed-popup.ui-widget ul.ui-tabs-nav li.ui-tabs-active a {
   background-color: white !important;
   border-bottom-color: black !important;
   color: black !important;
 }
 
-.block-boxes .embed-popup.ui-widget textarea {
+.embed-popup.ui-widget textarea {
   font-size: 0.75em;
 }

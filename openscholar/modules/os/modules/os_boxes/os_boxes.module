@@ -351,10 +351,10 @@ function os_boxes_preprocess_boxes_box(&$variables) {
         )
       ),
       'embed-links-button' => array(
-        '#markup' => l('<embed>', '', array('external' => true, 'attributes' => array('class' => array('os-embed-link')))),
+        '#markup' => l('<embed>', '', array('external' => true, 'attributes' => array('class' => array('os-embed-link'), 'data-delta' => $delta))),
       ),
       'embed-links' => array(
-        '#prefix' => '<div class="embed-popup">',
+        '#prefix' => '<div id="embed-popup-'.$delta.'" class="embed-popup">',
         '#suffix' => '</div>',
         'links' => array(
           '#theme' => 'links',
