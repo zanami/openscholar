@@ -576,7 +576,7 @@ function vsite_preset_spaces_presets() {
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'hwpi_classic',
-      'os_appearance_hwpi_classic_flavor' => 'indigo',
+      'os_appearance_hwpi_classic_flavor' => 'classic_indigo',
       'os_breadcrumbs_show_breadcrumbs' => 0,
     ),
     'menus' => array(

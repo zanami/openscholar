@@ -468,13 +468,13 @@ function os_search_solr_cp_settings() {
   $settings = array();
   $settings['os_search_solr'] = array(
     'group' => array(
-      '#title' => t('Solr search'),
-      '#id' => 'os-search-solr',
+      '#title' => t('Maintenance'),
+      '#id' => 'os-maintenance',
     ),
     'form' => array(
       '#type' => 'submit',
-      '#value' => t('Index Solr'),
-      '#description' => t('Index the site to be searchable.'),
+      '#value' => t('Re-Index Search'),
+      '#suffix' => "<div class=\"description\">".t('(Re)Index the sites searchable content.')."</div>",
       '#submit' => array('os_search_solr_reindex_site'),
     ),
   );
