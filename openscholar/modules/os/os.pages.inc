@@ -32,7 +32,7 @@ function os_page_not_found_page() {
 function os_user_page() {
   // If site is in read-only mode display a message for users.
   if (variable_get('os_readonly_mode', FALSE)) {
-    return variable_get('os_readonly_mode_message', '');
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
   }
 
   global $user;
