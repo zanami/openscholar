@@ -166,7 +166,7 @@ function cp_user_vsite_edit_roles_permissions_confirm_submit($form, $form_state)
   $vsite = vsite_get_vsite();
 
   $wrapper = entity_metadata_wrapper('node', $vsite->group);
-  $wrapper->OG_DEFAULT_ACCESS_FIELD->set(1);
+  $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(1);
   $wrapper->save();
 }
 
