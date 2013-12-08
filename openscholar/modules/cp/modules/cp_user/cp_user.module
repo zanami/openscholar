@@ -68,6 +68,14 @@ function cp_user_menu() {
     'access callback' => 'cp_user_admin_access',
   );
 
+  $items['cp/users/edit-roles-permissions/confirm'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Edit Roles and Permissions',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_user_vsite_edit_roles_permissions_confirm'),
+    'access callback' => 'cp_user_admin_access',
+  );
+
   return $items;
 }
 
@@ -81,73 +89,92 @@ function cp_user_vsite_permissions() {
 
   $form = drupal_get_form('og_ui_admin_permissions', 'node', $vsite->id, $vsite->group->type);
 
+  // Add the 'Edit roles and permissions' button, if needed.
+  cp_user_add_button_edit_roles_permissions($form, $vsite, 'cp/users/permissions');
+
   return $form;
 }
 
-function cp_user_form_og_ui_admin_permissions_alter(&$form, &$form_state) {
-  $form['edit_roles_permissions'] = array(
-    '#type' => 'button',
-    '#value' => t('Edit roles and permissions'),
-    '#weight' => -50,
-    '#submit' => array('cp_user_vsite_permissions_submit'),
-    '#executes_submit_callback' => TRUE,
-  );
+/**
+ * Show limited options for VSite roles.
+ */
+function cp_user_vsite_roles() {
+  $vsite = vsite_get_vsite();
 
-  array_unshift($form['#submit'], 'cp_user_vsite_permissions_submit');
+  module_load_include('inc', 'og_ui', 'og_ui.admin');
 
-  // Edit button was clicked, show the confirmation form instead.
-  if (isset($form_state['confirm_edit_roles_permissions'])) {
-    dpm(444);
-    $form['#submit'] = array('cp_user_vsite_permissions_submit');
-    $form = cp_user_vsite_permissions_confirm($form, $form_state);
-  }
+  $form = drupal_get_form('og_ui_admin_new_role', 'node', $vsite->id, $vsite->group->type);
+
+  // Add the 'Edit roles and permissions' button, if needed.
+  cp_user_add_button_edit_roles_permissions($form, $vsite, 'cp/users/roles');
+
+  return $form;
 }
 
-function cp_user_vsite_permissions_submit(&$form, &$form_state) {
-  dpm(111);
-  if ($form_state['triggering_element']['#value'] == t('Edit roles and permissions')) {
-    dpm(222);
-    // Edit button was clicked.
-    if ($form_state['values']['edit_roles_permissions'] === TRUE) {
-      dpm(333);
-      // Edit confirmed.
-      drupal_set_message(t('Success!'));
-      $form_state['redirect'] = 'john/cp/users/permissions';
-    }
-
-    // Rebuild the form as a confirmation form.
-    $form_state['rebuild'] = TRUE;
-    $form_state['confirm_edit_roles_permissions'] = TRUE;
+/**
+ * Adds the 'Edit roles and permissions' button to the given form.
+ *
+ * If the VSite uses the default settings for roles and permissions, this allows
+ * the user to change this setting and edit roles and permissions in this VSite.
+ */
+function cp_user_add_button_edit_roles_permissions(&$form, $vsite, $destination) {
+  $wrapper = entity_metadata_wrapper('node', $vsite->group);
+  if ($wrapper->{OG_DEFAULT_ACCESS_FIELD}->value()) {
+    // Not using default roles and permissions, do not show the button.
     return;
   }
+
+  // Currently using default roles and permissions.
+  // Add a button that allows the user to change this setting and edit roles
+  // and permissions in this VSite.
+  $options = array(
+    'query' => array('destination' => $destination),
+    'attributes' => array('class' => array('os-green-button')),
+  );
+  $form['top_buttons'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array('cp-user-top-buttons')
+    ),
+    'edit_roles_permissions' => array(
+      '#type' => 'markup',
+      '#markup' => l(t('Edit roles and permissions'), 'cp/users/edit-roles-permissions/confirm', $options),
+      '#weight' => -50,
+    ),
+  );
+  $form['#attached']['css'][] = drupal_get_path('module', 'cp_user') . '/cp_user.css';
 }
 
-function cp_user_vsite_permissions_confirm($form, &$form_state) {
-  dpm(555);
-//  $vocabulary = taxonomy_vocabulary_load($vid);
-//
-//  $form['type'] = array('#type' => 'value', '#value' => 'vocabulary');
-//  $form['vid'] = array('#type' => 'value', '#value' => $vid);
-//  $form['machine_name'] = array('#type' => 'value', '#value' => $vocabulary->machine_name);
-//  $form['name'] = array('#type' => 'value', '#value' => $vocabulary->name);
-//  $form['reset_alphabetical'] = array('#type' => 'value', '#value' => TRUE);
-  unset($form['permission']);
-  unset($form['checkboxes']);
-  unset($form['role_names']);
-  $t =  confirm_form($form,
-    t('Are you sure?'),
+/**
+ * Page callback; Confirmation form to allow editing of roles and permissions.
+ */
+function cp_user_vsite_edit_roles_permissions_confirm($form, $form_state) {
+  $vsite = vsite_get_vsite();
+
+  return confirm_form($form,
+    t('Edit roles and permissions in VSite %vsite', array('%vsite' => $vsite->group->title)),
     'john/cp/users/permissions',
-    t('Bla Bla.'),
-    t('Ok'),
+    t('Are you sure you want to override the default roles and permissions in VSite %vsite?', array('%vsite' => $vsite->group->title)),
+    t('Confirm'),
     t('Cancel'));
-  dpm($t);
-  return $t;
+}
+
+/**
+ * Submit handler; Allow editing of roles and permissions in the current VSite.
+ */
+function cp_user_vsite_edit_roles_permissions_confirm_submit($form, $form_state) {
+  $vsite = vsite_get_vsite();
+
+  $wrapper = entity_metadata_wrapper('node', $vsite->group);
+  $wrapper->OG_DEFAULT_ACCESS_FIELD->set(1);
+  $wrapper->save();
 }
 
 /**
  * Implements hook_theme_registry_alter().
  *
  * @see og_ui_theme().
+ * @see cp_user_og_ui_admin_permissions().
  */
 
 function cp_user_theme_registry_alter(&$theme_registry) {
@@ -157,7 +184,12 @@ function cp_user_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Theme override;
+ * Theme override; OG permissions form.
+ *
+ * In OG's theme function the table is hardcoded to be on top of any other form
+ * element. Here we need the 'Edit roles and permissions' button to be above the
+ * table, so this is actually a copy of OG's theme function with special
+ * treatment for top buttons.
  */
 function cp_user_og_ui_admin_permissions($variables) {
   $form = $variables['form'];
@@ -190,21 +222,14 @@ function cp_user_og_ui_admin_permissions($variables) {
   }
   $output = '';
 
-  if (!empty($form['edit_roles_permissions'])) {
-    // Display this button above the permissions table.
-    $output .= drupal_render($form['edit_roles_permissions']);
+  if (!empty($form['top_buttons'])) {
+    // Display this element above the permissions table.
+    $output .= drupal_render($form['top_buttons']);
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'permissions')));
   $output .= drupal_render_children($form);
   return $output;
-}
-
-function cp_user_vsite_roles() {
-  $vsite = vsite_get_vsite();
-
-  module_load_include('inc', 'og_ui', 'og_ui.admin');
-  return drupal_get_form('og_ui_admin_new_role', 'node', $vsite->id, $vsite->group->type);
 }
 
 /**
