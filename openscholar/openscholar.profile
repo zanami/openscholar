@@ -77,11 +77,6 @@ function openscholar_flavor_form($form, &$form_state) {
     ),
   );
 
-  $form['on_travis'] = array(
-    '#type' => 'value',
-    '#tvalue' => FALSE,
-  );
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Next'),
@@ -139,11 +134,6 @@ function openscholar_flavor_form_submit($form, &$form_state) {
   // Define dummy content migration.
   if (!empty($form_state['input']['dummy_content'])) {
     variable_set('os_dummy_content', TRUE);
-  }
-
-  // The installation is under travis.
-  if (!empty($form_state['input']['on_travis'])) {
-    variable_set('on_travis', TRUE);
   }
 
   // Define dummy content migration.
@@ -330,16 +320,6 @@ function _openscholar_install_profile_modules_finished($success, $results, $oper
     $rid = array_search(OG_AUTHENTICATED_ROLE, $rids);
     og_role_grant_permissions($rid, $permissions);
   }
-
-  // When installing in Travis CI we need to change the mail system handlers
-  // so the travis CI could install the Drupal without failing.
-  if (variable_get('on_travis')) {
-    variable_set('mail_system', array(
-      'default-system' => 'DevelMailLog',
-      'mimemail' => 'MimeMailSystem',
-    ));
-  }
-
 }
 
 /**
