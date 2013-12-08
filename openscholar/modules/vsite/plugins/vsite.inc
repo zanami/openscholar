@@ -401,10 +401,11 @@ class vsite extends space_og {
     global $user;
 
     $roles = $user->roles;
+    // Keyed by VSite role name, and site-wide role name as the value.
     $role_names = array(
-      'content editor',
-      'vsite admin',
-      'vsite user',
+      'content editor' => 'content editor',
+      'administrator' => 'vsite admin',
+      OG_AUTHENTICATED_ROLE => 'vsite user',
     );
 
     $og_roles = og_get_user_roles('node', $this->id);

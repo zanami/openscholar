@@ -41,7 +41,7 @@ function vsite_install() {
           og_role_grant_permissions($rid, $permissions);
           break;
 
-        case 'vsite user':
+        case 'member':
           $permissions = array(
             'view users outside groups',
             'unsubscribe',
