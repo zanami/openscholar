@@ -144,6 +144,8 @@ function os_in_read_mode_login() {
   if (user_is_anonymous()) {
     return drupal_get_form('user_login');
   }
+
+  drupal_access_denied();
 }
 
 /**
@@ -155,8 +157,10 @@ function os_in_read_mode_register() {
   }
 
   if (user_register_access()) {
-    drupal_get_form('user_register_form');
+    return drupal_get_form('user_register_form');
   }
+
+  drupal_access_denied();
 }
 
 /**
@@ -167,7 +171,7 @@ function os_in_read_mode_password() {
     return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
   }
 
-  drupal_get_form('user_pass');
+  return drupal_get_form('user_pass');
 }
 
 /**
@@ -909,7 +913,6 @@ function os_settings_form($form_state) {
     '#weight' => 0,
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#validate' => 'os_settings_form_validate',
   );
 
   $form['os_general']['os_use_dropdowns'] = array(
@@ -931,13 +934,13 @@ function os_settings_form($form_state) {
     '#type' => 'checkbox',
     '#title' => t('Enable Read-only mode'),
     '#default_value' => variable_get('os_readonly_mode', FALSE),
-    '#description' => '<span class="warning">' . t('Notice that when Read-only mode is enabled
-                        all non-admin users will be logged out and user login will be disabled.') . '</span>',
+    '#description' => '<span class="warning">' . t('Notice that when Read-only mode is enabled all non-admin users will be logged out and user login will be disabled.') . '</span>',
   );
 
   $form['os_read_only']['os_readonly_mode_message'] = array(
     '#type' => 'textarea',
     '#title' => t('Message'),
+    '#required' => TRUE,
     '#default_value' => variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE),
     '#description' => t('Message to be displayed to the users in the login page when site is in read-only mode.'),
     '#states' => array(
@@ -950,15 +953,6 @@ function os_settings_form($form_state) {
   $form['#submit'][] = 'os_settings_form_submit';
 
   return system_settings_form($form);
-}
-
-/**
- *  Validation handler for os_settings form.
- */
-function os_settings_form_validate($form, &$form_state) {
-  if (!$form_state['values']['os_readonly_mode_message']) {
-    form_set_error('os_readonly_mode_message', t('You must provide a message to display to users when site is in read-only mode.'));
-  }
 }
 
 /**
