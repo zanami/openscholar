@@ -101,7 +101,7 @@ function cp_user_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Overrides theme_og_ui_admin_new_role().
+ * Overrides theme_og_ui_admin_new_role(); OG roles form.
  *
  * In the original theme function, the always-locked roles are hardcoded.
  * We override the theme to add OS roles to the list of always-blocked roles.
