@@ -1,0 +1,58 @@
+<?php
+
+include_once('os_front.features.inc');
+
+
+function os_front_context_default_contexts_alter($contexts) {
+  // add some extra blocks/boxes to the 'sitewide_front'
+  if (isset($contexts['os_sitewide_front'])) {
+    $b = &$contexts['os_sitewide_front']->reactions['block']['blocks'];
+
+    $b['boxes-os_front_header'] = array(
+      'module' => 'boxes',
+      'delta' => 'os_front_header',
+      'weight' => 0,
+      'region' => 'header_second',
+    );
+
+    $b['boxes-os_front_create'] = array(
+      'module' => 'boxes',
+      'delta' => 'os_front_create',
+      'weight' => 2,
+      'region' => 'header_second',
+    );
+
+    $b['boxes-os_front_main_support'] = array(
+      'module' => 'boxes',
+      'delta' => 'os_front_main_support',
+      'weight' => 0,
+      'region' => 'content_first',
+    );
+
+    $b['boxes-os_front_main_configure'] = array(
+      'module' => 'boxes',
+      'delta' => 'os_front_main_configure',
+      'weight' => 0,
+      'region' => 'content_second',
+    );
+
+    $b['boxes-os_front_sample'] = array(
+      'module' => 'boxes',
+      'delta' => 'os_front_sample',
+      'weight' => 0,
+      'region' => 'footer',
+    );
+
+    $b['os_search_solr-site-search']['region'] = 'header_second';
+    $b['os_search_solr-site-search']['weight'] = 1;
+    $b['os_search_db-site-search']['region'] = 'header_second';
+    $b['os_search_db-site-search']['weight'] = 1;
+    $b['vsite_register-get_your_site_block']['region'] = false;
+  }
+}
+
+function os_front_preprocess_html(&$vars) {
+  if ($vars['is_front'] && !(module_exists('vsite') && vsite_get_vsite())) {
+    $vars['classes_array'][] = 'sitewide-front';
+  }
+}

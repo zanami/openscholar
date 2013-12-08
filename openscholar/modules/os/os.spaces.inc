@@ -69,7 +69,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'hwpi_classic',
+      'theme_default' => 'ballard',
       'os_breadcrumbs_show_breadcrumbs' => 0,
     ),
     'menus' => array(
@@ -230,7 +230,7 @@ function os_spaces_presets() {
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_scholar';
-  $spaces_presets->title = 'OS Scholar';
+  $spaces_presets->title = 'Personal Minimal';
   $spaces_presets->description = '';
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
@@ -264,14 +264,14 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'hwpi_classic',
+      'theme_default' => 'cleanblue',
       'os_breadcrumbs_show_breadcrumbs' => 0,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('OS Scholar');
+  t('Personal Minimal');
   $export['os_scholar'] = $spaces_presets;
 
   $spaces_presets = new stdClass();
@@ -312,7 +312,7 @@ function os_spaces_presets() {
         'harvard_courses',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'hwpi_classic',
+      'theme_default' => 'cleanblue',
       'os_breadcrumbs_show_breadcrumbs' => 0,
     ),
   );

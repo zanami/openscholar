@@ -36,6 +36,16 @@ function os_events_os_app_info() {
 }
 
 /**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_events_os_entity_view_modes() {
+  return array('node' =>
+    array('event' => array('sidebar_teaser')
+  ));
+}
+
+
+/**
  * hook os_widget
  *
  * Events blocks that can be used on an OpenScholar site
@@ -100,7 +110,7 @@ function os_events_default_registration_type() {
  * Implements hook_process_node().
  */
 function os_events_process_node(&$variables) {
-  if($variables['type'] != 'event') {
+  if ($variables['type'] != 'event') {
     return;
   }
 
@@ -244,6 +254,7 @@ function os_events_views_pre_view(&$view, &$display_id, &$args) {
 
   $values = $handler->get_option('style_options');
   $values['calendar_type'] = $_GET['type'];
+  $values['groupby_times'] = 'hour';
   $handler->set_option('style_options', $values);
 
   $values = $handler->get_option('pager');
@@ -663,4 +674,14 @@ function os_events_entity_insert($entity, $type) {
 
 
   message_notify_send_message($message, array('mail' => $entity->anon_mail));
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Include JS to update the End Date field according to the Start Date field on
+ * event node form.
+ */
+function os_events_form_event_node_form_alter(&$form, &$form_state) {
+  $form['#attached']['js'][] = drupal_get_path('module', 'os_events') . '/js/os_events.js';
 }

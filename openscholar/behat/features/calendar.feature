@@ -32,3 +32,9 @@ Feature: Testing OpenScholar calendar page.
       And I should see the link "29" under "has-events"
      When I visit "john/calendar/authors/douglas-noël-adams?type=year&year=2013"
      Then I should not see the link "29" under "view-display-id-page_1"
+
+  @api
+  Scenario: Testing the events export in iCal format.
+    Given I visit "john/calendar/export.ics"
+     Then I look for ".field_date.0@"
+    

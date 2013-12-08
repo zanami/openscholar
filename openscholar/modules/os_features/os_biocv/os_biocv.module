@@ -22,6 +22,15 @@ function os_biocv_os_app_info() {
   	  'bio',
   		'cv',
     ),
+
+    'importers' => array(
+      'bio' => array(
+        'csv' => 'os_cv',
+      ),
+      'cv' => array(
+        'csv' => 'os_bio',
+      ),
+    ),
   );
 
   return $apps;
@@ -118,12 +127,12 @@ function os_biocv_node_access($node, $op, $account) {
  * Removes the username from $submitted info on blog type nodes.
  */
 function os_biocv_process_node(&$vars) {
-  if ($vars['type'] == 'cv') {
+  if ($vars['type'] == 'cv' && $vars['view_mode'] != 'title') {
     // Build the submitted variable used by default in node templates
     $last_updated = format_date($vars['changed'], 'custom', 'F j, Y');
     $vars['title_suffix'] = '<p class="submitted">' . t('(Last updated: @time)', array('@time' => $last_updated)) . '</p>';
   }
-  elseif ($vars['type'] == 'bio' && empty($vars['show_title'])) {
+  elseif ($vars['type'] == 'bio' && empty($vars['show_title']) && $vars['view_mode'] != 'title') {
     // hides the title
     $vars['page'] = true;
   }

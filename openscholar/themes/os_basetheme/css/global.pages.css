@@ -752,6 +752,12 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     border-radius: 0;
     border:0;
 } 
+
+
+
+.ui-dialog.ui-front.media-wrapper {
+	z-index:500;
+}
  
  #media-browser-tabset .media-browser-tab {
     border: none;
@@ -847,6 +853,57 @@ border-top:1px solid #ccc;
 	border:none;
 	border-bottom:none;
 }	
+
+/* ACCORDION OVERRIDES */
+.ui-accordion .ui-accordion-content {
+    padding: 0.7em;
+}
+
+.accordion .ui-corner-all, 
+.accordion .ui-corner-bottom, 
+.accordion .ui-corner-right, 
+.accordion .ui-corner-br,
+.accordion .ui-corner-top, 
+.accordion .ui-corner-tr {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.accordion .ui-corner-all, 
+.accordion .ui-corner-bottom, 
+.accordion .ui-corner-left, 
+.accordion .ui-corner-bl,
+.accordion .ui-corner-left, 
+.accordion .ui-corner-tl,
+.accordion .ui-corner-top {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+    left: 0.2em;
+}
+
+.ui-accordion .ui-accordion-icons {
+    padding-left: 1.55em;
+}
+
+.accordion .ui-widget-content {
+    background: #fafafa;
+    border: none;
+    color: #333;
+}
+
+.accordion .ui-state-default, 
+.accordion .ui-widget-content .ui-state-default, 
+.accordion .ui-widget-header .ui-state-default,
+.accordion .ui-state-active, 
+.accordion .ui-widget-content .ui-state-active, 
+.accordion .ui-widget-header .ui-state-active {
+    background: #EEE;
+    border: none;
+    color: #333;
+}
 	
 /* JCAROUSEL OVERRIDE STYLES */
 
@@ -942,11 +999,11 @@ ul.recent-images-list li a:hover img {
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-xxlarge, 
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-small, 
 .lt-ie9	span[style*="FLOAT: RIGHT;"] .file-os-files-medium,
-span[style*="float: right;"] .file-os-files-large, 
-span[style*="float: right;"] .file-os-files-xlarge, 
-span[style*="float: right;"] .file-os-files-xxlarge, 
-span[style*="float: right;"] .file-os-files-small, 
-span[style*="float: right;"] .file-os-files-medium {
+span[style*="float:	right;"] .file-os-files-large, 
+span[style*="float:	right;"] .file-os-files-xlarge, 
+span[style*="float:	right;"] .file-os-files-xxlarge, 
+span[style*="float:	right;"] .file-os-files-small, 
+span[style*="float:	right;"] .file-os-files-medium {
 	padding-left:10px;
 	padding-right:0;
 	}	

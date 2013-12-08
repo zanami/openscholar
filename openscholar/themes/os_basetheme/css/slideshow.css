@@ -278,10 +278,6 @@ line-height:24px;
 
 /** 16.9 OVERLAY **/
 	
-#layout_16_9_overlay {
-	margin-bottom:-40px;
-}
-
 #layout_16_9_overlay .slide {
     padding: 0 !important;
     z-index: 1;

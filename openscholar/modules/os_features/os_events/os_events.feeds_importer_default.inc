@@ -66,6 +66,16 @@ function os_events_feeds_importer_default() {
             'unique' => FALSE,
           ),
           5 => array(
+            'source' => 'Location',
+            'target' => 'field_event_location',
+            'unique' => FALSE,
+          ),
+          6 => array(
+            'source' => 'Registration',
+            'target' => 'registration',
+            'unique' => FALSE,
+          ),
+          7 => array(
             'source' => 'Files',
             'target' => 'file',
             'unique' => FALSE,

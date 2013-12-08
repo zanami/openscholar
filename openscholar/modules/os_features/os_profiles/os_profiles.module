@@ -22,10 +22,25 @@ function os_profiles_os_app_info() {
     'views tabs' => array(
       'os_profiles' => array('page'),
     ),
+    'importers' => array(
+      'person' => array(
+        'csv' => 'os_people',
+      ),
+    ),
   );
 
   return $apps;
 }
+
+/**
+ * Implements hook_os_entity_view_modes()
+ */
+function os_profiles_os_entity_view_modes() {
+  return array('node' => array(
+    'person' => array('sidebar_teaser')
+  ));
+}
+
 
 /**
  * Implements hook_process_hook() for node.
@@ -52,6 +67,7 @@ function os_profiles_process_node(&$vars) {
     if (isset($vars['content']['pic_bio'])) {
       $vars['title_prefix'] = $vars['content']['pic_bio'];
       unset($vars['content']['pic_bio']);
+      $vars['classes'] .= ' with-person-photo';
     }
 
     //move the title inside
@@ -70,7 +86,7 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
+  if (!$vars['teaser'] && !in_array($vars['view_mode'], array('sidebar_teaser', 'title', 'full'))) {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 
@@ -164,11 +180,11 @@ function _os_profiles_person_node_title($node) {
 function os_profiles_field_attach_load($entity_type, $entities, $view_mode) {
   if ($entity_type == 'node') {
     foreach ($entities as $e_id => $e) {
-      if ($e->type != 'person') continue;
+      if ($e->type != 'person' || !isset($e->title)) continue;
 
       if (!empty($e->field_person_photo)) {
-        $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = $e->title;
-        $e->field_person_photo[LANGUAGE_NONE][0]['title'] = $e->title;
+        $e->field_person_photo[LANGUAGE_NONE][0]['alt'] = entity_label('node', $e) ? entity_label('node', $e) : '';
+        $e->field_person_photo[LANGUAGE_NONE][0]['title'] = entity_label('node', $e) ? entity_label('node', $e) : '';
       }
 
       if (!empty($e->field_website[LANGUAGE_NONE])) {

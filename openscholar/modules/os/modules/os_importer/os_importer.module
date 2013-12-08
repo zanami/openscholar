@@ -63,6 +63,16 @@ function os_importer_node_insert($node) {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function os_importer_admin_paths() {
+  return array(
+    'cp/os-importer/*' => TRUE,
+    'cp/os-importer/blog/manage' => TRUE,
+  );
+}
+
+/**
  * Implements hook_os_add_new_links_alter().
  */
 function os_importer_os_add_new_links_alter(&$links) {
@@ -173,6 +183,19 @@ function os_importer_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * When importing a biblio we need to original biblio page callback and
+ * arguments.
+ */
+function os_importer_menu_alter(&$items) {
+  $items['cp/os-importer/biblio']['page callback'] = 'drupal_get_form';
+  $items['cp/os-importer/biblio']['page arguments'] = array('biblio_import_form');
+  $items['cp/os-importer/biblio']['file'] = 'biblio.import.export.inc';
+  $items['cp/os-importer/biblio']['file path'] = drupal_get_path('module', 'biblio') . '/includes';
+}
+
+/**
  * Generate callback for CSV importer page.
  *
  * @param $type
@@ -184,7 +207,10 @@ function os_importer_menu() {
 function os_importer_importer_title($type) {
   $types = node_type_get_types($type);
 
-  return t('@type', array('@type' => $types[$type]->name));
+  // Display a custom name for publication.
+  $title = $type == 'biblio' ? 'Publication' : $types[$type]->name;
+
+  return t('@type', array('@type' => $title));
 }
 
 /**
@@ -240,35 +266,53 @@ function os_importer_map_files($source, $entity, $target, $value, $mapping) {
 
   $sources = explode('|', $value);
   foreach ($sources as $source) {
-    $file = system_retrieve_file($source, 'public://', TRUE);
-    $files[] = array(
-      'fid' => $file->fid,
-      'display' => 1,
-      'description' => '',
-    );
+    if ($file = system_retrieve_file($source, 'public://', TRUE)) {
+      $files[] = array(
+        'fid' => $file->fid,
+        'display' => 1,
+        'description' => '',
+      );
+    }
+    else {
+      // The file could not be accessible. Display the error.
+      $params = array(
+        '@address' => $source,
+      );
+      drupal_set_message(t('There was a problem with downloading the file from: @address. Please check if the file address is accessible', $params), 'error');
+    }
   }
 
   $entity->{$field_name}[$entity->language] = $files;
 }
 
 /**
- * Callback function for creating a node on behalf of another user.
+ * Importer callback for the set the registration field of the event to TRUE or
+ * FALSE.
  *
- * @see os_importer_map_files().
+ * @param $source
+ *   Field mapper source settings.
+ * @param $entity
+ *   An entity object, for instance a node object.
+ * @param $target
+ *   A string identifying the target on the node.
+ * @param $value
+ *   The value to populate the target with.
+ * @param $mapping
+ *  Associative array of the mapping settings from the per mapping configuration
+ *  form.
  */
-function os_importer_map_author($source, $entity, $target, $value, $mapping) {
-  global $user;
-
-  if ($value && $account = user_load_by_name($value)) {
-    // Check that the user can create node of this type.
-    $account = node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
-  }
-  else {
-    // Loading the current user.
-    $account = user_load($user->uid);
+function os_importer_event_registration($source, $entity, $target, $value, $mapping) {
+  if (!$value) {
+    return;
   }
 
-  $entity->uid = $account->uid;
+  if ($entity->type != 'event') {
+    // This is not a node event.
+    return;
+  }
+
+  $register_on = in_array($value, array('On', 'on', 'TRUE','true')) ? 'event_signup_simple' : '';
+  $entity->field_event_registration[$entity->language][0]['registration_type'] = $register_on;
 }
 
 /**
@@ -445,7 +489,7 @@ function os_importer_import_validate($form, $form_state) {
  * structure.
  */
 function os_importer_verify_uploaded_file($form, $form_state) {
-  if ($form_state['values']['format'] == 'ical') {
+  if (in_array($form_state['values']['format'], array('ical', 'rss'))) {
     // Don't validate iCal files.
     return;
   }
@@ -462,10 +506,18 @@ function os_importer_verify_uploaded_file($form, $form_state) {
 
   // Load the uploaded file and parse his headers.
   $file = file_load($form_state['values']['file']);
+
+  // Replace the \r with \n.
+  $file_content = file_get_contents($file->uri);
+  $file_content = str_replace("\r", "\n", $file_content);
+  $new_file = file_save_data($file_content, $file->uri, FILE_EXISTS_REPLACE);
+  $form_state['values']['file'] = $new_file->fid;
+
+  // Parse file's headers.
   feeds_include_library('ParserCSV.inc', 'ParserCSV');
   $parser = new ParserCSV();
   $parser->setDelimiter(',');
-  $iterator = new ParserCSVIterator($file->uri);
+  $iterator = new ParserCSVIterator($new_file->uri);
   $header = _os_importer_parse_header($parser, $iterator);
 
   // Check what missing in the uploaded CSV file and display message if needed.
@@ -527,6 +579,20 @@ function os_importer_import_submit($form, &$form_state) {
 }
 
 /**
+ * Implements hook_feeds_after_import().
+ *
+ * After we import data from the file we can delete him.
+ */
+function os_importer_feeds_after_import(FeedsSource $source) {
+  if (!in_array('FeedsFileFetcher', array_keys($source->config))) {
+    return;
+  }
+
+  $file = file_load($source->config['FeedsFileFetcher']['fid']);
+  file_delete($file);
+}
+
+/**
  * Implements hook_feeds_presave().
  *
  * Supporting creation of vocabularies on the fly from the CSV file.
@@ -536,6 +602,45 @@ function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
     return;
   }
 
+  _os_importer_import_vocab($source, $entity, $item, $id);
+  _os_importer_import_behalf_of_user($source, $entity, $item, $id);
+}
+
+/**
+ * Helper function to import a node on a behalf of another user.
+ */
+function _os_importer_import_behalf_of_user(FeedsSource $source, $entity, $item, $id) {
+  global $user;
+
+  // When importing an iCal don't search for the author, just use the current
+  // user UID.
+  if ($source->importer->id == 'os_ical') {
+    $entity->uid = $user->uid;
+    return;
+  }
+
+  if (empty($item['author'])) {
+    $account = user_load($user->uid);
+  }
+  else {
+    if ($account = user_load_by_name($item['author'])) {
+      // Check that the user is a group member and verify he can create node of
+      // this type.
+      $account = og_is_member('node', $id, 'user', $account) && node_access('create', $entity->type, $account) ? $account : user_load($user->uid);
+    }
+    else {
+      // Loading the current user.
+      $account = user_load($user->uid);
+    }
+  }
+
+  $entity->uid = $account->uid;
+}
+
+/**
+ * Helper function to import vocabularies and taxonomy terms on the fly.
+ */
+function _os_importer_import_vocab(FeedsSource $source, $entity, $item, $id) {
   $config = $source->importer->getConfig();
 
   // Getting the mappings from the processor config.
@@ -675,4 +780,13 @@ function _os_importer_create_vocab($name, $terms, $group_type, $gid, $entity_typ
     'vid' => $vocabulary->vid,
     'tids' => $tids,
   );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adding a submit handler for redirect after import publication.
+ */
+function os_importer_form_biblio_import_form_alter(&$form, $form_state) {
+  $_GET['destination'] = 'cp/os-importer/biblio';
 }

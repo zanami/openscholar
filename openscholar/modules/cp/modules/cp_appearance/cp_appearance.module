@@ -331,7 +331,8 @@ function _cp_appearance_theme_header_item($header_type) {
 
   switch ($header_type) {
     case 'HEADER_FEATURED':
-      $display_title = variable_get('cp_appearance_featured_display_title', '');
+      $default = t('Featured themes');
+      $display_title = variable_get('cp_appearance_featured_display_title', $default);
       if (!empty($display_title)) {
         $title = '<h2>' . check_plain($display_title) . '</h2>';
       }
@@ -437,26 +438,6 @@ function cp_appearance_swap_screenshot($form, &$state){
     ),
     'getsize' => FALSE
   ));
-}
-
-
-function cp_appearance_cp_settings() {
-  $setting['enable_responsive'] = array(
-    'group' => array(
-      '#title' => t('Responsive'),
-      '#id' => 'responsive',
-    ),
-    'form' => array(
-      '#type' => 'checkbox',
-      '#default_value' => variable_get('enable_responsive', false),
-      '#title' => t('Enable responsive behaviors'),
-      '#description' => t('Responsive behaviors will change the layout of your page to fit the screens of smaller devices, such
-        as phones or tablets. Disabling this will prevent the layout from changing, but could make using your site more difficult
-        on smaller devices.'),
-    ),
-  );
-
-  return $setting;
 }
 
 /**
