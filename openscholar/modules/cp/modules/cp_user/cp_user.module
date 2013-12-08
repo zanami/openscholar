@@ -207,7 +207,7 @@ function cp_user_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Theme override; OG permissions form.
+ * Override theme_og_ui_admin_permissions(); OG permissions form.
  *
  * In OG's theme function the table is hardcoded to be on top of any other form
  * element. Here we need the 'Edit roles and permissions' button to be above the
