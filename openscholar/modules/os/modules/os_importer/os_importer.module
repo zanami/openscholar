@@ -311,7 +311,7 @@ function os_importer_event_registration($source, $entity, $target, $value, $mapp
     return;
   }
 
-  $register_on = in_array($value, array('On', 'on', 'TRUE','true')) ? 'event_signup_simple' : '';
+  $register_on = in_array($value, array('ON', 'On', 'on', 'TRUE','true')) ? 'event_signup_simple' : '';
   $entity->field_event_registration[$entity->language][0]['registration_type'] = $register_on;
 }
 
