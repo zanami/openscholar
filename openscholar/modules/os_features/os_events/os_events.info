@@ -22,7 +22,6 @@ dependencies[] = media
 dependencies[] = mailsystem
 dependencies[] = message
 dependencies[] = message_notify
-dependencies[] = mimemail
 dependencies[] = os
 dependencies[] = os_files
 dependencies[] = registration
