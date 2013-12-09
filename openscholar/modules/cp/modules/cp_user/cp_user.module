@@ -125,12 +125,14 @@ function cp_user_add_button_toggle_roles_permissions(&$form, $vsite, $destinatio
   if ($wrapper->{OG_DEFAULT_ACCESS_FIELD}->value()) {
     // Using custom roles and permissions.
     $label = t('Restore default roles and permissions');
-    $value = 0; // Default.
+    // The value 0 means 'Use default'.
+    $value = 0;
   }
   else {
     // Currently using default roles and permissions.
     $label = t('Edit roles and permissions');
-    $value = 1; // Custom.
+    // The value 1 means 'Use custom'.
+    $value = 1;
   }
 
   // Add the button.
@@ -158,28 +160,29 @@ function cp_user_add_button_toggle_roles_permissions(&$form, $vsite, $destinatio
 function cp_user_vsite_toggle_roles_permissions_confirm($form, $form_state, $value) {
   $vsite = vsite_get_vsite();
 
-  $form['setting_value'] = array(
+  $form['default_roles_and_permissions'] = array(
     '#type' => 'value',
     '#value' => $value,
   );
 
   if (empty($value)) {
     // Currently using custom roles and permissions.
-    $title_action = 'Restore default';
-    $action = 'restore';
+    return confirm_form($form,
+      t('Restore default roles and permissions in VSite %vsite', array('%vsite' => $vsite->group->title)),
+      'john/cp/users/permissions',
+      t('Are you sure you want to restore the default roles and permissions in %vsite?', array('%vsite' => $vsite->group->title)),
+      t('Confirm'),
+      t('Cancel'));
   }
   else {
     // Currently using default roles and permissions.
-    $title_action = 'Edit';
-    $action = 'override';
+    return confirm_form($form,
+      t('Edit roles and permissions in VSite %vsite', array('%vsite' => $vsite->group->title)),
+      'john/cp/users/permissions',
+      t('Are you sure you want to override the default roles and permissions in %vsite?', array('%vsite' => $vsite->group->title)),
+      t('Confirm'),
+      t('Cancel'));
   }
-
-  return confirm_form($form,
-    t($title_action . ' roles and permissions in VSite %vsite', array('%vsite' => $vsite->group->title)),
-    'john/cp/users/permissions',
-    t('Are you sure you want to ' . $action . ' the default roles and permissions in VSite %vsite?', array('%vsite' => $vsite->group->title)),
-    t('Confirm'),
-    t('Cancel'));
 }
 
 /**
@@ -189,7 +192,7 @@ function cp_user_vsite_toggle_roles_permissions_confirm_submit($form, $form_stat
   $vsite = vsite_get_vsite();
 
   $wrapper = entity_metadata_wrapper('node', $vsite->group);
-  $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set($form_state['values']['setting_value']);
+  $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set($form_state['values']['default_roles_and_permissions']);
   $wrapper->save();
 }
 
