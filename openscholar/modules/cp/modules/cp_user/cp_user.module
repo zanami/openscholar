@@ -179,12 +179,16 @@ function cp_user_vsite_edit_roles_permissions_confirm_submit($form, $form_state)
  * Implements hook_theme_registry_alter().
  *
  * @see og_ui_theme().
- * @see cp_user_og_ui_admin_permissions().
  */
-
 function cp_user_theme_registry_alter(&$theme_registry) {
+  // Override OG permissions page theme.
   if (!empty($theme_registry['og_ui_admin_permissions'])) {
     $theme_registry['og_ui_admin_permissions']['function'] = 'cp_user_og_ui_admin_permissions';
+  }
+
+  // Override OG roles page theme.
+  if (!empty($theme_registry['og_ui_admin_new_role'])) {
+    $theme_registry['og_ui_admin_new_role']['function'] = 'cp_user_og_ui_admin_new_role';
   }
 }
 
@@ -199,6 +203,12 @@ function cp_user_theme_registry_alter(&$theme_registry) {
 function cp_user_og_ui_admin_permissions($variables) {
   $form = $variables['form'];
   $role_names = $form['role_names']['#value'];
+
+  if ($member_rid = array_search(OG_AUTHENTICATED_ROLE, $role_names)) {
+    // Change role name from 'member' to 'basic member'.
+    $role_names[$member_rid] = 'basic member';
+    $form['role_names'][$member_rid]['#markup'] = 'basic member';
+  }
 
   foreach (element_children($form['permission']) as $key) {
     $row = array();
@@ -239,18 +249,6 @@ function cp_user_og_ui_admin_permissions($variables) {
 }
 
 /**
- * Implements hook_theme_registry_alter().
- *
- * @see og_ui_theme().
- * @see cp_user_og_ui_admin_new_role().
- */
-function cp_user_theme_registry_alter(&$theme_registry) {
-  if (!empty($theme_registry['og_ui_admin_new_role'])) {
-    $theme_registry['og_ui_admin_new_role']['function'] = 'cp_user_og_ui_admin_new_role';
-  }
-}
-
-/**
  * Overrides theme_og_ui_admin_new_role(); OG roles form.
  *
  * In the original theme function, the always-locked roles are hardcoded.
@@ -276,15 +274,19 @@ function cp_user_og_ui_admin_new_role($variables) {
   // These roles will not be editable.
   $always_blocked = array(
     OG_ANONYMOUS_ROLE,
-    OG_AUTHENTICATED_ROLE,
     OS_USER_ROLE_ADMIN,
     OS_USER_ROLE_EDITOR,
+    // This should have been OG_AUTHENTICATED_ROLE but we renamed it.
+    'basic member',
   );
 
   foreach ($role_names as $rid => $name) {
     $text = !$default_access ? t('edit permissions') : t('view permissions');
     $path = $gid ? "group/$group_type/$gid/admin" : 'admin/config/group';
     $permissions = l($text, "$path/permission/$rid/edit");
+
+    // Change role name from 'member' to 'basic member'.
+    $name = $name == OG_AUTHENTICATED_ROLE ? 'basic member' : $name;
 
     if (!$default_access && !in_array($name, $always_blocked)) {
       $rows[] = array(check_plain($name), l(t('edit role'), "$path/role/$rid/edit"), $permissions);
