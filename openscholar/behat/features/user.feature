@@ -24,18 +24,9 @@ Feature: User functionality testing.
 
   @api
   Scenario: Enable custom roles and permissions in a VSite.
-    Given I am logging in as "admin"
+    Given I am logging in as "john"
       And I visit "john/cp/users/permissions"
      When I click "Edit roles and permissions"
       And I press "edit-submit"
       And I visit "john/cp/users/permissions"
      Then I should see the button "Save permissions"
-
-  @api
-  Scenario: Disable custom roles and permissions in a VSite.
-    Given I am logging in as "admin"
-      And I visit "john/cp/users/roles"
-     When I click "Restore default roles and permissions"
-      And I press "edit-submit"
-      And I visit "john/cp/users/roles"
-     Then I should not see the button "Add role"
