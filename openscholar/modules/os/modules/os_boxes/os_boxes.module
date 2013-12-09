@@ -417,6 +417,15 @@ function os_boxes_preprocess_boxes_box(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_web_widgets_inline
+ */
+function os_boxes_preprocess_web_widgets_inline(&$vars) {
+  $vars['script_url'] = url(trim($vars['script_url'], '/'), array(
+    'absolute' => true,
+  ));
+}
+
+/**
  * Implements hook_menu_contextual_links_alter().
  *
  * Removes core block link from contextual links.
