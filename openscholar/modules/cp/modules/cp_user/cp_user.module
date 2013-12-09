@@ -204,6 +204,12 @@ function cp_user_og_ui_admin_permissions($variables) {
   $form = $variables['form'];
   $role_names = $form['role_names']['#value'];
 
+  if ($member_rid = array_search('member', $role_names)) {
+    // Change role name from 'member' to 'basic member'.
+    $role_names[$member_rid] = 'basic member';
+    $form['role_names'][$member_rid]['#markup'] = 'basic member';
+  }
+
   foreach (element_children($form['permission']) as $key) {
     $row = array();
     // Module name.
