@@ -186,16 +186,23 @@ a img {
 }
 
 
+.file {
+	margin-bottom: 15px;	
+}
+
+.block-boxes-os_sv_list_file .file img {margin-right:5px;vertical-align:middle;}
+
 #content-column a.entity-link {
-  min-width: 10em;
 	display: inline-block;	
 }
 
 div.content a.download-link {
-	padding-left: 1.1em;
-	background: transparent url('../images/download_file.png') no-repeat;
-	
-}
+	background: url("../images/scholarbase-sprite.png") no-repeat scroll 0 -585px rgba(0, 0, 0, 0);
+    font-size: 12px;
+    margin-left: 12px;
+    padding-left: 1.18em;
+  
+	}
 
 div.sidebar a.download-link {
 	float: right;

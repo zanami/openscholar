@@ -662,6 +662,11 @@ function os_files_entity_info_alter(&$info){
       'label' => t('Title'),
       'custom settings' => TRUE
     ),
+    
+    'os_files_thumbnail' => array(
+      'label' => t('Thumbnail'),
+      'custom settings' => TRUE
+    ),
   );
 
   $info['file']['bundles']['undefined'] = array(
@@ -1289,13 +1294,14 @@ function os_files_file_download($uri){
  * @see http://community.openscholar.harvard.edu/openscholar/topics/better_files_media_management_and_display
  */
 function os_files_file_view($file, $view_mode, $langcode) {
-  if (!in_array($view_mode, array('os_files_title', 'teaser', 'full'))) {
+  if (!in_array($view_mode, array('os_files_title', 'teaser', 'full', 'os_files_thumbnail'))) {
     return;
   }
 
   $icon = array(
     '#theme' => 'file_icon',
     '#file' => $file,
+    '#icon_directory' => drupal_get_path('module', 'os_files') . '/icons',
   );
   
   //icon, title, download
@@ -1337,33 +1343,41 @@ function os_files_file_view($file, $view_mode, $langcode) {
   }
   
   //add thumbnail for list of images
-  if (isset($file->sv_list_of_images) && $file->sv_list_of_images) {
-    TRUE;
-  }  
-  if ($file->type == 'image') {
+  if (@$file->sv_list_of_images) {
+    unset ($content['file-info']['icon']);
     switch ($view_mode) {
       case 'full':
         $content['file-info']['file'] = $file->content['file']; //include embedded image
+        $content['file-info']['file']['#style_name'] = 'os_files_small';
         break;
   
       case 'teaser':
         $content['file-info']['file'] = $file->content['file']; //include embedded image
         $content['file-info']['file']['#style_name'] = 'os_files_small';
         break;
+      
+      case 'os_files_thumbnail':
+        $content['file-info'] = $file->content['file']; //just use the image
+        $content['file-info']['#style_name'] = 'os_square_50_50';
+        $content['file-info']['#attributes']['class'] = array('recent-images-list');
+        break;
     }
   }
   
   //add video thumb/colorbox for list of video
-  //if (@$file->sv_list_of_videos) {
-  if ($file->type == 'video') {
-    switch ($view_mode) {
-      case 'full':    
-        $content['file-info']['file'] = $file->content['file']; //include embedded video
-        break;
+  if (@$file->sv_list_of_videos) {
+    unset ($content['file-info']['icon']);
     
-      case 'teaser':
-        $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
-        break;
+    if ($file->filemime == 'video/oembed') {
+      switch ($view_mode) {
+        case 'full':    
+          $content['file-info']['file'] = $file->content['file']; //include embedded video
+          break;
+      
+        case 'teaser':
+          $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
+          break;
+      }
     }
   }
   
@@ -1613,10 +1627,14 @@ function os_files_views_data_alter(&$data){
  * Implements hook_os_entity_view_modes()
  */
 function os_files_os_entity_view_modes() {
-  return array('file' => array_fill_keys(
+  $modes = array('file' => array_fill_keys(
     array('image', 'video', 'audio', 'document', 'executable', 'html'),
     array('os_files_link', 'os_files_link_icon', 'teaser', 'full', 'os_files_title')
   ));
+  
+  $modes['file']['image'][] = 'os_files_thumbnail';
+  
+  return $modes;
 }
 
 
@@ -1777,22 +1795,22 @@ function _os_files_video_thumb($file) {
   $id = 'embed-colorbox-' . $file['fid'];
 
   //get dimensions.  scale down to preset max size if needed.
-  if ($data = oembedcore_oembed_data($url)) {
-    $w = $data->width;
-    $h = $data->height;
+  if ($data = oembed_get_data($url)) {
+    $w = $data['width'];
+    $h = $data['height'];
     $w_max = 500;
     $h_max = 500;
     
     if ($w > $w_max) {
       $w = $w_max;
-      $ratio = $w/$data->width;
+      $ratio = $w/$data['width'];
       $h = $ratio * $h;
     }
     
     if ($h > $h_max) {
       $h = $h_max;
-      $ratio = $h/$data->height;
-      $w = $ratio * $data->height;
+      $ratio = $h/$data['height'];
+      $w = $ratio * $data['height'];
     }
   } else {
     $w = $h = 500;
@@ -2011,9 +2029,7 @@ function os_files_add_fields($type) {
         )
       ),
       'module' => 'text',
-      'settings' => array(
-        'max_length' => '255'
-      ),
+      'settings' => array(),
       'translatable' => '0',
       'type' => 'text_long'
     );

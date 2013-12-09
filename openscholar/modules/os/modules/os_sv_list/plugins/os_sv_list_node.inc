@@ -1,6 +1,6 @@
 <?php 
 
-class os_sv_list_node extends os_sv_list { 
+class os_sv_list_box extends os_sv_list { 
   public function __construct() {
     parent::__construct();
     $this->entity_type = 'node';
