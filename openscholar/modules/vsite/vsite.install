@@ -9,7 +9,6 @@ function vsite_install() {
   $node_info = module_invoke_all('vsite_og_node_type_info');
   $group_bundles = array_keys($node_info, 'group');
   foreach ($group_bundles as $group_bundle) {
-
     // Adds the base vsite roles as OG roles
     $vsite_roles = array(
       OG_ANONYMOUS_ROLE,
@@ -56,6 +55,9 @@ function vsite_install() {
           break;
       }
     }
+
+    // Set default roles for group owners.
+    variable_set("og_group_manager_default_rids_node_{$group_bundle}", $manager_roles);
   }
 
   og_create_field(OG_AUDIENCE_FIELD, 'user', 'user');
@@ -65,8 +67,6 @@ function vsite_install() {
   $og_field['instance']['label'] = 'Support expire';
   $og_field['field']['settings']['handler_settings']['membership_type'] = 'support_expire';
   og_create_field('vsite_support_expire', 'user', 'user', $og_field);
-
-  variable_set('og_group_manager_default_rids_node_vsite', $manager_roles);
 
   // Sets the default OG preset to be os_personal
   variable_set('spaces_preset_og', 'os_scholar');
