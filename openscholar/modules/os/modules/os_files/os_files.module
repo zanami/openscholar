@@ -1759,7 +1759,7 @@ function os_files_file_default_types_alter(&$types){
     // *.cls, *.sty
     'text/x-tex',
     'application/x-latex',
-  ));
+  );
 
   $types['document']->mimetypes = (empty($types['document']->mimetypes)) ? $document : array_merge($types['document']->mimetypes, $document);
   $types['document']->streams = array_diff($types['document']->streams, array('oembed'));
