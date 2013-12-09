@@ -401,7 +401,8 @@ class vsite extends space_og {
     global $user;
 
     $roles = $user->roles;
-    // Keyed by VSite role name, and site-wide role name as the value.
+    // Roles keyed by site-wide role name, and VSite role name as the value.
+    // The user's VSite role will determine the given site-wide permissions.
     $role_names = array(
       'content editor' => 'content editor',
       'vsite admin' => 'administrator',

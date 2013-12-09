@@ -324,10 +324,10 @@ function _cp_user_get_role($uid, $gid, $human_name = FALSE) {
     $role = OS_USER_ROLE_ADMIN;
   }
   // Handles non-admins...
-  else if (in_array('content editor', $user_roles)) {
+  elseif (in_array('content editor', $user_roles)) {
     $role = OS_USER_ROLE_EDITOR;
   }
-  else if (in_array('member', $user_roles)) {
+  elseif (in_array('member', $user_roles)) {
     $role = OS_USER_ROLE_BASIC;
   }
   else {
