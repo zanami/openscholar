@@ -233,9 +233,11 @@ function os_boxes_remove_widget($module, $delta, $target = FALSE) {
  *    can be inline or iframe
  */
 function os_boxes_embed_code($box, $embed_style) {
+  module_invoke_all('suppress');
   if ($box) {
     $block = $box->render();
-    return web_widgets_render_widget($embed_style, $block['content'], $block['subject']);
+    print web_widgets_render_widget($embed_style, $block['content'], $block['subject']);
   }
-  return '';
+  print '';
+  exit;
 }
