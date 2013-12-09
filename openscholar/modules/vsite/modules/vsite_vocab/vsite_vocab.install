@@ -28,7 +28,7 @@ function vsite_vocab_install(){
   _vsite_vocab_files_add_vocab_field();
 }
 
-/*
+/**
  * Adds og_vocab field to files
  */
 function vsite_vocab_update_7001() {

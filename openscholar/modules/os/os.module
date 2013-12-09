@@ -7,6 +7,12 @@
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
+
+/**
+ * Define a message to be used in site read-only mode.
+ */
+define('OS_READONLY_MODE_MESSAGE', 'Site is under maintenance, login and registration is currently disabled.');
+
 // Load the correct jQuery version. This is done before the call to os_init().
 global $conf;
 $conf['jquery_update_jquery_version'] = strpos($_GET['q'], 'admin') === 0 ? '1.5' : '1.8';
@@ -44,13 +50,6 @@ function os_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_settings_form'),
     'access arguments' => array('administer content'),
-  );
-
-  $items['admin/config/openscholar/force-logout'] = array(
-    'title' => 'logout',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('os_confirm_logout_users'),
-    'access arguments' => array('administer site configuration'),
   );
 
   $items['page_not_found'] = array(
@@ -101,12 +100,24 @@ function os_menu_alter(&$items) {
     $items['user']['page callback'] = 'os_user_page';
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
-    $items['user']['access callback'] = 'os_in_read_mode';
   }
 
-  // Check if the site is in read-only mode which means login is disabled.
-  $items['user/login']['access callback'] = 'os_in_read_mode_login';
-  $items['user/register']['access callback'] = 'os_in_read_mode_register';
+  // Use custom callbacks for these menu items that will display a message
+  // if site is in read-only mode. Access callbacks are altered to TRUE to get
+  // to the page callback which will check the default access callback.
+  $items['user/login']['page callback'] = 'os_in_read_mode_login';
+  $items['user/register']['page callback'] = 'os_in_read_mode_register';
+  $items['user/register']['access callback'] = TRUE;
+  $items['user/password']['page callback'] = 'os_in_read_mode_password';
+
+  // Check if Pinserver should take over registration menu entries.
+  if (variable_get('os_pinserver_registration', FALSE)){
+    $items['site/register']['page callback'] = 'os_in_read_mode_site_register_pinserver';
+  }
+  else {
+    $items['site/register']['page callback'] = 'os_in_read_mode_site_register';
+  }
+  $items['site/register']['access callback'] = TRUE;
 
   // Displays 404 Not Found instead of default /node page.
   if (isset($items['node'])) {
@@ -123,24 +134,70 @@ function os_menu_alter(&$items) {
 }
 
 /**
- * Access callback; Returns FALSE if login is disabled.
- */
-function os_in_read_mode() {
-  return !variable_get('os_readonly_mode', FALSE);
-}
-
-/**
- * Access callback; Returns FALSE if login is disabled.
+ * Page callback for user/login.
  */
 function os_in_read_mode_login() {
-  return user_is_anonymous() && !variable_get('os_readonly_mode', FALSE);
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
+  }
+
+  if (user_is_anonymous()) {
+    return drupal_get_form('user_login');
+  }
+
+  drupal_access_denied();
 }
 
 /**
- * Access callback; Returns FALSE if login is disabled.
+ * Page callback for user/register.
  */
 function os_in_read_mode_register() {
-  return user_register_access() && !variable_get('os_readonly_mode', FALSE);
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
+  }
+
+  if (user_register_access()) {
+    return drupal_get_form('user_register_form');
+  }
+
+  drupal_access_denied();
+}
+
+/**
+ * Page callback for user/password.
+ */
+function os_in_read_mode_password() {
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
+  }
+
+  return drupal_get_form('user_pass');
+}
+
+/**
+ * Page callback for site/register, pinserver authentication.
+ */
+function os_in_read_mode_site_register_pinserver() {
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
+  }
+
+  if (os_pinserver_auth_register_access()) {
+    return os_pinserver_auth_vsite_register_form_page();
+  }
+}
+
+/**
+ * Page callback for site/register.
+ */
+function os_in_read_mode_site_register() {
+  if (variable_get('os_readonly_mode', FALSE)) {
+    return variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE);
+  }
+
+  if (vsite_vsite_exists_access()) {
+    return drupal_get_form('vsite_register_form');
+  }
 }
 
 /**
@@ -868,6 +925,7 @@ function os_settings_form($form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use dropdowns'),
@@ -883,17 +941,27 @@ function os_settings_form($form_state) {
     '#collapsed' => TRUE,
   );
 
-  $form['os_read_only']['os_logout_users'] = array(
-    '#type' => 'item',
-    '#markup' => l(t('Log out all logged users'), 'admin/config/openscholar/force-logout'),
-  );
-
   $form['os_read_only']['os_readonly_mode'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Disable user login page'),
+    '#title' => t('Enable Read-only mode'),
     '#default_value' => variable_get('os_readonly_mode', FALSE),
-    '#description' => t('Disable users from logging into the site. '),
+    '#description' => '<span class="warning">' . t('Notice that when Read-only mode is enabled all non-admin users will be logged out and user login will be disabled.') . '</span>',
   );
+
+  $form['os_read_only']['os_readonly_mode_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('os_readonly_mode_message', OS_READONLY_MODE_MESSAGE),
+    '#description' => t('Message to be displayed to the users in the login page when site is in read-only mode.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="os_readonly_mode"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  $form['#submit'][] = 'os_settings_form_submit';
 
   return system_settings_form($form);
 }
@@ -1953,17 +2021,11 @@ function os_logout_logged_users() {
 }
 
 /**
- * Page argument; passed to drupal_get_form() in os_menu().
+ * Submit handler; For os_settings_form.
  */
-function os_confirm_logout_users($form, $form_state) {
-  return confirm_form($form, t('Logout all non-admin users'), 'admin/config/openscholar/openscholar', t('Are you sure you want to logout all non-admin users?'));
-}
-
-/**
- * Submit handler; For logging out users.
- */
-function os_confirm_logout_users_submit($form, &$form_state) {
-  os_logout_logged_users();
-  drupal_set_message(t('All non-admin users have been logged out.'));
-  $form_state['redirect'] = 'admin/config/openscholar/openscholar';
+function os_settings_form_submit($form, &$form_state) {
+  if ($form_state['values']['os_readonly_mode']) {
+    os_logout_logged_users();
+    drupal_set_message(t('All non-admin users have been logged out.'));
+  }
 }

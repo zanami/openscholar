@@ -145,7 +145,7 @@ class sv_list_taxonomy extends sv_list_plugin {
     }
     
     $query->join('og_vocab', 'ogv', 'ogr.vid = ogv.vid');
-    $query->condition('ogv.entity_type', $this->entity_type);
+    //$query->condition('ogv.entity_type', $this->entity_type);
 
     $query->groupBy('ogv.vid');
     $query->addExpression('GROUP_CONCAT(ogv.bundle)', 'bundles');    

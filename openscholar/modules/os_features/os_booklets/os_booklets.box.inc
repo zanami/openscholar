@@ -23,7 +23,7 @@ function os_booklets_default_box() {
   $box->description = 'Recent Documents';
   $box->options     = array(
     'content_type' => 'book',
-    'display' => 'display_title',
+    'display' => 'title',
     'more' => 1,
     'more_text' => 'More',
     'more_link' => 'documents',
