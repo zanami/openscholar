@@ -405,7 +405,7 @@ function os_boxes_preprocess_boxes_box(&$variables) {
           '#prefix' => '<div id="'.$delta.'-oembed">',
           '#suffix' => '</div>',
           '#markup' => theme('web_widgets_embed_code', array(
-            'code' => url('box/'.$variables['block']['delta'], array('purl_disable' => TRUE, 'absolute' => TRUE)),
+            'code' => url('box/'.$variables['block']['delta'], array('alias' => TRUE, 'absolute' => TRUE)),
             'style' => 'inline',
           ))
         ),
