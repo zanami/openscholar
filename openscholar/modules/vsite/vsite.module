@@ -1,10 +1,10 @@
 <?php
-// $Id$
-
 
 /**
  * @file
- * A virtual-site (VSite) is a node that is a "group".
+ * A "Virtual Site" (vsite) is a node that is a "group".
+ *
+ * @todo Add patch to alter redirect validate to check site audience.
  */
 
 include_once ('vsite.features.inc');

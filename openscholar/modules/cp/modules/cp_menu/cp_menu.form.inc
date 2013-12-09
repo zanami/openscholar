@@ -113,8 +113,9 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
     }
   }
 
+  $text = t('Add new menu');
   $form['add_new'] = array(
-    '#markup' => ctools_modal_text_button('Add new menu', 'cp/build/menu/nojs/add', 'Add New Menu'),
+    '#markup' => ctools_modal_text_button($text, 'cp/build/menu/nojs/add', $text),
   );
 
   $form['actions'] = array(
