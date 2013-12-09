@@ -22,11 +22,11 @@ class OSExpireFile extends ExpireFile {
    function expire($file, $action, $skip_action_check = FALSE) {
 
     //Expire the standard File URI's
-    parent::expire($node, $action, $skip_action_check);
+    parent::expire($file, $action, $skip_action_check);
 
     $styles = image_styles();
     foreach ($styles as $style) {
-      $image_path = image_style_path($style['name'], $path);
+      $image_path = image_style_path($style['name'], $file->uri);
       if (file_exists($image_path)) {
         $path = file_create_url($image_path);
         $expire_urls[$path] = $path;

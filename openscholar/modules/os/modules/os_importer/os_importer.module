@@ -401,7 +401,7 @@ function os_importer_import($form, &$form_state, $type) {
     'file' => array(
       '#title' => t('File'),
       '#type' => 'managed_file',
-      '#description' => t('Select a file form your computer to import.'),
+      '#description' => t('Select a file from your computer to import.'),
       '#upload_location' => 'public://',
       '#upload_validators' => array(
         'file_validate_extensions' => array('ics csv'),
@@ -600,6 +600,13 @@ function os_importer_feeds_after_import(FeedsSource $source) {
 function os_importer_feeds_presave(FeedsSource $source, $entity, $item) {
   if (!$id = _os_importer_determine_context()) {
     return;
+  }
+
+  // When importing an event and the end date is empty we use the start date.
+  if ($entity->type == "event") {
+    if (empty($entity->field_date[LANGUAGE_NONE][0]['value2'])) {
+      $entity->field_date[LANGUAGE_NONE][0]['value2'] = $entity->field_date[LANGUAGE_NONE][0]['value'];
+    }
   }
 
   _os_importer_import_vocab($source, $entity, $item, $id);
