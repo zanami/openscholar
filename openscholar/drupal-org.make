@@ -392,6 +392,9 @@ projects[views_infinite_scroll][version] = 1.1
 ;projects[views_infinite_scroll][patch][] = "http://drupal.org/files/views_infinite_scroll-vbo-1965288-2.patch"
 ;projects[views_infinite_scroll][patch][] = "http://localhost/patch/views_infinite_scroll-no_auto_scroll-2012910-1.patch"
 
+projects[web_widgets][subdir] = "contrib"
+projects[web_widgets][version] = 1.0-alpha2
+
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = 2.2
 projects[wysiwyg][patch][] = "http://drupal.org/files/wysiwyg-remove-breaks-1964806-2.patch"
