@@ -1,7 +1,7 @@
 Feature: Testing the importer.
 
   @api
-  Scenario Outline: Testing the csv importing for blog.
+  Scenario Outline: Testing the csv importing for content types.
     Given I am logging in as "admin"
      When I visit <import-address>
       And I visit <address>
@@ -30,3 +30,15 @@ Feature: Testing the importer.
       And I should see "Californication"
       And I should see "Chuck Berry"
       And I should see "Red hot chili peppers"
+
+  @api
+  Scenario: Verify the hebrew text was imported.
+    Given I visit "john/blog"
+     Then I should see "בדיקה של כותרת"
+      And I should see "בדיקה של תוכן"
+
+  @api
+  Scenario: Verify the spanish text was imported.
+    Given I visit "john/news"
+     Then I should see "Text in spanish"
+      And I should see "Speaker: Luis Mendonça de Carvalho"
