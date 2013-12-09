@@ -8,9 +8,9 @@
 /**
  * Defines the three vsite role names.
  */
-define('OS_USER_ROLE_ADMIN', 'vsite admin');
+define('OS_USER_ROLE_ADMIN', 'administrator');
 define('OS_USER_ROLE_EDITOR', 'content editor');
-define('OS_USER_ROLE_BASIC', 'vsite user');
+define('OS_USER_ROLE_BASIC', 'member');
 
 /**
  * Implements hook_menu().

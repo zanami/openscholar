@@ -40,9 +40,9 @@ Feature:
   @api
   Scenario: Testing vsite owner can assign a "vsite admin" role to a user.
     Given I am logging in as "john"
-     When I give the user "bruce" the role "vsite admin" in the group "john"
+     When I give the user "bruce" the role "administrator" in the group "john"
       And I visit "john/cp/users"
-     Then I should verify that the user "bruce" has a role of "vsite admin" in the group "john"
+     Then I should verify that the user "bruce" has a role of "administrator" in the group "john"
 
   @api
   Scenario: Testing vsite admin can view unpublished content.
