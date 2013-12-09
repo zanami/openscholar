@@ -14,6 +14,11 @@ function os_pages_os_app_info() {
   	'nodetypes' => array(
   	  'page',
     ),
+    'importers' => array(
+      'page' => array(
+        'csv' => 'os_pages',
+      ),
+    ),
   );
 
   return $apps;
@@ -662,7 +667,7 @@ function os_pages_os_add_new_links_alter(&$links) {
       $links['book_add_child'] = array(
         'title' => t('Subpage'),
         'href' => 'node/add/page',
-        'query' => isset($node->book['mlid'])?array('parent' => $node->book['mlid']):array('parent_node' => $node->nid),
+        'query' => isset($node->book['mlid']) ? array('parent' => $node->book['mlid'], 'destination' => 'node/' . $node->nid) : array('parent_node' => $node->nid, 'destination' => 'node/' . $node->nid),
       );
     }
   }
@@ -723,8 +728,11 @@ function _os_pages_make_alias($gid, $type, $title, $purl = '') {
     module_load_include('inc', 'pathauto');
     $alias = pathauto_create_alias('node', 'return', $source, array('node' => $node), $node->type, $node->language);
     if (module_exists('vsite') && $purl) {
-      if (strpos($alias, "$purl/") !== 0) {
-        $alias = "$purl/$alias";
+      // We can have a string which can contain "[purl]/[purl]/title". Check if
+      // the alias contain twice the purl and verify the purl is in the start.
+      while (strpos($alias, "$purl/$purl/") === 0) {
+        // The purl appear twice, remove the first occurrence.
+        $alias = substr($alias, strlen($purl) + 1);
       }
     }
     pathauto_alias_uniquify($alias, $source, $node->language);
@@ -756,6 +764,7 @@ function os_pages_form_node_form_alter_add_assets(&$form, $type = 'page') {
   // Prepares this form for alias preview generation.
   $data['alias_preview']['type'] = $type;
   $data['alias_preview']['make_alias'] = TRUE;
+  $data['alias_preview']['url'] = url('os/pages/alias-preview');
 
   // Integrates with vsite module.
   if (module_exists('vsite')) {

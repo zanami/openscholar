@@ -23,7 +23,7 @@ function os_faq_default_box() {
   $box->description = 'Recent FAQs';
   $box->options     = array(
     'content_type' => 'faq',
-    'display' => 'display_title',
+    'display' => 'title',
     'more' => 1,
     'more_text' => 'More',
     'more_link' => 'faq',

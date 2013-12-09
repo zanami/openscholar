@@ -147,15 +147,4 @@ function vsite_inherit($node) {
   if (!empty($value)) {
     $vsite->controllers->variable->set($name, $value);
   }
-
-  // Only continues to additionally turn on breadcrumbs if HWPI theme.
-  if (!_is_hwpi_theme($value)) {
-    return;
-  }
-
-  // Sets breadcrumbs to display for sites with an HWPI theme.
-  // @FIXME: the variable name looks like "show" but value "1" hides.
-  $name = 'os_breadcrumbs_show_breadcrumbs';
-  $value = 0;
-  $vsite->controllers->variable->set($name, $value);
 }

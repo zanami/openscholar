@@ -127,20 +127,20 @@ function os_links_field_default_fields() {
       'description' => 'The web address of the link. Starts with: http://',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'link',
           'settings' => array(),
           'type' => 'link_default',
           'weight' => '1',
         ),
         'sidebar_teaser' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
           'weight' => 0,
         ),
         'teaser' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
           'weight' => '3',

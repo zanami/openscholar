@@ -157,7 +157,7 @@ blockquote {
  font-size:13px;
  font-weight:bold;
  padding-right:8px;
- padding-left:25px!important;
+ padding-left:20px!important;
 }
 
 
@@ -245,6 +245,7 @@ margin-top:-2px;
 }
 .not-front #content-column #content-panels .block-inner{
 margin-top:0!important;
+ padding-top: 12px;
 
 }
 #layout_16_9_below .slide-copy{
@@ -355,28 +356,43 @@ h1#page-title {
 .sidebar .block.section-nav,
 #content-column .block.section-nav,
 .front #content-column .block.block-boxes-os_slideshow_box,
-.page-node.node-type-person .node-person .block-inner {
-  border-top: none;
+.page-node.node-type-person .node-person .block-inner,
+#block-views-os-events-block-1 {
+	border-top: none;
 }
 
 /* Blocks */
-.sidebar .block {
+.sidebar .block,
+.front #content-column .block-inner {
   margin-bottom: 20px;
+  border-top: 4px solid #8996A1;
 }
 
-.node-type-person #content-column .node-person h2.block-title, .sidebar .block h2.block-title{
+#content-column .block-inner,
+.sidebar .block {
+  padding-top:12px;
+}
+
+#content-panels .block-inner {
+    margin-top: 0;
+}
+
+.front #content-column .block.block-boxes-os_slideshow_box,
+.sidebar .block.section-nav {
+	padding-top:0;
+}
+
+.sidebar .block h2.block-title{
     background: none repeat scroll 0 0 transparent;
-    border-top: 4px solid #8996A1;
     color: #1F1F1F;
     font-family: arial,sans-serif;
     font-size: 0.75em;
     font-weight: bold;
     letter-spacing: 0;
     line-height: 16px;
-    padding-bottom: 1em;
-    padding-top: 1em;
     text-transform: uppercase;
 }
+
 .region-footer .os-custom-menu{
 	border-top: 4px solid #8996A1;
 	margin:0 20px;
@@ -384,15 +400,12 @@ h1#page-title {
 }
 h2.block-title {
     background: none repeat scroll 0 0 transparent;
-    border-top: 4px solid #8996A1;
-    color: #1F1F1F;
+ 	color: #1F1F1F;
     font-family: arial,sans-serif;
     font-size: 0.75em;
     font-weight: bold;
     letter-spacing: 0;
     line-height: 16px;
-    padding-bottom: 1em;
-    padding-top: 1em;
     text-transform: uppercase;
 }
 
@@ -401,9 +414,6 @@ h2.block-title {
 }
 
 
-.block-content {
-  margin-top: 20px;
-}
 
 .sidebar .block .block-inner h2.block-title ~ .block-content {
 margin-top: 0;
@@ -613,12 +623,16 @@ table td.mini {
 .front.no-sidebars.os_slideshow-processed #content-column .content-inner {
     padding: 0;
 }
+.logged-in.front.no-sidebars.os_slideshow-processed #content-column .content-inner {
+padding: 20px 0;
+}
 
 #footer .at-panel {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: #f4f4f4;
     border-left: 1px solid #CCCCCC;
     border-right: 1px solid #CCCCCC;
-    padding-top: 50px;
+    padding: 30px 15px 0;
+    width: 950px;
 }
 
 .section-nav .menu-depth-1 > a {
@@ -629,6 +643,11 @@ table td.mini {
 .section-nav .expanded.menu-depth-2 .leaf.menu-depth-3 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-4 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-5 > a, .section-nav .expanded.menu-depth-2 .leaf.menu-depth-6 > a {
     font-weight: normal;
 }
+
+.section-nav a.active {
+    font-weight: bold !important;
+}
+
 .ui-tabs-panel h2.block-title{
 	border-top:0;}
 
@@ -699,7 +718,7 @@ background-color: none !important;
 }
 
 #powerby-login {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: #f4f4f4;
     border-left: 1px solid #CCCCCC;
     border-right: 1px solid #CCCCCC;
     height: 30px;
@@ -715,7 +734,9 @@ background-color: none !important;
 /** SLIDESHOW **/
 	
 #content-panels .block-boxes-os_slideshow_box .block-inner {
+     border-top: medium none;
     margin-top: 0;
+    padding-top: 0;
 }
 	
 a.rslides_nav {

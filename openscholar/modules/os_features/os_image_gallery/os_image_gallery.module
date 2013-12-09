@@ -21,6 +21,11 @@ function os_image_gallery_os_app_info() {
     'views tabs' => array(
       'os_image_gallery' => array('page'),
     ),
+    'importers' => array(
+      'media_gallery' => array(
+        'csv' => 'os_gallery',
+      ),
+    ),
   );
 
   return $apps;

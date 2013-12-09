@@ -23,7 +23,7 @@ function os_image_gallery_default_box() {
   $box->description = 'Recent Images';
   $box->options     = array(
     'content_type' => 'image',
-    'display' => 'display_image',
+    'display' => 'os_files_thumbnail',
     'more' => 1,
     'more_text' => 'More',
     'more_link' => 'galleries',
