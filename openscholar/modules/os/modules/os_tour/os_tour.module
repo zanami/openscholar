@@ -177,6 +177,16 @@ function os_tour_module_implements_alter(&$implementations, $hook) {
  * Implements hook_process_HOOK() for page.tpl.php.
  */
 function os_tour_process_page(&$variables) {
+  _os_tour_process_page_help($variables);
+}
+
+/**
+ * Adds "Take a tour" link to certain pages' help region.
+ */
+function _os_tour_process_page_help(&$variables) {
+  if (!user_access('access control panel')) {
+    return;
+  }
   $tour_info = _os_tour_help();
   if (empty($tour_info)) {
     return;
@@ -217,6 +227,7 @@ function os_tour_process_page(&$variables) {
 function _os_tour_help() {
   $tour_info = FALSE;
 
+  // Provides tour for "cp/build/layout*".
   if (arg(0) == 'cp' && arg(1) == 'build' && arg(2) == 'layout') {
     $path = drupal_get_path('module', 'os_tour');
     $tour_info = array(
@@ -228,6 +239,23 @@ function _os_tour_help() {
         ),
         'js' => array(
           "$path/theme/os_tour.cp_build_layout.js",
+        ),
+      ),
+    );
+  }
+
+  // Provides tour for "home".
+  if (arg(0) == 'home' && arg(1) === NULL) {
+    $path = drupal_get_path('module', 'os_tour');
+    $tour_info = array(
+      'id' => 'os-tour-home',
+      'title' => 'Take a tour',
+      'attached' => array(
+        'css' => array(
+          "$path/theme/os_tour.home.css",
+        ),
+        'js' => array(
+          "$path/theme/os_tour.home.js",
         ),
       ),
     );
