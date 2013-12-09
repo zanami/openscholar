@@ -73,5 +73,8 @@ class os_sv_list_file extends os_sv_list {
   function sort_alpha(&$efq) {
     $efq->propertyOrderBy('filename', 'ASC');
   }
+  function sort_filesize(&$efq) {
+    $efq->propertyOrderBy('filesize', 'DESC');
+  }
   
 }
