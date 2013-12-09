@@ -1,9 +1,13 @@
 <?php 
 
-/*
+/**
  * Updates box displays to view modes, moves image box to file box of type image
  */
 function os_sv_list_update_7001() {
+  //revert the exports
+  features_revert(array_fill_keys(array('os_publications', 'os_presentations', 'os_news', 'os_faq', 'os_booklets'), array('box')));
+  
+  //update overriden boxes
   $results = db_select('spaces_overrides', 'so')
     ->condition('object_type', 'boxes')
     ->condition('value', '%sv_list_box%', 'LIKE')
@@ -16,16 +20,9 @@ function os_sv_list_update_7001() {
     //images -> file 
     if ($box->options['content_type'] == 'image') {
       $box->plugin_key = 'os_sv_list_file';
-      $view_modes = array(
-        'display_title' => 'os_files_link',
-        'display_sidebar_teaser' => 'os_files_thumbnail',
-        'display_teaser' => 'teaser',
-        'display_body' => 'full',
-        'display_image' => 'os_files_preview', //used to be 50x50 thumbnails w/ link
-      );
-      $box->options['display'] = (isset($view_modes[$box->options['display']])) ? $view_modes[$box->options['display']] : $view_modes['display_body'];
+      $box->options['display'] = 'os_files_thumbnail';
     } else {
-      $box->plugin_key = 'os_sv_list_node'; //necessary now.  are we going to keep the original key later tho? //TODO
+      //$box->plugin_key = 'os_sv_list_node'; //necessary now.  are we going to keep the original key later tho? //TODO
       
       //view modes for all the node types
       $view_modes = array(

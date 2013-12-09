@@ -98,22 +98,8 @@ function os_sv_list_plugins($entity_type = NULL, $bundle = NULL) {
 function os_sv_list_boxes_plugins() {
   $plugins = array();
 
-  $plugins['os_sv_list_box'] = array(
-    'title' => 'List of Posts',
-    'tags' => array('Content'),
-    'handler' => array(
-      'class' => 'os_sv_list_box',
-      'file' => 'os_sv_list.box.inc',
-      'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
-      'parent' => 'os_boxes_default',
-    ),
-    'factory' => TRUE,
-    'weight' => -3
-  );
-
   //load the base class for node and file lists
   $plugins['os_sv_list'] = array(
-    //'title' => '** List of Posts **',
     'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_sv_list',
@@ -124,11 +110,11 @@ function os_sv_list_boxes_plugins() {
     'factory' => FALSE,
   );
   
-  $plugins['os_sv_list_node'] = array(
-    'title' => '** List of Posts **',
+  $plugins['os_sv_list_box'] = array(
+    'title' => 'List of Posts',
     'tags' => array('Content'),
     'handler' => array(
-      'class' => 'os_sv_list_node',
+      'class' => 'os_sv_list_box',
       'file' => 'os_sv_list_node.inc',
       'path' => drupal_get_path('module', 'os_sv_list') . '/plugins/',
       'parent' => 'os_sv_list',
@@ -137,7 +123,7 @@ function os_sv_list_boxes_plugins() {
   );
   
   $plugins['os_sv_list_file'] = array(
-    'title' => '** List of Files **',
+    'title' => 'List of Files',
     'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_sv_list_file',
