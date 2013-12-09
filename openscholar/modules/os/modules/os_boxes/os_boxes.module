@@ -338,6 +338,13 @@ function os_boxes_preprocess_boxes_box(&$variables) {
   if (!empty($variables['block']['embed_link'])) {
     $delta = $variables['block']['delta'];
     $base = url('os/widget/embed/'.$delta);
+
+    // copied from request_path() to do the same thing it does
+    $request_path = strtok($base, '?');
+    $base_path_len = strlen(rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/'));
+    // Unescape and strip $base_path prefix, leaving q without a leading slash.
+    $base = substr(urldecode($request_path), $base_path_len);
+
     $output = array(
       '#attached' => array(
         'library' => array(
