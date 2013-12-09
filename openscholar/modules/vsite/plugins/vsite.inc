@@ -404,8 +404,8 @@ class vsite extends space_og {
     // Keyed by VSite role name, and site-wide role name as the value.
     $role_names = array(
       'content editor' => 'content editor',
-      'administrator' => 'vsite admin',
-      OG_AUTHENTICATED_ROLE => 'vsite user',
+      'vsite admin' => 'administrator',
+      'vsite user' => OG_AUTHENTICATED_ROLE,
     );
 
     $og_roles = og_get_user_roles('node', $this->id);
@@ -418,9 +418,9 @@ class vsite extends space_og {
     // Re-populate "user_access" static.
     $perm = &drupal_static('user_access');
 
-    foreach ($add_role_names as $role_name) {
+    foreach ($add_role_names as $key => $role_name) {
       // Add site-wide roles, based on the VSite roles.
-      $role = user_role_load_by_name($role_name);
+      $role = user_role_load_by_name($key);
       $roles[$role->rid] = $role->name;
     }
 

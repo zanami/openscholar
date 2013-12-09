@@ -12,6 +12,8 @@ function vsite_install() {
 
     // Adds the base vsite roles as OG roles
     $vsite_roles = array(
+      OG_ANONYMOUS_ROLE,
+      OG_AUTHENTICATED_ROLE,
       'administrator',
       'content editor',
     );
