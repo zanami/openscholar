@@ -239,6 +239,72 @@ function cp_user_og_ui_admin_permissions($variables) {
 }
 
 /**
+ * Implements hook_theme_registry_alter().
+ *
+ * @see og_ui_theme().
+ * @see cp_user_og_ui_admin_new_role().
+ */
+function cp_user_theme_registry_alter(&$theme_registry) {
+  if (!empty($theme_registry['og_ui_admin_new_role'])) {
+    $theme_registry['og_ui_admin_new_role']['function'] = 'cp_user_og_ui_admin_new_role';
+  }
+}
+
+/**
+ * Overrides theme_og_ui_admin_new_role(); OG roles form.
+ *
+ * In the original theme function, the always-locked roles are hardcoded.
+ * We override the theme to add OS roles to the list of always-blocked roles.
+ */
+function cp_user_og_ui_admin_new_role($variables) {
+  $form = $variables['form'];
+  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 2));
+
+  $group_type = $form['group_type']['#value'];
+  $gid = $form['gid']['#value'];
+  $bundle = $form['bundle']['#value'];
+  $role_names = $form['role_names']['#value'];
+
+  if ($gid) {
+    $group = entity_load_single($group_type, $gid);
+    $default_access = $group && og_is_group_default_access($group_type, $group);
+  }
+  else {
+    $default_access = FALSE;
+  }
+
+  // These roles will not be editable.
+  $always_blocked = array(
+    OG_ANONYMOUS_ROLE,
+    OG_AUTHENTICATED_ROLE,
+    OS_USER_ROLE_ADMIN,
+    OS_USER_ROLE_EDITOR,
+  );
+
+  foreach ($role_names as $rid => $name) {
+    $text = !$default_access ? t('edit permissions') : t('view permissions');
+    $path = $gid ? "group/$group_type/$gid/admin" : 'admin/config/group';
+    $permissions = l($text, "$path/permission/$rid/edit");
+
+    if (!$default_access && !in_array($name, $always_blocked)) {
+      $rows[] = array(check_plain($name), l(t('edit role'), "$path/role/$rid/edit"), $permissions);
+    }
+    else {
+      $rows[] = array(check_plain($name), t('locked'), $permissions);
+    }
+  }
+
+  $rows[] = array(array('data' => drupal_render($form['name']) . drupal_render($form['add']), 'colspan' => 4, 'class' => 'edit-name'));
+
+  hide($form['actions']);
+  $output = drupal_render_children($form);
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  $output .= render($form['actions']);
+
+  return $output;
+}
+
+/**
  * Menu access; Return TRUE if user can access user admin page.
  */
 function cp_user_admin_access() {
