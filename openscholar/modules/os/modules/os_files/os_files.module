@@ -1365,17 +1365,19 @@ function os_files_file_view($file, $view_mode, $langcode) {
   }
   
   //add video thumb/colorbox for list of video
-  //if (@$file->sv_list_of_videos) {
   if (@$file->sv_list_of_videos) {
     unset ($content['file-info']['icon']);
-    switch ($view_mode) {
-      case 'full':    
-        $content['file-info']['file'] = $file->content['file']; //include embedded video
-        break;
     
-      case 'teaser':
-        $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
-        break;
+    if ($file->filemime == 'video/oembed') {
+      switch ($view_mode) {
+        case 'full':    
+          $content['file-info']['file'] = $file->content['file']; //include embedded video
+          break;
+      
+        case 'teaser':
+          $content['file-info']['video_thumb'] = _os_files_video_thumb($file);
+          break;
+      }
     }
   }
   
