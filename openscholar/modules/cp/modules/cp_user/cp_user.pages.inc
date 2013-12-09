@@ -320,14 +320,14 @@ function _cp_user_get_role($uid, $gid, $human_name = FALSE) {
   // Loads the user's roles with this group node.
   $user_roles = og_get_user_roles('node', $gid, $uid);
   // Handles vsite admins...
-  if (in_array('vsite admin', $user_roles)) {
+  if (in_array('administrator', $user_roles)) {
     $role = OS_USER_ROLE_ADMIN;
   }
   // Handles non-admins...
   else if (in_array('content editor', $user_roles)) {
     $role = OS_USER_ROLE_EDITOR;
   }
-  else if (in_array('vsite user', $user_roles)) {
+  else if (in_array('member', $user_roles)) {
     $role = OS_USER_ROLE_BASIC;
   }
   else {

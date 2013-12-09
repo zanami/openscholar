@@ -49,10 +49,6 @@ function vsite_install() {
           );
           og_role_grant_permissions($rid, $permissions);
           break;
-
-        case 'manager':
-          $manager_roles[] = $rid;
-          break;
       }
     }
 
