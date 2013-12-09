@@ -235,8 +235,20 @@ function os_boxes_remove_widget($module, $delta, $target = FALSE) {
 function os_boxes_embed_code($box, $embed_style) {
   module_invoke_all('suppress');
   if ($box) {
-    $block = $box->render();
-    print web_widgets_render_widget($embed_style, $block['content'], $block['subject']);
+    module_load_include('module', 'block', 'block');
+    $plugin = context_get_plugin('reaction', 'block');
+    $blocks = $plugin->get_blocks();
+    $bid = 'boxes-'.$box->delta;
+    if ($b = $blocks[$bid]) {
+      web_widgets_inside_widget(true);
+      $b->region = 'embed';
+      if ($b_out = _block_render_blocks(array($b))) {
+        $block_arr = _block_get_renderable_array($b_out);
+        $block = $block_arr['boxes_'.$box->delta];
+
+        print web_widgets_render_widget($embed_style, drupal_render($block), $block['#block']->subject);
+      }
+    }
   }
   print '';
   exit;
