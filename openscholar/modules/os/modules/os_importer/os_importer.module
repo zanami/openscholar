@@ -345,7 +345,10 @@ function os_importer_import($form, &$form_state, $type) {
     '#default_value' => key($options),
   );
 
-  $params = array('!new-york-times' => l(t('New York Times'), 'http://www.nytimes.com/services/xml/rss/index.html'));
+  $params = array(
+    '!new-york-times' => l(t('New York Times'), 'http://www.nytimes.com/services/xml/rss/index.html'),
+    '@wikipedia-url' => 'http://en.wikipedia.org/wiki/Character_encoding',
+  );
   $text = 'Importing content from RSS feeds supports only news and blog content. ';
   $text .= 'For example: you can import a feed item from the !new-york-times rss news feeds.<br />';
   $text .= "When submitting the form, the import process will begin. After that, you can choose which news items you want to import into your site.";
@@ -422,9 +425,47 @@ function os_importer_import($form, &$form_state, $type) {
       ),
       '#weight' => -99,
     ),
+
+    'encode' => array(
+      '#title' => t('Encoding'),
+      '#type' => 'select',
+      '#description' => t('Select the encoding of your file. For a full list of encodings you can visit <a href="@wikipedia-url">this</a> Wikipedia page.', $params),
+      '#default_value' => 'UTF-8',
+      '#options' => array(
+        'utf-8' => t('UTF-8'),
+        'utf-16' => t('UTF-16'),
+        'utf-32' => t('UTF-32'),
+        t('MS-Windows character sets') => array(
+          'Windows-1250' => t('Central European languages that use Latin script'),
+          'Windows-1251' => t('Cyrillic alphabets'),
+          'Windows-1252' => t('Western languages'),
+          'Windows-1253' => t('Greek'),
+          'Windows-1254' => t('Turkish'),
+          'WINDOWS-1255' => t('Hebrew'),
+          'Windows-1256' => t('Arabic'),
+          'Windows-1257' => t('Baltic languages'),
+          'Windows-1258' => t('Vietnamese'),
+        ),
+        t('ISO 8859') => array(
+          'ISO 8859-1' => t('Western Europe'),
+          'ISO 8859-2' => t('Western and Central Europe'),
+          'ISO 8859-9' => t('Western Europe with amended Turkish character set'),
+          'ISO 8859-14' => t('Celtic languages (Irish Gaelic, Scottish, Welsh)'),
+        ),
+      ),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="format"]' => array('value' => 'rss'),
+        ),
+      ),
+      '#weight' => -80,
+    ),
   );
 
-  $form['#validate'][] = 'os_importer_verify_uploaded_file';
+  $form['#validate'] = array(
+    'os_importer_import_validate',
+    'os_importer_verify_uploaded_file',
+  );
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -498,8 +539,8 @@ function os_importer_import_validate($form, $form_state) {
  * structure.
  */
 function os_importer_verify_uploaded_file($form, $form_state) {
-  if (in_array($form_state['values']['format'], array('ical', 'rss'))) {
-    // Don't validate iCal files.
+  if (in_array($form_state['values']['format'], array('ical', 'rss')) || empty($form_state['values']['file'])) {
+    // Don't validate when there is no file or iCal files.
     return;
   }
   $bundle = os_importer_importable_content($form_state['type']);
@@ -568,6 +609,7 @@ function os_importer_import_submit($form, &$form_state) {
     $fetcher_config = $source->getConfigFor($source->importer->fetcher);
     $fetcher_config['source'] = $file->uri;
     $fetcher_config['file'] = $file;
+    $fetcher_config['encode'] = $values['encode'];
     $source->setConfigFor($source->importer->fetcher, $fetcher_config);
     $source->save();
 

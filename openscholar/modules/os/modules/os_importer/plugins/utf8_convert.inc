@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Convert a field to UTF-8 format.
@@ -29,10 +28,10 @@ function os_importer_utf_8_form($importer, $element_key, $settings) {
 function os_importer_utf_8_convert($result, $item_key, $element_key, &$field, $settings, $source) {
   if (is_array($field)) {
     foreach ($field as $key => $value) {
-      $field[$key] = utf8_encode($value);
+      $field[$key] = iconv($source->config['FeedsFileFetcher']['encode'], "UTF-8", $field);
     }
   }
   else {
-    $field = utf8_encode($field);
+    $field = iconv($source->config['FeedsFileFetcher']['encode'], "UTF-8", $field);
   }
 }
