@@ -701,16 +701,20 @@ function os_files_update_7012($sb) {
 function os_files_update_7013($sb) {
   $info = entity_get_info('file');
   foreach ($info['bundles'] as $b => $t) {
-    if ($b == 'undefined') continue;
+    if ($b == 'undefined') {
+      continue;
+    }
 
     $md = field_read_instance('file', 'media_description', $b);
     $osd = field_read_instance('file', 'os_file_description', $b);
 
-    $osd['display'] += $md['display'];
-    $md['display'] = array();
-
-    field_update_instance($md);
-    field_update_instance($osd);
+    if ($md && $osd) {
+      $osd['display'] += $md['display'];
+      $md['display'] = array();
+  
+      field_update_instance($md);
+      field_update_instance($osd);
+    }
   }
 }
 
