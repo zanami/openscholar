@@ -535,7 +535,19 @@ function vsite_update_7014() {
 }
 
 /**
- * @todo: Rename roles.
+ * Rename vsite roles.
  */
 function vsite_update_7015() {
+  // Delete the vsite user role for a vsite.
+  db_delete('og_role')
+    ->condition('name', 'vsite user')
+    ->execute();
+
+  // Update the name of vsite admin role to administrator.
+  db_update('og_role')
+    ->fields(array(
+      'name' => 'administrator',
+    ))
+    ->condition('name', 'vsite admin')
+    ->execute();
 }
