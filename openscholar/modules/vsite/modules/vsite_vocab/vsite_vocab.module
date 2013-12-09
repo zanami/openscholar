@@ -171,9 +171,17 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
     '#default_value' => array_keys($default_bundles),
     '#description' => t('Select the content types to categorize using this vocabulary.'),
     '#required' => TRUE,
+    '#after_build' => array('os_select2_widget_after_build'),
+    '#cardinality' => '-1',
     '#attached' => array(
-      'js' => array(libraries_get_path('select2') . '/select2.js'),
-      'css' => array(libraries_get_path('select2') . '/select2.css'),
+      'css' => array(
+        libraries_get_path('select2') . '/select2.css',
+        drupal_get_path('module', 'os') . '/css/select2-widget.css',
+      ),
+      'js' => array(
+        libraries_get_path('select2') . '/select2.min.js',
+        drupal_get_path('module', 'os') . '/js/select2-widget.js',
+      ),
     ),
   );
 
@@ -321,13 +329,13 @@ function vsite_vocab_form_taxonomy_form_vocabulary_submit(&$form, &$form_state) 
       if (empty($og_vocab)) {
         $og_vocab = og_vocab_create_og_vocab($vid, $entity_type, $bundle);
       }
-
-      if (empty($values['bundles'][$bundle]) && empty($og_vocab->is_new)) {
+  
+      if ((!isset($values['bundles'][$bundle]) || !($values['bundles'][$bundle])) && empty($og_vocab->is_new)) {
         $og_vocab->delete();
         continue;
       }
-
-      if (!empty($values['bundles'][$bundle])) {
+  
+      if (isset($values['bundles'][$bundle]) && $values['bundles'][$bundle]) {
         $og_vocab->settings['required'] = $values['required'];
         $og_vocab->settings['cardinality'] = $values['cardinality'];
         $values['widget_type'] = $values['widget_type_autocomplete'] == 'entityreference_autocomplete' ? $values['widget_type'] : $values['widget_type_autocomplete'];
