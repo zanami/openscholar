@@ -280,6 +280,9 @@ function os_events_preprocess_date_views_pager(&$variables) {
   // Define some variables.
   $plugin = $variables['plugin'];
   $view = $plugin->view;
+  if($view->name !== 'os_events') {
+    return;
+  }
   $date_info = $view->date_info;
   $next_url = &$variables['next_url'];
   $prev_url = &$variables['prev_url'];
